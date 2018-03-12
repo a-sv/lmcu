@@ -1,0 +1,9 @@
+#pragma once
+
+namespace lmcu {
+
+#if defined(STM32F429IG)
+#include "../../device/STM32/F4/29IG/gpio.h"
+#endif
+
+} // namespace lmcu
