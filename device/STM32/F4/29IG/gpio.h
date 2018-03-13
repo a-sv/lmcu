@@ -1,5 +1,4 @@
 #pragma once
-#include "device.h"
 #include "../gpio.h"
 
 namespace gpio {
@@ -388,23 +387,5 @@ void enable() { RCC->AHB1ENR |= detail::rcc_bits<0, args...>(); }
 
 template<port ...args>
 void disable() { RCC->AHB1ENR &= ~detail::rcc_bits<0, args...>(); }
-
-template<typename ...args>
-void init()
-{
-  static_assert(sizeof...(args), "requires at least 1 argument");
-
-  detail::configure<port::A, args...>(GPIOA);
-  detail::configure<port::B, args...>(GPIOB);
-  detail::configure<port::C, args...>(GPIOC);
-  detail::configure<port::D, args...>(GPIOD);
-  detail::configure<port::E, args...>(GPIOE);
-  detail::configure<port::F, args...>(GPIOF);
-  detail::configure<port::G, args...>(GPIOG);
-  detail::configure<port::H, args...>(GPIOH);
-  detail::configure<port::I, args...>(GPIOI);
-  detail::configure<port::J, args...>(GPIOJ);
-  detail::configure<port::K, args...>(GPIOK);
-}
 
 } // namespace gpio
