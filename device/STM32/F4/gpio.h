@@ -91,10 +91,10 @@ constexpr auto afr_bits()
       constexpr auto af = static_cast<uint32_t>(pin().af);
 
       if constexpr(low) {
-        if constexpr(pin().bit < 8) { return r | (af << pin().bit); }
+        if constexpr(pin().bit < 8) { return r | (af << (pin().bit * 4)); }
       }
       else {
-        if constexpr(pin().bit >= 8) { return r | (af << pin().bit); }
+        if constexpr(pin().bit >= 8) { return r | (af << ((pin().bit - 8) * 4)); }
       }
     }
     return r;
