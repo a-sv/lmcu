@@ -1,6 +1,7 @@
 #pragma once
 #include <lmcu/device>
 
+namespace lmcu {
 namespace gpio {
 
 enum class port {
@@ -460,3 +461,4 @@ void toggle()
 }
 
 } // namespace gpio
+} // namespace lmcu

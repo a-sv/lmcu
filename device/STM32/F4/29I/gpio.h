@@ -1,6 +1,7 @@
 #pragma once
 #include "../gpio.h"
 
+namespace lmcu {
 namespace gpio {
 
 // ------------------------------------------------------------------------------------------------
@@ -389,3 +390,4 @@ template<port ...args>
 void disable() { RCC->AHB1ENR &= ~detail::rcc_bits<0, args...>(); }
 
 } // namespace gpio
+} // namespace lmcu

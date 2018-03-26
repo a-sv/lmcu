@@ -1,11 +1,7 @@
 #pragma once
 
-namespace lmcu {
-
 #if defined(STM32F429IG)
 #include "../../device/STM32/F4/29I/gpio.h"
 #elif defined(STM32F103C8)
 #include "../../device/STM32/F1/03C/gpio.h"
 #endif
-
-} // namespace lmcu

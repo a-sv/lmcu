@@ -1,6 +1,7 @@
 #pragma once
 #include "../gpio.h"
 
+namespace lmcu {
 namespace gpio {
 
 namespace detail {
@@ -95,3 +96,5 @@ void configure(GPIO_TypeDef *inst)
 } // namespace detail
 
 } // namespace gpio
+} // namespace lmcu
+
