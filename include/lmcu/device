@@ -1,5 +1,9 @@
+#pragma once
+
 #if defined(STM32F429IG)
 #include <stm32f429xx.h>
 #elif defined(STM32F103C8)
 #include <stm32f103xb.h>
+#elif defined(STM32F107VC)
+#include <stm32f107xc.h>
 #endif
