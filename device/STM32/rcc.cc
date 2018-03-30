@@ -1,3 +1,6 @@
+#include <lmcu/device>
+
+#if defined(_LMCU_DEVICE_STM32_)
 #include "rcc.h"
 
 namespace lmcu {
@@ -25,3 +28,5 @@ uint32_t lmcu_apb2_clock()     { return lmcu::rcc::detail::apb2_clock;     }
 uint32_t lmcu_adc_clock()      { return lmcu::rcc::detail::adc_clock;      }
 
 } // extern "C"
+
+#endif // _LMCU_DEVICE_STM32_

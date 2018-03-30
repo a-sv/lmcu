@@ -1,9 +1,14 @@
 #pragma once
 
 #if defined(STM32F429IG)
-#include <stm32f429xx.h>
+  #include <stm32f429xx.h>
+  #define _LMCU_DEVICE_STM32_
 #elif defined(STM32F103C8)
-#include <stm32f103xb.h>
+  #include <stm32f103xb.h>
+  #define _LMCU_DEVICE_STM32_
 #elif defined(STM32F107VC)
-#include <stm32f107xc.h>
+  #include <stm32f107xc.h>
+  #define _LMCU_DEVICE_STM32_
+#else
+  #error "device not supported"
 #endif
