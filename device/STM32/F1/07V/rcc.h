@@ -45,29 +45,6 @@ enum class prediv1
 };
 using prediv2 = prediv1;
 
-enum class ahb_prediv
-{
-  div_1   = 1,
-  div_2   = 2,
-  div_4   = 4,
-  div_8   = 8,
-  div_16  = 16,
-  div_64  = 64,
-  div_128 = 128,
-  div_256 = 256,
-  div_512 = 512
-};
-
-enum class apb1_prediv
-{
-  div_1  = 1,
-  div_2  = 2,
-  div_4  = 4,
-  div_8  = 8,
-  div_16 = 16
-};
-using apb2_prediv = apb1_prediv;
-
 enum class adc_prediv
 {
   disabled, // ADC not used
@@ -225,7 +202,7 @@ template<
 >
 void configure()
 {
-  detail::osc_config<_osc_type, _hsi_cal>();
+  detail::osc_config<_osc_type, _hsi_cal, _rtc_clk_mux>();
 
   if constexpr(
     ((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) &&
@@ -237,22 +214,6 @@ void configure()
   }
   else {
     RCC->CR &= ~RCC_CR_CSSON;
-  }
-
-  static_assert(
-    (_osc_type & osc_type::hse) ||
-    (_osc_type & osc_type::hse_bypass) ||
-    (_osc_type & osc_type::hsi),
-    "you must select at least one of high speed generators"
-  );
-  if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
-    static_assert(_rtc_clk_mux == rtcclk_mux::lse, "LSE generator turned on, but not used");
-  }
-  if constexpr(_rtc_clk_mux == rtcclk_mux::hse) {
-    static_assert(
-      (_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass),
-      "HSE generator selected as RTC clock, but HSE is disabled"
-    );
   }
 
   if constexpr((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) {
@@ -457,22 +418,6 @@ void configure()
       while((RCC->CR & RCC_CR_PLL3RDY) == 0)
         ;
     }
-  }
-
-  //
-  // select RTC clock source
-  //
-
-  {
-    auto r = RCC->BDCR;
-    r &= ~RCC_BDCR_RTCSEL;
-    switch (_rtc_clk_mux) {
-    case rtcclk_mux::lse: r |= RCC_BDCR_RTCSEL_LSE; break;
-    case rtcclk_mux::lsi: r |= RCC_BDCR_RTCSEL_LSI; break;
-    case rtcclk_mux::hse: r |= RCC_BDCR_RTCSEL_HSE; break;
-    default : break;
-    }
-    RCC->BDCR = r;
   }
 
   //

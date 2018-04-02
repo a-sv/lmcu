@@ -22,6 +22,29 @@ enum class sysclk_mux { hsi, hse, pllclk };
 
 enum class rtcclk_mux { disabled, hse, lse, lsi };
 
+enum class ahb_prediv
+{
+  div_1   = 1,
+  div_2   = 2,
+  div_4   = 4,
+  div_8   = 8,
+  div_16  = 16,
+  div_64  = 64,
+  div_128 = 128,
+  div_256 = 256,
+  div_512 = 512
+};
+
+enum class apb1_prediv
+{
+  div_1  = 1,
+  div_2  = 2,
+  div_4  = 4,
+  div_8  = 8,
+  div_16 = 16
+};
+using apb2_prediv = apb1_prediv;
+
 constexpr osc_type operator |(osc_type lhs, osc_type rhs)
 {
   return static_cast<osc_type>( static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs) );
@@ -41,6 +64,12 @@ extern uint32_t apb2_clock;
 extern uint32_t adc_clock;
 
 } // namespace detail
+
+inline uint32_t system_clock() { return detail::system_clock; }
+inline uint32_t hardware_clock() { return detail::hardware_clock; }
+inline uint32_t apb1_clock() { return detail::apb1_clock; }
+inline uint32_t apb2_clock() { return detail::apb2_clock; }
+inline uint32_t adc_clock() { return detail::adc_clock; }
 
 } // namespace rcc
 } // namespace lmcu

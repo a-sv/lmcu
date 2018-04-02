@@ -6,7 +6,7 @@ namespace rcc {
 
 namespace detail {
 
-template<osc_type _osc_type, uint32_t _hsi_cal>
+template<osc_type _osc_type, uint32_t _hsi_cal, rtcclk_mux _rtc_clk_mux>
 void osc_config()
 {
   static_assert(_hsi_cal <= 0x1f);
@@ -19,6 +19,21 @@ void osc_config()
       (_osc_type & osc_type::lsi)),
     "unable to enable lse* and lsi mode together"
   );
+  static_assert(
+    (_osc_type & osc_type::hse) ||
+    (_osc_type & osc_type::hse_bypass) ||
+    (_osc_type & osc_type::hsi),
+    "you must select at least one of high speed generators"
+  );
+  if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
+    static_assert(_rtc_clk_mux == rtcclk_mux::lse, "LSE generator turned on, but not used");
+  }
+  if constexpr(_rtc_clk_mux == rtcclk_mux::hse) {
+    static_assert(
+      (_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass),
+      "HSE generator selected as RTC clock, but HSE is disabled"
+    );
+  }
 
   // switch system clock to HSI
   RCC->CR |= RCC_CR_HSION;
@@ -106,6 +121,22 @@ void osc_config()
     RCC->CSR &= ~RCC_CSR_LSION;
     while((RCC->CSR & RCC_CSR_LSIRDY) != 0)
       ;
+  }
+
+  //
+  // select RTC clock source
+  //
+
+  {
+    auto r = RCC->BDCR;
+    r &= ~RCC_BDCR_RTCSEL;
+    switch (_rtc_clk_mux) {
+    case rtcclk_mux::lse: r |= RCC_BDCR_RTCSEL_LSE; break;
+    case rtcclk_mux::lsi: r |= RCC_BDCR_RTCSEL_LSI; break;
+    case rtcclk_mux::hse: r |= RCC_BDCR_RTCSEL_HSE; break;
+    default : break;
+    }
+    RCC->BDCR = r;
   }
 }
 
