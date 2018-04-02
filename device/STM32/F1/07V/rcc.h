@@ -6,7 +6,7 @@ namespace rcc {
 
 enum class prediv1_mux { hse, pll2clk };
 
-enum class pll1_mux { hsi, prediv1 };
+enum class pll_mux { hsi, prediv1 };
 
 enum class sysclk_mux { hsi, hse, pllclk };
 
@@ -28,86 +28,86 @@ enum class mco_mux
 
 enum class prediv1
 {
-  $1 = 1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7,
-  $8,
-  $9,
-  $10,
-  $11,
-  $12,
-  $13,
-  $14,
-  $15,
-  $16
+  div_1 = 1,
+  div_2,
+  div_3,
+  div_4,
+  div_5,
+  div_6,
+  div_7,
+  div_8,
+  div_9,
+  div_10,
+  div_11,
+  div_12,
+  div_13,
+  div_14,
+  div_15,
+  div_16
 };
 using prediv2 = prediv1;
 
 enum class ahb_prediv
 {
-  $1   = 1,
-  $2   = 2,
-  $4   = 4,
-  $8   = 8,
-  $16  = 16,
-  $64  = 64,
-  $128 = 128,
-  $256 = 256,
-  $512 = 512
+  div_1   = 1,
+  div_2   = 2,
+  div_4   = 4,
+  div_8   = 8,
+  div_16  = 16,
+  div_64  = 64,
+  div_128 = 128,
+  div_256 = 256,
+  div_512 = 512
 };
 
 enum class apb1_prediv
 {
-  $1  = 1,
-  $2  = 2,
-  $4  = 4,
-  $8  = 8,
-  $16 = 16
+  div_1  = 1,
+  div_2  = 2,
+  div_4  = 4,
+  div_8  = 8,
+  div_16 = 16
 };
 using apb2_prediv = apb1_prediv;
 
 enum class adc_prediv
 {
   disabled, // ADC not used
-  $2 = 2,
-  $4 = 4,
-  $6 = 6,
-  $8 = 8
+  div_2 = 2,
+  div_4 = 4,
+  div_6 = 6,
+  div_8 = 8
 };
 
 enum class usb_prediv
 {
   disabled, // USB not used
-  $1   = 2,
-  $1_5 = 3
+  div_1   = 2,
+  div_1_5 = 3
 };
 
-enum class pll1_mul
+enum class pll_mul
 {
-  $4   = 40,
-  $5   = 50,
-  $6   = 60,
-  $6_5 = 65,
-  $7   = 70,
-  $8   = 80,
-  $9   = 90
+  mul_4   = 40,
+  mul_5   = 50,
+  mul_6   = 60,
+  mul_6_5 = 65,
+  mul_7   = 70,
+  mul_8   = 80,
+  mul_9   = 90
 };
 
 enum class pll2_mul
 {
-  $8  = 8,
-  $9  = 9,
-  $10 = 10,
-  $11 = 11,
-  $12 = 12,
-  $13 = 13,
-  $14 = 14,
-  $16 = 16,
-  $20 = 20
+  mul_8  = 8,
+  mul_9  = 9,
+  mul_10 = 10,
+  mul_11 = 11,
+  mul_12 = 12,
+  mul_13 = 13,
+  mul_14 = 14,
+  mul_16 = 16,
+  mul_20 = 20
 };
 using pll3_mul = pll2_mul;
 
@@ -159,30 +159,30 @@ constexpr void configure_periph_clocks()
   r &= ~(RCC_CFGR_HPRE | RCC_CFGR_PPRE1 | RCC_CFGR_PPRE2 | RCC_CFGR_MCO);
 
   switch(_ahb_prediv) {
-  case ahb_prediv::$2:        r |= RCC_CFGR_HPRE_DIV2;        break;
-  case ahb_prediv::$4:        r |= RCC_CFGR_HPRE_DIV4;        break;
-  case ahb_prediv::$8:        r |= RCC_CFGR_HPRE_DIV8;        break;
-  case ahb_prediv::$16:       r |= RCC_CFGR_HPRE_DIV16;       break;
-  case ahb_prediv::$64:       r |= RCC_CFGR_HPRE_DIV64;       break;
-  case ahb_prediv::$128:      r |= RCC_CFGR_HPRE_DIV128;      break;
-  case ahb_prediv::$256:      r |= RCC_CFGR_HPRE_DIV256;      break;
-  case ahb_prediv::$512:      r |= RCC_CFGR_HPRE_DIV512;      break;
+  case ahb_prediv::div_2:        r |= RCC_CFGR_HPRE_DIV2;        break;
+  case ahb_prediv::div_4:        r |= RCC_CFGR_HPRE_DIV4;        break;
+  case ahb_prediv::div_8:        r |= RCC_CFGR_HPRE_DIV8;        break;
+  case ahb_prediv::div_16:       r |= RCC_CFGR_HPRE_DIV16;       break;
+  case ahb_prediv::div_64:       r |= RCC_CFGR_HPRE_DIV64;       break;
+  case ahb_prediv::div_128:      r |= RCC_CFGR_HPRE_DIV128;      break;
+  case ahb_prediv::div_256:      r |= RCC_CFGR_HPRE_DIV256;      break;
+  case ahb_prediv::div_512:      r |= RCC_CFGR_HPRE_DIV512;      break;
   default : break;
   }
 
   switch(_apb1_prediv) {
-  case apb1_prediv::$2:       r |= RCC_CFGR_PPRE1_DIV2;       break;
-  case apb1_prediv::$4:       r |= RCC_CFGR_PPRE1_DIV4;       break;
-  case apb1_prediv::$8:       r |= RCC_CFGR_PPRE1_DIV8;       break;
-  case apb1_prediv::$16:      r |= RCC_CFGR_PPRE1_DIV16;      break;
+  case apb1_prediv::div_2:       r |= RCC_CFGR_PPRE1_DIV2;       break;
+  case apb1_prediv::div_4:       r |= RCC_CFGR_PPRE1_DIV4;       break;
+  case apb1_prediv::div_8:       r |= RCC_CFGR_PPRE1_DIV8;       break;
+  case apb1_prediv::div_16:      r |= RCC_CFGR_PPRE1_DIV16;      break;
   default : break;
   }
 
   switch(_apb2_prediv) {
-  case apb2_prediv::$2:       r |= RCC_CFGR_PPRE2_DIV2;       break;
-  case apb2_prediv::$4:       r |= RCC_CFGR_PPRE2_DIV4;       break;
-  case apb2_prediv::$8:       r |= RCC_CFGR_PPRE2_DIV8;       break;
-  case apb2_prediv::$16:      r |= RCC_CFGR_PPRE2_DIV16;      break;
+  case apb2_prediv::div_2:       r |= RCC_CFGR_PPRE2_DIV2;       break;
+  case apb2_prediv::div_4:       r |= RCC_CFGR_PPRE2_DIV4;       break;
+  case apb2_prediv::div_8:       r |= RCC_CFGR_PPRE2_DIV8;       break;
+  case apb2_prediv::div_16:      r |= RCC_CFGR_PPRE2_DIV16;      break;
   default : break;
   }
 
@@ -210,8 +210,8 @@ template<
   pll3_mul _pll3_mul,
   prediv1_mux _prediv1_mux,
   prediv1 _prediv1,
-  pll1_mux _pll1_mux,
-  pll1_mul _pll1_mul,
+  pll_mux _pll_mux,
+  pll_mul _pll_mul,
   sysclk_mux _sysclk_mux,
   ahb_prediv _ahb_prediv,
   apb1_prediv _apb1_prediv,
@@ -231,7 +231,7 @@ void configure()
 
   if constexpr(
     ((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) &&
-    (_sysclk_mux == sysclk_mux::hse || _pll1_mux == pll1_mux::prediv1)
+    (_sysclk_mux == sysclk_mux::hse || _pll_mux == pll_mux::prediv1)
   ) {
     RCC->CR |= RCC_CR_CSSON;
   }
@@ -279,38 +279,38 @@ void configure()
 
     constexpr auto vco_in1 = (_prediv1_mux == prediv1_mux::hse)?
       (HSE_VALUE / static_cast<uint32_t>(_prediv1)) : (pll2clk / static_cast<uint32_t>(_prediv1));
-    static_assert(!(vco_in1 < 3_MHz || vco_in1 > 12_MHz), "PLL1 VCO input must be >= 3Mhz and "
+    static_assert(!(vco_in1 < 3_MHz || vco_in1 > 12_MHz), "PLL VCO input must be >= 3Mhz and "
                                                           "<= 12MHz");
 
-    constexpr auto pll1clk = (vco_in1 * static_cast<uint32_t>(_pll1_mul)) / 10;
-    static_assert(!(pll1clk < 18_MHz || pll1clk > 72_MHz), "PLL1CLK must be >= 18Mhz and <= "
+    constexpr auto pllclk = (vco_in1 * static_cast<uint32_t>(_pll_mul)) / 10;
+    static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= "
                                                            "72MHz");
 
     if constexpr(_usb_prediv != usb_prediv::disabled) {
-      constexpr auto usbclk = (pll1clk * 2) / static_cast<uint32_t>(_usb_prediv);
+      constexpr auto usbclk = (pllclk * 2) / static_cast<uint32_t>(_usb_prediv);
       static_assert(usbclk == 48_MHz, "USB clock must be = 48MHz");
     }
 
-    if constexpr(_sysclk_mux == sysclk_mux::pllclk && _pll1_mux == pll1_mux::prediv1) {
-      detail::configure_periph_clocks<pll1clk, _ahb_prediv, _apb1_prediv, _apb2_prediv,
+    if constexpr(_sysclk_mux == sysclk_mux::pllclk && _pll_mux == pll_mux::prediv1) {
+      detail::configure_periph_clocks<pllclk, _ahb_prediv, _apb1_prediv, _apb2_prediv,
                                      _adc_prediv, _mco_mux>();
     }
   }
 
   if constexpr((_osc_type & osc_type::hsi) && _sysclk_mux == sysclk_mux::pllclk &&
-               _pll1_mux == pll1_mux::hsi) {
+               _pll_mux == pll_mux::hsi) {
     constexpr auto vco_in1 = 8_MHz / 2;
 
-    constexpr auto pll1clk = (vco_in1 * static_cast<uint32_t>(_pll1_mul)) / 10;
-    static_assert(!(pll1clk < 18_MHz || pll1clk > 72_MHz), "PLL1CLK must be >= 18Mhz and <= "
+    constexpr auto pllclk = (vco_in1 * static_cast<uint32_t>(_pll_mul)) / 10;
+    static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= "
                                                            "72MHz");
 
     if constexpr(_usb_prediv != usb_prediv::disabled) {
-      constexpr auto usbclk = (pll1clk * 2) / static_cast<uint32_t>(_usb_prediv);
+      constexpr auto usbclk = (pllclk * 2) / static_cast<uint32_t>(_usb_prediv);
       static_assert(usbclk == 48_MHz, "USB clock must be = 48MHz");
     }
 
-    detail::configure_periph_clocks<pll1clk, _ahb_prediv, _apb1_prediv, _apb2_prediv,
+    detail::configure_periph_clocks<pllclk, _ahb_prediv, _apb1_prediv, _apb2_prediv,
                                     _adc_prediv, _mco_mux>();
   }
 
@@ -328,7 +328,7 @@ void configure()
   // configure PLL's
   //
 
-  // PLL1, PLL2, PLL3 disable
+  // PLL, PLL2, PLL3 disable
   RCC->CR &= ~(RCC_CR_PLLON | RCC_CR_PLL2ON | RCC_CR_PLL3ON);
   while((RCC->CR & (RCC_CR_PLLRDY | RCC_CR_PLL2RDY | RCC_CR_PLL3RDY)) != 0)
     ;
@@ -337,26 +337,26 @@ void configure()
     auto r = RCC->CFGR;
 
     if constexpr(_sysclk_mux == sysclk_mux::pllclk) {
-      if constexpr(_pll1_mux == pll1_mux::hsi) {
+      if constexpr(_pll_mux == pll_mux::hsi) {
         r &= ~RCC_CFGR_PLLSRC;
       }
       else {
-        // set PLL1 clock source to PREDIV1
+        // set PLL clock source to PREDIV1
         r |= RCC_CFGR_PLLSRC;
       }
       r &= ~RCC_CFGR_PLLMULL;
-      switch(_pll1_mul) {
-      case pll1_mul::$4:   r |= RCC_CFGR_PLLMULL4;   break;
-      case pll1_mul::$5:   r |= RCC_CFGR_PLLMULL5;   break;
-      case pll1_mul::$6:   r |= RCC_CFGR_PLLMULL6;   break;
-      case pll1_mul::$6_5: r |= RCC_CFGR_PLLMULL6_5; break;
-      case pll1_mul::$7:   r |= RCC_CFGR_PLLMULL7;   break;
-      case pll1_mul::$8:   r |= RCC_CFGR_PLLMULL8;   break;
-      case pll1_mul::$9:   r |= RCC_CFGR_PLLMULL9;   break;
+      switch(_pll_mul) {
+      case pll_mul::mul_4:   r |= RCC_CFGR_PLLMULL4;   break;
+      case pll_mul::mul_5:   r |= RCC_CFGR_PLLMULL5;   break;
+      case pll_mul::mul_6:   r |= RCC_CFGR_PLLMULL6;   break;
+      case pll_mul::mul_6_5: r |= RCC_CFGR_PLLMULL6_5; break;
+      case pll_mul::mul_7:   r |= RCC_CFGR_PLLMULL7;   break;
+      case pll_mul::mul_8:   r |= RCC_CFGR_PLLMULL8;   break;
+      case pll_mul::mul_9:   r |= RCC_CFGR_PLLMULL9;   break;
       }
     }
 
-    if constexpr(_usb_prediv == usb_prediv::$1_5) {
+    if constexpr(_usb_prediv == usb_prediv::div_1_5) {
       r &= ~RCC_CFGR_OTGFSPRE;
     }
     else {
@@ -390,15 +390,15 @@ void configure()
         // set PLL2 multiplication factor
         r &= ~RCC_CFGR2_PLL2MUL;
         switch(_pll2_mul) {
-        case pll2_mul::$8:  r |= RCC_CFGR2_PLL2MUL8;  break;
-        case pll2_mul::$9:  r |= RCC_CFGR2_PLL2MUL9;  break;
-        case pll2_mul::$10: r |= RCC_CFGR2_PLL2MUL10; break;
-        case pll2_mul::$11: r |= RCC_CFGR2_PLL2MUL11; break;
-        case pll2_mul::$12: r |= RCC_CFGR2_PLL2MUL12; break;
-        case pll2_mul::$13: r |= RCC_CFGR2_PLL2MUL13; break;
-        case pll2_mul::$14: r |= RCC_CFGR2_PLL2MUL14; break;
-        case pll2_mul::$16: r |= RCC_CFGR2_PLL2MUL16; break;
-        case pll2_mul::$20: r |= RCC_CFGR2_PLL2MUL20; break;
+        case pll2_mul::mul_8:  r |= RCC_CFGR2_PLL2MUL8;  break;
+        case pll2_mul::mul_9:  r |= RCC_CFGR2_PLL2MUL9;  break;
+        case pll2_mul::mul_10: r |= RCC_CFGR2_PLL2MUL10; break;
+        case pll2_mul::mul_11: r |= RCC_CFGR2_PLL2MUL11; break;
+        case pll2_mul::mul_12: r |= RCC_CFGR2_PLL2MUL12; break;
+        case pll2_mul::mul_13: r |= RCC_CFGR2_PLL2MUL13; break;
+        case pll2_mul::mul_14: r |= RCC_CFGR2_PLL2MUL14; break;
+        case pll2_mul::mul_16: r |= RCC_CFGR2_PLL2MUL16; break;
+        case pll2_mul::mul_20: r |= RCC_CFGR2_PLL2MUL20; break;
         }
       }
 
@@ -408,15 +408,15 @@ void configure()
         // set PLL3 multiplication factor
         r &= ~RCC_CFGR2_PLL3MUL;
         switch(_pll3_mul) {
-        case pll3_mul::$8:  r |= RCC_CFGR2_PLL3MUL8;  break;
-        case pll3_mul::$9:  r |= RCC_CFGR2_PLL3MUL9;  break;
-        case pll3_mul::$10: r |= RCC_CFGR2_PLL3MUL10; break;
-        case pll3_mul::$11: r |= RCC_CFGR2_PLL3MUL11; break;
-        case pll3_mul::$12: r |= RCC_CFGR2_PLL3MUL12; break;
-        case pll3_mul::$13: r |= RCC_CFGR2_PLL3MUL13; break;
-        case pll3_mul::$14: r |= RCC_CFGR2_PLL3MUL14; break;
-        case pll3_mul::$16: r |= RCC_CFGR2_PLL3MUL16; break;
-        case pll3_mul::$20: r |= RCC_CFGR2_PLL3MUL20; break;
+        case pll3_mul::mul_8:  r |= RCC_CFGR2_PLL3MUL8;  break;
+        case pll3_mul::mul_9:  r |= RCC_CFGR2_PLL3MUL9;  break;
+        case pll3_mul::mul_10: r |= RCC_CFGR2_PLL3MUL10; break;
+        case pll3_mul::mul_11: r |= RCC_CFGR2_PLL3MUL11; break;
+        case pll3_mul::mul_12: r |= RCC_CFGR2_PLL3MUL12; break;
+        case pll3_mul::mul_13: r |= RCC_CFGR2_PLL3MUL13; break;
+        case pll3_mul::mul_14: r |= RCC_CFGR2_PLL3MUL14; break;
+        case pll3_mul::mul_16: r |= RCC_CFGR2_PLL3MUL16; break;
+        case pll3_mul::mul_20: r |= RCC_CFGR2_PLL3MUL20; break;
         }
       }
 
@@ -438,7 +438,7 @@ void configure()
     }
 
     if constexpr(_sysclk_mux == sysclk_mux::pllclk || _usb_prediv != usb_prediv::disabled) {
-      // PLL1 enable
+      // PLL enable
       RCC->CR |= RCC_CR_PLLON;
       while((RCC->CR & RCC_CR_PLLRDY) == 0)
         ;
