@@ -157,7 +157,7 @@ void configure(GPIO_TypeDef *inst);
 } // namespace detail
 
 template<typename ...args>
-void init()
+void configure()
 {
   static_assert(sizeof...(args), "requires at least 1 argument");
 

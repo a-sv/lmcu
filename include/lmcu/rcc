@@ -1,5 +1,5 @@
 #pragma once
 
-#if defined(STM32F103C8) || defined(STM32F107VC)
+#if defined(STM32F107VC)
 #include "../../device/STM32/F1/07V/rcc.h"
 #endif
