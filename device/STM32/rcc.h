@@ -16,11 +16,11 @@ enum class osc_type
 };
 
 // clock security system
-enum class css
-{
-  disabled,
-  enabled
-};
+enum class css { disabled, enabled };
+
+enum class sysclk_mux { hsi, hse, pllclk };
+
+enum class rtcclk_mux { disabled, hse, lse, lsi };
 
 constexpr osc_type operator |(osc_type lhs, osc_type rhs)
 {

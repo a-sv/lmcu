@@ -8,8 +8,6 @@ enum class prediv1_mux { hse, pll2clk };
 
 enum class pll_mux { hsi, prediv1 };
 
-enum class sysclk_mux { hsi, hse, pllclk };
-
 enum class i2s2_clk_mux { sysclk, pll3vco };
 using i2s3_clk_mux = i2s2_clk_mux;
 
@@ -159,30 +157,30 @@ constexpr void configure_periph_clocks()
   r &= ~(RCC_CFGR_HPRE | RCC_CFGR_PPRE1 | RCC_CFGR_PPRE2 | RCC_CFGR_MCO);
 
   switch(_ahb_prediv) {
-  case ahb_prediv::div_2:        r |= RCC_CFGR_HPRE_DIV2;        break;
-  case ahb_prediv::div_4:        r |= RCC_CFGR_HPRE_DIV4;        break;
-  case ahb_prediv::div_8:        r |= RCC_CFGR_HPRE_DIV8;        break;
-  case ahb_prediv::div_16:       r |= RCC_CFGR_HPRE_DIV16;       break;
-  case ahb_prediv::div_64:       r |= RCC_CFGR_HPRE_DIV64;       break;
-  case ahb_prediv::div_128:      r |= RCC_CFGR_HPRE_DIV128;      break;
-  case ahb_prediv::div_256:      r |= RCC_CFGR_HPRE_DIV256;      break;
-  case ahb_prediv::div_512:      r |= RCC_CFGR_HPRE_DIV512;      break;
+  case ahb_prediv::div_2:     r |= RCC_CFGR_HPRE_DIV2;        break;
+  case ahb_prediv::div_4:     r |= RCC_CFGR_HPRE_DIV4;        break;
+  case ahb_prediv::div_8:     r |= RCC_CFGR_HPRE_DIV8;        break;
+  case ahb_prediv::div_16:    r |= RCC_CFGR_HPRE_DIV16;       break;
+  case ahb_prediv::div_64:    r |= RCC_CFGR_HPRE_DIV64;       break;
+  case ahb_prediv::div_128:   r |= RCC_CFGR_HPRE_DIV128;      break;
+  case ahb_prediv::div_256:   r |= RCC_CFGR_HPRE_DIV256;      break;
+  case ahb_prediv::div_512:   r |= RCC_CFGR_HPRE_DIV512;      break;
   default : break;
   }
 
   switch(_apb1_prediv) {
-  case apb1_prediv::div_2:       r |= RCC_CFGR_PPRE1_DIV2;       break;
-  case apb1_prediv::div_4:       r |= RCC_CFGR_PPRE1_DIV4;       break;
-  case apb1_prediv::div_8:       r |= RCC_CFGR_PPRE1_DIV8;       break;
-  case apb1_prediv::div_16:      r |= RCC_CFGR_PPRE1_DIV16;      break;
+  case apb1_prediv::div_2:    r |= RCC_CFGR_PPRE1_DIV2;       break;
+  case apb1_prediv::div_4:    r |= RCC_CFGR_PPRE1_DIV4;       break;
+  case apb1_prediv::div_8:    r |= RCC_CFGR_PPRE1_DIV8;       break;
+  case apb1_prediv::div_16:   r |= RCC_CFGR_PPRE1_DIV16;      break;
   default : break;
   }
 
   switch(_apb2_prediv) {
-  case apb2_prediv::div_2:       r |= RCC_CFGR_PPRE2_DIV2;       break;
-  case apb2_prediv::div_4:       r |= RCC_CFGR_PPRE2_DIV4;       break;
-  case apb2_prediv::div_8:       r |= RCC_CFGR_PPRE2_DIV8;       break;
-  case apb2_prediv::div_16:      r |= RCC_CFGR_PPRE2_DIV16;      break;
+  case apb2_prediv::div_2:    r |= RCC_CFGR_PPRE2_DIV2;       break;
+  case apb2_prediv::div_4:    r |= RCC_CFGR_PPRE2_DIV4;       break;
+  case apb2_prediv::div_8:    r |= RCC_CFGR_PPRE2_DIV8;       break;
+  case apb2_prediv::div_16:   r |= RCC_CFGR_PPRE2_DIV16;      break;
   default : break;
   }
 
@@ -218,7 +216,7 @@ template<
   apb2_prediv _apb2_prediv,
   adc_prediv _adc_prediv = adc_prediv::disabled,
   usb_prediv _usb_prediv = usb_prediv::disabled,
-  rtc_clk_mux _rtc_clk_mux = rtc_clk_mux::lsi,
+  rtcclk_mux _rtc_clk_mux = rtcclk_mux::lsi,
   i2s2_clk_mux _i2s2_clk_mux = i2s2_clk_mux::sysclk,
   i2s3_clk_mux _i2s3_clk_mux = i2s3_clk_mux::sysclk,
   mco_mux _mco_mux = mco_mux::disabled,
@@ -246,9 +244,9 @@ void configure()
     "you must select at least one of high speed generators"
   );
   if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
-    static_assert(_rtc_clk_mux == rtc_clk_mux::lse, "LSE generator turned on, but not used");
+    static_assert(_rtc_clk_mux == rtcclk_mux::lse, "LSE generator turned on, but not used");
   }
-  if constexpr(_rtc_clk_mux == rtc_clk_mux::hse) {
+  if constexpr(_rtc_clk_mux == rtcclk_mux::hse) {
     static_assert(
       (_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass),
       "HSE generator selected as RTC clock, but HSE is disabled"
@@ -467,9 +465,9 @@ void configure()
     auto r = RCC->BDCR;
     r &= ~RCC_BDCR_RTCSEL;
     switch (_rtc_clk_mux) {
-    case rtc_clk_mux::lse: r |= RCC_BDCR_RTCSEL_LSE; break;
-    case rtc_clk_mux::lsi: r |= RCC_BDCR_RTCSEL_LSI; break;
-    case rtc_clk_mux::hse: r |= RCC_BDCR_RTCSEL_HSE; break;
+    case rtcclk_mux::lse: r |= RCC_BDCR_RTCSEL_LSE; break;
+    case rtcclk_mux::lsi: r |= RCC_BDCR_RTCSEL_LSI; break;
+    case rtcclk_mux::hse: r |= RCC_BDCR_RTCSEL_HSE; break;
     default : break;
     }
     RCC->BDCR = r;

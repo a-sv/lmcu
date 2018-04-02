@@ -4,8 +4,6 @@
 namespace lmcu {
 namespace rcc {
 
-enum class rtc_clk_mux { disabled, hse, lse, lsi };
-
 namespace detail {
 
 template<osc_type _osc_type, uint32_t _hsi_cal>
