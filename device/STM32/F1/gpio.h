@@ -32,7 +32,7 @@ constexpr auto cr_bits()
     if constexpr(pin().speed == speed::high || pin().speed == speed::very_high) { return 0b11; }
   };
 
-  constexpr auto cr = (cr_cnf() << 2) | cr_mode();
+  [[maybe_unused]] constexpr auto cr = (cr_cnf() << 2) | cr_mode();
 
   constexpr auto bits = []() -> decltype(r)
   {
@@ -93,7 +93,82 @@ void configure(GPIO_TypeDef *inst)
   if constexpr(pb != 0) { inst->BSRR = pb; }
 }
 
+template<uint32_t r, port arg1, port ...args>
+constexpr auto rcc_bits()
+{
+  constexpr auto bits = []() -> decltype(r)
+  {
+#if defined(RCC_APB2ENR_IOPAEN)
+    if constexpr(arg1 == port::A) { return r | RCC_APB2ENR_IOPAEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPBEN)
+    if constexpr(arg1 == port::B) { return r | RCC_APB2ENR_IOPBEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPCEN)
+    if constexpr(arg1 == port::C) { return r | RCC_APB2ENR_IOPCEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPEEN)
+    if constexpr(arg1 == port::E) { return r | RCC_APB2ENR_IOPEEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPFEN)
+    if constexpr(arg1 == port::F) { return r | RCC_APB2ENR_IOPFEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPGEN)
+    if constexpr(arg1 == port::G) { return r | RCC_APB2ENR_IOPGEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPHEN)
+    if constexpr(arg1 == port::H) { return r | RCC_APB2ENR_IOPHEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPIEN)
+    if constexpr(arg1 == port::I) { return r | RCC_APB2ENR_IOPIEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPJEN)
+    if constexpr(arg1 == port::J) { return r | RCC_APB2ENR_IOPJEN; }
+#endif
+
+#if defined(RCC_APB2ENR_IOPKEN)
+    if constexpr(arg1 == port::K) { return r | RCC_APB2ENR_IOPKEN; }
+#endif
+    return r;
+  };
+
+  if constexpr(sizeof...(args) > 0) { return rcc_bits<bits(), args...>(); }
+  return bits();
+}
+
 } // namespace detail
+
+template<port ...args>
+void enable(bool afio = false)
+{
+  constexpr auto rcc_bits = []() -> uint32_t
+  {
+    if constexpr(sizeof...(args) > 0) { return detail::rcc_bits<0, args...>(); }
+    return 0;
+  }();
+
+  RCC->APB2ENR |= rcc_bits | (afio? RCC_APB2ENR_AFIOEN : 0);
+}
+
+template<port ...args>
+void disable(bool afio = true)
+{
+  constexpr auto rcc_bits = []() -> uint32_t
+  {
+    if constexpr(sizeof...(args) > 0) { return detail::rcc_bits<0, args...>(); }
+    return 0;
+  }();
+
+  RCC->APB2ENR &= ~(rcc_bits | (afio? RCC_APB2ENR_AFIOEN : 0));
+}
 
 } // namespace gpio
 } // namespace lmcu

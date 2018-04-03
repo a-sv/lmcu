@@ -89,37 +89,5 @@ lmcu_gpio_pin(E,13,);
 lmcu_gpio_pin(E,14,);
 lmcu_gpio_pin(E,15,);
 
-namespace detail {
-
-template<uint32_t r, port arg1, port ...args>
-constexpr auto rcc_bits()
-{
-  constexpr auto bits = []() -> decltype(r)
-  {
-    if constexpr(arg1 == port::A) { return r | RCC_APB2ENR_IOPAEN; }
-    if constexpr(arg1 == port::B) { return r | RCC_APB2ENR_IOPBEN; }
-    if constexpr(arg1 == port::C) { return r | RCC_APB2ENR_IOPCEN; }
-    if constexpr(arg1 == port::E) { return r | RCC_APB2ENR_IOPEEN; }
-    return r;
-  };
-
-  if constexpr(sizeof...(args) > 0) { return rcc_bits<bits(), args...>(); }
-  return bits();
-}
-
-} // namespace detail
-
-template<port ...args>
-void enable(bool afio = false)
-{
-  RCC->APB2ENR |= detail::rcc_bits<0, args...>() | (afio? RCC_APB2ENR_AFIOEN : 0);
-}
-
-template<port ...args>
-void disable(bool afio = true)
-{
-  RCC->APB2ENR &= ~(detail::rcc_bits<0, args...>() | (afio? RCC_APB2ENR_AFIOEN : 0));
-}
-
 } // namespace gpio
 } // namespace lmcu
