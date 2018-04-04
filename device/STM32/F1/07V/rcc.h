@@ -139,61 +139,63 @@ void configure()
   }
 
   if constexpr((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) {
-    constexpr auto vco_in2 = HSE_VALUE / static_cast<uint32_t>(_prediv2);
+    constexpr auto vco_in2 = double(HSE_VALUE) / uint32_t(_prediv2);
 
     if constexpr(
       _prediv1_mux == prediv1_mux::pll2clk ||
       _i2s2_clk_mux != i2s2_clk_mux::sysclk ||
       _i2s3_clk_mux != i2s3_clk_mux::sysclk
     ) {
-      static_assert(!(vco_in2 < 3_MHz || vco_in2 > 5_MHz), "PLL2/PLL3 VCO input must be >= 3Mhz "
+      static_assert(!(vco_in2 < 3_MHz || vco_in2 > 5_MHz), "PLL2 / PLL3 VCO input must be >= 3Mhz "
                                                            "and <= 5MHz");
     }
 
-    constexpr auto pll2clk = vco_in2 * static_cast<uint32_t>(_pll2_mul);
-    static_assert(!(pll2clk < 40_MHz || vco_in2 > 74_MHz), "PLL2CLK must be >= 40Mhz and <= "
-                                                           "74MHz");
+    constexpr auto pll2clk = vco_in2 * uint32_t(_pll2_mul);
+    if constexpr(_prediv1_mux == prediv1_mux::pll2clk) {
+      static_assert(!(pll2clk < 40_MHz || vco_in2 > 74_MHz), "PLL2CLK must be >= 40Mhz and <= "
+                                                             "74MHz");
+    }
 
     if constexpr(_i2s2_clk_mux != i2s2_clk_mux::sysclk || _i2s3_clk_mux != i2s3_clk_mux::sysclk) {
-      constexpr auto pll3vco = vco_in2 * static_cast<uint32_t>(_pll3_mul) * 2;
+      constexpr auto pll3vco = vco_in2 * uint32_t(_pll3_mul) * 2;
       static_assert(!(pll3vco < 80_MHz || pll3vco > 148_MHz), "PLL2CLK must be >= 40Mhz and "
                                                               "<= 74MHz");
     }
 
     constexpr auto vco_in1 = (_prediv1_mux == prediv1_mux::hse)?
-      (HSE_VALUE / static_cast<uint32_t>(_prediv1)) : (pll2clk / static_cast<uint32_t>(_prediv1));
+      (double(HSE_VALUE) / uint32_t(_prediv1)) : (pll2clk / uint32_t(_prediv1));
     static_assert(!(vco_in1 < 3_MHz || vco_in1 > 12_MHz), "PLL VCO input must be >= 3Mhz and "
                                                           "<= 12MHz");
 
-    constexpr auto pllclk = (vco_in1 * static_cast<uint32_t>(_pll_mul)) / 10;
-    static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= "
-                                                           "72MHz");
+    constexpr auto pllclk = (vco_in1 * uint32_t(_pll_mul)) / 10;
+    static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= 72MHz");
 
     if constexpr(_usb_prediv != usb_prediv::disabled) {
-      constexpr auto usbclk = (pllclk * 2) / static_cast<uint32_t>(_usb_prediv);
+      constexpr auto usbclk = (pllclk * 2) / uint32_t(_usb_prediv);
       static_assert(usbclk == 48_MHz, "USB clock must be = 48MHz");
     }
 
     if constexpr(_sysclk_mux == sysclk_mux::pllclk && _pll_mux == pll_mux::prediv1) {
-      detail::configure_periph_clocks<pllclk, _ahb_prediv, _apb1_prediv, _apb2_prediv,
+      detail::configure_periph_clocks<uint32_t(pllclk), _ahb_prediv, _apb1_prediv, _apb2_prediv,
                                       _adc_prediv>();
     }
   }
 
   if constexpr((_osc_type & osc_type::hsi) && _sysclk_mux == sysclk_mux::pllclk &&
                _pll_mux == pll_mux::hsi) {
-    constexpr auto vco_in1 = 8_MHz / 2;
+    constexpr auto vco_in1 = double(8_MHz / 2);
 
-    constexpr auto pllclk = (vco_in1 * static_cast<uint32_t>(_pll_mul)) / 10;
+    constexpr auto pllclk = (vco_in1 * uint32_t(_pll_mul)) / 10;
     static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= "
                                                            "72MHz");
 
     if constexpr(_usb_prediv != usb_prediv::disabled) {
-      constexpr auto usbclk = (pllclk * 2) / static_cast<uint32_t>(_usb_prediv);
-      static_assert(usbclk == 48_MHz, "USB clock must be = 48MHz");
+      constexpr auto usbclk = (pllclk * 2) / uint32_t(_usb_prediv);
+      static_assert(uint32_t(usbclk) == 48_MHz, "USB clock must be = 48MHz");
     }
 
-    detail::configure_periph_clocks<pllclk, _ahb_prediv, _apb1_prediv, _apb2_prediv, _adc_prediv>();
+    detail::configure_periph_clocks<uint32_t(pllclk), _ahb_prediv, _apb1_prediv, _apb2_prediv,
+                                    _adc_prediv>();
   }
 
   if constexpr(_sysclk_mux == sysclk_mux::hse) {

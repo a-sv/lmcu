@@ -96,12 +96,12 @@ void configure()
 
   {
     constexpr auto vco_in = (_pll_mux == pll_mux::hsi)?
-        8_MHz / 2 : HSE_VALUE / static_cast<uint32_t>(_hse_pll_prediv);
+        double(8_MHz / 2) : double(HSE_VALUE) / static_cast<uint32_t>(_hse_pll_prediv);
     static_assert(vco_in >= 1_MHz && vco_in <= 25_MHz, "VCO input must be >= 1MHz and <= 25MHz");
 
     constexpr auto pllclk = vco_in * static_cast<uint32_t>(_pll_mul);
 
-    constexpr auto sysclk = []() -> uint32_t
+    constexpr auto sysclk = []() -> double
     {
       switch(_sysclk_mux) {
       case sysclk_mux::hse: return HSE_VALUE;
@@ -133,7 +133,7 @@ void configure()
     }
 
     if constexpr(_sysclk_mux == sysclk_mux::pllclk) {
-      detail::configure_periph_clocks<pllclk, _ahb_prediv, _apb1_prediv, _apb2_prediv,
+      detail::configure_periph_clocks<uint32_t(pllclk), _ahb_prediv, _apb1_prediv, _apb2_prediv,
                                       _adc_prediv>();
     }
 
