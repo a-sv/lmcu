@@ -101,25 +101,25 @@ void set_mco_mux()
 } // namespace detail
 
 template<
-  osc_type _osc_type,
-  prediv2 _prediv2,
-  pll2_mul _pll2_mul,
-  pll3_mul _pll3_mul,
-  prediv1_mux _prediv1_mux,
-  prediv1 _prediv1,
-  pll_mux _pll_mux,
-  pll_mul _pll_mul,
-  sysclk_mux _sysclk_mux,
-  ahb_prediv _ahb_prediv,
   apb1_prediv _apb1_prediv,
   apb2_prediv _apb2_prediv,
+  ahb_prediv _ahb_prediv,
+  sysclk_mux _sysclk_mux,
+  css _css,
+  pll_mul _pll_mul,
+  pll_mux _pll_mux,
+  osc_type _osc_type,
+  prediv1 _prediv1 = prediv1::div_1,
+  prediv1_mux _prediv1_mux = prediv1_mux::hse,
+  prediv2 _prediv2 = prediv2::div_1,
+  pll2_mul _pll2_mul = pll2_mul::mul_8,
   adc_prediv _adc_prediv = adc_prediv::disabled,
   usb_prediv _usb_prediv = usb_prediv::disabled,
   rtcclk_mux _rtc_clk_mux = rtcclk_mux::lsi,
+  mco_mux _mco_mux = mco_mux::disabled,
+  pll3_mul _pll3_mul = pll3_mul::mul_8,
   i2s2_clk_mux _i2s2_clk_mux = i2s2_clk_mux::sysclk,
   i2s3_clk_mux _i2s3_clk_mux = i2s3_clk_mux::sysclk,
-  mco_mux _mco_mux = mco_mux::disabled,
-  css _css = css::disabled,
   uint32_t _hsi_cal = 0
 >
 void configure()

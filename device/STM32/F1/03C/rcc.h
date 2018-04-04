@@ -51,10 +51,10 @@ void set_mco_mux()
   auto r = RCC->CFGR;
   r &= ~RCC_CFGR_MCO;
   switch(_mco_mux) {
-  case mco_mux::sysclk:       r |= RCC_CFGR_MCOSEL_SYSCLK;    break;
-  case mco_mux::hsi:          r |= RCC_CFGR_MCOSEL_HSI;       break;
-  case mco_mux::hse:          r |= RCC_CFGR_MCOSEL_HSE;       break;
-  case mco_mux::pllclk_div2:  r |= RCC_CFGR_MCOSEL_PLL_DIV2;  break;
+  case mco_mux::sysclk:      r |= RCC_CFGR_MCOSEL_SYSCLK;   break;
+  case mco_mux::hsi:         r |= RCC_CFGR_MCOSEL_HSI;      break;
+  case mco_mux::hse:         r |= RCC_CFGR_MCOSEL_HSE;      break;
+  case mco_mux::pllclk_div2: r |= RCC_CFGR_MCOSEL_PLL_DIV2; break;
   default : break;
   }
   RCC->CFGR = r;
@@ -63,19 +63,19 @@ void set_mco_mux()
 } // namespace detail
 
 template<
-  osc_type _osc_type,
-  hse_pll_prediv _hse_pll_prediv,
-  pll_mux _pll_mux,
-  pll_mul _pll_mul,
-  sysclk_mux _sysclk_mux,
-  ahb_prediv _ahb_prediv,
   apb1_prediv _apb1_prediv,
   apb2_prediv _apb2_prediv,
+  ahb_prediv _ahb_prediv,
+  sysclk_mux _sysclk_mux,
+  css _css,
+  pll_mul _pll_mul,
+  pll_mux _pll_mux,
+  osc_type _osc_type,
+  hse_pll_prediv _hse_pll_prediv = hse_pll_prediv::div_1,
   adc_prediv _adc_prediv = adc_prediv::disabled,
   usb_prediv _usb_prediv = usb_prediv::disabled,
   rtcclk_mux _rtc_clk_mux = rtcclk_mux::disabled,
   mco_mux _mco_mux = mco_mux::disabled,
-  css _css = css::disabled,
   uint32_t _hsi_cal = 0
 >
 void configure()
