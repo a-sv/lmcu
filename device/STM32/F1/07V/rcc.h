@@ -172,12 +172,12 @@ void configure()
 
     if constexpr(_usb_prediv != usb_prediv::disabled) {
       constexpr auto usbclk = (pllclk * 2) / uint32_t(_usb_prediv);
-      static_assert(usbclk == 48_MHz, "USB clock must be = 48MHz");
+      static_assert(round<uint32_t>(usbclk) == 48_MHz, "USB clock must be = 48MHz");
     }
 
     if constexpr(_sysclk_mux == sysclk_mux::pllclk && _pll_mux == pll_mux::prediv1) {
-      detail::configure_periph_clocks<uint32_t(pllclk), _ahb_prediv, _apb1_prediv, _apb2_prediv,
-                                      _adc_prediv>();
+      detail::configure_periph_clocks<round<uint32_t>(pllclk), _ahb_prediv, _apb1_prediv,
+                                      _apb2_prediv, _adc_prediv>();
     }
   }
 
@@ -186,16 +186,15 @@ void configure()
     constexpr auto vco_in1 = double(8_MHz / 2);
 
     constexpr auto pllclk = (vco_in1 * uint32_t(_pll_mul)) / 10;
-    static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= "
-                                                           "72MHz");
+    static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= 72MHz");
 
     if constexpr(_usb_prediv != usb_prediv::disabled) {
       constexpr auto usbclk = (pllclk * 2) / uint32_t(_usb_prediv);
-      static_assert(uint32_t(usbclk) == 48_MHz, "USB clock must be = 48MHz");
+      static_assert(round<uint32_t>(usbclk) == 48_MHz, "USB clock must be = 48MHz");
     }
 
-    detail::configure_periph_clocks<uint32_t(pllclk), _ahb_prediv, _apb1_prediv, _apb2_prediv,
-                                    _adc_prediv>();
+    detail::configure_periph_clocks<round<uint32_t>(pllclk), _ahb_prediv, _apb1_prediv,
+                                    _apb2_prediv, _adc_prediv>();
   }
 
   if constexpr(_sysclk_mux == sysclk_mux::hse) {

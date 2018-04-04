@@ -181,28 +181,29 @@ constexpr void set_flash_latency()
   FLASH->ACR = r;
 }
 
-template<auto _sysclk, ahb_prediv _ahb_prediv, apb1_prediv _apb1_prediv, apb2_prediv _apb2_prediv,
-         adc_prediv _adc_prediv>
+template<uint32_t _sysclk, ahb_prediv _ahb_prediv, apb1_prediv _apb1_prediv,
+         apb2_prediv _apb2_prediv, adc_prediv _adc_prediv>
 constexpr void configure_periph_clocks()
 {
   detail::set_flash_latency<_sysclk>();
 
-  constexpr auto hclk = _sysclk / static_cast<uint32_t>(_ahb_prediv);
+  constexpr auto hclk = double(_sysclk) / static_cast<uint32_t>(_ahb_prediv);
+  static_assert(hclk <= 72_MHz, "HCLK must be <= 72MHz");
 
   detail::system_clock = _sysclk;
-  detail::hardware_clock = hclk;
+  detail::hardware_clock = round<uint32_t>(hclk);
 
   constexpr auto pclk1 = hclk / static_cast<uint32_t>(_apb1_prediv);
   static_assert(pclk1 <= 36_MHz, "APB1 peripheral clocks must be <= 36MHz");
-  apb1_clock = pclk1;
+  apb1_clock = round<uint32_t>(pclk1);
 
   constexpr auto pclk2 = hclk / static_cast<uint32_t>(_apb2_prediv);
-  apb2_clock = pclk2;
+  apb2_clock = round<uint32_t>(pclk2);
 
   if constexpr(_adc_prediv != adc_prediv::disabled) {
     constexpr auto adc_clk = pclk2 / static_cast<uint32_t>(_adc_prediv);
     static_assert(adc_clk <= 14_MHz, "ADC clock must be <= 14MHz");
-    adc_clock = adc_clk;
+    adc_clock = round<uint32_t>(adc_clk);
   }
   else {
     adc_clock = 0;

@@ -96,10 +96,10 @@ void configure()
 
   {
     constexpr auto vco_in = (_pll_mux == pll_mux::hsi)?
-        double(8_MHz / 2) : double(HSE_VALUE) / static_cast<uint32_t>(_hse_pll_prediv);
+        double(8_MHz / 2) : double(HSE_VALUE) / uint32_t(_hse_pll_prediv);
     static_assert(vco_in >= 1_MHz && vco_in <= 25_MHz, "VCO input must be >= 1MHz and <= 25MHz");
 
-    constexpr auto pllclk = vco_in * static_cast<uint32_t>(_pll_mul);
+    constexpr auto pllclk = vco_in * uint32_t(_pll_mul);
 
     constexpr auto sysclk = []() -> double
     {
@@ -110,31 +110,9 @@ void configure()
       }
     }();
 
-    detail::system_clock = sysclk;
-
-    constexpr auto hclk = sysclk / static_cast<uint32_t>(_ahb_prediv);
-    static_assert(hclk <= 72_MHz, "HCLK must be <= 72MHz");
-
-    detail::hardware_clock = hclk;
-
     if constexpr(_usb_prediv != usb_prediv::disabled) {
-      constexpr auto usbclk = (pllclk * 10) / static_cast<uint32_t>(_usb_prediv);
-      static_assert(usbclk == 48_MHz, "USB clock must be = 48MHz");
-    }
-
-    if constexpr(_sysclk_mux == sysclk_mux::hsi) {
-      detail::configure_periph_clocks<8_MHz, _ahb_prediv, _apb1_prediv, _apb2_prediv,
-                                      _adc_prediv>();
-    }
-
-    if constexpr(_sysclk_mux == sysclk_mux::hse) {
-      detail::configure_periph_clocks<HSE_VALUE, _ahb_prediv, _apb1_prediv, _apb2_prediv,
-                                      _adc_prediv>();
-    }
-
-    if constexpr(_sysclk_mux == sysclk_mux::pllclk) {
-      detail::configure_periph_clocks<uint32_t(pllclk), _ahb_prediv, _apb1_prediv, _apb2_prediv,
-                                      _adc_prediv>();
+      constexpr auto usbclk = (pllclk * 10) / uint32_t(_usb_prediv);
+      static_assert(round<uint32_t>(usbclk) == 48_MHz, "USB clock must be = 48MHz");
     }
 
     if constexpr(_mco_mux == mco_mux::pllclk_div2) {
@@ -144,6 +122,9 @@ void configure()
     if constexpr(_mco_mux == mco_mux::sysclk) {
       static_assert(sysclk <= 50_MHz, "MCO freq must be <= 50MHz");
     }
+
+    detail::configure_periph_clocks<round<uint32_t>(sysclk), _ahb_prediv, _apb1_prediv,
+                                    _apb2_prediv, _adc_prediv>();
   }
 
   detail::set_mco_mux<_mco_mux>();
