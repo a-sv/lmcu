@@ -72,6 +72,9 @@ void osc_config()
     );
   }
 
+  RCC->CR |= RCC_CR_HSION;
+  while((RCC->CR & RCC_CR_HSIRDY) == 0)
+    ;
   switch_sysclk<sysclk_mux::hsi>();
 
   //
