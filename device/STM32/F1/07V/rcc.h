@@ -320,13 +320,6 @@ void configure()
       RCC->CFGR2 = r;
     }
 
-    if constexpr(_sysclk_mux == sysclk_mux::pllclk || _usb_prediv != usb_prediv::disabled) {
-      // PLL enable
-      RCC->CR |= RCC_CR_PLLON;
-      while((RCC->CR & RCC_CR_PLLRDY) == 0)
-        ;
-    }
-
     if constexpr(_prediv1_mux == prediv1_mux::pll2clk) {
       // PLL2 enable
       RCC->CR |= RCC_CR_PLL2ON;
@@ -342,7 +335,15 @@ void configure()
     }
   }
 
+  if constexpr(_sysclk_mux == sysclk_mux::pllclk || _usb_prediv != usb_prediv::disabled) {
+    // PLL enable
+    RCC->CR |= RCC_CR_PLLON;
+    while((RCC->CR & RCC_CR_PLLRDY) == 0)
+      ;
+  }
+
   detail::switch_sysclk<_sysclk_mux>();
+
   // disable HSI if not used
   if constexpr(!(_osc_type & osc_type::hsi)) { RCC->CR &= ~RCC_CR_HSION; }
 }
