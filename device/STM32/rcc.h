@@ -1,6 +1,6 @@
 #pragma once
 #include <lmcu/device>
-#include <lmcu/units>
+#include "../common/units.h"
 
 namespace lmcu {
 namespace rcc {
