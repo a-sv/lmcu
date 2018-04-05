@@ -8,7 +8,7 @@ namespace rcc {
 
 namespace detail {
 
-uint32_t system_clock   = 0;
+uint32_t system_clock   = 8_MHz;
 uint32_t hardware_clock = 0;
 uint32_t apb1_clock     = 0;
 uint32_t apb2_clock     = 0;
