@@ -44,7 +44,7 @@ void switch_sysclk()
 }
 
 template<osc_type _osc_type, uint32_t _hsi_cal, rtcclk_mux _rtc_clk_mux>
-void osc_config()
+void osc_configure()
 {
   static_assert(_hsi_cal <= 0x1f);
   static_assert(!((_osc_type & osc_type::hse) && (_osc_type & osc_type::hse_bypass)),
@@ -72,6 +72,17 @@ void osc_config()
     );
   }
 
+  //
+  // HSI
+  //
+
+  if constexpr(_osc_type & osc_type::hsi) {
+    auto r = RCC->CR;
+    r &= ~RCC_CR_HSITRIM;
+    if constexpr(_hsi_cal != 0) { r |= (_hsi_cal << RCC_CR_HSITRIM_Pos); }
+    RCC->CR = r;
+  }
+
   RCC->CR |= RCC_CR_HSION;
   while((RCC->CR & RCC_CR_HSIRDY) == 0)
     ;
@@ -93,22 +104,6 @@ void osc_config()
     RCC->CR = r;
     while((RCC->CR & RCC_CR_HSERDY) == 0)
       ;
-  }
-  else {
-    RCC->CR &= ~(RCC_CR_HSEON | RCC_CR_HSEBYP);
-    while((RCC->CR & RCC_CR_HSERDY) != 0)
-      ;
-  }
-
-  //
-  // HSI
-  //
-
-  if constexpr(_osc_type & osc_type::hsi) {
-    auto r = RCC->CR;
-    r &= ~RCC_CR_HSITRIM;
-    if constexpr(_hsi_cal != 0) { r |= (_hsi_cal << RCC_CR_HSITRIM_Pos); }
-    RCC->CR = r;
   }
 
   //
@@ -136,11 +131,6 @@ void osc_config()
     while((RCC->BDCR & RCC_BDCR_LSERDY) == 0)
       ;
   }
-  else {
-    RCC->BDCR &= ~(RCC_BDCR_LSEON | RCC_BDCR_LSEBYP);
-    while((RCC->BDCR & RCC_BDCR_LSERDY) != 0)
-      ;
-  }
 
   //
   // LSI
@@ -149,11 +139,6 @@ void osc_config()
   if constexpr(_osc_type & osc_type::lsi) {
     RCC->CSR |= RCC_CSR_LSION;
     while((RCC->CSR & RCC_CSR_LSIRDY) == 0)
-      ;
-  }
-  else {
-    RCC->CSR &= ~RCC_CSR_LSION;
-    while((RCC->CSR & RCC_CSR_LSIRDY) != 0)
       ;
   }
 
@@ -171,6 +156,50 @@ void osc_config()
     default : break;
     }
     RCC->BDCR = r;
+  }
+}
+
+template<osc_type _osc_type>
+void osc_deconfigure()
+{
+  //
+  // HSI
+  //
+
+  if constexpr(!(_osc_type & osc_type::hsi)) {
+    RCC->CR &= ~RCC_CR_HSION;
+    while((RCC->CR & RCC_CR_HSIRDY) != 0)
+      ;
+  }
+
+  //
+  // HSE
+  //
+
+  if constexpr(!((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass))) {
+    RCC->CR &= ~(RCC_CR_HSEON | RCC_CR_HSEBYP);
+    while((RCC->CR & RCC_CR_HSERDY) != 0)
+      ;
+  }
+
+  //
+  // LSI
+  //
+
+  if constexpr(!(_osc_type & osc_type::lsi)) {
+    RCC->CSR &= ~RCC_CSR_LSION;
+    while((RCC->CSR & RCC_CSR_LSIRDY) != 0)
+      ;
+  }
+
+  //
+  // LSE
+  //
+
+  if constexpr(!((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass))) {
+    RCC->BDCR &= ~(RCC_BDCR_LSEON | RCC_BDCR_LSEBYP);
+    while((RCC->BDCR & RCC_BDCR_LSERDY) != 0)
+      ;
   }
 }
 

@@ -80,7 +80,7 @@ template<
 >
 void configure()
 {
-  detail::osc_config<_osc_type, _hsi_cal, _rtc_clk_mux>();
+  detail::osc_configure<_osc_type, _hsi_cal, _rtc_clk_mux>();
 
   if constexpr(
     ((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) &&
@@ -195,8 +195,7 @@ void configure()
   }
 
   detail::switch_sysclk<_sysclk_mux>();
-  // disable HSI if not used
-  if constexpr(!(_osc_type & osc_type::hsi)) { RCC->CR &= ~RCC_CR_HSION; }
+  detail::osc_deconfigure<_osc_type>();
 }
 
 } // namespace lmcu

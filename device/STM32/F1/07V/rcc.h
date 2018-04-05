@@ -124,7 +124,7 @@ template<
 >
 void configure()
 {
-  detail::osc_config<_osc_type, _hsi_cal, _rtc_clk_mux>();
+  detail::osc_configure<_osc_type, _hsi_cal, _rtc_clk_mux>();
 
   if constexpr(
     ((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) &&
@@ -164,11 +164,15 @@ void configure()
 
     constexpr auto vco_in1 = (_prediv1_mux == prediv1_mux::hse)?
       (double(HSE_VALUE) / uint32_t(_prediv1)) : (pll2clk / uint32_t(_prediv1));
-    static_assert(!(vco_in1 < 3_MHz || vco_in1 > 12_MHz), "PLL VCO input must be >= 3Mhz and "
-                                                          "<= 12MHz");
+    if constexpr(_pll_mux == pll_mux::prediv1) {
+      static_assert(!(vco_in1 < 3_MHz || vco_in1 > 12_MHz), "PLL VCO input must be >= 3Mhz and "
+                                                            "<= 12MHz");
+    }
 
     constexpr auto pllclk = (vco_in1 * uint32_t(_pll_mul)) / 10;
-    static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= 72MHz");
+    if constexpr(_pll_mux == pll_mux::prediv1) {
+      static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= 72MHz");
+    }
 
     if constexpr(_usb_prediv != usb_prediv::disabled) {
       constexpr auto usbclk = (pllclk * 2) / uint32_t(_usb_prediv);
@@ -286,9 +290,7 @@ void configure()
         }
       }
 
-      if constexpr(
-        _i2s2_clk_mux != i2s2_clk_mux::sysclk || _i2s3_clk_mux != i2s3_clk_mux::sysclk
-      ) {
+      if constexpr(_i2s2_clk_mux != i2s2_clk_mux::sysclk || _i2s3_clk_mux != i2s3_clk_mux::sysclk) {
         // set PLL3 multiplication factor
         r &= ~RCC_CFGR2_PLL3MUL;
         switch(_pll3_mul) {
@@ -344,9 +346,7 @@ void configure()
   }
 
   detail::switch_sysclk<_sysclk_mux>();
-
-  // disable HSI if not used
-  if constexpr(!(_osc_type & osc_type::hsi)) { RCC->CR &= ~RCC_CR_HSION; }
+  detail::osc_deconfigure<_osc_type>();
 }
 
 } // namespace rcc
