@@ -76,7 +76,7 @@ template<
   usb_prediv _usb_prediv = usb_prediv::disabled,
   rtcclk_mux _rtc_clk_mux = rtcclk_mux::disabled,
   mco_mux _mco_mux = mco_mux::disabled,
-  uint32_t _hsi_cal = 0
+  uint32_t _hsi_cal = 16
 >
 void configure()
 {

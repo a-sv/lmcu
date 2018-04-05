@@ -120,7 +120,7 @@ template<
   pll3_mul _pll3_mul = pll3_mul::mul_8,
   i2s2_clk_mux _i2s2_clk_mux = i2s2_clk_mux::sysclk,
   i2s3_clk_mux _i2s3_clk_mux = i2s3_clk_mux::sysclk,
-  uint32_t _hsi_cal = 0
+  uint32_t _hsi_cal = 16
 >
 void configure()
 {
