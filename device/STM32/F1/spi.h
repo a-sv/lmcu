@@ -28,15 +28,27 @@ void configure()
   constexpr auto m = arg1();
 
 #if defined(SPI1)
-  if constexpr(m.module_id == module_id::spi1) { RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; }
+  if constexpr(m.module_id == module_id::spi1) {
+    RCC->APB2ENR  |=  RCC_APB2ENR_SPI1EN;
+    RCC->APB2RSTR |=  RCC_APB2RSTR_SPI1RST;
+    RCC->APB2RSTR &= ~RCC_APB2RSTR_SPI1RST;
+  }
 #endif
 
 #if defined(SPI2)
-  if constexpr(m.module_id == module_id::spi2) { RCC->APB1ENR |= RCC_APB1ENR_SPI2EN; }
+  if constexpr(m.module_id == module_id::spi2) {
+    RCC->APB1ENR  |=  RCC_APB1ENR_SPI2EN;
+    RCC->APB1RSTR |=  RCC_APB1RSTR_SPI2RST;
+    RCC->APB1RSTR &= ~RCC_APB1RSTR_SPI2RST;
+  }
 #endif
 
 #if defined(SPI3)
-  if constexpr(m.module_id == module_id::spi3) { RCC->APB1ENR |= RCC_APB1ENR_SPI3EN; }
+  if constexpr(m.module_id == module_id::spi3) {
+    RCC->APB1ENR  |=  RCC_APB1ENR_SPI3EN;
+    RCC->APB1RSTR |=  RCC_APB1RSTR_SPI3RST;
+    RCC->APB1RSTR &= ~RCC_APB1RSTR_SPI3RST;
+  }
 #endif
 
   detail::spi_enable<m.module_id, false>();
