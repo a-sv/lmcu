@@ -4,12 +4,10 @@
 namespace lmcu {
 namespace spi {
 
-namespace detail {
-
-template<module_id _id, bool _en>
-void spi_enable()
+template<typename module_t, bool _en>
+void enable()
 {
-  auto inst = detail::inst<_id>();
+  auto inst = detail::inst<module_t().module_id>();
 
   if constexpr(_en) {
     inst->CR1 |= SPI_CR1_SPE;
@@ -17,6 +15,131 @@ void spi_enable()
   else {
     inst->CR1 &= ~SPI_CR1_SPE;
   }
+}
+
+namespace detail {
+
+template<typename module_t, bool _en>
+void enable()
+{
+  constexpr auto m = module_t();
+
+  if constexpr(
+    m.mode == mode::master &&
+    (m.direction == direction::one_line || m.direction == direction::two_lines_rxonly)
+  ) {
+    spi::enable<module_t, _en>();
+  }
+}
+
+template<typename module_t, typename data_t>
+void read(data_t *data, uint32_t count)
+{
+  constexpr auto m = module_t();
+  auto inst = detail::inst<m.module_id>();
+
+  if constexpr(m.crc == crc::enable) {
+    // reset CRC
+    inst->CR1 &= ~SPI_CR1_CRCEN;
+    inst->CR1 |=  SPI_CR1_CRCEN;
+  }
+
+  detail::enable<module_t, true>();
+
+  auto       p   = data;
+  const auto end = data + count;
+
+  if constexpr(m.direction == direction::two_lines) {
+    while(p < end) {
+      inst->DR = 0;
+      while((inst->SR & SPI_SR_RXNE) == 0)
+        ;
+      *p++ = inst->DR;
+    }
+  }
+
+  if constexpr(m.crc == crc::enable) {
+    // enable CRC reception
+    inst->CR1 |=  SPI_CR1_CRCNEXT;
+    // wait for CRC reception
+    while((inst->SR & SPI_SR_RXNE) == 0)
+      ;
+    inst->DR;
+  }
+
+  detail::enable<module_t, false>();
+}
+
+template<typename module_t, typename data_t>
+void fast_read(data_t *data, uint32_t count)
+{
+  constexpr auto m = module_t();
+  auto inst = detail::inst<m.module_id>();
+
+  static_assert(m.mode == mode::master && m.direction == direction::two_lines);
+
+  if constexpr(m.crc == crc::enable) {
+    // reset CRC
+    inst->CR1 &= ~SPI_CR1_CRCEN;
+    inst->CR1 |=  SPI_CR1_CRCEN;
+  }
+
+  if((inst->SR & SPI_SR_RXNE) != 0) { inst->DR; }
+
+  inst->CR1 |= SPI_CR1_RXONLY;
+
+  auto       p   = data;
+  const auto end = data + count;
+
+  while(p < end) {
+    if((inst->SR & SPI_SR_RXNE) != 0) { *p++ = inst->DR; }
+  }
+
+  if constexpr(m.crc == crc::enable) {
+    // enable CRC reception
+    inst->CR1 |=  SPI_CR1_CRCNEXT;
+    // wait for CRC reception
+    while((inst->SR & SPI_SR_RXNE) == 0)
+      ;
+    inst->DR;
+  }
+
+  inst->CR1 &= ~SPI_CR1_RXONLY;
+}
+
+template<typename module_t, typename data_t>
+void write(const data_t *data, uint32_t count)
+{
+  constexpr auto m = module_t();
+  auto inst = detail::inst<m.module_id>();
+
+  if constexpr(m.crc == crc::enable) {
+    // reset CRC
+    inst->CR1 &= ~SPI_CR1_CRCEN;
+    inst->CR1 |=  SPI_CR1_CRCEN;
+  }
+
+  detail::enable<module_t, true>();
+
+  auto       p   = data;
+  const auto end = data + count;
+
+  while(p < end) {
+    while((inst->SR & SPI_SR_TXE) == 0)
+      ;
+    inst->DR = *p++;
+  }
+
+  if constexpr(m.crc == crc::enable) {
+    // enable CRC transmission
+    inst->CR1 |=  SPI_CR1_CRCNEXT;
+  }
+
+  while((inst->SR & SPI_SR_TXE) == 0 || (inst->SR & SPI_SR_BSY) != 0)
+    ;
+  inst->DR; inst->DR;
+
+  detail::enable<module_t, false>();
 }
 
 } // namespace detail
@@ -51,7 +174,7 @@ void configure()
   }
 #endif
 
-  detail::spi_enable<m.module_id, false>();
+  enable<arg1, false>();
 
   auto inst = detail::inst<m.module_id>();
   inst->CR1 =
@@ -59,8 +182,8 @@ void configure()
     []() -> uint32_t
     {
       switch(m.direction) {
-      case direction::one_line: SPI_CR1_BIDIMODE; break;
-      case direction::two_lines_rxonly: SPI_CR1_RXONLY; break;
+      case direction::one_line: return SPI_CR1_BIDIMODE;
+      case direction::two_lines_rxonly: return SPI_CR1_RXONLY;
       default: return 0;
       }
     }() |
@@ -93,6 +216,10 @@ void configure()
   ;
   inst->CR2 = m.mode == mode::master? SPI_CR2_SSOE : 0;
   if constexpr(m.crc == crc::enable) { inst->CRCPR = m.crc_poly; }
+
+  if constexpr(
+    m.mode == mode::slave || (m.mode == mode::master && m.direction == direction::two_lines)
+  ) { enable<arg1, true>(); }
 }
 
 template<typename arg1, typename ...args>
@@ -128,6 +255,169 @@ void set_nss()
   else {
     detail::inst<m.module_id>()->CR1 &= ~SPI_CR1_SSI;
   }
+}
+
+template<typename module_t>
+uint16_t rx()
+{
+  constexpr auto m = module_t();
+  auto inst = detail::inst<m.module_id>();
+
+  if constexpr(m.crc == crc::enable) {
+    // reset CRC
+    inst->CR1 &= ~SPI_CR1_CRCEN;
+    inst->CR1 |=  SPI_CR1_CRCEN;
+  }
+
+  if constexpr(m.direction == direction::one_line) { inst->CR1 &= ~SPI_CR1_BIDIOE; }
+
+  if constexpr(m.direction == direction::one_line || m.direction == direction::two_lines_rxonly) {
+    if((inst->SR & SPI_SR_RXNE) != 0) { inst->DR; inst->DR; }
+  }
+
+  detail::enable<module_t, true>();
+
+  if constexpr(m.direction == direction::two_lines) {
+    while((inst->SR & SPI_SR_TXE) == 0)
+      ;
+    inst->DR = 0;
+  }
+
+  if constexpr(m.crc == crc::enable) {
+    // enable CRC reception
+    inst->CR1 |=  SPI_CR1_CRCNEXT;
+  }
+
+  while((inst->SR & SPI_SR_RXNE) == 0)
+    ;
+  auto r = inst->DR;
+
+  if constexpr(m.crc == crc::enable) {
+    // wait for CRC reception
+    while((inst->SR & SPI_SR_RXNE) == 0)
+      ;
+    inst->DR;
+  }
+
+  detail::enable<module_t, false>();
+
+  return r;
+}
+
+template<typename module_t>
+void tx(uint16_t data)
+{
+  constexpr auto m = module_t();
+  auto inst = detail::inst<m.module_id>();
+
+  static_assert(m.direction != direction::two_lines_rxonly, "could not transmit in rx only mode");
+
+  if constexpr(m.crc == crc::enable) {
+    // reset CRC
+    inst->CR1 &= ~SPI_CR1_CRCEN;
+    inst->CR1 |=  SPI_CR1_CRCEN;
+  }
+
+  if constexpr(m.direction == direction::one_line) { inst->CR1 |= SPI_CR1_BIDIOE; }
+
+  detail::enable<module_t, true>();
+
+  inst->DR = (m.datasize == datasize::word)? data : (data & 0xFF);
+
+  if constexpr(m.crc == crc::enable) {
+    // enable CRC transmission
+    inst->CR1 |=  SPI_CR1_CRCNEXT;
+  }
+
+  while((inst->SR & SPI_SR_TXE) == 0 || (inst->SR & SPI_SR_BSY) != 0)
+    ;
+  inst->DR; inst->DR;
+
+  detail::enable<module_t, false>();
+}
+
+template<typename module_t>
+void rxtx(uint16_t &rx_data, uint16_t tx_data)
+{
+  constexpr auto m = module_t();
+  auto inst = detail::inst<m.module_id>();
+
+  if constexpr(m.crc == crc::enable) {
+    // reset CRC
+    inst->CR1 &= ~SPI_CR1_CRCEN;
+    inst->CR1 |=  SPI_CR1_CRCEN;
+  }
+
+  detail::enable<module_t, true>();
+
+  static_assert(m.direction == direction::two_lines, "rxtx avail only in full duplex mode");
+
+  inst->DR = (m.datasize == datasize::word)? tx_data : (tx_data & 0xFF);
+
+  if constexpr(m.crc == crc::enable) {
+    // enable CRC transmission
+    inst->CR1 |=  SPI_CR1_CRCNEXT;
+  }
+
+  while((inst->SR & SPI_SR_RXNE) == 0)
+    ;
+  rx_data = inst->DR;
+
+  if constexpr(m.crc == crc::enable) {
+    // wait for CRC reception
+    while((inst->SR & SPI_SR_RXNE) == 0)
+      ;
+    inst->DR;
+  }
+
+  detail::enable<module_t, false>();
+}
+
+template<typename module_t>
+void read(void *data, uint32_t count)
+{
+  if constexpr(module_t().datasize == datasize::word) {
+    detail::read<module_t>(static_cast<uint16_t*>(data), count);
+  }
+  else {
+    detail::read<module_t>(static_cast<uint8_t*>(data), count);
+  }
+}
+
+template<typename module_t>
+void fast_read(void *data, uint32_t count)
+{
+  if constexpr(module_t().datasize == datasize::word) {
+    detail::fast_read<module_t>(static_cast<uint16_t*>(data), count);
+  }
+  else {
+    detail::fast_read<module_t>(static_cast<uint8_t*>(data), count);
+  }
+}
+
+template<typename module_t>
+void write(const void *data, uint32_t count)
+{
+  if constexpr(module_t().datasize == datasize::word) {
+    detail::write<module_t>(static_cast<const uint16_t*>(data), count);
+  }
+  else {
+    detail::write<module_t>(static_cast<const uint8_t*>(data), count);
+  }
+}
+
+template<typename module_t>
+bool crc_is_valid()
+{
+  constexpr auto m = module_t();
+  auto inst = detail::inst<m.module_id>();
+
+  static_assert(m.crc == crc::enable, "CRC must be enabled");
+
+  auto r = (inst->SR & SPI_SR_CRCERR) == 0;
+  inst->SR &= ~SPI_SR_CRCERR;
+
+  return r;
 }
 
 } // namespace spi
