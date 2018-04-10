@@ -4,6 +4,8 @@
 namespace lmcu {
 namespace delay {
 
+// IMPORTANT: max_delay = (0xffffffff / f_cpu) * 1e6
+
 template<uint32_t _us>
 void us()
 {
