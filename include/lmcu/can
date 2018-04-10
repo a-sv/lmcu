@@ -1,0 +1,7 @@
+#pragma once
+
+#if defined(STM32F107VC)
+#include "../../device/STM32/F1/07V/can.h"
+#else
+  #error "device not supported"
+#endif
