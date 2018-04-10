@@ -21,7 +21,7 @@ uint32_t adc_clock      = 0;
 
 extern "C" {
 
-uint32_t lmcu_system_clock()   {  return lmcu::rcc::detail::system_clock;  }
+uint32_t lmcu_system_clock()   { return lmcu::rcc::detail::system_clock;   }
 uint32_t lmcu_hardware_clock() { return lmcu::rcc::detail::hardware_clock; }
 uint32_t lmcu_apb1_clock()     { return lmcu::rcc::detail::apb1_clock;     }
 uint32_t lmcu_apb2_clock()     { return lmcu::rcc::detail::apb2_clock;     }
