@@ -72,6 +72,8 @@ void osc_configure()
     );
   }
 
+  detail::preinit();
+
   //
   // HSI
   //

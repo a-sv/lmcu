@@ -7,14 +7,9 @@ namespace delay {
 template<uint32_t _us>
 void us()
 {
-  const uint32_t cyccnt = (rcc::detail::system_clock / 1_MHz) * _us;
-
-  CoreDebug->DEMCR |=  CoreDebug_DEMCR_TRCENA_Msk; // enable DWT
-  DWT->CTRL        &= ~DWT_CTRL_CYCCNTENA_Msk; // stop DWT
-  DWT->CYCCNT       =  0;
-  DWT->CTRL        |=  DWT_CTRL_CYCCNTENA_Msk; // start
-
-  while(DWT->CYCCNT < cyccnt)
+  const uint32_t delay = ((rcc::detail::system_clock / 1_MHz) * _us) - 8;
+  const uint32_t ovf   = (0xffffffff - DWT->CYCCNT) + 1;
+  while(delay > (DWT->CYCCNT + ovf))
     ;
 }
 
