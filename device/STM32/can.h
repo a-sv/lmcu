@@ -107,6 +107,8 @@ struct module
   static constexpr auto mode      = _mode;
 };
 
+enum class fifo { any, fifo_0, fifo_1 };
+
 namespace detail {
 
 template<module_id _module_id>

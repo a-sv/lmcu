@@ -229,5 +229,73 @@ void abort_tx()
     ;
 }
 
+template<typename _module, fifo _fifo = fifo::any, io::type _iotype = io::type::blocking>
+io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len)
+{
+  constexpr auto m = _module();
+  auto inst = detail::inst<m.module_id>();
+
+  uint8_t fifo_n = 0xff;
+
+  do {
+    if constexpr(_fifo == fifo::any) {
+      if((inst->RF0R & 0x3) != 0) {
+        fifo_n = 0;
+      }
+      else
+      if((inst->RF1R & 0x3) != 0) {
+        fifo_n = 1;
+      }
+    }
+    else
+    if constexpr(_fifo == fifo::fifo_0) {
+      if((inst->RF0R & 0x3) != 0) { fifo_n = 0; }
+    }
+    else
+    if constexpr(_fifo == fifo::fifo_1) {
+      if((inst->RF1R & 0x3) != 0) { fifo_n = 1; }
+    }
+
+    if(fifo_n == 0xff) {
+      if constexpr(_iotype == io::type::nonblocking) { return io::result::busy; }
+    }
+  } while(fifo_n == 0xff);
+
+  const auto &h_fifo = inst->sFIFOMailBox[fifo_n];
+
+  ide = (h_fifo.RIR & CAN_RI0R_IDE) != 0;
+  if(ide) {
+    id = (h_fifo.RIR >> CAN_RI0R_EXID_Pos) & 0x1fffffff;
+  }
+  else {
+    id = (h_fifo.RIR >> CAN_RI0R_STID_Pos) & 0x7ff;
+  }
+  rtr = (h_fifo.RIR & CAN_RI0R_RTR) != 0;
+  fmi = (h_fifo.RDTR >> CAN_RDT0R_FMI_Pos) & 0xff;
+  len = (h_fifo.RDTR >> CAN_RDT0R_DLC_Pos) & 0xf;
+
+  auto dl = h_fifo.RDLR, dh = h_fifo.RDHR;
+  switch(len)
+  {
+  case 8: data[7] = (dh >> 24) & 0xff;
+  case 7: data[6] = (dh >> 16) & 0xff;
+  case 6: data[5] = (dh >>  8) & 0xff;
+  case 5: data[4] =  dh        & 0xff;
+  case 4: data[3] = (dl >> 24) & 0xff;
+  case 3: data[2] = (dl >> 16) & 0xff;
+  case 2: data[1] = (dl >>  8) & 0xff;
+  case 1: data[0] =  dl        & 0xff;
+  };
+
+  if(fifo_n == 0) {
+    inst->RF0R |= CAN_RF0R_RFOM0;
+  }
+  else {
+    inst->RF1R |= CAN_RF1R_RFOM1;
+  }
+
+  return io::result::success;
+}
+
 } // namespace can
 } // namespace lmcu
