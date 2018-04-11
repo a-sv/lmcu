@@ -131,6 +131,7 @@ void configure()
 
   auto r = AFIO->MAPR;
 
+#if defined(CAN1)
   if constexpr(detail::has_module<module_id::can1, args...>()) {
     r &= ~AFIO_MAPR_CAN_REMAP;
     NVIC_SetPriority(CAN1_TX_IRQn, irqp);
@@ -138,7 +139,9 @@ void configure()
     NVIC_SetPriority(CAN1_RX1_IRQn, irqp);
     NVIC_SetPriority(CAN1_SCE_IRQn, irqp);
   }
+#endif
 
+#if defined(CAN2)
   if constexpr(detail::has_module<module_id::can2, args...>()) {
     r &= ~AFIO_MAPR_CAN2_REMAP;
     NVIC_SetPriority(CAN2_TX_IRQn, irqp);
@@ -146,6 +149,7 @@ void configure()
     NVIC_SetPriority(CAN2_RX1_IRQn, irqp);
     NVIC_SetPriority(CAN2_SCE_IRQn, irqp);
   }
+#endif
 
   r |= detail::remap_bits<0, args...>();
   AFIO->MAPR = r;
