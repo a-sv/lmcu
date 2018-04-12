@@ -1,7 +1,7 @@
 #include <lmcu/device>
 
 #if defined(_LMCU_DEVICE_STM32_)
-#include "rcc.h"
+#include "../rcc.h"
 
 namespace lmcu {
 namespace rcc {

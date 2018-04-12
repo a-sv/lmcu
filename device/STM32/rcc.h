@@ -56,21 +56,7 @@ constexpr bool operator &(osc_type lhs, osc_type rhs)
   return (static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs)) != 0;
 }
 
-namespace detail {
-
-extern uint32_t system_clock;
-extern uint32_t hardware_clock;
-extern uint32_t apb1_clock;
-extern uint32_t apb2_clock;
-extern uint32_t adc_clock;
-
-inline void preinit()
-{
-  // enable DWT for delay support
-  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-}
-
-} // namespace detail
+#include "detail/rcc.h"
 
 inline uint32_t system_clock() { return detail::system_clock; }
 inline uint32_t hardware_clock() { return detail::hardware_clock; }
