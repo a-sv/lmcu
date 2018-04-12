@@ -62,8 +62,19 @@ void osc_configure()
     (_osc_type & osc_type::hsi),
     "you must select at least one of high speed generators"
   );
+  if constexpr(_osc_type & osc_type::lsi) {
+    static_assert(_rtc_clk_mux == rtcclk_mux::lsi, "LSI generator turned on, but not used");
+  }
+  if constexpr(_rtc_clk_mux == rtcclk_mux::lsi) {
+    static_assert(_osc_type & osc_type::lsi, "RTC clock source connected to LSI, but LSI "
+                                             "turned off");
+  }
   if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
     static_assert(_rtc_clk_mux == rtcclk_mux::lse, "LSE generator turned on, but not used");
+  }
+  if constexpr(_rtc_clk_mux == rtcclk_mux::lse) {
+    static_assert((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass),
+                  "RTC clock source connected to LSE, but LSE turned off");
   }
   if constexpr(_rtc_clk_mux == rtcclk_mux::hse) {
     static_assert(
