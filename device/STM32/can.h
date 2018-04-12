@@ -109,6 +109,33 @@ struct module
 
 enum class fifo { any, fifo_0, fifo_1 };
 
+enum class filter_mode { idmask, idlist };
+enum class filter_scale { fs16, fs32 };
+
+template<
+  uint32_t _number,
+  filter_mode _filter_mode,
+  filter_scale _filter_scale,
+  uint32_t _id_high,
+  uint32_t _id_low,
+  uint32_t _maskid_high,
+  uint32_t _maskid_low,
+  fifo _fifo,
+  uint32_t _bank_num
+>
+struct filter
+{
+  static constexpr auto number       = _number;
+  static constexpr auto filter_mode  = _filter_mode;
+  static constexpr auto filter_scale = _filter_scale;
+  static constexpr auto id_high      = _id_high;
+  static constexpr auto id_low       = _id_low;
+  static constexpr auto maskid_high  = _maskid_high;
+  static constexpr auto maskid_low   = _maskid_low;
+  static constexpr auto fifo         = _fifo;
+  static constexpr auto bank_num     = _bank_num;
+};
+
 namespace detail {
 
 template<module_id _module_id>

@@ -155,6 +155,87 @@ void configure()
   AFIO->MAPR = r;
 }
 
+template<typename _module, typename arg1, typename ...args>
+void filter_enable()
+{
+  if constexpr(sizeof...(args) > 0) { filter_enable<_module, args...>(); }
+  constexpr auto m    = _module();
+  constexpr auto f    = arg1();
+  constexpr auto fnum = f.number;
+  constexpr auto fpos = 1 << fnum;
+
+  static_assert(fnum < 28, "filter number must be >= 0 and <= 27");
+  static_assert(f.fifo != fifo::any, "you must select fifo for filter");
+
+  auto inst = detail::inst<m.module_id>();
+
+  // enter to initialisation mode
+  auto r = inst->FMR;
+  r &= CAN_FMR_CAN2SB;
+  r |= CAN_FMR_FINIT | (f.bank_num << CAN_FMR_CAN2SB_Pos);
+  inst->FMR = r;
+
+  // filter deactivation
+  inst->FA1R &= ~fpos;
+
+  if constexpr(f.filter_scale == filter_scale::fs16) {
+    // 16-bit scale for the filter
+    inst->FS1R &= ~fpos;
+    inst->sFilterRegister[fnum].FR1 = ((f.maskid_low & 0xffff) << 16) | (f.id_low & 0xffff);
+    inst->sFilterRegister[fnum].FR2 = ((f.maskid_high & 0xffff) << 16) | (f.id_high & 0xffff);
+  }
+  else {
+    // 32-bit scale for the filter
+    inst->FS1R |= fpos;
+    inst->sFilterRegister[fnum].FR1 = ((f.id_high & 0xffff) << 16) | (f.id_low & 0xffff);
+    inst->sFilterRegister[fnum].FR2 = ((f.maskid_high & 0xffff) << 16) | (f.maskid_low & 0xffff);
+  }
+
+  if constexpr(f.filter_mode == filter_mode::idmask) {
+    inst->FM1R &= ~fpos;
+  }
+  else {
+    inst->FM1R |= fpos;
+  }
+
+  if constexpr(f.fifo == fifo::fifo_0) {
+    inst->FFA1R &= ~fpos;
+  }
+  else {
+    inst->FFA1R |= fpos;
+  }
+
+  // filter activation
+  inst->FA1R |= fpos;
+  // leave the initialisation mode
+  inst->FMR &= ~CAN_FMR_FINIT;
+}
+
+template<typename _module, typename arg1, typename ...args>
+void filter_disable()
+{
+  if constexpr(sizeof...(args) > 0) { filter_enable<_module, args...>(); }
+  constexpr auto m    = _module();
+  constexpr auto f    = arg1();
+  constexpr auto fnum = f.number;
+  constexpr auto fpos = 1 << fnum;
+
+  static_assert(fnum < 28, "filter number must be >= 0 and <= 27");
+
+  auto inst = detail::inst<m.module_id>();
+
+  // enter to initialisation mode
+  auto r = inst->FMR;
+  r &= CAN_FMR_CAN2SB;
+  r |= CAN_FMR_FINIT | (f.bank_num << CAN_FMR_CAN2SB_Pos);
+  inst->FMR = r;
+
+  // filter deactivation
+  inst->FA1R &= ~fpos;
+  // leave the initialisation mode
+  inst->FMR &= ~CAN_FMR_FINIT;
+}
+
 template<typename _module, io::type _iotype = io::type::blocking>
 io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
 {
@@ -260,8 +341,8 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
       if((inst->RF1R & 0x3) != 0) { fifo_n = 1; }
     }
 
-    if(fifo_n == 0xff) {
-      if constexpr(_iotype == io::type::nonblocking) { return io::result::busy; }
+    if constexpr(_iotype == io::type::nonblocking) {
+      if(fifo_n == 0xff) { return io::result::busy; }
     }
   } while(fifo_n == 0xff);
 
