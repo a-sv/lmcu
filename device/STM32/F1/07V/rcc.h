@@ -346,7 +346,7 @@ void configure()
   }
 
   detail::switch_sysclk<_sysclk_mux>();
-  detail::osc_deconfigure<_osc_type>();
+  detail::osc_deconfigure<_osc_type, _rtc_clk_mux>();
 }
 
 } // namespace rcc

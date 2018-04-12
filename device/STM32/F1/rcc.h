@@ -15,6 +15,23 @@ enum class adc_prediv
 
 namespace detail {
 
+template<bool _on>
+void set_bkp_write_acces()
+{
+  if constexpr(_on) {
+    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+    PWR->CR |= PWR_CR_DBP;
+    while((PWR->CR & PWR_CR_DBP) == 0)
+      ;
+  }
+  else {
+    PWR->CR &= ~PWR_CR_DBP;
+    while((PWR->CR & PWR_CR_DBP) != 0)
+      ;
+    RCC->APB1ENR &= ~RCC_APB1ENR_PWREN;
+  }
+}
+
 template<sysclk_mux _sysclk_mux>
 void switch_sysclk()
 {
@@ -119,18 +136,13 @@ void osc_configure()
       ;
   }
 
+  set_bkp_write_acces<true>();
+
   //
   // LSE
   //
 
   if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
-    // enable power clock
-    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
-    // enable write access to backup domain
-    PWR->CR |= PWR_CR_DBP;
-    while((PWR->CR & PWR_CR_DBP) == 0)
-      ;
-
     auto r = RCC->BDCR;
     if constexpr(_osc_type & osc_type::lse_bypass) {
       r |= RCC_BDCR_LSEBYP;
@@ -172,7 +184,7 @@ void osc_configure()
   }
 }
 
-template<osc_type _osc_type>
+template<osc_type _osc_type, rtcclk_mux _rtc_clk_mux>
 void osc_deconfigure()
 {
   //
@@ -213,6 +225,10 @@ void osc_deconfigure()
     RCC->BDCR &= ~(RCC_BDCR_LSEON | RCC_BDCR_LSEBYP);
     while((RCC->BDCR & RCC_BDCR_LSERDY) != 0)
       ;
+  }
+
+  if constexpr(_rtc_clk_mux == rtcclk_mux::disabled || _rtc_clk_mux == rtcclk_mux::lsi) {
+    set_bkp_write_acces<false>();
   }
 }
 
@@ -255,7 +271,6 @@ constexpr void configure_periph_clocks()
   }
 
   auto r = RCC->CFGR;
-
   r &= ~(RCC_CFGR_HPRE | RCC_CFGR_PPRE1 | RCC_CFGR_PPRE2);
 
   switch(_ahb_prediv) {
