@@ -77,6 +77,8 @@ enum class pll2_mul
 };
 using pll3_mul = pll2_mul;
 
+#include "detail/rcc.h"
+
 template<
   apb1_prediv _apb1_prediv,
   apb2_prediv _apb2_prediv,
@@ -92,7 +94,7 @@ template<
   pll2_mul _pll2_mul = pll2_mul::mul_8,
   adc_prediv _adc_prediv = adc_prediv::disabled,
   usb_prediv _usb_prediv = usb_prediv::disabled,
-  rtcclk_mux _rtc_clk_mux = rtcclk_mux::lsi,
+  rtcclk_mux _rtc_clk_mux = rtcclk_mux::disabled,
   mco_mux _mco_mux = mco_mux::disabled,
   pll3_mul _pll3_mul = pll3_mul::mul_8,
   i2s2_clk_mux _i2s2_clk_mux = i2s2_clk_mux::sysclk,

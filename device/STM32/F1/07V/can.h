@@ -11,10 +11,16 @@ enum class remap
   CAN2__rx_PB5_tx_PB6 = AFIO_MAPR_CAN2_REMAP
 };
 
-#include "detail/can.h"
-
 } // namespace can
 } // namespace lmcu
 
 
 #include "../can.h"
+
+namespace lmcu {
+namespace can {
+
+#include "detail/can.h"
+
+} // namespace can
+} // namespace lmcu
