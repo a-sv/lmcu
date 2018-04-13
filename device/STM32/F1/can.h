@@ -10,260 +10,28 @@ template<typename ...args>
 void configure()
 {
   detail::configure<args...>();
-
-  const auto irqp = NVIC_EncodePriority(3, 0, 0);
-
-  auto r = AFIO->MAPR;
-
-#if defined(CAN1)
-  if constexpr(detail::has_module<module_id::can1, args...>()) {
-    r &= ~AFIO_MAPR_CAN_REMAP;
-    NVIC_SetPriority(CAN1_TX_IRQn, irqp);
-    NVIC_SetPriority(CAN1_RX0_IRQn, irqp);
-    NVIC_SetPriority(CAN1_RX1_IRQn, irqp);
-    NVIC_SetPriority(CAN1_SCE_IRQn, irqp);
-  }
-#endif
-
-#if defined(CAN2)
-  if constexpr(detail::has_module<module_id::can2, args...>()) {
-    r &= ~AFIO_MAPR_CAN2_REMAP;
-    NVIC_SetPriority(CAN2_TX_IRQn, irqp);
-    NVIC_SetPriority(CAN2_RX0_IRQn, irqp);
-    NVIC_SetPriority(CAN2_RX1_IRQn, irqp);
-    NVIC_SetPriority(CAN2_SCE_IRQn, irqp);
-  }
-#endif
-
-  r |= detail::remap_bits<0, args...>();
-  AFIO->MAPR = r;
+  detail::post_configure<args...>();
 }
 
-template<typename _module, typename arg1, typename ...args>
-void filter_enable()
-{
-  if constexpr(sizeof...(args) > 0) { filter_enable<_module, args...>(); }
-  constexpr auto m    = _module();
-  constexpr auto f    = arg1();
-  constexpr auto fnum = f.number;
-  constexpr auto fpos = 1 << fnum;
+template<typename _module, typename ...args>
+void filter_enable() { detail::filter_enable<_module, args...>(); }
 
-  static_assert(fnum < 28, "filter number must be >= 0 and <= 27");
-  static_assert(f.fifo != fifo::any, "you must select fifo for filter");
-
-  auto inst = detail::inst<m.module_id>();
-
-  // enter to initialisation mode
-  auto r = inst->FMR;
-  r &= CAN_FMR_CAN2SB;
-  r |= CAN_FMR_FINIT | (f.bank_num << CAN_FMR_CAN2SB_Pos);
-  inst->FMR = r;
-
-  // filter deactivation
-  inst->FA1R &= ~fpos;
-
-  if constexpr(f.filter_scale == filter_scale::fs16) {
-    // 16-bit scale for the filter
-    inst->FS1R &= ~fpos;
-    inst->sFilterRegister[fnum].FR1 = ((f.maskid_low & 0xffff) << 16) | (f.id_low & 0xffff);
-    inst->sFilterRegister[fnum].FR2 = ((f.maskid_high & 0xffff) << 16) | (f.id_high & 0xffff);
-  }
-  else {
-    // 32-bit scale for the filter
-    inst->FS1R |= fpos;
-    inst->sFilterRegister[fnum].FR1 = ((f.id_high & 0xffff) << 16) | (f.id_low & 0xffff);
-    inst->sFilterRegister[fnum].FR2 = ((f.maskid_high & 0xffff) << 16) | (f.maskid_low & 0xffff);
-  }
-
-  if constexpr(f.filter_mode == filter_mode::idmask) {
-    inst->FM1R &= ~fpos;
-  }
-  else {
-    inst->FM1R |= fpos;
-  }
-
-  if constexpr(f.fifo == fifo::fifo_0) {
-    inst->FFA1R &= ~fpos;
-  }
-  else {
-    inst->FFA1R |= fpos;
-  }
-
-  // filter activation
-  inst->FA1R |= fpos;
-  // leave the initialisation mode
-  inst->FMR &= ~CAN_FMR_FINIT;
-}
-
-template<typename _module, typename arg1, typename ...args>
-void filter_disable()
-{
-  if constexpr(sizeof...(args) > 0) { filter_enable<_module, args...>(); }
-  constexpr auto m    = _module();
-  constexpr auto f    = arg1();
-  constexpr auto fnum = f.number;
-  constexpr auto fpos = 1 << fnum;
-
-  static_assert(fnum < 28, "filter number must be >= 0 and <= 27");
-
-  auto inst = detail::inst<m.module_id>();
-
-  // enter to initialisation mode
-  auto r = inst->FMR;
-  r &= CAN_FMR_CAN2SB;
-  r |= CAN_FMR_FINIT | (f.bank_num << CAN_FMR_CAN2SB_Pos);
-  inst->FMR = r;
-
-  // filter deactivation
-  inst->FA1R &= ~fpos;
-  // leave the initialisation mode
-  inst->FMR &= ~CAN_FMR_FINIT;
-}
+template<typename _module, typename ...args>
+void filter_disable() { detail::filter_disable<_module, args...>(); }
 
 template<typename _module, io::type _iotype = io::type::blocking>
 io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
 {
-  constexpr auto m = _module();
-  if(len < 1 || len > 8) { return io::result::error; }
-
-  auto inst = detail::inst<m.module_id>();
-
-  CAN_TxMailBox_TypeDef *mbox;
-
-  if constexpr(_iotype == io::type::blocking) {
-    while((inst->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2)) == 0)
-      ;
-  }
-
-  if((inst->TSR & CAN_TSR_TME0) != 0) {
-    mbox = &inst->sTxMailBox[0];
-  }
-  else
-  if((inst->TSR & CAN_TSR_TME1) != 0) {
-    mbox = &inst->sTxMailBox[1];
-  }
-  else
-  if((inst->TSR & CAN_TSR_TME2) != 0) {
-    mbox = &inst->sTxMailBox[2];
-  }
-  else {
-    return io::result::busy;
-  }
-
-  if(ide) {
-    mbox->TIR = (id << CAN_TI0R_EXID_Pos) | CAN_TI0R_IDE;
-  }
-  else {
-    mbox->TIR = id << CAN_TI0R_STID_Pos;
-  }
-
-  mbox->TDTR = (len & 0xf);
-
-  auto p = static_cast<const uint8_t*>(data);
-
-  uint32_t dh = 0, dl = 0;
-  switch(len)
-  {
-  case 8: dh |= uint32_t(p[7]) << 24;
-  case 7: dh |= uint32_t(p[6]) << 16;
-  case 6: dh |= uint32_t(p[5]) << 8;
-  case 5: dh |= uint32_t(p[4]);
-  case 4: dl |= uint32_t(p[3]) << 24;
-  case 3: dl |= uint32_t(p[2]) << 16;
-  case 2: dl |= uint32_t(p[1]) << 8;
-  case 1: dl |= uint32_t(p[0]);
-  };
-  mbox->TDLR = dl;
-  mbox->TDHR = dh;
-
-  // request transmission
-  mbox->TIR |= CAN_TI0R_TXRQ;
-
-  return io::result::success;
+  return detail::tx<_module, _iotype>(id, ide, rtr, data, len);
 }
 
 template<typename _module>
-void abort_tx()
-{
-  constexpr auto m = _module();
-  auto inst = detail::inst<m.module_id>();
-
-  uint32_t rqcp = 0;
-  if((inst->TSR & CAN_TSR_TME0) == 0) { rqcp |= CAN_TSR_RQCP0; }
-  if((inst->TSR & CAN_TSR_TME1) == 0) { rqcp |= CAN_TSR_RQCP1; }
-  if((inst->TSR & CAN_TSR_TME2) == 0) { rqcp |= CAN_TSR_RQCP2; }
-
-  inst->TSR |= (CAN_TSR_ABRQ0 | CAN_TSR_ABRQ1 | CAN_TSR_ABRQ2);
-  while((inst->TSR & rqcp) != rqcp)
-    ;
-}
+void abort_tx() { detail::abort_tx<_module>(); }
 
 template<typename _module, fifo _fifo = fifo::any, io::type _iotype = io::type::blocking>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len)
 {
-  constexpr auto m = _module();
-  auto inst = detail::inst<m.module_id>();
-
-  uint8_t fifo_n = 0xff;
-
-  do {
-    if constexpr(_fifo == fifo::any) {
-      if((inst->RF0R & 0x3) != 0) {
-        fifo_n = 0;
-      }
-      else
-      if((inst->RF1R & 0x3) != 0) {
-        fifo_n = 1;
-      }
-    }
-    else
-    if constexpr(_fifo == fifo::fifo_0) {
-      if((inst->RF0R & 0x3) != 0) { fifo_n = 0; }
-    }
-    else
-    if constexpr(_fifo == fifo::fifo_1) {
-      if((inst->RF1R & 0x3) != 0) { fifo_n = 1; }
-    }
-
-    if constexpr(_iotype == io::type::nonblocking) {
-      if(fifo_n == 0xff) { return io::result::busy; }
-    }
-  } while(fifo_n == 0xff);
-
-  const auto &h_fifo = inst->sFIFOMailBox[fifo_n];
-
-  ide = (h_fifo.RIR & CAN_RI0R_IDE) != 0;
-  if(ide) {
-    id = (h_fifo.RIR >> CAN_RI0R_EXID_Pos) & 0x1fffffff;
-  }
-  else {
-    id = (h_fifo.RIR >> CAN_RI0R_STID_Pos) & 0x7ff;
-  }
-  rtr = (h_fifo.RIR & CAN_RI0R_RTR) != 0;
-  fmi = (h_fifo.RDTR >> CAN_RDT0R_FMI_Pos) & 0xff;
-  len = (h_fifo.RDTR >> CAN_RDT0R_DLC_Pos) & 0xf;
-
-  auto dl = h_fifo.RDLR, dh = h_fifo.RDHR;
-  switch(len)
-  {
-  case 8: data[7] = (dh >> 24) & 0xff;
-  case 7: data[6] = (dh >> 16) & 0xff;
-  case 6: data[5] = (dh >>  8) & 0xff;
-  case 5: data[4] =  dh        & 0xff;
-  case 4: data[3] = (dl >> 24) & 0xff;
-  case 3: data[2] = (dl >> 16) & 0xff;
-  case 2: data[1] = (dl >>  8) & 0xff;
-  case 1: data[0] =  dl        & 0xff;
-  };
-
-  if(fifo_n == 0) {
-    inst->RF0R |= CAN_RF0R_RFOM0;
-  }
-  else {
-    inst->RF1R |= CAN_RF1R_RFOM1;
-  }
-
-  return io::result::success;
+  return detail::rx<_module, _fifo, _iotype>(id, ide, rtr, fmi, data, len);
 }
 
 } // namespace can

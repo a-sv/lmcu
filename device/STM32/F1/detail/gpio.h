@@ -71,9 +71,9 @@ constexpr auto pull_bits()
 }
 
 template<port _port, typename ...args>
-void configure(GPIO_TypeDef *inst)
+void configure_port(GPIO_TypeDef *inst)
 {
-  if constexpr(!detail::has_port<_port, args...>()) { return; }
+  if constexpr(!has_port<_port, args...>()) { return; }
 
   if constexpr(pin_in_range<_port, 0, 7, args...>()) {
     constexpr auto mask4 = ~mask<0, 4, _port, 0, 0, 7, args...>();
@@ -138,6 +138,30 @@ constexpr auto rcc_bits()
 
   if constexpr(sizeof...(args) > 0) { return rcc_bits<bits(), args...>(); }
   return bits();
+}
+
+template<port ...args>
+void enable(bool afio_on)
+{
+  constexpr auto rcc_bits = []() -> uint32_t
+  {
+    if constexpr(sizeof...(args) > 0) { return detail::rcc_bits<0, args...>(); }
+    return 0;
+  }();
+
+  RCC->APB2ENR |= rcc_bits | (afio_on? RCC_APB2ENR_AFIOEN : 0);
+}
+
+template<port ...args>
+void disable(bool afio_off)
+{
+  constexpr auto rcc_bits = []() -> uint32_t
+  {
+    if constexpr(sizeof...(args) > 0) { return detail::rcc_bits<0, args...>(); }
+    return 0;
+  }();
+
+  RCC->APB2ENR &= ~(rcc_bits | (afio_off? RCC_APB2ENR_AFIOEN : 0));
 }
 
 } // namespace detail

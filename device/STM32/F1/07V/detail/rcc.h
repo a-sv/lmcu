@@ -37,12 +37,11 @@ void configure()
   }
 
   if constexpr(_sysclk_mux == sysclk_mux::hse) {
-    detail::configure_periph_clocks<HSE_VALUE, _ahb_prediv, _apb1_prediv, _apb2_prediv,
-                                    _adc_prediv>();
+    configure_periph_clocks<HSE_VALUE, _ahb_prediv, _apb1_prediv, _apb2_prediv, _adc_prediv>();
   }
 
   if constexpr(_sysclk_mux == sysclk_mux::hsi) {
-    detail::configure_periph_clocks<8_MHz, _ahb_prediv, _apb1_prediv, _apb2_prediv, _adc_prediv>();
+    configure_periph_clocks<8_MHz, _ahb_prediv, _apb1_prediv, _apb2_prediv, _adc_prediv>();
   }
 
   //

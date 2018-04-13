@@ -233,13 +233,13 @@ template<uint32_t _sysclk, ahb_prediv _ahb_prediv, apb1_prediv _apb1_prediv,
          apb2_prediv _apb2_prediv, adc_prediv _adc_prediv>
 constexpr void configure_periph_clocks()
 {
-  detail::set_flash_latency<_sysclk>();
+  set_flash_latency<_sysclk>();
 
   constexpr auto hclk = double(_sysclk) / static_cast<uint32_t>(_ahb_prediv);
   static_assert(hclk <= 72_MHz, "HCLK must be <= 72MHz");
 
-  detail::system_clock = _sysclk;
-  detail::hardware_clock = round<uint32_t>(hclk);
+  system_clock = _sysclk;
+  hardware_clock = round<uint32_t>(hclk);
 
   constexpr auto pclk1 = hclk / static_cast<uint32_t>(_apb1_prediv);
   static_assert(pclk1 <= 36_MHz, "APB1 peripheral clocks must be <= 36MHz");
