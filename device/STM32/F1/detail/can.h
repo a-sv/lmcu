@@ -15,19 +15,19 @@ void enable_irq()
 
 #if defined(CAN1)
     if constexpr(_module_id == module_id::can1) {
-      if constexpr(_irq_type == irq_type::tx) {
+      if constexpr(irq.type == irq_type::tx) {
         NVIC_SetPriority(CAN1_TX_IRQn, irqp);
         NVIC_EnableIRQ(CAN1_TX_IRQn);
       }
-      if constexpr(_irq_type == irq_type::rx0) {
+      if constexpr(irq.type == irq_type::rx0) {
         NVIC_SetPriority(CAN1_RX0_IRQn, irqp);
         NVIC_EnableIRQ(CAN1_RX0_IRQn);
       }
-      if constexpr(_irq_type == irq_type::rx1) {
+      if constexpr(irq.type == irq_type::rx1) {
         NVIC_SetPriority(CAN1_RX1_IRQn, irqp);
         NVIC_EnableIRQ(CAN1_RX1_IRQn);
       }
-      if constexpr(_irq_type == irq_type::sce) {
+      if constexpr(irq.type == irq_type::sce) {
         NVIC_SetPriority(CAN1_SCE_IRQn, irqp);
         NVIC_EnableIRQ(CAN1_SCE_IRQn);
       }
@@ -36,19 +36,19 @@ void enable_irq()
 
 #if defined(CAN2)
     if constexpr(_module_id == module_id::can2) {
-      if constexpr(_irq_type == irq_type::tx) {
+      if constexpr(irq.type == irq_type::tx) {
         NVIC_SetPriority(CAN2_TX_IRQn, irqp);
         NVIC_EnableIRQ(CAN2_TX_IRQn);
       }
-      if constexpr(_irq_type == irq_type::rx0) {
+      if constexpr(irq.type == irq_type::rx0) {
         NVIC_SetPriority(CAN2_RX0_IRQn, irqp);
         NVIC_EnableIRQ(CAN2_RX0_IRQn);
       }
-      if constexpr(_irq_type == irq_type::rx1) {
+      if constexpr(irq.type == irq_type::rx1) {
         NVIC_SetPriority(CAN2_RX1_IRQn, irqp);
         NVIC_EnableIRQ(CAN2_RX1_IRQn);
       }
-      if constexpr(_irq_type == irq_type::sce) {
+      if constexpr(irq.type == irq_type::sce) {
         NVIC_SetPriority(CAN2_SCE_IRQn, irqp);
         NVIC_EnableIRQ(CAN2_SCE_IRQn);
       }
