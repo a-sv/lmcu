@@ -87,7 +87,7 @@ void osc_configure()
     );
   }
 
-  detail::preinit();
+  dwt::enable_cyccnt();
 
   //
   // HSI
@@ -290,6 +290,5 @@ constexpr void configure_periph_clocks()
 
   RCC->CFGR = r;
 }
-
 
 } // namespace detail

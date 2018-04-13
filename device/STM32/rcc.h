@@ -2,6 +2,7 @@
 #include <lmcu/device>
 #include "../../common/units.h"
 #include "../../common/round.h"
+#include "../cortex/dwt.h"
 
 namespace lmcu {
 namespace rcc {

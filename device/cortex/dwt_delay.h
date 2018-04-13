@@ -4,8 +4,12 @@
 namespace lmcu {
 namespace delay {
 
-// IMPORTANT: max_delay = (0xffffffff / f_cpu) * 1e6
-
+/**
+ * @brief Delay with microsecond resolution.
+ * @param _us: delay in microsecond
+ *
+ * @note  IMPORTANT: max_delay = (0xffffffff / f_cpu) * 1e6
+*/
 template<uint32_t _us>
 void us()
 {
@@ -15,6 +19,10 @@ void us()
     ;
 }
 
+/**
+ * @brief Delay with millisecond resolution.
+ * @param _us: delay in millisecond
+*/
 template<uint32_t _ms>
 void ms()
 {
