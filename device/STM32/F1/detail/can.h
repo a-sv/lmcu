@@ -5,6 +5,62 @@ namespace detail {
 template<uint32_t r, typename arg1, typename ...args>
 uint32_t remap_bits();
 
+template<
+  module_id _module_id,
+  irq_type _irq_type,
+  uint32_t _prio_group,
+  uint32_t _preempt_prio,
+  uint32_t _sub_prio
+>
+void enable_irq()
+{
+  if constexpr(_irq_type != irq_type::disable) {
+    const auto irqp = NVIC_EncodePriority(_prio_group, _preempt_prio, _sub_prio);
+
+#if defined(CAN1)
+    if constexpr(_module_id == module_id::can1) {
+      if constexpr(_irq_type == irq_type::tx) {
+        NVIC_SetPriority(CAN1_TX_IRQn, irqp);
+        NVIC_EnableIRQ(CAN1_TX_IRQn);
+      }
+      if constexpr(_irq_type == irq_type::rx0) {
+        NVIC_SetPriority(CAN1_RX0_IRQn, irqp);
+        NVIC_EnableIRQ(CAN1_RX0_IRQn);
+      }
+      if constexpr(_irq_type == irq_type::rx1) {
+        NVIC_SetPriority(CAN1_RX1_IRQn, irqp);
+        NVIC_EnableIRQ(CAN1_RX1_IRQn);
+      }
+      if constexpr(_irq_type == irq_type::sce) {
+        NVIC_SetPriority(CAN1_SCE_IRQn, irqp);
+        NVIC_EnableIRQ(CAN1_SCE_IRQn);
+      }
+    }
+#endif
+
+#if defined(CAN2)
+    if constexpr(_module_id == module_id::can2) {
+      if constexpr(_irq_type == irq_type::tx) {
+        NVIC_SetPriority(CAN2_TX_IRQn, irqp);
+        NVIC_EnableIRQ(CAN2_TX_IRQn);
+      }
+      if constexpr(_irq_type == irq_type::rx0) {
+        NVIC_SetPriority(CAN2_RX0_IRQn, irqp);
+        NVIC_EnableIRQ(CAN2_RX0_IRQn);
+      }
+      if constexpr(_irq_type == irq_type::rx1) {
+        NVIC_SetPriority(CAN2_RX1_IRQn, irqp);
+        NVIC_EnableIRQ(CAN2_RX1_IRQn);
+      }
+      if constexpr(_irq_type == irq_type::sce) {
+        NVIC_SetPriority(CAN2_SCE_IRQn, irqp);
+        NVIC_EnableIRQ(CAN2_SCE_IRQn);
+      }
+    }
+#endif
+  }
+}
+
 template<typename arg1, typename ...args>
 void configure()
 {
@@ -114,32 +170,31 @@ void configure()
   // wait the acknowledge
   while((inst->MSR & CAN_MSR_INAK) == 0)
     ;
+
+  enable_irq<m.module_id, m.irq0.irq_type, m.irq0.prio_group, m.irq0.preempt_prio,
+             m.irq0.sub_prio>();
+  enable_irq<m.module_id, m.irq1.irq_type, m.irq1.prio_group, m.irq1.preempt_prio,
+             m.irq1.sub_prio>();
+  enable_irq<m.module_id, m.irq2.irq_type, m.irq2.prio_group, m.irq2.preempt_prio,
+             m.irq2.sub_prio>();
+  enable_irq<m.module_id, m.irq3.irq_type, m.irq3.prio_group, m.irq3.preempt_prio,
+             m.irq3.sub_prio>();
 }
 
 template<typename ...args>
-void post_configure()
+void remap_configure()
 {
-  const auto irqp = NVIC_EncodePriority(3, 0, 0);
-
   auto r = AFIO->MAPR;
 
 #if defined(CAN1)
   if constexpr(has_module<module_id::can1, args...>()) {
     r &= ~AFIO_MAPR_CAN_REMAP;
-    NVIC_SetPriority(CAN1_TX_IRQn, irqp);
-    NVIC_SetPriority(CAN1_RX0_IRQn, irqp);
-    NVIC_SetPriority(CAN1_RX1_IRQn, irqp);
-    NVIC_SetPriority(CAN1_SCE_IRQn, irqp);
   }
 #endif
 
 #if defined(CAN2)
   if constexpr(has_module<module_id::can2, args...>()) {
     r &= ~AFIO_MAPR_CAN2_REMAP;
-    NVIC_SetPriority(CAN2_TX_IRQn, irqp);
-    NVIC_SetPriority(CAN2_RX0_IRQn, irqp);
-    NVIC_SetPriority(CAN2_RX1_IRQn, irqp);
-    NVIC_SetPriority(CAN2_SCE_IRQn, irqp);
   }
 #endif
 

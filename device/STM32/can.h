@@ -75,6 +75,22 @@ enum class nart { enable, disable };
 enum class rflm { enable, disable };
 enum class txfp { enable, disable };
 
+enum class irq_type { disable, tx, rx0, rx1, sce };
+
+template<
+  irq_type _irq_type,
+  uint32_t _prio_group = 3,
+  uint32_t _preempt_prio = 0,
+  uint32_t _sub_prio = 0
+>
+struct irq
+{
+  static constexpr auto irq_type     = _irq_type;
+  static constexpr auto prio_group   = _prio_group;
+  static constexpr auto preempt_prio = _preempt_prio;
+  static constexpr auto sub_prio     = _sub_prio;
+};
+
 template<
   module_id _module_id,
   uint32_t _prediv,
@@ -88,7 +104,11 @@ template<
   rflm _rflm,
   txfp _txfp,
   remap _remap = remap::none,
-  mode _mode = mode::normal
+  mode _mode = mode::normal,
+  typename _irq0 = irq<irq_type::disable>,
+  typename _irq1 = irq<irq_type::disable>,
+  typename _irq2 = irq<irq_type::disable>,
+  typename _irq3 = irq<irq_type::disable>
 >
 struct module
 {
@@ -105,6 +125,10 @@ struct module
   static constexpr auto txfp      = _txfp;
   static constexpr auto remap     = _remap;
   static constexpr auto mode      = _mode;
+  static constexpr auto irq0      = _irq0();
+  static constexpr auto irq1      = _irq1();
+  static constexpr auto irq2      = _irq2();
+  static constexpr auto irq3      = _irq3();
 };
 
 enum class fifo { any, fifo_0, fifo_1 };

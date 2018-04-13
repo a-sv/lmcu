@@ -10,7 +10,7 @@ template<typename ...args>
 void configure()
 {
   detail::configure<args...>();
-  detail::post_configure<args...>();
+  detail::remap_configure<args...>();
 }
 
 template<typename _module, typename ...args>
