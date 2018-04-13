@@ -17,6 +17,12 @@ enum class osc_type
   lsi        = 1 << 5
 };
 
+constexpr osc_type operator |(osc_type lhs, osc_type rhs)
+{ return static_cast<osc_type>( static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs) ); }
+
+constexpr bool operator &(osc_type lhs, osc_type rhs)
+{ return (static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs)) != 0; }
+
 // clock security system
 enum class css { disabled, enabled };
 
@@ -46,16 +52,6 @@ enum class apb1_prediv
   div_16 = 16
 };
 using apb2_prediv = apb1_prediv;
-
-constexpr osc_type operator |(osc_type lhs, osc_type rhs)
-{
-  return static_cast<osc_type>( static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs) );
-}
-
-constexpr bool operator &(osc_type lhs, osc_type rhs)
-{
-  return (static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs)) != 0;
-}
 
 #include "detail/rcc.h"
 
