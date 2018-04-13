@@ -5,17 +5,13 @@ namespace detail {
 template<uint32_t r, typename arg1, typename ...args>
 uint32_t remap_bits();
 
-template<
-  module_id _module_id,
-  irq_type _irq_type,
-  uint32_t _prio_group,
-  uint32_t _preempt_prio,
-  uint32_t _sub_prio
->
+template<module_id _module_id, typename _irq>
 void enable_irq()
 {
-  if constexpr(_irq_type != irq_type::disable) {
-    const auto irqp = NVIC_EncodePriority(_prio_group, _preempt_prio, _sub_prio);
+  constexpr auto irq = _irq();
+
+  if constexpr(irq.irq_type != irq_type::disable) {
+    const auto irqp = NVIC_EncodePriority(irq.prio_group, irq.preempt_prio, irq.sub_prio);
 
 #if defined(CAN1)
     if constexpr(_module_id == module_id::can1) {
@@ -171,14 +167,10 @@ void configure()
   while((inst->MSR & CAN_MSR_INAK) == 0)
     ;
 
-  enable_irq<m.module_id, m.irq0.irq_type, m.irq0.prio_group, m.irq0.preempt_prio,
-             m.irq0.sub_prio>();
-  enable_irq<m.module_id, m.irq1.irq_type, m.irq1.prio_group, m.irq1.preempt_prio,
-             m.irq1.sub_prio>();
-  enable_irq<m.module_id, m.irq2.irq_type, m.irq2.prio_group, m.irq2.preempt_prio,
-             m.irq2.sub_prio>();
-  enable_irq<m.module_id, m.irq3.irq_type, m.irq3.prio_group, m.irq3.preempt_prio,
-             m.irq3.sub_prio>();
+  enable_irq<m.module_id, decltype(m.irq0)>();
+  enable_irq<m.module_id, decltype(m.irq1)>();
+  enable_irq<m.module_id, decltype(m.irq2)>();
+  enable_irq<m.module_id, decltype(m.irq3)>();
 }
 
 template<typename ...args>
