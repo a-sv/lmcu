@@ -252,7 +252,7 @@ void rxtx(uint16_t &rx_data, uint16_t tx_data)
 }
 
 template<typename module_t, typename data_t>
-void read(data_t *data, volatile uint32_t count)
+void read(data_t *data, uint32_t count)
 {
   constexpr auto m = module_t();
 
@@ -270,15 +270,19 @@ void read(data_t *data, volatile uint32_t count)
 
   if constexpr(m.mode == mode::master && m.direction == direction::two_lines) {
     inst->DR = 0;
-    while(count) {
-      uint32_t r = inst->SR;
-      if((r & SPI_SR_TXE) != 0 && (count > 0)) { inst->DR = 0; }
-      if((r & SPI_SR_RXNE) != 0) { *data++ = inst->DR; count--; }
+    while(true) {
+      auto r = inst->SR;
+      if((r & SPI_SR_TXE) != 0) {
+        inst->DR = 0;
+      }
+      if((r & SPI_SR_RXNE) != 0) {
+        *data++ = inst->DR;
+        if(--count == 0) { break; }
+      }
     }
   }
   else {
     const auto end = data + count;
-
     while(data < end) {
       if((inst->SR & SPI_SR_RXNE) != 0) { *data++ = inst->DR; }
     }
