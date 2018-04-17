@@ -283,7 +283,6 @@ lmcu_force_inline void master_read(SPI_TypeDef *inst, data_t *data, uint32_t cou
         ;
     };
 
-    const auto end = data + count;
     while(data < end - 1) { rx_next(); *data++ = inst->DR; }
 
     rx_next();
