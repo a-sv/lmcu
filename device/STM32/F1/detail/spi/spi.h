@@ -363,6 +363,11 @@ lmcu_force_inline void tx_finish(SPI_TypeDef *inst)
     // disable SPI module
     inst->CR1 &= ~SPI_CR1_SPE;
   }
+
+  if constexpr(_direction == direction::two_lines) {
+    // clear OVF flag in full-duplex mode
+    inst->DR; inst->DR;
+  }
 }
 
 template<direction _direction, bool _crc_on>
