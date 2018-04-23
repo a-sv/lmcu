@@ -25,4 +25,43 @@ constexpr bool has_module()
   return arg1().module_id == _module_id;
 }
 
+template<typename arg1, typename ...args>
+void configure();
+
+template<typename ...args>
+void remap_configure();
+
+template<typename _module, typename arg1, typename ...args>
+void filter_enable();
+
+template<typename _module, typename arg1, typename ...args>
+void filter_disable();
+
+template<typename _module, io::type _iotype>
+io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len);
+
+template<typename _module>
+void tx_wait();
+
+template<typename _module>
+void tx_abort();
+
+template<typename _module, fifo _fifo, io::type _iotype>
+io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len);
+
+template<typename _module, event ...evts>
+void enable_events();
+
+template<typename _module, event ...evts>
+void disable_events();
+
+template<typename _module, flags ..._flags>
+flags get_flags();
+
+template<typename _module, flags ..._flags>
+void clear_flags();
+
+template<typename _module>
+event irq_source();
+
 } // namespace detail
