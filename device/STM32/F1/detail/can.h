@@ -608,7 +608,7 @@ void tx_abort()
   if((inst->TSR & CAN_TSR_TME2) == 0) { inst->TSR |= CAN_TSR_ABRQ2; }
 }
 
-template<typename _module, fifo _fifo, io::type _iotype>
+template<typename _module, fifo _fifo>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len)
 {
   constexpr auto m = _module();
@@ -616,29 +616,25 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
 
   uint8_t fifo_n = 0xff;
 
-  do {
-    if constexpr(_fifo == fifo::any) {
-      if((inst->RF0R & 0x3) != 0) {
-        fifo_n = 0;
-      }
-      else
-      if((inst->RF1R & 0x3) != 0) {
-        fifo_n = 1;
-      }
+  if constexpr(_fifo == fifo::any) {
+    if((inst->RF0R & 0x3) != 0) {
+      fifo_n = 0;
     }
     else
-    if constexpr(_fifo == fifo::fifo_0) {
-      if((inst->RF0R & 0x3) != 0) { fifo_n = 0; }
+    if((inst->RF1R & 0x3) != 0) {
+      fifo_n = 1;
     }
-    else
-    if constexpr(_fifo == fifo::fifo_1) {
-      if((inst->RF1R & 0x3) != 0) { fifo_n = 1; }
-    }
+  }
+  else
+  if constexpr(_fifo == fifo::fifo_0) {
+    if((inst->RF0R & 0x3) != 0) { fifo_n = 0; }
+  }
+  else
+  if constexpr(_fifo == fifo::fifo_1) {
+    if((inst->RF1R & 0x3) != 0) { fifo_n = 1; }
+  }
 
-    if constexpr(_iotype == io::type::nonblocking) {
-      if(fifo_n == 0xff) { return io::result::busy; }
-    }
-  } while(fifo_n == 0xff);
+  if(fifo_n == 0xff) { return io::result::busy; }
 
   const auto &h_fifo = inst->sFIFOMailBox[fifo_n];
 
@@ -674,6 +670,17 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
   }
 
   return io::result::success;
+}
+
+template<typename _module, fifo _fifo, typename abort_fn>
+io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len,
+              abort_fn&& abort)
+{
+  while(!abort()) {
+    const auto io_r = rx<_module, _fifo>(id, ide, rtr, fmi, data, len);
+    if(io_r != io::result::busy) { return io_r; }
+  }
+  return io::result::busy;
 }
 
 } // namespace detail

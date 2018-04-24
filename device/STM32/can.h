@@ -256,7 +256,10 @@ void tx_abort() { detail::tx_abort<_module>(); }
 template<typename _module, fifo _fifo = fifo::any, io::type _iotype = io::type::blocking>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len)
 {
-  return detail::rx<_module, _fifo, _iotype>(id, ide, rtr, fmi, data, len);
+  if constexpr(_iotype == io::type::blocking) {
+    return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len, [] { return false; });
+  }
+  return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len);
 }
 
 template<typename _module, event ...evts>

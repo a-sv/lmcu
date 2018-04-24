@@ -49,8 +49,12 @@ io::result tx_wait(abort_fn&& abort);
 template<typename _module>
 void tx_abort();
 
-template<typename _module, fifo _fifo, io::type _iotype>
+template<typename _module, fifo _fifo>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len);
+
+template<typename _module, fifo _fifo, typename abort_fn>
+io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len,
+              abort_fn&& abort);
 
 template<typename _module, event ...evts>
 void enable_events();
