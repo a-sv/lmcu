@@ -514,20 +514,15 @@ event irq_source() {
   return evt;
 }
 
-template<typename _module, io::type _iotype>
+template<typename _module>
 io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
 {
-  constexpr auto m = _module();
-  if(len < 1 || len > 8) { return io::result::error; }
+  if(len > 8) { return io::result::error; }
 
+  constexpr auto m = _module();
   auto inst = detail::inst<m.module_id>();
 
   CAN_TxMailBox_TypeDef *mbox;
-
-  if constexpr(_iotype == io::type::blocking) {
-    while((inst->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2)) == 0)
-      ;
-  }
 
   if((inst->TSR & CAN_TSR_TME0) != 0) {
     mbox = &inst->sTxMailBox[0];
@@ -576,14 +571,30 @@ io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
   return io::result::success;
 }
 
-template<typename _module>
-void tx_wait()
+template<typename _module, typename abort_fn>
+io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len, abort_fn&& abort)
+{
+  constexpr auto m = _module();
+  auto inst = detail::inst<m.module_id>();
+
+  while((inst->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2)) == 0) {
+    if(abort()) { return io::result::busy; }
+  }
+
+  return tx<_module>(id, ide, rtr, data, len);
+}
+
+template<typename _module, typename abort_fn>
+io::result tx_wait(abort_fn&& abort)
 {
   auto inst = detail::inst<_module().module_id>();
 
   constexpr auto flags = (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2);
-  while((inst->TSR & flags) != flags)
-    ;
+  while((inst->TSR & flags) != flags) {
+    if(abort()) { return io::result::busy; }
+  }
+
+  return io::result::success;
 }
 
 template<typename _module>

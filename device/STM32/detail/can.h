@@ -37,11 +37,14 @@ void filter_enable();
 template<typename _module, typename arg1, typename ...args>
 void filter_disable();
 
-template<typename _module, io::type _iotype>
+template<typename _module>
 io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len);
 
-template<typename _module>
-void tx_wait();
+template<typename _module, typename abort_fn>
+io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len, abort_fn&& abort);
+
+template<typename _module, typename abort_fn>
+io::result tx_wait(abort_fn&& abort);
 
 template<typename _module>
 void tx_abort();

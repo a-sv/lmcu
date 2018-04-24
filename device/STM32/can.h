@@ -1,5 +1,5 @@
 #pragma once
-#include <lmcu/device>
+#include <lmcu/delay>
 #include "../../common/io.h"
 
 namespace lmcu {
@@ -229,11 +229,26 @@ void filter_disable() { detail::filter_disable<_module, args...>(); }
 template<typename _module, io::type _iotype = io::type::blocking>
 io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
 {
-  return detail::tx<_module, _iotype>(id, ide, rtr, data, len);
+  if constexpr(_iotype == io::type::blocking) {
+    return detail::tx<_module>(id, ide, rtr, data, len, [] { return false; });
+  }
+  return detail::tx<_module>(id, ide, rtr, data, len);
 }
 
 template<typename _module>
-void tx_wait() { detail::tx_wait<_module>(); }
+io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len, const delay::timer &t)
+{
+  return detail::tx<_module>(id, ide, rtr, data, len, [&] { return t.expired(); });
+}
+
+template<typename _module>
+void tx_wait() { detail::tx_wait<_module>([] { return false; }); }
+
+template<typename _module>
+io::result tx_wait(const delay::timer &t)
+{
+  return detail::tx_wait<_module>([&] { return t.expired(); });
+}
 
 template<typename _module>
 void tx_abort() { detail::tx_abort<_module>(); }
