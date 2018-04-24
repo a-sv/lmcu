@@ -262,6 +262,13 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
   return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len);
 }
 
+template<typename _module, fifo _fifo = fifo::any>
+io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len,
+              const delay::timer &t)
+{
+  return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len, [&] { return t.expired(); });
+}
+
 template<typename _module, event ...evts>
 void enable_events() { detail::enable_events<_module, evts...>(); }
 
