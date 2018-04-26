@@ -28,7 +28,7 @@ void configure()
     ((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) &&
     (_sysclk_mux == sysclk_mux::hse || (_pll_mux == pll_mux::prediv1 &&
                                         _sysclk_mux == sysclk_mux::pllclk)) &&
-    (_css == css::enabled)
+    (_css == css::enable)
   ) {
     RCC->CR |= RCC_CR_CSSON;
   }

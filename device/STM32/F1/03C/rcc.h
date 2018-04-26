@@ -65,18 +65,6 @@ void configure()
 {
   detail::osc_configure<_osc_type, _hsi_cal, _rtcclk_mux>();
 
-  if constexpr(
-    ((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) &&
-    (_sysclk_mux == sysclk_mux::hse || (_pll_mux == pll_mux::hse &&
-                                        _sysclk_mux == sysclk_mux::pllclk)) &&
-    (_css == css::enabled)
-  ) {
-    RCC->CR |= RCC_CR_CSSON;
-  }
-  else {
-    RCC->CR &= ~RCC_CR_CSSON;
-  }
-
   {
     constexpr auto vco_in = (_pll_mux == pll_mux::hsi)?
         double(8_MHz / 2) : double(HSE_VALUE) / uint32_t(_hse_pll_prediv);

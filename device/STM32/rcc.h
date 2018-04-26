@@ -24,7 +24,7 @@ constexpr bool operator &(osc_type lhs, osc_type rhs)
 { return (static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs)) != 0; }
 
 // clock security system
-enum class css { disable, enabled };
+enum class css { disable, enable };
 
 enum class sysclk_mux { hsi, hse, pllclk };
 
