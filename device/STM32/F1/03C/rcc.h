@@ -8,7 +8,7 @@ enum class hse_pll_prediv { div_1 = 1, div_2 = 2 };
 
 enum class usb_prediv
 {
-  disabled, // USB not used
+  disable, // USB not used
   div_1   = 10,
   div_1_5 = 15
 };
@@ -36,7 +36,7 @@ enum class pll_mux { hse, hsi };
 
 enum class mco_mux
 {
-  disabled,
+  disable,
   hse,
   hsi,
   sysclk,
@@ -55,15 +55,15 @@ template<
   pll_mux _pll_mux,
   osc_type _osc_type,
   hse_pll_prediv _hse_pll_prediv = hse_pll_prediv::div_1,
-  adc_prediv _adc_prediv = adc_prediv::disabled,
-  usb_prediv _usb_prediv = usb_prediv::disabled,
-  rtcclk_mux _rtc_clk_mux = rtcclk_mux::disabled,
-  mco_mux _mco_mux = mco_mux::disabled,
+  adc_prediv _adc_prediv = adc_prediv::disable,
+  usb_prediv _usb_prediv = usb_prediv::disable,
+  rtcclk_mux _rtcclk_mux = rtcclk_mux::disable,
+  mco_mux _mco_mux = mco_mux::disable,
   uint32_t _hsi_cal = 16
 >
 void configure()
 {
-  detail::osc_configure<_osc_type, _hsi_cal, _rtc_clk_mux>();
+  detail::osc_configure<_osc_type, _hsi_cal, _rtcclk_mux>();
 
   if constexpr(
     ((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) &&
@@ -93,7 +93,7 @@ void configure()
       }
     }();
 
-    if constexpr(_usb_prediv != usb_prediv::disabled) {
+    if constexpr(_usb_prediv != usb_prediv::disable) {
       constexpr auto usbclk = (pllclk * 10) / uint32_t(_usb_prediv);
       static_assert(round<uint32_t>(usbclk) == 48_MHz, "USB clock must be = 48MHz");
     }
@@ -114,7 +114,7 @@ void configure()
                     _mco_mux>();
 
   detail::switch_sysclk<_sysclk_mux>();
-  detail::osc_deconfigure<_osc_type, _rtc_clk_mux>();
+  detail::osc_deconfigure<_osc_type, _rtcclk_mux>();
 }
 
 } // namespace lmcu

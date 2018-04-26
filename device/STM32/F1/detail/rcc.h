@@ -47,7 +47,7 @@ void switch_sysclk()
   }
 }
 
-template<osc_type _osc_type, uint32_t _hsi_cal, rtcclk_mux _rtc_clk_mux>
+template<osc_type _osc_type, uint32_t _hsi_cal, rtcclk_mux _rtcclk_mux>
 void osc_configure()
 {
   static_assert(_hsi_cal <= 0x1f);
@@ -67,20 +67,20 @@ void osc_configure()
     "you must select at least one of high speed generators"
   );
   if constexpr(_osc_type & osc_type::lsi) {
-    static_assert(_rtc_clk_mux == rtcclk_mux::lsi, "LSI generator turned on, but not used");
+    static_assert(_rtcclk_mux == rtcclk_mux::lsi, "LSI generator turned on, but not used");
   }
-  if constexpr(_rtc_clk_mux == rtcclk_mux::lsi) {
+  if constexpr(_rtcclk_mux == rtcclk_mux::lsi) {
     static_assert(_osc_type & osc_type::lsi, "RTC clock source connected to LSI, but LSI "
                                              "turned off");
   }
   if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
-    static_assert(_rtc_clk_mux == rtcclk_mux::lse, "LSE generator turned on, but not used");
+    static_assert(_rtcclk_mux == rtcclk_mux::lse, "LSE generator turned on, but not used");
   }
-  if constexpr(_rtc_clk_mux == rtcclk_mux::lse) {
+  if constexpr(_rtcclk_mux == rtcclk_mux::lse) {
     static_assert((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass),
                   "RTC clock source connected to LSE, but LSE turned off");
   }
-  if constexpr(_rtc_clk_mux == rtcclk_mux::hse) {
+  if constexpr(_rtcclk_mux == rtcclk_mux::hse) {
     static_assert(
       (_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass),
       "HSE generator selected as RTC clock, but HSE is disabled"
@@ -161,7 +161,7 @@ void osc_configure()
   {
     auto r = RCC->BDCR;
     r &= ~RCC_BDCR_RTCSEL;
-    switch (_rtc_clk_mux) {
+    switch (_rtcclk_mux) {
     case rtcclk_mux::lse: r |= RCC_BDCR_RTCSEL_LSE; break;
     case rtcclk_mux::lsi: r |= RCC_BDCR_RTCSEL_LSI; break;
     case rtcclk_mux::hse: r |= RCC_BDCR_RTCSEL_HSE; break;
@@ -171,7 +171,7 @@ void osc_configure()
   }
 }
 
-template<osc_type _osc_type, rtcclk_mux _rtc_clk_mux>
+template<osc_type _osc_type, rtcclk_mux _rtcclk_mux>
 void osc_deconfigure()
 {
   //
@@ -214,7 +214,7 @@ void osc_deconfigure()
       ;
   }
 
-  if constexpr(_rtc_clk_mux == rtcclk_mux::disabled || _rtc_clk_mux == rtcclk_mux::lsi) {
+  if constexpr(_rtcclk_mux == rtcclk_mux::disable || _rtcclk_mux == rtcclk_mux::lsi) {
     set_bkp_write_acces<false>();
   }
 }
@@ -248,7 +248,7 @@ constexpr void configure_periph_clocks()
   constexpr auto pclk2 = hclk / static_cast<uint32_t>(_apb2_prediv);
   apb2_clock = round<uint32_t>(pclk2);
 
-  if constexpr(_adc_prediv != adc_prediv::disabled) {
+  if constexpr(_adc_prediv != adc_prediv::disable) {
     constexpr auto adc_clk = pclk2 / static_cast<uint32_t>(_adc_prediv);
     static_assert(adc_clk <= 14_MHz, "ADC clock must be <= 14MHz");
     adc_clock = round<uint32_t>(adc_clk);

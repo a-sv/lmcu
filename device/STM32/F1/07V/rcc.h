@@ -13,7 +13,7 @@ using i2s3_clk_mux = i2s2_clk_mux;
 
 enum class mco_mux
 {
-  disabled,
+  disable,
   hse,
   hsi,
   sysclk,
@@ -47,7 +47,7 @@ using prediv2 = prediv1;
 
 enum class usb_prediv
 {
-  disabled, // USB not used
+  disable, // USB not used
   div_2 = 2,
   div_3 = 3
 };
@@ -92,10 +92,10 @@ template<
   prediv1_mux _prediv1_mux = prediv1_mux::hse,
   prediv2 _prediv2 = prediv2::div_1,
   pll2_mul _pll2_mul = pll2_mul::mul_8,
-  adc_prediv _adc_prediv = adc_prediv::disabled,
-  usb_prediv _usb_prediv = usb_prediv::disabled,
-  rtcclk_mux _rtc_clk_mux = rtcclk_mux::disabled,
-  mco_mux _mco_mux = mco_mux::disabled,
+  adc_prediv _adc_prediv = adc_prediv::disable,
+  usb_prediv _usb_prediv = usb_prediv::disable,
+  rtcclk_mux _rtcclk_mux = rtcclk_mux::disable,
+  mco_mux _mco_mux = mco_mux::disable,
   pll3_mul _pll3_mul = pll3_mul::mul_8,
   i2s2_clk_mux _i2s2_clk_mux = i2s2_clk_mux::sysclk,
   i2s3_clk_mux _i2s3_clk_mux = i2s3_clk_mux::sysclk,
@@ -103,7 +103,7 @@ template<
 >
 void configure()
 {
-  detail::osc_configure<_osc_type, _hsi_cal, _rtc_clk_mux>();
+  detail::osc_configure<_osc_type, _hsi_cal, _rtcclk_mux>();
 
   if constexpr((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) {
     constexpr auto vco_in2 = double(HSE_VALUE) / uint32_t(_prediv2);
@@ -141,7 +141,7 @@ void configure()
       static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= 72MHz");
     }
 
-    if constexpr(_usb_prediv != usb_prediv::disabled) {
+    if constexpr(_usb_prediv != usb_prediv::disable) {
       constexpr auto usbclk = (pllclk * 2) / uint32_t(_usb_prediv);
       static_assert(round<uint32_t>(usbclk) == 48_MHz, "USB clock must be = 48MHz");
     }
@@ -159,7 +159,7 @@ void configure()
     constexpr auto pllclk = (vco_in1 * uint32_t(_pll_mul)) / 10;
     static_assert(!(pllclk < 18_MHz || pllclk > 72_MHz), "PLLCLK must be >= 18Mhz and <= 72MHz");
 
-    if constexpr(_usb_prediv != usb_prediv::disabled) {
+    if constexpr(_usb_prediv != usb_prediv::disable) {
       constexpr auto usbclk = (pllclk * 2) / uint32_t(_usb_prediv);
       static_assert(round<uint32_t>(usbclk) == 48_MHz, "USB clock must be = 48MHz");
     }
@@ -173,7 +173,7 @@ void configure()
                     _usb_prediv, _mco_mux, _pll3_mul, _i2s2_clk_mux, _i2s3_clk_mux>();
 
   detail::switch_sysclk<_sysclk_mux>();
-  detail::osc_deconfigure<_osc_type, _rtc_clk_mux>();
+  detail::osc_deconfigure<_osc_type, _rtcclk_mux>();
 }
 
 } // namespace rcc

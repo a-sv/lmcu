@@ -101,7 +101,7 @@ void configure()
     RCC->CFGR = r;
   }
 
-  if constexpr(_sysclk_mux == sysclk_mux::pllclk || _usb_prediv != usb_prediv::disabled) {
+  if constexpr(_sysclk_mux == sysclk_mux::pllclk || _usb_prediv != usb_prediv::disable) {
     // PLL enable
     RCC->CR |= RCC_CR_PLLON;
     while((RCC->CR & RCC_CR_PLLRDY) == 0)

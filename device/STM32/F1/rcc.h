@@ -6,7 +6,7 @@ namespace rcc {
 
 enum class adc_prediv
 {
-  disabled, // ADC not used
+  disable, // ADC not used
   div_2 = 2,
   div_4 = 4,
   div_6 = 6,
