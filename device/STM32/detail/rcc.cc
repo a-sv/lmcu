@@ -8,7 +8,12 @@ namespace rcc {
 
 namespace detail {
 
+#if defined(_LMCU_DEVICE_STM32F4_)
+uint32_t system_clock   = 16_MHz;
+#else
 uint32_t system_clock   = 8_MHz;
+#endif
+
 uint32_t hardware_clock = 0;
 uint32_t apb1_clock     = 0;
 uint32_t apb2_clock     = 0;

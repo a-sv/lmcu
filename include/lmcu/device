@@ -1,6 +1,10 @@
 #pragma once
 
-#if defined(STM32F429IG)
+#if defined(STM32F407ZG)
+  #include <stm32f407xx.h>
+  #define _LMCU_DEVICE_STM32_
+  #define _LMCU_DEVICE_STM32F4_
+#elif defined(STM32F429IG)
   #include <stm32f429xx.h>
   #define _LMCU_DEVICE_STM32_
   #define _LMCU_DEVICE_STM32F4_

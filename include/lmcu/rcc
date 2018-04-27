@@ -1,6 +1,8 @@
 #pragma once
 
-#if defined(STM32F103C8)
+#if defined(STM32F407ZG)
+#include "../../device/STM32/F4/07Z/rcc.h"
+#elif defined(STM32F103C8)
 #include "../../device/STM32/F1/03C/rcc.h"
 #elif defined(STM32F107VC)
 #include "../../device/STM32/F1/07V/rcc.h"
