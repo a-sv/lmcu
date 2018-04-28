@@ -7,6 +7,8 @@ extern uint32_t hardware_clock;
 extern uint32_t apb1_clock;
 extern uint32_t apb2_clock;
 extern uint32_t adc_clock;
+extern uint32_t apb1_timer_clock;
+extern uint32_t apb2_timer_clock;
 
 template<bool _on>
 void set_bkp_write_acces()
