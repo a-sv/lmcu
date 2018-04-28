@@ -1,6 +1,4 @@
 #include <lmcu/device>
-#if defined(_LMCU_DEVICE_STM32F1_)
-
 #include <lmcu/delay>
 #include "../../spi.h"
 
@@ -107,5 +105,3 @@ void master_read_with_crc(SPI_TypeDef *inst, uint8_t *data, uint32_t count, uint
 } // namespace detail
 } // namespace lmcu
 } // namespace spi
-
-#endif // _LMCU_DEVICE_STM32F1_

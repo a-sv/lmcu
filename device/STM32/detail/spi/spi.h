@@ -2,6 +2,34 @@
 
 namespace detail {
 
+template<module_id _module_id>
+SPI_TypeDef *inst()
+{
+#if defined(SPI1)
+  if constexpr(_module_id == module_id::spi1) { return SPI1; }
+#endif
+
+#if defined(SPI2)
+  if constexpr(_module_id == module_id::spi2) { return SPI2; }
+#endif
+
+#if defined(SPI3)
+  if constexpr(_module_id == module_id::spi3) { return SPI3; }
+#endif
+
+#if defined(SPI4)
+  if constexpr(_module_id == module_id::spi4) { return SPI4; }
+#endif
+
+#if defined(SPI5)
+  if constexpr(_module_id == module_id::spi5) { return SPI5; }
+#endif
+
+#if defined(SPI6)
+  if constexpr(_module_id == module_id::spi6) { return SPI6; }
+#endif
+}
+
 template<typename module_t, bool _en>
 void enable()
 {
@@ -211,14 +239,14 @@ lmcu_force_inline uint16_t master_rx(SPI_TypeDef *inst, delay_fn&& dfn)
 
   if constexpr(_direction == direction::two_lines) {
     inst->DR = 0;
-    while((inst->SR & SPI_SR_RXNE) == 0)
-      ;
 
     if constexpr(_crc_on) {
       // enable CRC reception
       inst->CR1 |= SPI_CR1_CRCNEXT;
     }
 
+    while((inst->SR & SPI_SR_RXNE) == 0)
+      ;
     auto data = inst->DR;
 
     if constexpr(_crc_on) {
@@ -230,7 +258,6 @@ lmcu_force_inline uint16_t master_rx(SPI_TypeDef *inst, delay_fn&& dfn)
 
     while((inst->SR & SPI_SR_TXE) == 0 || (inst->SR & SPI_SR_BSY) != 0)
       ;
-
     return data;
   }
 
@@ -276,21 +303,22 @@ lmcu_force_inline void master_read(SPI_TypeDef *inst, data_t *data, uint32_t cou
   const auto end = data + count;
 
   if constexpr(_direction == direction::two_lines) {
-    auto rx_next = [inst]
+    auto rx_next = [inst](bool last)
     {
       inst->DR = 0;
+
+      if constexpr(_crc_on) {
+        // enable CRC reception
+        if(last) { inst->CR1 |= SPI_CR1_CRCNEXT; }
+      }
+
       while((inst->SR & SPI_SR_RXNE) == 0)
         ;
     };
 
-    while(data < end - 1) { rx_next(); *data++ = inst->DR; }
+    while(data < end - 1) { rx_next(false); *data++ = inst->DR; }
 
-    rx_next();
-
-    if constexpr(_crc_on) {
-      // enable CRC reception
-      inst->CR1 |= SPI_CR1_CRCNEXT;
-    }
+    rx_next(true);
 
     *data = inst->DR;
 

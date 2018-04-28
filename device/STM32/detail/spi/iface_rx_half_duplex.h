@@ -1,7 +1,7 @@
 template<typename module_t>
 inline uint32_t one_cycle_delay()
 {
-  return rcc::system_clock() / (rcc::apb2_clock() / uint32_t(module_t().baud_prediv));
+  return (rcc::system_clock() / (rcc::apb2_clock() / uint32_t(module_t().baud_prediv)));
 }
 
 template<typename module_t>
@@ -14,11 +14,11 @@ uint16_t rx()
     // one SPI cycle in system clocks
     const uint32_t delay_val = one_cycle_delay<module_t>();
     if constexpr(m.crc == crc::enable) {
-      if(delay_val <= 4) { return master_rx_with_crc(inst); }
-      return master_rx_with_crc(inst, delay_val);
+      if(delay_val <= 8) { return master_rx_with_crc(inst); }
+      return master_rx_with_crc(inst, delay_val - 8);
     }
-    if(delay_val <= 4) { return master_rx(inst); }
-    return master_rx(inst, delay_val);
+    if(delay_val <= 8) { return master_rx(inst); }
+    return master_rx(inst, delay_val - 8);
   }
 
   if constexpr(m.crc == crc::enable) { return slave_rx_with_crc(inst); }
@@ -35,12 +35,12 @@ void read(data_t *data, uint32_t count)
     // one SPI cycle in system clocks
     const uint32_t delay_val = one_cycle_delay<module_t>();
     if constexpr(m.crc == crc::enable) {
-      if(delay_val <= 4) { master_read_with_crc(inst, data, count); }
-      else { master_read_with_crc(inst, data, count, delay_val); }
+      if(delay_val <= 8) { master_read_with_crc(inst, data, count); }
+      else { master_read_with_crc(inst, data, count, delay_val - 8); }
     }
     else {
-      if(delay_val <= 4) { master_read(inst, data, count); }
-      else { master_read(inst, data, count, delay_val); }
+      if(delay_val <= 8) { master_read(inst, data, count); }
+      else { master_read(inst, data, count, delay_val - 8); }
     }
   }
   else {
