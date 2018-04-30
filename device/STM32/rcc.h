@@ -60,6 +60,9 @@ inline uint32_t hardware_clock() { return detail::hardware_clock; }
 inline uint32_t apb1_clock() { return detail::apb1_clock; }
 inline uint32_t apb2_clock() { return detail::apb2_clock; }
 inline uint32_t adc_clock() { return detail::adc_clock; }
+inline uint32_t apb1_timer_clock() { return detail::apb1_timer_clock; }
+inline uint32_t apb2_timer_clock() { return detail::apb2_timer_clock; }
+
 
 } // namespace rcc
 } // namespace lmcu
