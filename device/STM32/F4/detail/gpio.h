@@ -102,16 +102,16 @@ constexpr auto afr_bits()
 }
 
 template<port _port, typename ...args>
-void configure(GPIO_TypeDef *inst)
+void configure_port(GPIO_TypeDef *inst)
 {
   if constexpr(detail::has_port<_port, args...>()) {
     constexpr auto mask1 = ~mask<0, 1, _port, 0, 0, 15, args...>();
     constexpr auto mask2 = ~mask<0, 2, _port, 0, 0, 15, args...>();
 
-    inst->MODER = (inst->MODER & mask2) | mode_bits<0, _port, args...>();
-    inst->OTYPER = (inst->OTYPER & mask1) | otype_bits<0, _port, args...>();
+    inst->MODER   = (inst->MODER & mask2)   | mode_bits<0, _port, args...>();
+    inst->OTYPER  = (inst->OTYPER & mask1)  | otype_bits<0, _port, args...>();
     inst->OSPEEDR = (inst->OSPEEDR & mask2) | ospeed_bits<0, _port, args...>();
-    inst->PUPDR = (inst->PUPDR & mask2) | pull_bits<0, _port, args...>();
+    inst->PUPDR   = (inst->PUPDR & mask2)   | pull_bits<0, _port, args...>();
 
     if constexpr(pin_in_range<_port, 0, 7, args...>()) {
       constexpr auto mask4 = ~mask<0, 4, _port, 0, 0, 7, args...>();
@@ -123,6 +123,61 @@ void configure(GPIO_TypeDef *inst)
       inst->AFR[1] = (inst->AFR[1] & mask4) | afr_bits<0, _port, false, args...>();
     }
   }
+}
+
+template<uint32_t r, port arg1, port ...args>
+constexpr auto rcc_bits()
+{
+  constexpr auto bits = []() -> decltype(r)
+  {
+#if defined(GPIOA)
+    if constexpr(arg1 == port::A) { return r | RCC_AHB1ENR_GPIOAEN; }
+#endif
+
+#if defined(GPIOB)
+    if constexpr(arg1 == port::B) { return r | RCC_AHB1ENR_GPIOBEN; }
+#endif
+
+#if defined(GPIOC)
+    if constexpr(arg1 == port::C) { return r | RCC_AHB1ENR_GPIOCEN; }
+#endif
+
+#if defined(GPIOD)
+    if constexpr(arg1 == port::D) { return r | RCC_AHB1ENR_GPIODEN; }
+#endif
+
+#if defined(GPIOE)
+    if constexpr(arg1 == port::E) { return r | RCC_AHB1ENR_GPIOEEN; }
+#endif
+
+#if defined(GPIOF)
+    if constexpr(arg1 == port::F) { return r | RCC_AHB1ENR_GPIOFEN; }
+#endif
+
+#if defined(GPIOG)
+    if constexpr(arg1 == port::G) { return r | RCC_AHB1ENR_GPIOGEN; }
+#endif
+
+#if defined(GPIOH)
+    if constexpr(arg1 == port::H) { return r | RCC_AHB1ENR_GPIOHEN; }
+#endif
+
+#if defined(GPIOI)
+    if constexpr(arg1 == port::I) { return r | RCC_AHB1ENR_GPIOIEN; }
+#endif
+
+#if defined(GPIOJ)
+    if constexpr(arg1 == port::J) { return r | RCC_AHB1ENR_GPIOJEN; }
+#endif
+
+#if defined(GPIOK)
+    if constexpr(arg1 == port::K) { return r | RCC_AHB1ENR_GPIOKEN; }
+#endif
+    return r;
+  };
+
+  if constexpr(sizeof...(args) > 0) { return rcc_bits<bits(), args...>(); }
+  return bits();
 }
 
 } // namespace detail
