@@ -103,7 +103,6 @@ template<
   nart _nart,
   rflm _rflm,
   txfp _txfp,
-  remap _remap = remap::none,
   mode _mode = mode::normal,
   typename _irq0 = irq<irq_type::disable>,
   typename _irq1 = irq<irq_type::disable>,
@@ -123,7 +122,6 @@ struct module
   static constexpr auto nart      = _nart;
   static constexpr auto rflm      = _rflm;
   static constexpr auto txfp      = _txfp;
-  static constexpr auto remap     = _remap;
   static constexpr auto mode      = _mode;
   static constexpr auto irq0      = _irq0();
   static constexpr auto irq1      = _irq1();
@@ -214,11 +212,7 @@ constexpr bool operator &(flags lhs, flags rhs)
 #include "detail/can.h"
 
 template<typename ...args>
-void configure()
-{
-  detail::configure<args...>();
-  detail::remap_configure<args...>();
-}
+void configure() { detail::configure<args...>(); }
 
 template<typename _module, typename ...args>
 void filter_enable() { detail::filter_enable<_module, args...>(); }

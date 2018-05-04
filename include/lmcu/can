@@ -1,9 +1,8 @@
 #pragma once
+#include <lmcu/device>
 
-#if defined(STM32F103C8)
-#include "../../device/STM32/F1/03C/can.h"
-#elif defined(STM32F107VC)
-#include "../../device/STM32/F1/07V/can.h"
+#if defined(_LMCU_DEVICE_STM32_)
+#include "../../device/STM32/can.h"
 #else
   #error "device not supported"
 #endif
