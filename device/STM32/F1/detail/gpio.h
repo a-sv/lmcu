@@ -164,4 +164,274 @@ void disable(bool afio_off)
   RCC->APB2ENR &= ~(rcc_bits | (afio_off? RCC_APB2ENR_AFIOEN : 0));
 }
 
+constexpr uint32_t mapr_mask_table[] = {
+  //
+  // MAPR
+  //
+
+  1 << 30, // PTP_PPS_REMAP
+  1 << 30, // PTP_PPS_REMAP
+
+  1 << 29, // TIM2ITR1_IREMAP
+  1 << 29, // TIM2ITR1_IREMAP
+
+  1 << 28, // SPI3_REMAP
+  1 << 28, // SPI3_REMAP
+
+  7 << 24, // SWJ_CFG
+  7 << 24, // SWJ_CFG
+  7 << 24, // SWJ_CFG
+  7 << 24, // SWJ_CFG
+
+  1 << 23, // MII_RMII_SEL
+  1 << 23, // MII_RMII_SEL
+
+  1 << 22, // CAN2_REMAP
+  1 << 22, // CAN2_REMAP
+
+  1 << 21, // ETH_REMAP
+  1 << 21, // ETH_REMAP
+
+  1 << 20, // ADC2_ETRGREG_REMAP
+  1 << 20, // ADC2_ETRGREG_REMAP
+  1 << 19, // ADC2_ETRGINJ_REMAP
+  1 << 19, // ADC2_ETRGINJ_REMAP
+
+  1 << 18, // ADC1_ETRGREG_REMAP
+  1 << 18, // ADC1_ETRGREG_REMAP
+  1 << 17, // ADC1_ETRGINJ_REMAP
+  1 << 17, // ADC1_ETRGINJ_REMAP
+
+  1 << 16, // TIM5CH4_IREMAP
+  1 << 16, // TIM5CH4_IREMAP
+
+  1 << 15, // PD01_REMAP
+  1 << 15, // PD01_REMAP
+
+  3 << 13, // CAN_REMAP
+  3 << 13, // CAN_REMAP
+  3 << 13, // CAN_REMAP
+
+  1 << 12, // TIM4_REMAP
+  1 << 12, // TIM4_REMAP
+
+  3 << 10, // TIM3_REMAP
+  3 << 10, // TIM3_REMAP
+  3 << 10, // TIM3_REMAP
+
+  3 << 8,  // TIM2_REMAP
+  3 << 8,  // TIM2_REMAP
+  3 << 8,  // TIM2_REMAP
+  3 << 8,  // TIM2_REMAP
+
+  3 << 6,  // TIM1_REMAP
+  3 << 6,  // TIM1_REMAP
+  3 << 6,  // TIM1_REMAP
+
+  3 << 4,  // USART3_REMAP
+  3 << 4,  // USART3_REMAP
+  3 << 4,  // USART3_REMAP
+
+  1 << 3,  // USART2_REMAP
+  1 << 3,  // USART2_REMAP
+
+  1 << 2,  // USART1_REMAP
+  1 << 2,  // USART1_REMAP
+
+  1 << 1,  // I2C1_REMAP
+  1 << 1,  // I2C1_REMAP
+
+  1 << 0,  // SPI1_REMAP
+  1 << 0,  // SPI1_REMAP
+
+  //
+  // MAPR2
+  //
+
+  1 << 10, // FSMC_NADV
+  1 << 10, // FSMC_NADV
+
+  1 << 9,  // TIM14_REMAP
+  1 << 9,  // TIM14_REMAP
+
+  1 << 8,  // TIM13_REMAP
+  1 << 8,  // TIM13_REMAP
+
+  1 << 7,  // TIM11_REMAP
+  1 << 7,  // TIM11_REMAP
+
+  1 << 6,  // TIM10_REMAP
+  1 << 6,  // TIM10_REMAP
+
+  1 << 5,  // TIM9_REMAP
+  1 << 5   // TIM9_REMAP
+};
+
+constexpr uint32_t mapr_bits_table[] = {
+  //
+  // MAPR
+  //
+
+  0,       // ptp_pps__not_output_on_PB5
+  1 << 30, // ptp_pps__output_on_PB5
+
+  0,       // tim2_itr1__ptp
+  1 << 29, // tim2_itr1__usb_otg_sof
+
+  0,       // spi3_i2s3__no_remap
+  1 << 28, // spi3_i2s3__remap
+
+  0,       // jtag__full_swj
+  1 << 24, // jtag__full_swj_without_njtrst
+  2 << 24, // jtag__dp_disabled_and_sw_dp_enabled
+  4 << 24, // jtag__dp_and_sw_dp_disabled
+
+  0,       // eth__mii_phy
+  1 << 23, // eth__rmii_phy
+
+  0,       // can2__no_remap
+  1 << 22, // can2__remap
+
+  0,       // eth__no_remap
+  1 << 21, // eth__remap
+
+  0,       // adc2__etrgreg_exti11
+  1 << 20, // adc2__etrgreg_tim8_trgo
+
+  0,       // adc2__etrginj_exti15
+  1 << 19, // adc2__etrginj_tim8_channel4
+
+  0,       // adc1__etrgreg_exti11
+  1 << 18, // adc1__etrgreg_tim8_trgo
+
+  0,       // adc1__etrginj_exti15
+  1 << 17, // adc1__etrginj_tim8_channel4
+
+  0,       // tim5__ch4_PA3
+  1 << 16, // tim5__ch4_lsiclk
+
+  0,       // PD0_no_remap__PD1_no_remap
+  1 << 15, // PD0_osc_in__PD1_osc_out
+
+  0,       // can1__no_remap
+  2 << 13, // can1__remap_1
+  3 << 13, // can1__remap_2
+
+  0,       // tim4__no_remap
+  1 << 12, // tim4__full_remap
+
+  0,       // tim3__no_remap
+  2 << 10, // tim3__partial_remap
+  3 << 10, // tim3__full_remap
+
+  0,       // tim2__no_remap
+  1 << 8,  // tim2__partial_remap_1
+  2 << 8,  // tim2__partial_remap_2
+  3 << 8,  // tim2__full_remap
+
+  0,       // tim1__no_remap
+  1 << 6,  // tim1__partial_remap
+  3 << 6,  // tim1__full_remap
+
+  0,       // usart3__no_remap
+  1 << 4,  // usart3__partial_remap
+  3 << 4,  // usart3__full_remap
+
+  0,       // usart2__no_remap
+  1 << 3,  // usart2__remap
+
+  0,       // usart1__no_remap
+  1 << 2,  // usart1__remap
+
+  0,       // i2c1__no_remap
+  1 << 1,  // i2c1__remap
+
+  0,       // spi1__no_remap
+  1,       // spi1__remap
+
+  //
+  // MAPR2
+  //
+
+  0,       // fsmc__nadv_connected
+  1 << 10, // fsmc__nadv_not_connected
+
+  0,       // tim14__no_remap
+  1 << 9,  // tim14__remap
+
+  0,       // tim13__no_remap
+  1 << 8,  // tim13__remap
+
+  0,       // tim11__no_remap
+  1 << 7,  // tim11__remap
+
+  0,       // tim10__no_remap
+  1 << 6,  // tim10__remap
+
+  0,       // tim9__no_remap
+  1 << 5,  // tim9__remap
+};
+
+constexpr auto mapr2_index = 54;
+
+template<uint32_t _r, remap _arg1, remap ...args>
+constexpr uint32_t mapr_mask()
+{
+  if constexpr(sizeof...(args) > 0) { return mapr_mask<_r, args...>(); }
+  constexpr auto idx = uint32_t(_arg1);
+  if constexpr(idx < mapr2_index) { return _r | mapr_mask_table[idx]; }
+  return _r;
+}
+
+template<uint32_t _r, remap _arg1, remap ...args>
+constexpr uint32_t mapr2_mask()
+{
+  if constexpr(sizeof...(args) > 0) { return mapr_mask<_r, args...>(); }
+  constexpr auto idx = uint32_t(_arg1);
+  if constexpr(idx >= mapr2_index) { return _r | mapr_mask_table[idx]; }
+  return _r;
+}
+
+template<uint32_t _r, remap _arg1, remap ...args>
+constexpr uint32_t mapr_bits()
+{
+  if constexpr(sizeof...(args) > 0) { return mapr_bits<_r, args...>(); }
+  constexpr auto idx = uint32_t(_arg1);
+  if constexpr(idx < mapr2_index) { return _r | mapr_bits_table[idx]; }
+  return _r;
+}
+
+template<uint32_t _r, remap _arg1, remap ...args>
+constexpr uint32_t mapr2_bits()
+{
+  if constexpr(sizeof...(args) > 0) { return mapr2_bits<_r, args...>(); }
+  constexpr auto idx = uint32_t(_arg1);
+  if constexpr(idx >= mapr2_index) { return _r | mapr_bits_table[idx]; }
+  return _r;
+}
+
+template<remap ...args>
+void remap()
+{
+  {
+    constexpr auto mask = mapr_mask<0, args...>();
+    if constexpr(mask != 0) {
+      auto r = AFIO->MAPR;
+      r &= ~mask;
+      r |=  mapr_bits<0, args...>();
+      AFIO->MAPR = r;
+    }
+  }
+
+  {
+    constexpr auto mask = mapr2_mask<0, args...>();
+    if constexpr(mask != 0) {
+      auto r = AFIO->MAPR2;
+      r &= ~mask;
+      r |=  mapr2_bits<0, args...>();
+      AFIO->MAPR2 = r;
+    }
+  }
+}
+
 } // namespace detail
