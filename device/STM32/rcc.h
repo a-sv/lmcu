@@ -1,5 +1,6 @@
 #pragma once
 #include <lmcu/device>
+#include "../../common/def.h"
 #include "../../common/units.h"
 #include "../../common/round.h"
 #include "../cortex/dwt.h"
@@ -16,12 +17,7 @@ enum class osc_type
   lse_bypass = 1 << 4,
   lsi        = 1 << 5
 };
-
-constexpr osc_type operator |(osc_type lhs, osc_type rhs)
-{ return static_cast<osc_type>( static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs) ); }
-
-constexpr bool operator &(osc_type lhs, osc_type rhs)
-{ return (static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs)) != 0; }
+lmcu_enum_class_flags_impl(osc_type)
 
 // clock security system
 enum class css { disable, enable };

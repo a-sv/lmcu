@@ -1,5 +1,6 @@
 #pragma once
 #include <lmcu/delay>
+#include "../../common/def.h"
 #include "../../common/io.h"
 
 namespace lmcu {
@@ -175,12 +176,7 @@ enum class event
   lec   = 1 << 12, // last error code
   err   = 1 << 13  // error
 };
-
-constexpr event operator |(event lhs, event rhs)
-{ return static_cast<event>( static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs) ); }
-
-constexpr bool operator &(event lhs, event rhs)
-{ return (static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs)) != 0; }
+lmcu_enum_class_flags_impl(event);
 
 enum class flags : uint32_t
 {
@@ -202,12 +198,7 @@ enum class flags : uint32_t
   wku    = 1 << 15, // wake up Flag
   slaki  = 1 << 16  // sleep acknowledge Flag
 };
-
-constexpr flags operator |(flags lhs, flags rhs)
-{ return static_cast<flags>( static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs) ); }
-
-constexpr bool operator &(flags lhs, flags rhs)
-{ return (static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs)) != 0; }
+lmcu_enum_class_flags_impl(flags);
 
 #include "detail/can.h"
 
