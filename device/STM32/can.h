@@ -176,7 +176,7 @@ enum class event
   lec   = 1 << 12, // last error code
   err   = 1 << 13  // error
 };
-lmcu_enum_class_flags_impl(event);
+lmcu_enum_class_flags_impl(event)
 
 enum class flags : uint32_t
 {
@@ -198,7 +198,7 @@ enum class flags : uint32_t
   wku    = 1 << 15, // wake up Flag
   slaki  = 1 << 16  // sleep acknowledge Flag
 };
-lmcu_enum_class_flags_impl(flags);
+lmcu_enum_class_flags_impl(flags)
 
 #include "detail/can.h"
 
