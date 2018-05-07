@@ -119,7 +119,7 @@ void configure()
 
 #if defined(CAN2)
   if constexpr(m.module_id == module_id::can2) {
-    RCC->APB1ENR  |=  RCC_APB1ENR_CAN2EN;
+    RCC->APB1ENR  |=  RCC_APB1ENR_CAN1EN | RCC_APB1ENR_CAN2EN;
     RCC->APB1RSTR |=  RCC_APB1RSTR_CAN2RST;
     RCC->APB1RSTR &= ~RCC_APB1RSTR_CAN2RST;
   }
