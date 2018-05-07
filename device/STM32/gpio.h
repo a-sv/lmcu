@@ -56,6 +56,9 @@ enum class mode
   output_open_drain,
   output_push_pull,
   analog,
+#if defined(_LMCU_DEVICE_STM32F4_)
+  af_input,
+#endif
   af_open_drain,
   af_push_pull
 };

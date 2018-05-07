@@ -13,7 +13,8 @@ constexpr auto mode_bits()
       return r | (0b01 << (pin().bit * 2));
     }
 
-    if constexpr(pin().mode == mode::af_open_drain || pin().mode == mode::af_push_pull) {
+    if constexpr(pin().mode == mode::af_input || pin().mode == mode::af_open_drain ||
+                 pin().mode == mode::af_push_pull) {
       return r | (0b10 << (pin().bit * 2));
     }
 
