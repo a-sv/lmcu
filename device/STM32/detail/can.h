@@ -125,6 +125,14 @@ void configure()
   }
 #endif
 
+#if defined(CAN3)
+  if constexpr(m.module_id == module_id::can3) {
+    RCC->APB1ENR  |=  RCC_APB1ENR_CAN3EN;
+    RCC->APB1RSTR |=  RCC_APB1RSTR_CAN3RST;
+    RCC->APB1RSTR &= ~RCC_APB1RSTR_CAN3RST;
+  }
+#endif
+
   auto inst = detail::inst<m.module_id>();
 
   // exit from sleep mode
