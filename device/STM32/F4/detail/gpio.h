@@ -86,7 +86,7 @@ constexpr auto afr_bits()
   constexpr auto bits = []() -> decltype(r)
   {
     if constexpr(pin().port == _port) {
-      constexpr auto af = static_cast<uint32_t>(pin().af);
+      [[maybe_unused]] constexpr auto af = static_cast<uint32_t>(pin().af);
 
       if constexpr(low) {
         if constexpr(pin().bit < 8) { return r | (af << (pin().bit * 4)); }
