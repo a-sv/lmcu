@@ -226,7 +226,7 @@ void configure()
 }
 
 template<typename _module, typename arg1, typename ...args>
-void filter_enable()
+void filter_enable(uint32_t id_high, uint32_t id_low, uint32_t maskid_high, uint32_t maskid_low)
 {
   if constexpr(sizeof...(args) > 0) { filter_enable<_module, args...>(); }
   constexpr auto m    = _module();
@@ -251,14 +251,14 @@ void filter_enable()
   if constexpr(f.filter_scale == filter_scale::fs16) {
     // 16-bit scale for the filter
     inst->FS1R &= ~fpos;
-    inst->sFilterRegister[fnum].FR1 = ((f.maskid_low & 0xffff) << 16) | (f.id_low & 0xffff);
-    inst->sFilterRegister[fnum].FR2 = ((f.maskid_high & 0xffff) << 16) | (f.id_high & 0xffff);
+    inst->sFilterRegister[fnum].FR1 = ((maskid_low & 0xffff) << 16) | (id_low & 0xffff);
+    inst->sFilterRegister[fnum].FR2 = ((maskid_high & 0xffff) << 16) | (id_high & 0xffff);
   }
   else {
     // 32-bit scale for the filter
     inst->FS1R |= fpos;
-    inst->sFilterRegister[fnum].FR1 = ((f.id_high & 0xffff) << 16) | (f.id_low & 0xffff);
-    inst->sFilterRegister[fnum].FR2 = ((f.maskid_high & 0xffff) << 16) | (f.maskid_low & 0xffff);
+    inst->sFilterRegister[fnum].FR1 = ((id_high & 0xffff) << 16) | (id_low & 0xffff);
+    inst->sFilterRegister[fnum].FR2 = ((maskid_high & 0xffff) << 16) | (maskid_low & 0xffff);
   }
 
   if constexpr(f.filter_mode == filter_mode::idmask) {

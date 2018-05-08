@@ -139,10 +139,6 @@ template<
   uint32_t _number,
   filter_mode _filter_mode,
   filter_scale _filter_scale,
-  uint32_t _id_high,
-  uint32_t _id_low,
-  uint32_t _maskid_high,
-  uint32_t _maskid_low,
   fifo _fifo,
   uint32_t _bank_num
 >
@@ -151,10 +147,6 @@ struct filter
   static constexpr auto number       = _number;
   static constexpr auto filter_mode  = _filter_mode;
   static constexpr auto filter_scale = _filter_scale;
-  static constexpr auto id_high      = _id_high;
-  static constexpr auto id_low       = _id_low;
-  static constexpr auto maskid_high  = _maskid_high;
-  static constexpr auto maskid_low   = _maskid_low;
   static constexpr auto fifo         = _fifo;
   static constexpr auto bank_num     = _bank_num;
 };
@@ -206,7 +198,10 @@ template<typename ...args>
 void configure() { detail::configure<args...>(); }
 
 template<typename _module, typename ...args>
-void filter_enable() { detail::filter_enable<_module, args...>(); }
+void filter_enable(uint32_t id_high, uint32_t id_low, uint32_t maskid_high, uint32_t maskid_low)
+{
+  detail::filter_enable<_module, args...>(id_high, id_low, maskid_high, maskid_low);
+}
 
 template<typename _module, typename ...args>
 void filter_disable() { detail::filter_disable<_module, args...>(); }
