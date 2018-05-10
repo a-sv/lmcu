@@ -106,6 +106,10 @@ constexpr auto rcc_bits()
     if constexpr(arg1 == port::C) { return r | RCC_APB2ENR_IOPCEN; }
 #endif
 
+#if defined(RCC_APB2ENR_IOPDEN)
+    if constexpr(arg1 == port::D) { return r | RCC_APB2ENR_IOPDEN; }
+#endif
+
 #if defined(RCC_APB2ENR_IOPEEN)
     if constexpr(arg1 == port::E) { return r | RCC_APB2ENR_IOPEEN; }
 #endif
