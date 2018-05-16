@@ -488,4 +488,7 @@ uint32_t read()
   return 0;
 }
 
+template<typename _conf>
+uint32_t dma_address() { return uint32_t(&detail::inst<_conf().module_id>()->DR); }
+
 } // namespace detail

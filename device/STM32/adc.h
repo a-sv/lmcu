@@ -208,5 +208,8 @@ void regular_soft_start() { detail::regular_soft_start<args...>(); }
 template<typename _conf>
 uint32_t read() { return detail::read<_conf>(); }
 
+template<typename _conf>
+uint32_t dma_address() { return detail::dma_address<_conf>(); }
+
 } // namespace adc
 } // namespace lmcu
