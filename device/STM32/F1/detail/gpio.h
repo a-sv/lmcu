@@ -381,37 +381,37 @@ constexpr auto mapr2_index = 54;
 template<uint32_t _r, remap _arg1, remap ...args>
 constexpr uint32_t mapr_mask()
 {
-  if constexpr(sizeof...(args) > 0) { return mapr_mask<_r, args...>(); }
   constexpr auto idx = uint32_t(_arg1);
-  if constexpr(idx < mapr2_index) { return _r | mapr_mask_table[idx]; }
-  return _r;
+  constexpr auto r = (idx < mapr2_index)? _r | mapr_mask_table[idx] : _r;
+  if constexpr(sizeof...(args) > 0) { return mapr_mask<r, args...>(); }
+  return r;
 }
 
 template<uint32_t _r, remap _arg1, remap ...args>
 constexpr uint32_t mapr2_mask()
 {
-  if constexpr(sizeof...(args) > 0) { return mapr_mask<_r, args...>(); }
   constexpr auto idx = uint32_t(_arg1);
-  if constexpr(idx >= mapr2_index) { return _r | mapr_mask_table[idx]; }
-  return _r;
+  constexpr auto r = (idx >= mapr2_index)? _r | mapr_mask_table[idx] : _r;
+  if constexpr(sizeof...(args) > 0) { return mapr_mask<_r, args...>(); }
+  return r;
 }
 
 template<uint32_t _r, remap _arg1, remap ...args>
 constexpr uint32_t mapr_bits()
 {
-  if constexpr(sizeof...(args) > 0) { return mapr_bits<_r, args...>(); }
   constexpr auto idx = uint32_t(_arg1);
-  if constexpr(idx < mapr2_index) { return _r | mapr_bits_table[idx]; }
-  return _r;
+  constexpr auto r = (idx < mapr2_index)? _r | mapr_bits_table[idx] : _r;
+  if constexpr(sizeof...(args) > 0) { return mapr_bits<r, args...>(); }
+  return r;
 }
 
 template<uint32_t _r, remap _arg1, remap ...args>
 constexpr uint32_t mapr2_bits()
 {
-  if constexpr(sizeof...(args) > 0) { return mapr2_bits<_r, args...>(); }
   constexpr auto idx = uint32_t(_arg1);
-  if constexpr(idx >= mapr2_index) { return _r | mapr_bits_table[idx]; }
-  return _r;
+  constexpr auto r = (idx >= mapr2_index)? _r | mapr_bits_table[idx] : _r;
+  if constexpr(sizeof...(args) > 0) { return mapr2_bits<r, args...>(); }
+  return r;
 }
 
 template<remap ...args>
