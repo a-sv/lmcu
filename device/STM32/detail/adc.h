@@ -386,6 +386,76 @@ constexpr void reg_seqence_configure()
   }
 }
 
+template<
+  uint32_t _jofr_1,
+  uint32_t _jofr_2,
+  uint32_t _jofr_3,
+  uint32_t _jofr_4,
+  uint32_t _jsqr,
+  module_id _module_id,
+  uint8_t _rank,
+  typename _conf,
+  typename ...args
+>
+constexpr void inj_seqence_configure()
+{
+  constexpr auto m = _conf();
+
+  constexpr auto match = [m]
+  {
+    if constexpr(m.conf == conf::inj_chan) { return m.module.module_id == _module_id; }
+    return false;
+  }();
+
+  [[maybe_unused]] constexpr auto jofr_1 = [m]() -> uint32_t
+  {
+    if constexpr(match && _rank == 0) { return m.data_offset; }
+    return _jofr_1;
+  }();
+
+  [[maybe_unused]] constexpr auto jofr_2 = [m]() -> uint32_t
+  {
+    if constexpr(match && _rank == 1) { return m.data_offset; }
+    return _jofr_2;
+  }();
+
+  [[maybe_unused]] constexpr auto jofr_3 = [m]() -> uint32_t
+  {
+    if constexpr(match && _rank == 2) { return m.data_offset; }
+    return _jofr_3;
+  }();
+
+  [[maybe_unused]] constexpr auto jofr_4 = [m]() -> uint32_t
+  {
+    if constexpr(match && _rank == 3) { return m.data_offset; }
+    return _jofr_4;
+  }();
+
+  [[maybe_unused]] constexpr auto jsqr = [m]() -> uint32_t
+  {
+    if constexpr(match) { return (_jsqr >> 5) | (uint32_t(m.chan_num) << 15); }
+    return _jsqr;
+  }();
+
+  if constexpr(sizeof...(args) > 0) {
+    constexpr auto rank = match? _rank + 1 : _rank;
+    static_assert(rank <= 3, "injected sequence must not have more than 4 channels");
+    inj_seqence_configure<jofr_1, jofr_2, jofr_3, jofr_4, jsqr, _module_id, rank, args...>();
+  }
+  else
+  if constexpr(match) {
+    [[maybe_unused]] auto inst = detail::inst<_module_id>();
+    inst->JSQR = jsqr | (_rank << ADC_JSQR_JL_Pos);
+    dbg::debug("inst->JSQR = %u", inst->JSQR);
+    switch(_rank) {
+    case 3: inst->JOFR1 = jofr_1;
+    case 2: inst->JOFR2 = jofr_2;
+    case 1: inst->JOFR3 = jofr_3;
+    case 0: inst->JOFR4 = jofr_4;
+    }
+  }
+}
+
 template<module_id _module_id, uint8_t _low, uint8_t _high, typename _conf>
 constexpr bool is_reg_chan_in_range()
 {
@@ -419,11 +489,9 @@ constexpr uint32_t smpr_bits()
 }
 
 template<module_id _module_id, typename ...args>
-void reg_chan_configure()
+void sample_rate_conf()
 {
   [[maybe_unused]] auto inst = detail::inst<_module_id>();
-
-  reg_seqence_configure<0, 0, 0, 0, 0, 0, _module_id, 0, args...>();
 
   {
     constexpr auto mask = smpr_mask<0, _module_id, 0, 9, args...>();
@@ -445,6 +513,20 @@ void reg_chan_configure()
       inst->SMPR1 = r;
     }
   }
+}
+
+template<module_id _module_id, typename ...args>
+void reg_chan_configure()
+{
+  reg_seqence_configure<0, 0, 0, 0, 0, 0, _module_id, 0, args...>();
+  sample_rate_conf<_module_id, args...>();
+}
+
+template<module_id _module_id, typename ...args>
+void inj_chan_configure()
+{
+  inj_seqence_configure<0, 0, 0, 0, 0, _module_id, 0, args...>();
+  sample_rate_conf<_module_id, args...>();
 }
 
 template<typename _arg1, typename ...args>
@@ -480,11 +562,31 @@ void regular_soft_start()
   if constexpr(sizeof...(args) > 0) { regular_soft_start<args...>(); }
 }
 
-template<typename _conf>
+template<typename _conf, typename ...args>
+void injected_soft_start()
+{
+  detail::inst<_conf().module_id>()->CR2 |= ADC_CR2_JSWSTART;
+  if constexpr(sizeof...(args) > 0) { injected_soft_start<args...>(); }
+}
+
+template<typename _conf, uint8_t _jrank>
 uint32_t read()
 {
   constexpr auto m = _conf();
-  if constexpr(m.conf == conf::adc) { return detail::inst<m.module_id>()->DR; }
+  auto inst = detail::inst<m.module_id>();
+
+  if constexpr(_jrank != 0) {
+    static_assert(_jrank <= 4, "rank must be >= 1 and <= 4");
+    switch(_jrank) {
+    case 1: return inst->JDR1;
+    case 2: return inst->JDR2;
+    case 3: return inst->JDR3;
+    case 4: return inst->JDR4;
+    }
+  }
+
+  if constexpr(m.conf == conf::adc) { return inst->DR; }
+
   return 0;
 }
 

@@ -153,12 +153,22 @@ struct module
 };
 
 template<typename _module, uint8_t _chan_num, sample_time _sample_time>
-struct channel_conf
+struct rchannel_conf
 {
   static constexpr auto conf        = adc::conf::reg_chan;
   static constexpr auto module      = _module();
   static constexpr auto chan_num    = _chan_num;
   static constexpr auto sample_time = _sample_time;
+};
+
+template<typename _module, uint8_t _chan_num, sample_time _sample_time, uint16_t _data_offset = 0>
+struct jchannel_conf
+{
+  static constexpr auto conf        = adc::conf::inj_chan;
+  static constexpr auto module      = _module();
+  static constexpr auto chan_num    = _chan_num;
+  static constexpr auto sample_time = _sample_time;
+  static constexpr auto data_offset = _data_offset;
 };
 
 #include "detail/adc.h"
@@ -170,18 +180,22 @@ void configure()
 
 #if defined(ADC1)
   detail::reg_chan_configure<module_id::adc1, args...>();
+  detail::inj_chan_configure<module_id::adc1, args...>();
 #endif
 
 #if defined(ADC2)
   detail::reg_chan_configure<module_id::adc2, args...>();
+  detail::inj_chan_configure<module_id::adc2, args...>();
 #endif
 
 #if defined(ADC3)
   detail::reg_chan_configure<module_id::adc3, args...>();
+  detail::inj_chan_configure<module_id::adc3, args...>();
 #endif
 
 #if defined(ADC4)
   detail::reg_chan_configure<module_id::adc4, args...>();
+  detail::inj_chan_configure<module_id::adc4, args...>();
 #endif
 }
 
@@ -205,8 +219,11 @@ void calibrate() { detail::calibrate<args...>(); }
 template<typename ...args>
 void regular_soft_start() { detail::regular_soft_start<args...>(); }
 
-template<typename _conf>
-uint32_t read() { return detail::read<_conf>(); }
+template<typename ...args>
+void injected_soft_start() { detail::injected_soft_start<args...>(); }
+
+template<typename _conf, uint8_t _jrank = 0>
+uint32_t read() { return detail::read<_conf, _jrank>(); }
 
 template<typename _conf>
 uint32_t dma_address() { return detail::dma_address<_conf>(); }
