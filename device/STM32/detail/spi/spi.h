@@ -174,6 +174,15 @@ bool crc_ok()
   return r;
 }
 
+template<typename module_t>
+uint16_t crc_rxval() { return detail::inst<module_t().module_id>()->RXCRCR; }
+
+template<typename module_t>
+uint16_t crc_txval() { return detail::inst<module_t().module_id>()->TXCRCR; }
+
+template<typename module_t>
+uint16_t crc_poly() { return detail::inst<module_t().module_id>()->CRCPR; }
+
 template<bool _master, direction _direction, bool _crc_send>
 lmcu_force_inline void rx_begin(SPI_TypeDef *inst)
 {

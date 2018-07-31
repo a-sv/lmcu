@@ -187,5 +187,14 @@ void crc_init() { detail::crc_init<module_t, _crc_en>(); }
 template<typename module_t>
 bool crc_ok() { return detail::crc_ok<module_t>(); }
 
+template<typename module_t>
+uint16_t crc_rxval() { return detail::crc_rxval<module_t>(); }
+
+template<typename module_t>
+uint16_t crc_txval() { return detail::crc_txval<module_t>(); }
+
+template<typename module_t>
+uint16_t crc_poly() { return detail::crc_poly<module_t>(); }
+
 } // namespace spi
 } // namespace lmcu
