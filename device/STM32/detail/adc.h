@@ -1,3 +1,4 @@
+#pragma once
 
 namespace detail {
 
@@ -118,11 +119,17 @@ void adc_configure()
 
 #if defined(ADC3)
     case module_id::adc3:
+      RCC->APB2ENR  |=  RCC_APB2ENR_ADC3EN;
+      RCC->APB2RSTR |=  RCC_APB2RSTR_ADC3RST;
+      RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC3RST;
       break;
 #endif
 
 #if defined(ADC4)
     case module_id::adc4:
+      RCC->APB2ENR  |=  RCC_APB2ENR_ADC4EN;
+      RCC->APB2RSTR |=  RCC_APB2RSTR_ADC4RST;
+      RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC4RST;
       break;
 #endif
     }
