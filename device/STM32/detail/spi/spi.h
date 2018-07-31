@@ -109,11 +109,10 @@ void configure()
       default: return 0;
       }
     }() |
-    (m.bit_order == bit_order::lsb? SPI_CR1_LSBFIRST : 0) |
-    (m.crc == crc::enable? SPI_CR1_CRCEN : 0)
+    (m.bit_order == bit_order::lsb? SPI_CR1_LSBFIRST : 0)
   ;
-  inst->CR2 = m.mode == mode::master? SPI_CR2_SSOE : 0;
-  if constexpr(m.crc == crc::enable) { inst->CRCPR = m.crc_poly; }
+  inst->CR2   = m.mode == mode::master? SPI_CR2_SSOE : 0;
+  inst->CRCPR = m.crc_poly;
 
   if constexpr(
     m.mode == mode::slave || (m.mode == mode::master && m.direction == direction::two_lines)
@@ -155,20 +154,29 @@ void set_nss()
   }
 }
 
-template<bool _crc_on>
-lmcu_force_inline void reset_crc(SPI_TypeDef *inst)
+template<typename module_t, bool _crc_en>
+void crc_init()
 {
-  if constexpr(_crc_on) {
-    inst->CR1 &= ~SPI_CR1_CRCEN;
-    inst->CR1 |=  SPI_CR1_CRCEN;
-  }
+  auto inst = detail::inst<module_t().module_id>();
+
+  inst->CR1 &= ~SPI_CR1_CRCEN;
+  if constexpr(_crc_en) { inst->CR1 |= SPI_CR1_CRCEN; }
 }
 
-template<bool _master, direction _direction, bool _crc_on>
+template<typename module_t>
+bool crc_ok()
+{
+  auto inst = detail::inst<module_t().module_id>();
+
+  auto r = (inst->SR & SPI_SR_CRCERR) == 0;
+  inst->SR &= ~SPI_SR_CRCERR;
+
+  return r;
+}
+
+template<bool _master, direction _direction, bool _crc_send>
 lmcu_force_inline void rx_begin(SPI_TypeDef *inst)
 {
-  reset_crc<_crc_on>(inst);
-
   if constexpr(_direction == direction::one_line) {
     // turn on bidirectional RX mode
     inst->CR1 &= ~SPI_CR1_BIDIOE;
@@ -180,21 +188,21 @@ lmcu_force_inline void rx_begin(SPI_TypeDef *inst)
   }
 }
 
-template<direction _direction, bool _crc_on>
+template<direction _direction, bool _crc_send>
 lmcu_force_inline uint16_t slave_rx(SPI_TypeDef *inst)
 {
-  rx_begin<false, _direction, _crc_on>(inst);
+  rx_begin<false, _direction, _crc_send>(inst);
 
   while((inst->SR & SPI_SR_RXNE) == 0)
     ;
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     // enable CRC reception
     inst->CR1 |= SPI_CR1_CRCNEXT;
   }
 
   auto data = inst->DR;
 
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     // wait for CRC reception
     while((inst->SR & SPI_SR_RXNE) == 0)
       ;
@@ -204,10 +212,10 @@ lmcu_force_inline uint16_t slave_rx(SPI_TypeDef *inst)
   return data;
 }
 
-template<direction _direction, bool _crc_on, typename data_t>
+template<direction _direction, bool _crc_send, typename data_t>
 lmcu_force_inline void slave_read(SPI_TypeDef *inst, data_t *data, uint32_t count)
 {
-  rx_begin<false, _direction, _crc_on>(inst);
+  rx_begin<false, _direction, _crc_send>(inst);
 
   const auto end = data + count;
   while(data < end - 1) {
@@ -217,14 +225,14 @@ lmcu_force_inline void slave_read(SPI_TypeDef *inst, data_t *data, uint32_t coun
   while((inst->SR & SPI_SR_RXNE) == 0)
     ;
 
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     // enable CRC reception
     inst->CR1 |= SPI_CR1_CRCNEXT;
   }
 
   *data = inst->DR;
 
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     // wait for CRC reception
     while((inst->SR & SPI_SR_RXNE) == 0)
       ;
@@ -232,15 +240,15 @@ lmcu_force_inline void slave_read(SPI_TypeDef *inst, data_t *data, uint32_t coun
   }
 }
 
-template<direction _direction, bool _crc_on, typename delay_fn>
+template<direction _direction, bool _crc_send, typename delay_fn>
 lmcu_force_inline uint16_t master_rx(SPI_TypeDef *inst, delay_fn&& dfn)
 {
-  rx_begin<true, _direction, _crc_on>(inst);
+  rx_begin<true, _direction, _crc_send>(inst);
 
   if constexpr(_direction == direction::two_lines) {
     inst->DR = 0;
 
-    if constexpr(_crc_on) {
+    if constexpr(_crc_send) {
       // enable CRC reception
       inst->CR1 |= SPI_CR1_CRCNEXT;
     }
@@ -249,7 +257,7 @@ lmcu_force_inline uint16_t master_rx(SPI_TypeDef *inst, delay_fn&& dfn)
       ;
     auto data = inst->DR;
 
-    if constexpr(_crc_on) {
+    if constexpr(_crc_send) {
       // wait for CRC reception
       while((inst->SR & SPI_SR_RXNE) == 0)
         ;
@@ -261,7 +269,7 @@ lmcu_force_inline uint16_t master_rx(SPI_TypeDef *inst, delay_fn&& dfn)
     return data;
   }
 
-  if constexpr(!_crc_on) {
+  if constexpr(!_crc_send) {
     // wait 1 SPI cycle for begining clocks transmision
     dfn();
     // disable SPI module
@@ -272,7 +280,7 @@ lmcu_force_inline uint16_t master_rx(SPI_TypeDef *inst, delay_fn&& dfn)
   while((inst->SR & SPI_SR_RXNE) == 0)
     ;
 
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     // wait 1 SPI cycle for begining clocks transmision
     dfn();
     // disable SPI module
@@ -281,7 +289,7 @@ lmcu_force_inline uint16_t master_rx(SPI_TypeDef *inst, delay_fn&& dfn)
 
   auto data = inst->DR;
 
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     // enable CRC reception
     inst->CR1 |= SPI_CR1_CRCNEXT;
     // wait for CRC reception
@@ -293,12 +301,12 @@ lmcu_force_inline uint16_t master_rx(SPI_TypeDef *inst, delay_fn&& dfn)
   return data;
 }
 
-template<direction _direction, bool _crc_on, typename data_t, typename delay_fn>
+template<direction _direction, bool _crc_send, typename data_t, typename delay_fn>
 lmcu_force_inline void master_read(SPI_TypeDef *inst, data_t *data, uint32_t count, delay_fn&& dfn)
 {
   if(!count) { return; }
 
-  rx_begin<true, _direction, _crc_on>(inst);
+  rx_begin<true, _direction, _crc_send>(inst);
 
   const auto end = data + count;
 
@@ -307,7 +315,7 @@ lmcu_force_inline void master_read(SPI_TypeDef *inst, data_t *data, uint32_t cou
     {
       inst->DR = 0;
 
-      if constexpr(_crc_on) {
+      if constexpr(_crc_send) {
         // enable CRC reception
         if(last) { inst->CR1 |= SPI_CR1_CRCNEXT; }
       }
@@ -322,7 +330,7 @@ lmcu_force_inline void master_read(SPI_TypeDef *inst, data_t *data, uint32_t cou
 
     *data = inst->DR;
 
-    if constexpr(_crc_on) {
+    if constexpr(_crc_send) {
       // wait for CRC reception
       while((inst->SR & SPI_SR_RXNE) == 0)
         ;
@@ -335,7 +343,7 @@ lmcu_force_inline void master_read(SPI_TypeDef *inst, data_t *data, uint32_t cou
     return;
   }
 
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     while(data < end) {
       if((inst->SR & SPI_SR_RXNE) != 0) { *data++ = inst->DR; }
     }
@@ -351,7 +359,7 @@ lmcu_force_inline void master_read(SPI_TypeDef *inst, data_t *data, uint32_t cou
   // disable SPI module
   inst->CR1 &= ~SPI_CR1_SPE;
 
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     // wait for CRC reception
     while((inst->SR & SPI_SR_RXNE) == 0)
       ;
@@ -365,21 +373,19 @@ lmcu_force_inline void master_read(SPI_TypeDef *inst, data_t *data, uint32_t cou
   }
 }
 
-template<direction _direction, bool _crc_on>
+template<direction _direction>
 lmcu_force_inline void tx_begin(SPI_TypeDef *inst)
 {
-  reset_crc<_crc_on>(inst);
-
   if constexpr(_direction == direction::one_line) {
     // turn on bidirectional TX mode and enable SPI module
     inst->CR1 |= SPI_CR1_BIDIOE | SPI_CR1_SPE;
   }
 }
 
-template<direction _direction, bool _crc_on>
+template<direction _direction, bool _crc_send>
 lmcu_force_inline void tx_finish(SPI_TypeDef *inst)
 {
-  if constexpr(_crc_on) {
+  if constexpr(_crc_send) {
     // enable CRC transmission
     inst->CR1 |=  SPI_CR1_CRCNEXT;
   }
@@ -398,27 +404,27 @@ lmcu_force_inline void tx_finish(SPI_TypeDef *inst)
   }
 }
 
-template<direction _direction, bool _crc_on>
+template<direction _direction, bool _crc_send>
 lmcu_force_inline void tx(SPI_TypeDef *inst, uint16_t data)
 {
-  tx_begin<_direction, _crc_on>(inst);
+  tx_begin<_direction>(inst);
   inst->DR = data;
-  tx_finish<_direction, _crc_on>(inst);
+  tx_finish<_direction, _crc_send>(inst);
 }
 
-template<direction _direction, bool _crc_on, typename data_t>
+template<direction _direction, bool _crc_send, typename data_t>
 lmcu_force_inline void write(SPI_TypeDef *inst, const data_t *data, uint32_t count)
 {
   if(!count) { return; }
 
-  tx_begin<_direction, _crc_on>(inst);
+  tx_begin<_direction>(inst);
 
   const auto end = data + count;
   while(data < end) {
     if((inst->SR & SPI_SR_TXE) != 0) { inst->DR = *data++; }
   }
 
-  tx_finish<_direction, _crc_on>(inst);
+  tx_finish<_direction, _crc_send>(inst);
 }
 
 lmcu_force_inline void delay_4cyc() { asm volatile("nop\n nop\n nop\n nop\n"); }
@@ -583,19 +589,5 @@ void master_write_with_crc(SPI_TypeDef *inst, const uint8_t *data, uint32_t coun
 #include "iface_rx_full_duplex.h"
 
 } // namespace two_lines
-
-template<typename module_t>
-bool crc_ok()
-{
-  constexpr auto m = module_t();
-  auto inst = detail::inst<m.module_id>();
-
-  static_assert(m.crc == crc::enable, "CRC must be enabled");
-
-  auto r = (inst->SR & SPI_SR_CRCERR) == 0;
-  inst->SR &= ~SPI_SR_CRCERR;
-
-  return r;
-}
 
 } // namespace detail

@@ -72,8 +72,7 @@ template<
   nss _nss,
   baud_prediv _baud_prediv,
   bit_order _bit_order,
-  crc _crc = crc::disable,
-  uint32_t _crc_poly = 0x7
+  uint16_t _crc_poly = 0x7
 >
 struct module
 {
@@ -86,7 +85,6 @@ struct module
   static constexpr auto nss         = _nss;
   static constexpr auto baud_prediv = _baud_prediv;
   static constexpr auto bit_order   = _bit_order;
-  static constexpr auto crc         = _crc;
   static constexpr auto crc_poly    = _crc_poly;
 };
 
@@ -102,33 +100,33 @@ void deconfigure() { detail::deconfigure<args...>(); }
 template<bool _nss, typename ...args>
 void set_nss() { detail::set_nss<_nss, args...>(); }
 
-template<typename module_t>
+template<typename module_t, crc _crc = crc::disable>
 uint16_t rx()
 {
   constexpr auto m = module_t();
   switch(m.direction) {
-  case direction::two_lines: return detail::two_lines::rx<module_t>();
-  case direction::two_lines_rxonly: return detail::rxonly::rx<module_t>();
+  case direction::two_lines: return detail::two_lines::rx<module_t, _crc>();
+  case direction::two_lines_rxonly: return detail::rxonly::rx<module_t, _crc>();
   default : break;
   }
-  return detail::one_line::rx<module_t>();
+  return detail::one_line::rx<module_t, _crc>();
 }
 
-template<typename module_t>
+template<typename module_t, crc _crc = crc::disable>
 void tx(uint16_t data)
 {
   constexpr auto m = module_t();
   static_assert(m.direction != direction::two_lines_rxonly, "could not transmit in rx only mode");
 
   if constexpr(m.direction == direction::two_lines) {
-    detail::two_lines::tx<module_t>(data);
+    detail::two_lines::tx<module_t, _crc>(data);
   }
   else {
-    detail::one_line::tx<module_t>(data);
+    detail::one_line::tx<module_t, _crc>(data);
   }
 }
 
-template<typename module_t>
+template<typename module_t, crc _crc = crc::disable>
 void write(const void *data, uint32_t count)
 {
   constexpr auto m = module_t();
@@ -136,52 +134,55 @@ void write(const void *data, uint32_t count)
 
   if constexpr(m.direction == direction::one_line) {
     if constexpr(module_t().datasize == datasize::word) {
-      detail::one_line::write<module_t>(static_cast<const uint16_t*>(data), count);
+      detail::one_line::write<module_t, _crc>(static_cast<const uint16_t*>(data), count);
     }
     else {
-      detail::one_line::write<module_t>(static_cast<const uint8_t*>(data), count);
+      detail::one_line::write<module_t, _crc>(static_cast<const uint8_t*>(data), count);
     }
   }
   else {
     if constexpr(module_t().datasize == datasize::word) {
-      detail::two_lines::write<module_t>(static_cast<const uint16_t*>(data), count);
+      detail::two_lines::write<module_t, _crc>(static_cast<const uint16_t*>(data), count);
     }
     else {
-      detail::two_lines::write<module_t>(static_cast<const uint8_t*>(data), count);
+      detail::two_lines::write<module_t, _crc>(static_cast<const uint8_t*>(data), count);
     }
   }
 }
 
-template<typename module_t>
+template<typename module_t, crc _crc = crc::disable>
 void read(void *data, uint32_t count)
 {
   constexpr auto m = module_t();
   if constexpr(m.direction == direction::one_line) {
     if constexpr(m.datasize == datasize::word) {
-      detail::one_line::read<module_t>(static_cast<uint16_t*>(data), count);
+      detail::one_line::read<module_t, _crc>(static_cast<uint16_t*>(data), count);
     }
     else {
-      detail::one_line::read<module_t>(static_cast<uint8_t*>(data), count);
+      detail::one_line::read<module_t, _crc>(static_cast<uint8_t*>(data), count);
     }
   }
   else
   if constexpr(m.direction == direction::two_lines_rxonly) {
     if constexpr(m.datasize == datasize::word) {
-      detail::rxonly::read<module_t>(static_cast<uint16_t*>(data), count);
+      detail::rxonly::read<module_t, _crc>(static_cast<uint16_t*>(data), count);
     }
     else {
-      detail::rxonly::read<module_t>(static_cast<uint8_t*>(data), count);
+      detail::rxonly::read<module_t, _crc>(static_cast<uint8_t*>(data), count);
     }
   }
   else {
     if constexpr(m.datasize == datasize::word) {
-      detail::two_lines::read<module_t>(static_cast<uint16_t*>(data), count);
+      detail::two_lines::read<module_t, _crc>(static_cast<uint16_t*>(data), count);
     }
     else {
-      detail::two_lines::read<module_t>(static_cast<uint8_t*>(data), count);
+      detail::two_lines::read<module_t, _crc>(static_cast<uint8_t*>(data), count);
     }
   }
 }
+
+template<typename module_t, bool _crc_en>
+void crc_init() { detail::crc_init<module_t, _crc_en>(); }
 
 template<typename module_t>
 bool crc_ok() { return detail::crc_ok<module_t>(); }
