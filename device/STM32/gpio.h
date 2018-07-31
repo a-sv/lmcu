@@ -104,26 +104,26 @@ void set() { detail::set<val, args...>(); }
 template<port _port>
 auto &get() { return detail::get<_port>(); }
 
-template<port _port, uint8_t bit, uint8_t ...bits>
-auto get() { return get<_port>() & detail::mask<0, bit, bits...>(); }
+template<port _port, uint8_t first, uint8_t ...bits>
+auto get() { return get<_port>() & detail::mask<first, bits...>(); }
 
-template<typename pin>
+template<typename pin, typename = decltype(pin::port, pin::mask)>
 bool get() { return (get<pin().port>() & pin().mask) != 0; }
 
 template<port _port>
 auto &read() { return detail::read<_port>(); }
 
-template<port _port, uint8_t bit, uint8_t ...bits>
-auto read() { return read<_port>() & detail::mask<0, bit, bits...>(); }
+template<port _port, uint8_t first, uint8_t ...bits>
+auto read() { return read<_port>() & detail::mask<first, bits...>(); }
 
-template<typename pin>
+template<typename pin, typename = decltype(pin::port, pin::mask)>
 bool read() {
   static_assert(pin().mode == mode::input, "pin must be configured as input");
   return (read<pin().port>() & pin().mask) != 0;
 }
 
-template<port _port, uint8_t bit, uint8_t ...bits>
-void toggle() { get<_port>() ^= detail::mask<0, bit, bits...>(); }
+template<port _port, uint8_t first, uint8_t ...bits>
+void toggle() { get<_port>() ^= detail::mask<first, bits...>(); }
 
 template<typename ...args>
 void toggle() { detail::toggle<args...>(); }

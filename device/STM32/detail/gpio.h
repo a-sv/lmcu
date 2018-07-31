@@ -18,55 +18,80 @@ namespace detail {
 template<port _port, typename ...args>
 void configure_port(GPIO_TypeDef *inst);
 
-template<port _port, typename pin, typename ...args>
-constexpr bool has_port()
+/**
+ * Checks if one or more pins belongs to port
+ *
+ * @param _port - gpio port
+ * @param _pin  - first pin in arglist
+ * @param _pins - other pin's
+ */
+template<port _port, typename _pin, typename ..._pins>
+constexpr bool pins_in_port()
 {
-  if constexpr(sizeof...(args) > 0) {
-    return (pin().port == _port)? true : has_port<_port, args...>();
+  if constexpr(sizeof...(_pins) > 0) {
+    return (_pin().port == _port) || pins_in_port<_port, _pins...>();
   }
-  return pin().port == _port;
+  return _pin().port == _port;
 }
 
-template<port _port, uint8_t min_bit, uint8_t max_bit, typename pin, typename ...args>
+/**
+ * Checks the occurrence of a pin in the range
+ *
+ * @param _port    - gpio port
+ * @param _min_bit - min pin bit
+ * @param _max_bit - max pin bit
+ * @param _pin     - first pin in arglist
+ * @param _pins    - other pin's
+ */
+template<port _port, uint8_t _min_bit, uint8_t _max_bit, typename _pin, typename ..._pins>
 constexpr bool pin_in_range()
 {
   constexpr auto check = []
   {
-    return (pin().port == _port) && (pin().bit >= min_bit) && (pin().bit <= max_bit);
+    return (_pin().port == _port) && (_pin().bit >= _min_bit) && (_pin().bit <= _max_bit);
   };
 
-  if constexpr(sizeof...(args) > 0) {
-    return check()? true : pin_in_range<_port, min_bit, max_bit, args...>();
+  if constexpr(sizeof...(_pins) > 0) {
+    return check() || pin_in_range<_port, _min_bit, _max_bit, _pins...>();
   }
 
   return check();
 }
 
-template<uint32_t r, uint8_t n, port _port, uint8_t bit_ofs, uint8_t min_bit, uint8_t max_bit,
-         typename pin, typename ...args>
+/**
+ * Calc bit mask for port
+ *
+ * @param _port    - gpio port
+ * @param _n       - bit field width
+ * @param _bit_ofs - offset of port pin bit
+ * @param _min_bit - min pin bit
+ * @param _max_bit - max pin bit
+ * @param _pin     - first pin in arglist
+ * @param _pins    - other pin's
+ *
+ * @return bit mask
+ */
+template<port _port, uint8_t _n, uint8_t _bit_ofs, uint8_t _min_bit, uint8_t _max_bit,
+         typename _pin, typename ..._pins>
 constexpr auto mask()
 {
-  constexpr auto bits = []() -> decltype(r)
+  constexpr auto bits = []() -> uint32_t
   {
-    if constexpr((pin().port == _port) && (pin().bit >= min_bit) && (pin().bit <= max_bit)) {
-      return r | ((0xFFFFFFFF >> (32 - n)) << ((pin().bit - bit_ofs) * n));
+    if constexpr((_pin().port == _port) && (_pin().bit >= _min_bit) && (_pin().bit <= _max_bit)) {
+      return (0xFFFFFFFF >> (32 - _n)) << ((_pin().bit - _bit_ofs) * _n);
     }
-    return r;
+    return 0;
   };
 
-  if constexpr(sizeof...(args) > 0) {
-    return mask<bits(), n, _port, bit_ofs, min_bit, max_bit, args...>();
+  if constexpr(sizeof...(_pins) > 0) {
+    return bits() | mask<_port, _n, _bit_ofs, _min_bit, _max_bit, _pins...>();
   }
 
   return bits();
 }
 
-template<uint32_t r, uint8_t bit, uint8_t ...args>
-constexpr auto mask()
-{
-  if constexpr(sizeof...(args) > 0) { return mask<r | (1 << bit), args...>(); }
-  return r | (1 << bit);
-}
+template<uint8_t ...args>
+constexpr auto mask() { return ((1 << args) | ...); }
 
 template<typename ...args>
 void configure()
@@ -120,68 +145,68 @@ template<bool val, typename ...args>
 void set()
 {
 #if defined(GPIOA)
-  if constexpr(has_port<port::A, args...>()) {
-    GPIOA->BSRR = mask<0, 1, port::A, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::A, args...>()) {
+    GPIOA->BSRR = mask<port::A, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOB)
-  if constexpr(has_port<port::B, args...>()) {
-    GPIOB->BSRR = mask<0, 1, port::B, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::B, args...>()) {
+    GPIOB->BSRR = mask<port::B, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOC)
-  if constexpr(has_port<port::C, args...>()) {
-    GPIOC->BSRR = mask<0, 1, port::C, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::C, args...>()) {
+    GPIOC->BSRR = mask<port::C, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOD)
-  if constexpr(has_port<port::D, args...>()) {
-    GPIOD->BSRR = mask<0, 1, port::D, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::D, args...>()) {
+    GPIOD->BSRR = mask<port::D, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOE)
-  if constexpr(has_port<port::E, args...>()) {
-    GPIOE->BSRR = mask<0, 1, port::E, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::E, args...>()) {
+    GPIOE->BSRR = mask<port::E, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOF)
-  if constexpr(has_port<port::F, args...>()) {
-    GPIOF->BSRR = mask<0, 1, port::F, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::F, args...>()) {
+    GPIOF->BSRR = mask<port::F, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOG)
-  if constexpr(has_port<port::G, args...>()) {
-    GPIOG->BSRR = mask<0, 1, port::G, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::G, args...>()) {
+    GPIOG->BSRR = mask<port::G, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOH)
-  if constexpr(has_port<port::H, args...>()) {
-    GPIOH->BSRR = mask<0, 1, port::H, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::H, args...>()) {
+    GPIOH->BSRR = mask<port::H, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOI)
-  if constexpr(has_port<port::I, args...>()) {
-    GPIOI->BSRR = mask<0, 1, port::I, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::I, args...>()) {
+    GPIOI->BSRR = mask<port::I, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOJ)
-  if constexpr(has_port<port::J, args...>()) {
-    GPIOJ->BSRR = mask<0, 1, port::J, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::J, args...>()) {
+    GPIOJ->BSRR = mask<port::J, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 
 #if defined(GPIOK)
-  if constexpr(has_port<port::K, args...>()) {
-    GPIOK->BSRR = mask<0, 1, port::K, 0, 0, 15, args...>() << (val? 0 : 16);
+  if constexpr(pins_in_port<port::K, args...>()) {
+    GPIOK->BSRR = mask<port::K, 1, 0, 0, 15, args...>() << (val? 0 : 16);
   }
 #endif
 }
@@ -286,68 +311,68 @@ template<typename ...args>
 void toggle()
 {
 #if defined(GPIOA)
-  if constexpr(has_port<port::A, args...>()) {
-    get<port::A>() ^= mask<0, 1, port::A, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::A, args...>()) {
+    get<port::A>() ^= mask<port::A, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOB)
-  if constexpr(has_port<port::B, args...>()) {
-    get<port::B>() ^= mask<0, 1, port::B, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::B, args...>()) {
+    get<port::B>() ^= mask<port::B, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOC)
-  if constexpr(has_port<port::C, args...>()) {
-    get<port::C>() ^= mask<0, 1, port::C, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::C, args...>()) {
+    get<port::C>() ^= mask<port::C, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOD)
-  if constexpr(has_port<port::D, args...>()) {
-    get<port::D>() ^= mask<0, 1, port::D, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::D, args...>()) {
+    get<port::D>() ^= mask<port::D, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOE)
-  if constexpr(has_port<port::E, args...>()) {
-    get<port::E>() ^= mask<0, 1, port::E, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::E, args...>()) {
+    get<port::E>() ^= mask<port::E, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOF)
-  if constexpr(has_port<port::F, args...>()) {
-    get<port::F>() ^= mask<0, 1, port::F, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::F, args...>()) {
+    get<port::F>() ^= mask<port::F, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOG)
-  if constexpr(has_port<port::G, args...>()) {
-    get<port::G>() ^= mask<0, 1, port::G, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::G, args...>()) {
+    get<port::G>() ^= mask<port::G, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOH)
-  if constexpr(has_port<port::H, args...>()) {
-    get<port::H>() ^= mask<0, 1, port::H, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::H, args...>()) {
+    get<port::H>() ^= mask<port::H, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOI)
-  if constexpr(has_port<port::I, args...>()) {
-    get<port::I>() ^= mask<0, 1, port::I, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::I, args...>()) {
+    get<port::I>() ^= mask<port::I, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOJ)
-  if constexpr(has_port<port::J, args...>()) {
-    get<port::J>() ^= mask<0, 1, port::J, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::J, args...>()) {
+    get<port::J>() ^= mask<port::J, 1, 0, 0, 15, args...>();
   }
 #endif
 
 #if defined(GPIOK)
-  if constexpr(has_port<port::K, args...>()) {
-    get<port::K>() ^= mask<0, 1, port::K, 0, 0, 15, args...>();
+  if constexpr(pins_in_port<port::K, args...>()) {
+    get<port::K>() ^= mask<port::K, 1, 0, 0, 15, args...>();
   }
 #endif
 }

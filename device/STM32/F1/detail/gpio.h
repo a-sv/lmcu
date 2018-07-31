@@ -73,15 +73,15 @@ constexpr auto pull_bits()
 template<port _port, typename ...args>
 void configure_port(GPIO_TypeDef *inst)
 {
-  if constexpr(!has_port<_port, args...>()) { return; }
+  if constexpr(!pins_in_port<_port, args...>()) { return; }
 
   if constexpr(pin_in_range<_port, 0, 7, args...>()) {
-    constexpr auto mask4 = ~mask<0, 4, _port, 0, 0, 7, args...>();
+    constexpr auto mask4 = ~mask<_port, 4, 0, 0, 7, args...>();
     inst->CRL = (inst->CRL & mask4) | cr_bits<0, _port, true, args...>();
   }
 
   if constexpr(pin_in_range<_port, 8, 15, args...>()) {
-    constexpr auto mask4 = ~mask<0, 4, _port, 8, 8, 15, args...>();
+    constexpr auto mask4 = ~mask<_port, 4, 8, 8, 15, args...>();
     inst->CRH = (inst->CRH & mask4) | cr_bits<0, _port, false, args...>();
   }
 

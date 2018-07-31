@@ -105,9 +105,9 @@ constexpr auto afr_bits()
 template<port _port, typename ...args>
 void configure_port(GPIO_TypeDef *inst)
 {
-  if constexpr(detail::has_port<_port, args...>()) {
-    constexpr auto mask1 = ~mask<0, 1, _port, 0, 0, 15, args...>();
-    constexpr auto mask2 = ~mask<0, 2, _port, 0, 0, 15, args...>();
+  if constexpr(detail::pins_in_port<_port, args...>()) {
+    constexpr auto mask1 = ~mask<_port, 1, 0, 0, 15, args...>();
+    constexpr auto mask2 = ~mask<_port, 2, 0, 0, 15, args...>();
 
     inst->MODER   = (inst->MODER & mask2)   | mode_bits<0, _port, args...>();
     inst->OTYPER  = (inst->OTYPER & mask1)  | otype_bits<0, _port, args...>();
@@ -115,12 +115,12 @@ void configure_port(GPIO_TypeDef *inst)
     inst->PUPDR   = (inst->PUPDR & mask2)   | pull_bits<0, _port, args...>();
 
     if constexpr(pin_in_range<_port, 0, 7, args...>()) {
-      constexpr auto mask4 = ~mask<0, 4, _port, 0, 0, 7, args...>();
+      constexpr auto mask4 = ~mask<_port, 4, 0, 0, 7, args...>();
       inst->AFR[0] = (inst->AFR[0] & mask4) | afr_bits<0, _port, true, args...>();
     }
 
     if constexpr(pin_in_range<_port, 8, 15, args...>()) {
-      constexpr auto mask4 = ~mask<0, 4, _port, 8, 8, 15, args...>();
+      constexpr auto mask4 = ~mask<_port, 4, 8, 8, 15, args...>();
       inst->AFR[1] = (inst->AFR[1] & mask4) | afr_bits<0, _port, false, args...>();
     }
   }
