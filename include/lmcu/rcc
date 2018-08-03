@@ -6,7 +6,7 @@
 #include "../../device/STM32/F4/29I/rcc.h"
 #elif defined(STM32F103C8)
 #include "../../device/STM32/F1/03C/rcc.h"
-#elif defined(STM32F107VC)
+#elif defined(STM32F107RC) || defined(STM32F107VC)
 #include "../../device/STM32/F1/07V/rcc.h"
 #else
   #error "device not supported"
