@@ -78,6 +78,12 @@ enum class speed
   very_high
 };
 
+// not connected pin
+struct not_connected
+{
+  static constexpr auto nc = true;
+};
+
 template<port _port, uint16_t _bit, mode _mode, pull _pull, speed _speed>
 struct pin
 {
@@ -87,6 +93,7 @@ struct pin
   static constexpr auto mode  = _mode;
   static constexpr auto pull  = _pull;
   static constexpr auto speed = _speed;
+  static constexpr auto nc    = false;
 };
 
 #include "detail/gpio.h"
