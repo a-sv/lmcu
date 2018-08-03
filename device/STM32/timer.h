@@ -1,6 +1,5 @@
 #pragma once
 #include <lmcu/device>
-#include "dbg/debug.h"
 
 namespace lmcu {
 namespace timer {

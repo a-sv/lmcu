@@ -453,7 +453,6 @@ constexpr void inj_seqence_configure()
   if constexpr(match) {
     [[maybe_unused]] auto inst = detail::inst<_module_id>();
     inst->JSQR = jsqr | (_rank << ADC_JSQR_JL_Pos);
-    dbg::debug("inst->JSQR = %u", inst->JSQR);
     switch(_rank) {
     case 3: inst->JOFR1 = jofr_1;
     case 2: inst->JOFR2 = jofr_2;

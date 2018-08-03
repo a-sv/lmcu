@@ -3,7 +3,6 @@
 #include <lmcu/delay>
 #include "../../common/io.h"
 #include "../../common/defer.h"
-#include <debug.h>
 
 namespace lmcu {
 namespace i2c {
