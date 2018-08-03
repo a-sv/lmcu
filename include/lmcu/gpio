@@ -6,6 +6,8 @@
 #include "../../device/STM32/F4/29I/gpio.h"
 #elif defined(STM32F103C8)
 #include "../../device/STM32/F1/03C/gpio.h"
+#elif defined(STM32F107RC)
+#include "../../device/STM32/F1/07R/gpio.h"
 #elif defined(STM32F107VC)
 #include "../../device/STM32/F1/07V/gpio.h"
 #else

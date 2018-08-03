@@ -12,7 +12,7 @@
   #include <stm32f103xb.h>
   #define _LMCU_DEVICE_STM32_
   #define _LMCU_DEVICE_STM32F1_
-#elif defined(STM32F107VC)
+#elif defined(STM32F107VC) || defined(STM32F107RC)
   #include <stm32f107xc.h>
   #define _LMCU_DEVICE_STM32_
   #define _LMCU_DEVICE_STM32F1_
