@@ -185,7 +185,7 @@ void start(_src_t&& src, _dst_t&& dst, uint16_t size)
 }
 
 template<event evt, event ...evts>
-uint32_t evt_bits()
+constexpr uint32_t event_bits()
 {
   constexpr auto bit = []() -> uint32_t {
     switch(evt)
@@ -197,20 +197,20 @@ uint32_t evt_bits()
     return 0;
   }
 
-  if constexpr(sizeof...(evts) > 0) { return bit() | evt_bits<evts...>(); }
+  if constexpr(sizeof...(evts) > 0) { return bit() | event_bits<evts...>(); }
   return bit();
 }
 
 template<typename _module, event ...evts>
 void enable_events()
 {
-  detail::c_inst<_module().module_id, _module().channel>()->CCR |= evt_bits<evts...>();
+  detail::c_inst<_module().module_id, _module().channel>()->CCR |= event_bits<evts...>();
 }
 
 template<typename _module, event ...evts>
 void disable_events()
 {
-  detail::c_inst<_module().module_id, _module().channel>()->CCR &= ~evt_bits<evts...>();
+  detail::c_inst<_module().module_id, _module().channel>()->CCR &= ~event_bits<evts...>();
 }
 
 template<typename _module>
