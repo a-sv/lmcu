@@ -32,6 +32,60 @@ DMA_Channel_TypeDef *c_inst()
   }
 }
 
+template<module_id _module_id, channel _channel, typename _irq>
+void enable_irq()
+{
+  constexpr auto irq = _irq();
+
+  if constexpr(irq.irq_type != irq_type::disable) {
+    const auto irqp = NVIC_EncodePriority(irq.prio_group, irq.preempt_prio, irq.sub_prio);
+
+    switch(_module_id) {
+#if defined(DMA1)
+    case module_id::dma1:
+      switch(_channel)
+      {
+      case channel::ch1:
+        NVIC_SetPriority(DMA1_Channel1_IRQn, irqp);
+        NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+        break;
+
+      case channel::ch2:
+        NVIC_SetPriority(DMA1_Channel2_IRQn, irqp);
+        NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+        break;
+
+      case channel::ch3:
+        NVIC_SetPriority(DMA1_Channel3_IRQn, irqp);
+        NVIC_EnableIRQ(DMA1_Channel3_IRQn);
+        break;
+
+      case channel::ch4:
+        NVIC_SetPriority(DMA1_Channel4_IRQn, irqp);
+        NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+        break;
+
+      case channel::ch5:
+        NVIC_SetPriority(DMA1_Channel5_IRQn, irqp);
+        NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+        break;
+
+      case channel::ch6:
+        NVIC_SetPriority(DMA1_Channel6_IRQn, irqp);
+        NVIC_EnableIRQ(DMA1_Channel6_IRQn);
+        break;
+
+      case channel::ch7:
+        NVIC_SetPriority(DMA1_Channel7_IRQn, irqp);
+        NVIC_EnableIRQ(DMA1_Channel7_IRQn);
+        break;
+      }
+    break;
+  #endif
+    }
+  }
+}
+
 template<typename _arg1, typename ...args>
 void configure()
 {
@@ -97,6 +151,7 @@ void configure()
     c_inst->CCR = r;
   }
 
+  enable_irq<m.module_id, m.channel, decltype(m.irq)>();
 
   if constexpr(sizeof...(args) > 0) { configure<args...>(); }
 }
@@ -127,6 +182,98 @@ void start(_src_t&& src, _dst_t&& dst, uint16_t size)
   }
 
   c_inst->CCR |= DMA_CCR_EN;
+}
+
+template<event evt, event ...evts>
+uint32_t evt_bits()
+{
+  constexpr auto bit = []() -> uint32_t {
+    switch(evt)
+    {
+    case event::cct: return DMA_CCR_TCIE;
+    case event::cht: return DMA_CCR_HTIE;
+    case event::cte: return DMA_CCR_TEIE;
+    };
+    return 0;
+  }
+
+  if constexpr(sizeof...(evts) > 0) { return bit() | evt_bits<evts...>(); }
+  return bit();
+}
+
+template<typename _module, event ...evts>
+void enable_events()
+{
+  detail::c_inst<_module().module_id, _module().channel>()->CCR |= evt_bits<evts...>();
+}
+
+template<typename _module, event ...evts>
+void disable_events()
+{
+  detail::c_inst<_module().module_id, _module().channel>()->CCR &= ~evt_bits<evts...>();
+}
+
+template<typename _module>
+event irq_source() {
+  auto inst = detail::inst<_module().module_id>();
+
+  event evt = static_cast<event>(0);
+
+  const uint32_t r = inst->ISR;
+
+  switch(_module().channel)
+  {
+    case channel::ch1:
+      if((r & DMA_ISR_GIF1)  != 0) { evt = evt | event::cgi; }
+      if((r & DMA_ISR_TCIF1) != 0) { evt = evt | event::cct; }
+      if((r & DMA_ISR_HTIF1) != 0) { evt = evt | event::cht; }
+      if((r & DMA_ISR_TEIF1) != 0) { evt = evt | event::cte; }
+    break;
+
+    case channel::ch2:
+      if((r & DMA_ISR_GIF2)  != 0) { evt = evt | event::cgi; }
+      if((r & DMA_ISR_TCIF2) != 0) { evt = evt | event::cct; }
+      if((r & DMA_ISR_HTIF2) != 0) { evt = evt | event::cht; }
+      if((r & DMA_ISR_TEIF2) != 0) { evt = evt | event::cte; }
+    break;
+
+    case channel::ch3:
+      if((r & DMA_ISR_GIF3)  != 0) { evt = evt | event::cgi; }
+      if((r & DMA_ISR_TCIF3) != 0) { evt = evt | event::cct; }
+      if((r & DMA_ISR_HTIF3) != 0) { evt = evt | event::cht; }
+      if((r & DMA_ISR_TEIF3) != 0) { evt = evt | event::cte; }
+    break;
+
+    case channel::ch4:
+      if((r & DMA_ISR_GIF4)  != 0) { evt = evt | event::cgi; }
+      if((r & DMA_ISR_TCIF4) != 0) { evt = evt | event::cct; }
+      if((r & DMA_ISR_HTIF4) != 0) { evt = evt | event::cht; }
+      if((r & DMA_ISR_TEIF4) != 0) { evt = evt | event::cte; }
+    break;
+
+    case channel::ch5:
+      if((r & DMA_ISR_GIF5)  != 0) { evt = evt | event::cgi; }
+      if((r & DMA_ISR_TCIF5) != 0) { evt = evt | event::cct; }
+      if((r & DMA_ISR_HTIF5) != 0) { evt = evt | event::cht; }
+      if((r & DMA_ISR_TEIF5) != 0) { evt = evt | event::cte; }
+    break;
+
+    case channel::ch6:
+      if((r & DMA_ISR_GIF6)  != 0) { evt = evt | event::cgi; }
+      if((r & DMA_ISR_TCIF6) != 0) { evt = evt | event::cct; }
+      if((r & DMA_ISR_HTIF6) != 0) { evt = evt | event::cht; }
+      if((r & DMA_ISR_TEIF6) != 0) { evt = evt | event::cte; }
+    break;
+
+    case channel::ch7:
+      if((r & DMA_ISR_GIF7)  != 0) { evt = evt | event::cgi; }
+      if((r & DMA_ISR_TCIF7) != 0) { evt = evt | event::cct; }
+      if((r & DMA_ISR_HTIF7) != 0) { evt = evt | event::cht; }
+      if((r & DMA_ISR_TEIF7) != 0) { evt = evt | event::cte; }
+    break;
+  }
+
+  return evt;
 }
 
 } // namespace detail
