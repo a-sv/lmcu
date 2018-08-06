@@ -200,7 +200,7 @@ void configure()
     []() -> uint32_t
     {
       switch(m.bs2) {
-      case bs2::tq1: return 0 << CAN_BTR_TS2_Pos;
+      case bs2::tq1: return 0;
       case bs2::tq2: return 1 << CAN_BTR_TS2_Pos;
       case bs2::tq3: return 2 << CAN_BTR_TS2_Pos;
       case bs2::tq4: return 3 << CAN_BTR_TS2_Pos;
@@ -306,192 +306,223 @@ void filter_disable()
   inst->FMR &= ~CAN_FMR_FINIT;
 }
 
-template<uint32_t r, event evt, event ...evts>
-uint32_t event_bits()
+template<event evt, event ...evts>
+constexpr uint32_t event_bits()
 {
-  if constexpr(sizeof...(evts) > 0) { return event_bits<r, evts...>(); }
-
-  switch(evt)
+  constexpr auto bit = []() -> uint32_t
   {
-  case event::tme:   return r | CAN_IER_TMEIE;
-  case event::fmp_0: return r | CAN_IER_FMPIE0;
-  case event::ff_0:  return r | CAN_IER_FFIE0;
-  case event::fov_0: return r | CAN_IER_FOVIE0;
-  case event::fmp_1: return r | CAN_IER_FMPIE1;
-  case event::ff_1:  return r | CAN_IER_FFIE1;
-  case event::fov_1: return r | CAN_IER_FOVIE1;
-  case event::wku:   return r | CAN_IER_WKUIE;
-  case event::slk:   return r | CAN_IER_SLKIE;
-  case event::ewg:   return r | CAN_IER_EWGIE;
-  case event::epv:   return r | CAN_IER_EPVIE;
-  case event::bof:   return r | CAN_IER_BOFIE;
-  case event::lec:   return r | CAN_IER_LECIE;
-  case event::err:   return r | CAN_IER_ERRIE;
+    switch(evt)
+    {
+    case event::tme:   return CAN_IER_TMEIE;
+    case event::fmp_0: return CAN_IER_FMPIE0;
+    case event::ff_0:  return CAN_IER_FFIE0;
+    case event::fov_0: return CAN_IER_FOVIE0;
+    case event::fmp_1: return CAN_IER_FMPIE1;
+    case event::ff_1:  return CAN_IER_FFIE1;
+    case event::fov_1: return CAN_IER_FOVIE1;
+    case event::wku:   return CAN_IER_WKUIE;
+    case event::slk:   return CAN_IER_SLKIE;
+    case event::ewg:   return CAN_IER_EWGIE;
+    case event::epv:   return CAN_IER_EPVIE;
+    case event::bof:   return CAN_IER_BOFIE;
+    case event::lec:   return CAN_IER_LECIE;
+    case event::err:   return CAN_IER_ERRIE;
+    };
+    return 0;
   };
 
-  return r;
+  if constexpr(sizeof...(evts) > 0) { return bit() | event_bits<evts...>(); }
+  return bit();
 }
 
 template<typename _module, event ...evts>
-void enable_events() { detail::inst<_module().module_id>()->IER |= event_bits<0, evts...>(); }
+void enable_events() { detail::inst<_module().module_id>()->IER |= event_bits<evts...>(); }
 
 template<typename _module, event ...evts>
-void disable_events() { detail::inst<_module().module_id>()->IER &= ~event_bits<0, evts...>(); }
+void disable_events() { detail::inst<_module().module_id>()->IER &= ~event_bits<evts...>(); }
 
-template<flags r, flags _f, flags ..._flags>
-flags get_tsr_flags(const uint32_t reg)
+template<flags _f, flags ..._flags>
+inline flags get_tsr_flags(const uint32_t reg)
 {
-  if constexpr(sizeof...(_flags) > 0) { return get_tsr_flags<r, _flags...>(reg); }
-
-  constexpr auto none = static_cast<flags>(0);
-
-  switch(_f)
+  auto flag = []
   {
-  case flags::rqcp_0: return r | ((reg & CAN_TSR_RQCP0) == 0? none : flags::rqcp_0);
-  case flags::rqcp_1: return r | ((reg & CAN_TSR_RQCP1) == 0? none : flags::rqcp_1);
-  case flags::rqcp_2: return r | ((reg & CAN_TSR_RQCP2) == 0? none : flags::rqcp_2);
-  case flags::txok_0: return r | ((reg & CAN_TSR_TXOK0) == 0? none : flags::txok_0);
-  case flags::txok_1: return r | ((reg & CAN_TSR_TXOK1) == 0? none : flags::txok_1);
-  case flags::txok_2: return r | ((reg & CAN_TSR_TXOK2) == 0? none : flags::txok_2);
-  case flags::tme_0:  return r | ((reg & CAN_TSR_TME0 ) == 0? none : flags::tme_0 );
-  case flags::tme_1:  return r | ((reg & CAN_TSR_TME1 ) == 0? none : flags::tme_1 );
-  case flags::tme_2:  return r | ((reg & CAN_TSR_TME2 ) == 0? none : flags::tme_2 );
-  default : break;
-  }
+    constexpr auto none = static_cast<flags>(0);
 
-  return r;
+    switch(_f)
+    {
+    case flags::rqcp_0: return (reg & CAN_TSR_RQCP0) == 0? none : flags::rqcp_0;
+    case flags::rqcp_1: return (reg & CAN_TSR_RQCP1) == 0? none : flags::rqcp_1;
+    case flags::rqcp_2: return (reg & CAN_TSR_RQCP2) == 0? none : flags::rqcp_2;
+    case flags::txok_0: return (reg & CAN_TSR_TXOK0) == 0? none : flags::txok_0;
+    case flags::txok_1: return (reg & CAN_TSR_TXOK1) == 0? none : flags::txok_1;
+    case flags::txok_2: return (reg & CAN_TSR_TXOK2) == 0? none : flags::txok_2;
+    case flags::tme_0:  return (reg & CAN_TSR_TME0 ) == 0? none : flags::tme_0;
+    case flags::tme_1:  return (reg & CAN_TSR_TME1 ) == 0? none : flags::tme_1;
+    case flags::tme_2:  return (reg & CAN_TSR_TME2 ) == 0? none : flags::tme_2;
+    default : break;
+    }
+
+    return none;
+  };
+
+  if constexpr(sizeof...(_flags) > 0) { return flag() | get_tsr_flags<_flags...>(reg); }
+  return flag();
 }
 
-template<flags r, flags _f, flags ..._flags>
-flags get_rf0r_flags(const uint32_t reg)
+template<flags _f, flags ..._flags>
+inline flags get_rf0r_flags(const uint32_t reg)
 {
-  if constexpr(sizeof...(_flags) > 0) { return get_rf0r_flags<r, _flags...>(reg); }
-
-  constexpr auto none = static_cast<flags>(0);
-
-  switch(_f)
+  auto flag = []
   {
-  case flags::fmp_0: return r | ((reg & CAN_RF0R_FMP0 ) == 0? none : flags::fmp_0);
-  case flags::ff_0:  return r | ((reg & CAN_RF0R_FULL0) == 0? none : flags::ff_0 );
-  case flags::fov_0: return r | ((reg & CAN_RF0R_FOVR0) == 0? none : flags::fov_0);
-  default : break;
-  }
+    constexpr auto none = static_cast<flags>(0);
 
-  return r;
+    switch(_f)
+    {
+    case flags::fmp_0: return (reg & CAN_RF0R_FMP0 ) == 0? none : flags::fmp_0;
+    case flags::ff_0:  return (reg & CAN_RF0R_FULL0) == 0? none : flags::ff_0;
+    case flags::fov_0: return (reg & CAN_RF0R_FOVR0) == 0? none : flags::fov_0;
+    default : break;
+    }
+
+    return none;
+  };
+
+  if constexpr(sizeof...(_flags) > 0) { return flag() | get_rf0r_flags<_flags...>(reg); }
+  return flag();
 }
 
-template<flags r, flags _f, flags ..._flags>
-flags get_rf1r_flags(const uint32_t reg)
+template<flags _f, flags ..._flags>
+inline flags get_rf1r_flags(const uint32_t reg)
 {
-  if constexpr(sizeof...(_flags) > 0) { return get_rf1r_flags<r, _flags...>(reg); }
-
-  constexpr auto none = static_cast<flags>(0);
-
-  switch(_f)
+  auto flag = []
   {
-  case flags::fmp_1: return r | ((reg & CAN_RF1R_FMP1 ) == 0? none : flags::fmp_1);
-  case flags::ff_1:  return r | ((reg & CAN_RF1R_FULL1) == 0? none : flags::ff_1 );
-  case flags::fov_1: return r | ((reg & CAN_RF1R_FOVR1) == 0? none : flags::fov_1);
-  default : break;
-  }
+    constexpr auto none = static_cast<flags>(0);
 
-  return r;
+    switch(_f)
+    {
+    case flags::fmp_1: return (reg & CAN_RF1R_FMP1 ) == 0? none : flags::fmp_1;
+    case flags::ff_1:  return (reg & CAN_RF1R_FULL1) == 0? none : flags::ff_1;
+    case flags::fov_1: return (reg & CAN_RF1R_FOVR1) == 0? none : flags::fov_1;
+    default : break;
+    }
+
+    return none;
+  };
+
+  if constexpr(sizeof...(_flags) > 0) { return flag() | get_rf1r_flags<_flags...>(reg); }
+  return flag();
 }
 
-template<flags r, flags _f, flags ..._flags>
-flags get_msr_flags(const uint32_t reg)
+template<flags _f, flags ..._flags>
+inline flags get_msr_flags(const uint32_t reg)
 {
-  if constexpr(sizeof...(_flags) > 0) { return get_msr_flags<r, _flags...>(reg); }
-
-  constexpr auto none = static_cast<flags>(0);
-
-  switch(_f)
+  auto flag = []
   {
-  case flags::wku:   return r | ((reg & CAN_MSR_WKUI ) == 0? none : flags::wku  );
-  case flags::slaki: return r | ((reg & CAN_MSR_SLAKI) == 0? none : flags::slaki);
-  default : break;
-  }
+    constexpr auto none = static_cast<flags>(0);
 
-  return r;
+    switch(_f)
+    {
+    case flags::wku:   return (reg & CAN_MSR_WKUI ) == 0? none : flags::wku;
+    case flags::slaki: return (reg & CAN_MSR_SLAKI) == 0? none : flags::slaki;
+    default : break;
+    }
+
+    return none;
+  };
+
+  if constexpr(sizeof...(_flags) > 0) { return flag() | get_msr_flags<_flags...>(reg); }
+  return flag();
 }
 
 template<typename _module, flags ..._flags>
 flags get_flags()
 {
   auto inst = detail::inst<_module().module_id>();
-  return get_tsr_flags <static_cast<flags>(0), _flags...>(inst->TSR)  |
-         get_rf0r_flags<static_cast<flags>(0), _flags...>(inst->RF0R) |
-         get_rf1r_flags<static_cast<flags>(0), _flags...>(inst->RF1R) |
-         get_msr_flags <static_cast<flags>(0), _flags...>(inst->MSR);
+  return get_tsr_flags <_flags...>(inst->TSR)  |
+         get_rf0r_flags<_flags...>(inst->RF0R) |
+         get_rf1r_flags<_flags...>(inst->RF1R) |
+         get_msr_flags <_flags...>(inst->MSR);
 }
 
-template<uint32_t r, flags _f, flags ..._flags>
+template<flags _f, flags ..._flags>
 constexpr uint32_t clr_tsr_flags()
 {
-  if constexpr(sizeof...(_flags) > 0) { return clr_tsr_flags<r, _flags...>(); }
-
-  switch(_f)
+  constexpr auto bit = []() -> uint32_t
   {
-  case flags::rqcp_0: return r | CAN_TSR_RQCP0;
-  case flags::rqcp_1: return r | CAN_TSR_RQCP1;
-  case flags::rqcp_2: return r | CAN_TSR_RQCP2;
-  case flags::txok_0: return r | CAN_TSR_TXOK0;
-  case flags::txok_1: return r | CAN_TSR_TXOK1;
-  case flags::txok_2: return r | CAN_TSR_TXOK2;
-  case flags::tme_0:  return r | CAN_TSR_TME0;
-  case flags::tme_1:  return r | CAN_TSR_TME1;
-  case flags::tme_2:  return r | CAN_TSR_TME2;
-  default : break;
-  }
+    switch(_f)
+    {
+    case flags::rqcp_0: return CAN_TSR_RQCP0;
+    case flags::rqcp_1: return CAN_TSR_RQCP1;
+    case flags::rqcp_2: return CAN_TSR_RQCP2;
+    case flags::txok_0: return CAN_TSR_TXOK0;
+    case flags::txok_1: return CAN_TSR_TXOK1;
+    case flags::txok_2: return CAN_TSR_TXOK2;
+    case flags::tme_0:  return CAN_TSR_TME0;
+    case flags::tme_1:  return CAN_TSR_TME1;
+    case flags::tme_2:  return CAN_TSR_TME2;
+    default : break;
+    }
+    return 0;
+  };
 
-  return r;
+  if constexpr(sizeof...(_flags) > 0) { return bit() | clr_tsr_flags<_flags...>(); }
+  return bit();
 }
 
-template<uint32_t r, flags _f, flags ..._flags>
+template<flags _f, flags ..._flags>
 constexpr uint32_t clr_rf0r_flags()
 {
-  if constexpr(sizeof...(_flags) > 0) { return clr_rf0r_flags<r, _flags...>(); }
-
-  switch(_f)
+  constexpr auto bit = []() -> uint32_t
   {
-  case flags::fmp_0: return r | CAN_RF0R_RFOM0;
-  case flags::ff_0:  return r | CAN_RF0R_FULL0;
-  case flags::fov_0: return r | CAN_RF0R_FOVR0;
-  default : break;
-  }
+    switch(_f)
+    {
+    case flags::fmp_0: return CAN_RF0R_RFOM0;
+    case flags::ff_0:  return CAN_RF0R_FULL0;
+    case flags::fov_0: return CAN_RF0R_FOVR0;
+    default : break;
+    }
+    return 0;
+  };
 
-  return r;
+  if constexpr(sizeof...(_flags) > 0) { return bit() | clr_rf0r_flags<_flags...>(); }
+  return bit();
 }
 
-template<uint32_t r, flags _f, flags ..._flags>
+template<flags _f, flags ..._flags>
 constexpr uint32_t clr_rf1r_flags()
 {
-  if constexpr(sizeof...(_flags) > 0) { return clr_rf1r_flags<r, _flags...>(); }
-
-  switch(_f)
+  constexpr auto bit = []() -> uint32_t
   {
-  case flags::fmp_1: return r | CAN_RF1R_RFOM1;
-  case flags::ff_1:  return r | CAN_RF1R_FULL1;
-  case flags::fov_1: return r | CAN_RF1R_FOVR1;
-  default : break;
-  }
+    switch(_f)
+    {
+    case flags::fmp_1: return CAN_RF1R_RFOM1;
+    case flags::ff_1:  return CAN_RF1R_FULL1;
+    case flags::fov_1: return CAN_RF1R_FOVR1;
+    default : break;
+    }
+    return 0;
+  };
 
-  return r;
+  if constexpr(sizeof...(_flags) > 0) { return bit() | clr_rf1r_flags<_flags...>(); }
+  return bit();
 }
 
 template<uint32_t r, flags _f, flags ..._flags>
 constexpr uint32_t clr_msr_flags()
 {
-  if constexpr(sizeof...(_flags) > 0) { return clr_msr_flags<r, _flags...>(); }
-
-  switch(_f)
+  constexpr auto bit = []() -> uint32_t
   {
-  case flags::wku:   return r | CAN_MSR_WKUI;
-  case flags::slaki: return r | CAN_MSR_SLAKI;
-  default : break;
-  }
+    switch(_f)
+    {
+    case flags::wku:   return CAN_MSR_WKUI;
+    case flags::slaki: return CAN_MSR_SLAKI;
+    default : break;
+    }
+    return 0;
+  };
 
-  return r;
+  if constexpr(sizeof...(_flags) > 0) { return bit() | clr_msr_flags<_flags...>(); }
+  return bit();
 }
 
 template<typename _module, flags ..._flags>
@@ -500,22 +531,22 @@ void clear_flags()
   auto inst = detail::inst<_module().module_id>();
 
   {
-    constexpr auto mask = clr_tsr_flags<0, _flags...>();
+    constexpr auto mask = clr_tsr_flags<_flags...>();
     if constexpr(mask != 0) { inst->TSR = mask; }
   }
 
   {
-    constexpr auto mask = clr_rf0r_flags<0, _flags...>();
+    constexpr auto mask = clr_rf0r_flags<_flags...>();
     if constexpr(mask != 0) { inst->RF0R = mask; }
   }
 
   {
-    constexpr auto mask = clr_rf1r_flags<0, _flags...>();
+    constexpr auto mask = clr_rf1r_flags<_flags...>();
     if constexpr(mask != 0) { inst->RF1R = mask; }
   }
 
   {
-    constexpr auto mask = clr_msr_flags<0, _flags...>();
+    constexpr auto mask = clr_msr_flags<_flags...>();
     if constexpr(mask != 0) { inst->MSR = mask; }
   }
 }
