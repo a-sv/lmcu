@@ -1,6 +1,6 @@
 #pragma once
 #include <lmcu/device>
-#include "../../common/def.h"
+#include "../../../common/def.h"
 
 namespace lmcu {
 namespace dma {
@@ -41,7 +41,7 @@ enum class irq_type { disable, chi };
 constexpr auto default_prio_group = 5;
 
 } // namespace nvic
-#include "../cortex/nvic.h"
+#include "../../cortex/nvic.h"
 
 enum class event
 {

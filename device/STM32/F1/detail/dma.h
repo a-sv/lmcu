@@ -21,9 +21,11 @@ inline DMA_TypeDef *inst()
 template<typename _module>
 inline DMA_Channel_TypeDef *c_inst()
 {
+#if defined(DMA2)
   if constexpr(_module::module_id == module_id::dma2) {
     static_assert(_module::channel <= channel::ch5, "DMA2 has only 1 - 5 channel");
   }
+#endif
 
   switch(_module::module_id) {
 #if defined(DMA1)
@@ -63,47 +65,18 @@ template<module_id _module_id, channel _channel, typename _irq>
 void enable_irq()
 {
   if constexpr(_irq::irq_type != nvic::irq_type::disable) {
-    const auto irqp = NVIC_EncodePriority(_irq::prio_group, _irq::preempt_prio, _irq::sub_prio);
-
     switch(_module_id) {
 #if defined(DMA1)
     case module_id::dma1:
       switch(_channel)
       {
-      case channel::ch1:
-        NVIC_SetPriority(DMA1_Channel1_IRQn, irqp);
-        NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-        break;
-
-      case channel::ch2:
-        NVIC_SetPriority(DMA1_Channel2_IRQn, irqp);
-        NVIC_EnableIRQ(DMA1_Channel2_IRQn);
-        break;
-
-      case channel::ch3:
-        NVIC_SetPriority(DMA1_Channel3_IRQn, irqp);
-        NVIC_EnableIRQ(DMA1_Channel3_IRQn);
-        break;
-
-      case channel::ch4:
-        NVIC_SetPriority(DMA1_Channel4_IRQn, irqp);
-        NVIC_EnableIRQ(DMA1_Channel4_IRQn);
-        break;
-
-      case channel::ch5:
-        NVIC_SetPriority(DMA1_Channel5_IRQn, irqp);
-        NVIC_EnableIRQ(DMA1_Channel5_IRQn);
-        break;
-
-      case channel::ch6:
-        NVIC_SetPriority(DMA1_Channel6_IRQn, irqp);
-        NVIC_EnableIRQ(DMA1_Channel6_IRQn);
-        break;
-
-      case channel::ch7:
-        NVIC_SetPriority(DMA1_Channel7_IRQn, irqp);
-        NVIC_EnableIRQ(DMA1_Channel7_IRQn);
-        break;
+      case channel::ch1: nvic::enable_irq<_irq, DMA1_Channel1_IRQn>(); break;
+      case channel::ch2: nvic::enable_irq<_irq, DMA1_Channel2_IRQn>(); break;
+      case channel::ch3: nvic::enable_irq<_irq, DMA1_Channel3_IRQn>(); break;
+      case channel::ch4: nvic::enable_irq<_irq, DMA1_Channel4_IRQn>(); break;
+      case channel::ch5: nvic::enable_irq<_irq, DMA1_Channel5_IRQn>(); break;
+      case channel::ch6: nvic::enable_irq<_irq, DMA1_Channel6_IRQn>(); break;
+      case channel::ch7: nvic::enable_irq<_irq, DMA1_Channel7_IRQn>(); break;
       }
     break;
   #endif
@@ -112,31 +85,11 @@ void enable_irq()
     case module_id::dma2:
       switch(_channel)
       {
-      case channel::ch1:
-        NVIC_SetPriority(DMA2_Channel1_IRQn, irqp);
-        NVIC_EnableIRQ(DMA2_Channel1_IRQn);
-        break;
-
-      case channel::ch2:
-        NVIC_SetPriority(DMA2_Channel2_IRQn, irqp);
-        NVIC_EnableIRQ(DMA2_Channel2_IRQn);
-        break;
-
-      case channel::ch3:
-        NVIC_SetPriority(DMA2_Channel3_IRQn, irqp);
-        NVIC_EnableIRQ(DMA2_Channel3_IRQn);
-        break;
-
-      case channel::ch4:
-        NVIC_SetPriority(DMA2_Channel4_IRQn, irqp);
-        NVIC_EnableIRQ(DMA2_Channel4_IRQn);
-        break;
-
-      case channel::ch5:
-        NVIC_SetPriority(DMA2_Channel5_IRQn, irqp);
-        NVIC_EnableIRQ(DMA2_Channel5_IRQn);
-        break;
-
+      case channel::ch1: nvic::enable_irq<_irq, DMA2_Channel1_IRQn>(); break;
+      case channel::ch2: nvic::enable_irq<_irq, DMA2_Channel2_IRQn>(); break;
+      case channel::ch3: nvic::enable_irq<_irq, DMA2_Channel3_IRQn>(); break;
+      case channel::ch4: nvic::enable_irq<_irq, DMA2_Channel4_IRQn>(); break;
+      case channel::ch5: nvic::enable_irq<_irq, DMA2_Channel5_IRQn>(); break;
       case channel::ch6:
       case channel::ch7:
         break;
