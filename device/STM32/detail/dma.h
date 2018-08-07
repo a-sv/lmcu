@@ -281,19 +281,7 @@ void disable_events()
 template<typename _module>
 event irq_source() {
   const uint32_t r = detail::inst<_module::module_id>()->ISR;
-
-  switch(_module::channel)
-  {
-    case channel::ch1: return static_cast<event>(r >> DMA_ISR_TEIF1_Pos);
-    case channel::ch2: return static_cast<event>(r >> DMA_ISR_TEIF2_Pos);
-    case channel::ch3: return static_cast<event>(r >> DMA_ISR_TEIF3_Pos);
-    case channel::ch4: return static_cast<event>(r >> DMA_ISR_TEIF4_Pos);
-    case channel::ch5: return static_cast<event>(r >> DMA_ISR_TEIF5_Pos);
-    case channel::ch6: return static_cast<event>(r >> DMA_ISR_TEIF6_Pos);
-    case channel::ch7: return static_cast<event>(r >> DMA_ISR_TEIF7_Pos);
-  }
-
-  return static_cast<event>(0);
+  return static_cast<event>(r >> (uint32_t(_module::channel) * 4));
 }
 
 template<channel _channel, event _event, event ..._events>
