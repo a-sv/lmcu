@@ -274,65 +274,20 @@ void disable_events()
 
 template<typename _module>
 event irq_source() {
-  auto inst = detail::inst<_module::module_id>();
-
-  event evt = static_cast<event>(0);
-
-  const uint32_t r = inst->ISR;
+  const uint32_t r = detail::inst<_module::module_id>()->ISR;
 
   switch(_module::channel)
   {
-    case channel::ch1:
-      if((r & DMA_ISR_GIF1)  != 0) { evt = evt | event::cgi; }
-      if((r & DMA_ISR_TCIF1) != 0) { evt = evt | event::cct; }
-      if((r & DMA_ISR_HTIF1) != 0) { evt = evt | event::cht; }
-      if((r & DMA_ISR_TEIF1) != 0) { evt = evt | event::cte; }
-    break;
-
-    case channel::ch2:
-      if((r & DMA_ISR_GIF2)  != 0) { evt = evt | event::cgi; }
-      if((r & DMA_ISR_TCIF2) != 0) { evt = evt | event::cct; }
-      if((r & DMA_ISR_HTIF2) != 0) { evt = evt | event::cht; }
-      if((r & DMA_ISR_TEIF2) != 0) { evt = evt | event::cte; }
-    break;
-
-    case channel::ch3:
-      if((r & DMA_ISR_GIF3)  != 0) { evt = evt | event::cgi; }
-      if((r & DMA_ISR_TCIF3) != 0) { evt = evt | event::cct; }
-      if((r & DMA_ISR_HTIF3) != 0) { evt = evt | event::cht; }
-      if((r & DMA_ISR_TEIF3) != 0) { evt = evt | event::cte; }
-    break;
-
-    case channel::ch4:
-      if((r & DMA_ISR_GIF4)  != 0) { evt = evt | event::cgi; }
-      if((r & DMA_ISR_TCIF4) != 0) { evt = evt | event::cct; }
-      if((r & DMA_ISR_HTIF4) != 0) { evt = evt | event::cht; }
-      if((r & DMA_ISR_TEIF4) != 0) { evt = evt | event::cte; }
-    break;
-
-    case channel::ch5:
-      if((r & DMA_ISR_GIF5)  != 0) { evt = evt | event::cgi; }
-      if((r & DMA_ISR_TCIF5) != 0) { evt = evt | event::cct; }
-      if((r & DMA_ISR_HTIF5) != 0) { evt = evt | event::cht; }
-      if((r & DMA_ISR_TEIF5) != 0) { evt = evt | event::cte; }
-    break;
-
-    case channel::ch6:
-      if((r & DMA_ISR_GIF6)  != 0) { evt = evt | event::cgi; }
-      if((r & DMA_ISR_TCIF6) != 0) { evt = evt | event::cct; }
-      if((r & DMA_ISR_HTIF6) != 0) { evt = evt | event::cht; }
-      if((r & DMA_ISR_TEIF6) != 0) { evt = evt | event::cte; }
-    break;
-
-    case channel::ch7:
-      if((r & DMA_ISR_GIF7)  != 0) { evt = evt | event::cgi; }
-      if((r & DMA_ISR_TCIF7) != 0) { evt = evt | event::cct; }
-      if((r & DMA_ISR_HTIF7) != 0) { evt = evt | event::cht; }
-      if((r & DMA_ISR_TEIF7) != 0) { evt = evt | event::cte; }
-    break;
+    case channel::ch1: return static_cast<event>(r >> DMA_ISR_TEIF1_Pos);
+    case channel::ch2: return static_cast<event>(r >> DMA_ISR_TEIF2_Pos);
+    case channel::ch3: return static_cast<event>(r >> DMA_ISR_TEIF3_Pos);
+    case channel::ch4: return static_cast<event>(r >> DMA_ISR_TEIF4_Pos);
+    case channel::ch5: return static_cast<event>(r >> DMA_ISR_TEIF5_Pos);
+    case channel::ch6: return static_cast<event>(r >> DMA_ISR_TEIF6_Pos);
+    case channel::ch7: return static_cast<event>(r >> DMA_ISR_TEIF7_Pos);
   }
 
-  return evt;
+  return static_cast<event>(0);
 }
 
 } // namespace detail

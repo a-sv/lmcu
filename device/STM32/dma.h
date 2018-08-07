@@ -45,10 +45,10 @@ constexpr auto default_prio_group = 5;
 
 enum class event
 {
-  cte = 1 << 0, // Channel transfer error
-  cht = 1 << 1, // Channel half transfer
-  cct = 1 << 2, // Channel complete transfer
-  cgi = 1 << 3, // Channel global int
+  cgi = 1 << 0, // Channel global int
+  cct = 1 << 1, // Channel complete transfer
+  cht = 1 << 2, // Channel half transfer
+  cte = 1 << 3  // Channel transfer error
 };
 lmcu_enum_class_flags_impl(event)
 
