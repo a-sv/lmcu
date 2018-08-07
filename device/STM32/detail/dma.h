@@ -220,10 +220,7 @@ void configure()
 }
 
 template<typename _module>
-void stop()
-{
-  detail::c_inst<_module>()->CCR &= ~DMA_CCR_EN;
-}
+void stop() { detail::c_inst<_module>()->CCR &= ~DMA_CCR_EN; }
 
 template<typename _module, typename _src, typename _dst>
 void start(_src&& src, _dst&& dst, uint16_t size)
@@ -287,13 +284,10 @@ event irq_source() {
 template<channel _channel, event _event, event ..._events>
 constexpr uint32_t ifcr_bits()
 {
-  constexpr auto bit = []() -> uint32_t
-  {
-    return uint32_t(_event) << (uint32_t(_channel) * 4);
-  };
+  constexpr auto bit = uint32_t(_event) << (uint32_t(_channel) * 4);
 
-  if constexpr(sizeof...(_events) > 0) { return bit() | ifcr_bits<_channel, _events...>(); }
-  return bit();
+  if constexpr(sizeof...(_events) > 0) { return bit | ifcr_bits<_channel, _events...>(); }
+  return bit;
 }
 
 template<typename _module, event ..._events>
