@@ -9,6 +9,10 @@ DMA_TypeDef *inst()
 #if defined(DMA1)
   case module_id::dma1: return DMA1;
 #endif
+
+#if defined(DMA2)
+  case module_id::dma2: return DMA2;
+#endif
   }
 }
 
@@ -27,6 +31,21 @@ DMA_Channel_TypeDef *c_inst()
     case channel::ch5: return DMA1_Channel5;
     case channel::ch6: return DMA1_Channel6;
     case channel::ch7: return DMA1_Channel7;
+    }
+#endif
+
+#if defined(DMA2)
+  case module_id::dma2:
+    static_assert(_channel >= channel::ch1 && _channel <= channel::ch5,
+                  "DMA2 has only 1 - 5 channel");
+
+    switch(_channel)
+    {
+    case channel::ch1: return DMA2_Channel1;
+    case channel::ch2: return DMA2_Channel2;
+    case channel::ch3: return DMA2_Channel3;
+    case channel::ch4: return DMA2_Channel4;
+    case channel::ch5: return DMA2_Channel5;
     }
 #endif
   }
@@ -82,6 +101,38 @@ void enable_irq()
       }
     break;
   #endif
+
+#if defined(DMA2)
+    case module_id::dma2:
+      switch(_channel)
+      {
+      case channel::ch1:
+        NVIC_SetPriority(DMA2_Channel1_IRQn, irqp);
+        NVIC_EnableIRQ(DMA2_Channel1_IRQn);
+        break;
+
+      case channel::ch2:
+        NVIC_SetPriority(DMA2_Channel2_IRQn, irqp);
+        NVIC_EnableIRQ(DMA2_Channel2_IRQn);
+        break;
+
+      case channel::ch3:
+        NVIC_SetPriority(DMA2_Channel3_IRQn, irqp);
+        NVIC_EnableIRQ(DMA2_Channel3_IRQn);
+        break;
+
+      case channel::ch4:
+        NVIC_SetPriority(DMA2_Channel4_IRQn, irqp);
+        NVIC_EnableIRQ(DMA2_Channel4_IRQn);
+        break;
+
+      case channel::ch5:
+        NVIC_SetPriority(DMA2_Channel5_IRQn, irqp);
+        NVIC_EnableIRQ(DMA2_Channel5_IRQn);
+        break;
+      }
+    break;
+  #endif
     }
   }
 }
@@ -94,6 +145,10 @@ void configure()
   switch(m.module_id) {
 #if defined(DMA1)
   case module_id::dma1: RCC->AHBENR |= RCC_AHBENR_DMA1EN; break;
+#endif
+
+#if defined(DMA2)
+  case module_id::dma2: RCC->AHBENR |= RCC_AHBENR_DMA2EN; break;
 #endif
   }
 

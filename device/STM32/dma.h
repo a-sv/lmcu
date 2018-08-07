@@ -8,7 +8,11 @@ namespace dma {
 enum class module_id
 {
 #if defined(DMA1)
-  dma1
+  dma1,
+#endif
+
+#if defined(DMA2)
+  dma2
 #endif
 };
 
