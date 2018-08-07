@@ -344,7 +344,7 @@ void disable_events() { detail::inst<_module().module_id>()->IER &= ~event_bits<
 template<flags _f, flags ..._flags>
 inline flags get_tsr_flags(const uint32_t reg)
 {
-  auto flag = []
+  auto flag = [=]
   {
     constexpr auto none = static_cast<flags>(0);
 
@@ -372,7 +372,7 @@ inline flags get_tsr_flags(const uint32_t reg)
 template<flags _f, flags ..._flags>
 inline flags get_rf0r_flags(const uint32_t reg)
 {
-  auto flag = []
+  auto flag = [=]
   {
     constexpr auto none = static_cast<flags>(0);
 
@@ -394,7 +394,7 @@ inline flags get_rf0r_flags(const uint32_t reg)
 template<flags _f, flags ..._flags>
 inline flags get_rf1r_flags(const uint32_t reg)
 {
-  auto flag = []
+  auto flag = [=]
   {
     constexpr auto none = static_cast<flags>(0);
 
@@ -416,7 +416,7 @@ inline flags get_rf1r_flags(const uint32_t reg)
 template<flags _f, flags ..._flags>
 inline flags get_msr_flags(const uint32_t reg)
 {
-  auto flag = []
+  auto flag = [=]
   {
     constexpr auto none = static_cast<flags>(0);
 
@@ -437,6 +437,8 @@ inline flags get_msr_flags(const uint32_t reg)
 template<typename _module, flags ..._flags>
 flags get_flags()
 {
+  static_assert(sizeof...(_flags) > 0, "function must have at least one flag");
+
   auto inst = detail::inst<_module().module_id>();
   return get_tsr_flags <_flags...>(inst->TSR)  |
          get_rf0r_flags<_flags...>(inst->RF0R) |
@@ -507,7 +509,7 @@ constexpr uint32_t clr_rf1r_flags()
   return bit();
 }
 
-template<uint32_t r, flags _f, flags ..._flags>
+template<flags _f, flags ..._flags>
 constexpr uint32_t clr_msr_flags()
 {
   constexpr auto bit = []() -> uint32_t
