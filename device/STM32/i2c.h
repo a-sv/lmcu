@@ -22,6 +22,8 @@ enum class module_id
 #endif
 };
 
+enum class mode { i2c, smbus_dev, smbus_host };
+
 enum class dutycycle { _2, _16_9 };
 
 enum class addr_mode { _7bit, _10bit };
@@ -41,7 +43,8 @@ template<
   dual_addr _dual_addr = dual_addr::disable,
   uint32_t _own_addr_2 = 0,
   general_call _general_call = general_call::disable,
-  no_stretch _no_stretch = no_stretch::disable
+  no_stretch _no_stretch = no_stretch::disable,
+  mode _mode = mode::i2c
 >
 struct module
 {
@@ -54,6 +57,7 @@ struct module
   static constexpr auto own_addr_2   = _own_addr_2;
   static constexpr auto general_call = _general_call;
   static constexpr auto no_stretch   = _no_stretch;
+  static constexpr auto mode         = _mode;
 };
 
 #include "detail/i2c.h"

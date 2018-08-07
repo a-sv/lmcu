@@ -3,9 +3,9 @@
 namespace detail {
 
 template<typename _module>
-constexpr I2C_TypeDef *inst()
+inline I2C_TypeDef *inst()
 {
-  switch(_module().module_id)
+  switch(_module::module_id)
   {
 #if defined(I2C1)
   case module_id::i2c1: return I2C1;
@@ -32,20 +32,18 @@ void disable() { detail::inst<_module>()->CR1 &= ~I2C_CR1_PE; }
 template<typename _module>
 void configure()
 {
-  constexpr auto m = _module();
+  static_assert(_module::clock <= 400_kHz, "i2c clock must be <= 400kHz");
 
-  static_assert(m.clock <= 400_kHz, "i2c clock must be <= 400kHz");
-
-  if constexpr(m.addr_mode == addr_mode::_7bit) {
-    static_assert(m.own_addr_1 <= 127, "in 7bit mode own address 1 must be <= 127");
+  if constexpr(_module::addr_mode == addr_mode::_7bit) {
+    static_assert(_module::own_addr_1 <= 127, "in 7bit mode own address 1 must be <= 127");
   }
   else {
-    static_assert(m.own_addr_1 <= 1023, "in 10bit mode own address 1 must be <= 1023");
+    static_assert(_module::own_addr_1 <= 1023, "in 10bit mode own address 1 must be <= 1023");
   }
 
-  static_assert(m.own_addr_2 <= 127, "own address 2 must be <= 127");
+  static_assert(_module::own_addr_2 <= 127, "own address 2 must be <= 127");
 
-  switch(m.module_id)
+  switch(_module::module_id)
   {
 #if defined(I2C1)
   case module_id::i2c1:
@@ -79,23 +77,38 @@ void configure()
   const auto fr = rcc::apb1_clock() / 1_MHz;
 
   inst->CR2   = fr;
-  inst->TRISE = (m.clock <= 100_kHz)? fr + 1 : ((fr * 300) / 1000) + 1;
+  inst->TRISE = (_module::clock <= 100_kHz)? fr + 1 : ((fr * 300) / 1000) + 1;
 
-  if constexpr(m.clock <= 100_kHz) {
-    auto r = (rcc::apb1_clock() / m.clock) >> 1;
+  if constexpr(_module::clock <= 100_kHz) {
+    auto r = (rcc::apb1_clock() / _module::clock) >> 1;
     inst->CCR = ((r & I2C_CCR_CCR) < 4)? 4 : r;
   }
   else {
-    auto r = rcc::apb1_clock() / (m.clock * (m.dutycycle == dutycycle::_2? 3 : 25));
-    if constexpr(m.dutycycle == dutycycle::_16_9) { r |= I2C_CCR_DUTY; }
+    auto r = rcc::apb1_clock() / (_module::clock * (_module::dutycycle == dutycycle::_2? 3 : 25));
+    if constexpr(_module::dutycycle == dutycycle::_16_9) { r |= I2C_CCR_DUTY; }
     inst->CCR = (r & I2C_CCR_CCR) == 0? 1 : (r | I2C_CCR_FS);
   }
 
-  inst->CR1 = (m.general_call == general_call::enable? I2C_CR1_ENGC : 0) |
-              (m.no_stretch == no_stretch::enable? I2C_CR1_NOSTRETCH : 0);
+  inst->CR1 = (_module::general_call == general_call::enable? I2C_CR1_ENGC : 0) |
+              (_module::no_stretch == no_stretch::enable? I2C_CR1_NOSTRETCH : 0) |
+              []() -> uint32_t
+              {
+                if constexpr(_module::mode == mode::smbus_dev) {
+                  return I2C_CR1_SMBUS;
+                }
 
-  inst->OAR1 = (m.addr_mode == addr_mode::_10bit? I2C_OAR1_ADDMODE : 0) | m.own_addr_1;
-  inst->OAR2 = (m.dual_addr == dual_addr::enable? I2C_OAR2_ENDUAL : 0) | (m.own_addr_2 << 1);
+                if constexpr(_module::mode == mode::smbus_host) {
+                  return I2C_CR1_SMBUS | I2C_CR1_SMBTYPE;
+                }
+
+                return 0;
+              }();
+
+  inst->OAR1 = (_module::addr_mode == addr_mode::_10bit? I2C_OAR1_ADDMODE : 0) |
+               _module::own_addr_1;
+
+  inst->OAR2 = (_module::dual_addr == dual_addr::enable? I2C_OAR2_ENDUAL : 0) |
+               (_module::own_addr_2 << 1);
 
   enable<_module>();
 }
@@ -103,8 +116,6 @@ void configure()
 template<typename _module, bool _start>
 io::result req_tx(uint16_t addr, const delay::timer &t)
 {
-  constexpr auto m = _module();
-
   auto inst = detail::inst<_module>();
 
   if constexpr(_start) { inst->CR1 |= I2C_CR1_START; }
@@ -129,7 +140,7 @@ io::result req_tx(uint16_t addr, const delay::timer &t)
     return io::result::success;
   };
 
-  if constexpr(m.addr_mode == addr_mode::_7bit) {
+  if constexpr(_module::addr_mode == addr_mode::_7bit) {
     inst->DR = (addr << 1) & 0xFE;
   }
   else {
