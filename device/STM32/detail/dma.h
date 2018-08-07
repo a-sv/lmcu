@@ -3,7 +3,7 @@
 namespace detail {
 
 template<module_id _module_id>
-DMA_TypeDef *inst()
+inline DMA_TypeDef *inst()
 {
   switch(_module_id) {
 #if defined(DMA1)
@@ -14,11 +14,17 @@ DMA_TypeDef *inst()
   case module_id::dma2: return DMA2;
 #endif
   }
+
+  return nullptr;
 }
 
 template<module_id _module_id, channel _channel>
-DMA_Channel_TypeDef *c_inst()
+inline DMA_Channel_TypeDef *c_inst()
 {
+  if constexpr(_module_id == module_id::dma2) {
+    static_assert(_channel <= channel::ch5, "DMA2 has only 1 - 5 channel");
+  }
+
   switch(_module_id) {
 #if defined(DMA1)
   case module_id::dma1:
@@ -36,9 +42,6 @@ DMA_Channel_TypeDef *c_inst()
 
 #if defined(DMA2)
   case module_id::dma2:
-    static_assert(_channel >= channel::ch1 && _channel <= channel::ch5,
-                  "DMA2 has only 1 - 5 channel");
-
     switch(_channel)
     {
     case channel::ch1: return DMA2_Channel1;
@@ -46,9 +49,14 @@ DMA_Channel_TypeDef *c_inst()
     case channel::ch3: return DMA2_Channel3;
     case channel::ch4: return DMA2_Channel4;
     case channel::ch5: return DMA2_Channel5;
+    case channel::ch6:
+    case channel::ch7:
+      break;
     }
 #endif
   }
+
+  return nullptr;
 }
 
 template<module_id _module_id, channel _channel, typename _irq>
