@@ -82,20 +82,20 @@ struct module
 
 #include "detail/dma.h"
 
-template<typename ...args>
-void configure() { detail::configure<args...>(); }
+template<typename ..._modules>
+void configure() { detail::configure<_modules...>(); }
 
-template<typename _conf>
-void stop() { detail::stop<_conf>(); }
+template<typename _module>
+void stop() { detail::stop<_module>(); }
 
-template<typename _conf, typename _src_t, typename _dst_t>
-void start(_src_t&& src, _dst_t&& dst, uint16_t size) { detail::start<_conf>(src, dst, size); }
+template<typename _module, typename _src, typename _dst>
+void start(_src&& src, _dst&& dst, uint16_t size) { detail::start<_module>(src, dst, size); }
 
-template<typename _module, event ...evts>
-void enable_events() { detail::enable_events<_module, evts...>(); }
+template<typename _module, event ..._events>
+void enable_events() { detail::enable_events<_module, _events...>(); }
 
-template<typename _module, event ...evts>
-void disable_events() { detail::disable_events<_module, evts...>(); }
+template<typename _module, event ..._events>
+void disable_events() { detail::disable_events<_module, _events...>(); }
 
 template<typename _module>
 event irq_source() { return detail::irq_source<_module>(); }

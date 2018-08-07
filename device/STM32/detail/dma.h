@@ -54,10 +54,8 @@ DMA_Channel_TypeDef *c_inst()
 template<module_id _module_id, channel _channel, typename _irq>
 void enable_irq()
 {
-  constexpr auto irq = _irq();
-
-  if constexpr(irq.irq_type != nvic::irq_type::disable) {
-    const auto irqp = NVIC_EncodePriority(irq.prio_group, irq.preempt_prio, irq.sub_prio);
+  if constexpr(_irq::irq_type != nvic::irq_type::disable) {
+    const auto irqp = NVIC_EncodePriority(_irq::prio_group, _irq::preempt_prio, _irq::sub_prio);
 
     switch(_module_id) {
 #if defined(DMA1)
@@ -137,12 +135,10 @@ void enable_irq()
   }
 }
 
-template<typename _arg1, typename ...args>
+template<typename _module, typename ..._modules>
 void configure()
 {
-  constexpr auto m = _arg1();
-
-  switch(m.module_id) {
+  switch(_module::module_id) {
 #if defined(DMA1)
   case module_id::dma1: RCC->AHBENR |= RCC_AHBENR_DMA1EN; break;
 #endif
@@ -152,14 +148,14 @@ void configure()
 #endif
   }
 
-  auto c_inst = detail::c_inst<m.module_id, m.channel>();
+  auto c_inst = detail::c_inst<_module::module_id, _module::channel>();
 
   {
     auto r = c_inst->CCR;
 
     r &= ~DMA_CCR_EN;
 
-    if constexpr(m.mode == mode::mem_periph) {
+    if constexpr(_module::mode == mode::mem_periph) {
       r &= ~DMA_CCR_MEM2MEM;
     }
     else {
@@ -167,36 +163,36 @@ void configure()
     }
 
     r &= ~DMA_CCR_PL;
-    r |=  uint32_t(m.prio) << DMA_CCR_PL_Pos;
+    r |=  uint32_t(_module::prio) << DMA_CCR_PL_Pos;
 
     r &= ~DMA_CCR_MSIZE;
-    r |=  uint32_t(m.mem_word) << DMA_CCR_MSIZE_Pos;
+    r |=  uint32_t(_module::mem_word) << DMA_CCR_MSIZE_Pos;
 
     r &= ~DMA_CCR_PSIZE;
-    r |=  uint32_t(m.periph_word) << DMA_CCR_PSIZE_Pos;
+    r |=  uint32_t(_module::periph_word) << DMA_CCR_PSIZE_Pos;
 
-    if constexpr(m.mem_inc == mem_inc::disable) {
+    if constexpr(_module::mem_inc == mem_inc::disable) {
       r &= ~DMA_CCR_MINC;
     }
     else {
       r |=  DMA_CCR_MINC;
     }
 
-    if constexpr(m.periph_inc == periph_inc::disable) {
+    if constexpr(_module::periph_inc == periph_inc::disable) {
       r &= ~DMA_CCR_PINC;
     }
     else {
       r |=  DMA_CCR_PINC;
     }
 
-    if constexpr(m.circular == circular::disable) {
+    if constexpr(_module::circular == circular::disable) {
       r &= ~DMA_CCR_CIRC;
     }
     else {
       r |=  DMA_CCR_CIRC;
     }
 
-    if constexpr(m.dir == dir::read_periph) {
+    if constexpr(_module::dir == dir::read_periph) {
       r &= ~DMA_CCR_DIR;
     }
     else {
@@ -206,28 +202,27 @@ void configure()
     c_inst->CCR = r;
   }
 
-  enable_irq<m.module_id, m.channel, decltype(m.irq)>();
+  enable_irq<_module::module_id, _module::channel, decltype(_module::irq)>();
 
-  if constexpr(sizeof...(args) > 0) { configure<args...>(); }
+  if constexpr(sizeof...(_modules) > 0) { configure<_modules...>(); }
 }
 
-template<typename _conf>
+template<typename _module>
 void stop()
 {
-  detail::c_inst<_conf().module_id, _conf().channel>()->CCR &= ~DMA_CCR_EN;;
+  detail::c_inst<_module::module_id, _module::channel>()->CCR &= ~DMA_CCR_EN;;
 }
 
-template<typename _conf, typename _src_t, typename _dst_t>
-void start(_src_t&& src, _dst_t&& dst, uint16_t size)
+template<typename _module, typename _src, typename _dst>
+void start(_src&& src, _dst&& dst, uint16_t size)
 {
-  constexpr auto m = _conf();
-  auto c_inst = detail::c_inst<m.module_id, m.channel>();
+  auto c_inst = detail::c_inst<_module::module_id, _module::channel>();
 
-  stop<_conf>();
+  stop<_module>();
 
   c_inst->CNDTR = size;
 
-  if constexpr(m.dir == dir::read_periph) {
+  if constexpr(_module::dir == dir::read_periph) {
     c_inst->CPAR = uint32_t(src);
     c_inst->CMAR = uint32_t(dst);
   }
@@ -239,12 +234,12 @@ void start(_src_t&& src, _dst_t&& dst, uint16_t size)
   c_inst->CCR |= DMA_CCR_EN;
 }
 
-template<event evt, event ...evts>
+template<event _event, event ..._events>
 constexpr uint32_t event_bits()
 {
   constexpr auto bit = []() -> uint32_t
   {
-    switch(evt)
+    switch(_event)
     {
     case event::cct: return DMA_CCR_TCIE;
     case event::cht: return DMA_CCR_HTIE;
@@ -253,31 +248,31 @@ constexpr uint32_t event_bits()
     return 0;
   };
 
-  if constexpr(sizeof...(evts) > 0) { return bit() | event_bits<evts...>(); }
+  if constexpr(sizeof...(_events) > 0) { return bit() | event_bits<_events...>(); }
   return bit();
 }
 
-template<typename _module, event ...evts>
+template<typename _module, event ..._events>
 void enable_events()
 {
-  detail::c_inst<_module().module_id, _module().channel>()->CCR |= event_bits<evts...>();
+  detail::c_inst<_module::module_id, _module::channel>()->CCR |= event_bits<_events...>();
 }
 
-template<typename _module, event ...evts>
+template<typename _module, event ..._events>
 void disable_events()
 {
-  detail::c_inst<_module().module_id, _module().channel>()->CCR &= ~event_bits<evts...>();
+  detail::c_inst<_module::module_id, _module::channel>()->CCR &= ~event_bits<_events...>();
 }
 
 template<typename _module>
 event irq_source() {
-  auto inst = detail::inst<_module().module_id>();
+  auto inst = detail::inst<_module::module_id>();
 
   event evt = static_cast<event>(0);
 
   const uint32_t r = inst->ISR;
 
-  switch(_module().channel)
+  switch(_module::channel)
   {
     case channel::ch1:
       if((r & DMA_ISR_GIF1)  != 0) { evt = evt | event::cgi; }
