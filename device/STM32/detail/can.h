@@ -33,24 +33,24 @@ void enable_irq()
 {
   constexpr auto irq = _irq();
 
-  if constexpr(irq.irq_type != irq_type::disable) {
+  if constexpr(irq.irq_type != nvic::irq_type::disable) {
     const auto irqp = NVIC_EncodePriority(irq.prio_group, irq.preempt_prio, irq.sub_prio);
 
 #if defined(CAN1)
     if constexpr(_module_id == module_id::can1) {
-      if constexpr(irq.irq_type == irq_type::tx) {
+      if constexpr(irq.irq_type == nvic::irq_type::tx) {
         NVIC_SetPriority(CAN1_TX_IRQn, irqp);
         NVIC_EnableIRQ(CAN1_TX_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::rx0) {
+      if constexpr(irq.irq_type == nvic::irq_type::rx0) {
         NVIC_SetPriority(CAN1_RX0_IRQn, irqp);
         NVIC_EnableIRQ(CAN1_RX0_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::rx1) {
+      if constexpr(irq.irq_type == nvic::irq_type::rx1) {
         NVIC_SetPriority(CAN1_RX1_IRQn, irqp);
         NVIC_EnableIRQ(CAN1_RX1_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::sce) {
+      if constexpr(irq.irq_type == nvic::irq_type::sce) {
         NVIC_SetPriority(CAN1_SCE_IRQn, irqp);
         NVIC_EnableIRQ(CAN1_SCE_IRQn);
       }
@@ -59,19 +59,19 @@ void enable_irq()
 
 #if defined(CAN2)
     if constexpr(_module_id == module_id::can2) {
-      if constexpr(irq.irq_type == irq_type::tx) {
+      if constexpr(irq.irq_type == nvic::irq_type::tx) {
         NVIC_SetPriority(CAN2_TX_IRQn, irqp);
         NVIC_EnableIRQ(CAN2_TX_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::rx0) {
+      if constexpr(irq.irq_type == nvic::irq_type::rx0) {
         NVIC_SetPriority(CAN2_RX0_IRQn, irqp);
         NVIC_EnableIRQ(CAN2_RX0_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::rx1) {
+      if constexpr(irq.irq_type == nvic::irq_type::rx1) {
         NVIC_SetPriority(CAN2_RX1_IRQn, irqp);
         NVIC_EnableIRQ(CAN2_RX1_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::sce) {
+      if constexpr(irq.irq_type == nvic::irq_type::sce) {
         NVIC_SetPriority(CAN2_SCE_IRQn, irqp);
         NVIC_EnableIRQ(CAN2_SCE_IRQn);
       }
@@ -80,19 +80,19 @@ void enable_irq()
 
 #if defined(CAN3)
     if constexpr(_module_id == module_id::can3) {
-      if constexpr(irq.irq_type == irq_type::tx) {
+      if constexpr(irq.irq_type == nvic::irq_type::tx) {
         NVIC_SetPriority(CAN3_TX_IRQn, irqp);
         NVIC_EnableIRQ(CAN3_TX_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::rx0) {
+      if constexpr(irq.irq_type == nvic::irq_type::rx0) {
         NVIC_SetPriority(CAN3_RX0_IRQn, irqp);
         NVIC_EnableIRQ(CAN3_RX0_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::rx1) {
+      if constexpr(irq.irq_type == nvic::irq_type::rx1) {
         NVIC_SetPriority(CAN3_RX1_IRQn, irqp);
         NVIC_EnableIRQ(CAN3_RX1_IRQn);
       }
-      if constexpr(irq.irq_type == irq_type::sce) {
+      if constexpr(irq.irq_type == nvic::irq_type::sce) {
         NVIC_SetPriority(CAN3_SCE_IRQn, irqp);
         NVIC_EnableIRQ(CAN3_SCE_IRQn);
       }

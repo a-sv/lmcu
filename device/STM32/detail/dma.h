@@ -37,7 +37,7 @@ void enable_irq()
 {
   constexpr auto irq = _irq();
 
-  if constexpr(irq.irq_type != irq_type::disable) {
+  if constexpr(irq.irq_type != nvic::irq_type::disable) {
     const auto irqp = NVIC_EncodePriority(irq.prio_group, irq.preempt_prio, irq.sub_prio);
 
     switch(_module_id) {
@@ -187,7 +187,8 @@ void start(_src_t&& src, _dst_t&& dst, uint16_t size)
 template<event evt, event ...evts>
 constexpr uint32_t event_bits()
 {
-  constexpr auto bit = []() -> uint32_t {
+  constexpr auto bit = []() -> uint32_t
+  {
     switch(evt)
     {
     case event::cct: return DMA_CCR_TCIE;
@@ -195,7 +196,7 @@ constexpr uint32_t event_bits()
     case event::cte: return DMA_CCR_TEIE;
     };
     return 0;
-  }
+  };
 
   if constexpr(sizeof...(evts) > 0) { return bit() | event_bits<evts...>(); }
   return bit();

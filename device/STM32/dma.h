@@ -30,21 +30,14 @@ enum class dir { read_periph, read_mem };
 
 enum class channel { ch1, ch2, ch3, ch4, ch5, ch6, ch7 };
 
-enum class irq_type { disable, enable };
+namespace nvic {
 
-template<
-  irq_type _irq_type,
-  uint32_t _prio_group = 5,
-  uint32_t _preempt_prio = 0,
-  uint32_t _sub_prio = 0
->
-struct irq
-{
-  static constexpr auto irq_type     = _irq_type;
-  static constexpr auto prio_group   = _prio_group;
-  static constexpr auto preempt_prio = _preempt_prio;
-  static constexpr auto sub_prio     = _sub_prio;
-};
+enum class irq_type { disable, chi };
+
+constexpr auto default_prio_group = 5;
+
+} // namespace nvic
+#include "../cortex/nvic.h"
 
 enum class event
 {
@@ -66,7 +59,7 @@ template<
   dir _dir = dir::read_periph,
   circular _circular = circular::disable,
   prio _prio = prio::low,
-  typename _irq = irq<irq_type::disable>
+  typename _irq = nvic::irq<nvic::irq_type::disable>
 >
 struct module
 {

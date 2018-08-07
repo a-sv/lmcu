@@ -76,21 +76,14 @@ enum class nart { enable, disable };
 enum class rflm { enable, disable };
 enum class txfp { enable, disable };
 
+namespace nvic {
+
 enum class irq_type { disable, tx, rx0, rx1, sce };
 
-template<
-  irq_type _irq_type,
-  uint32_t _prio_group = 3,
-  uint32_t _preempt_prio = 0,
-  uint32_t _sub_prio = 0
->
-struct irq
-{
-  static constexpr auto irq_type     = _irq_type;
-  static constexpr auto prio_group   = _prio_group;
-  static constexpr auto preempt_prio = _preempt_prio;
-  static constexpr auto sub_prio     = _sub_prio;
-};
+constexpr auto default_prio_group = 3;
+
+} // namespace nvic
+#include "../cortex/nvic.h"
 
 template<
   module_id _module_id,
@@ -105,10 +98,10 @@ template<
   rflm _rflm,
   txfp _txfp,
   mode _mode = mode::normal,
-  typename _irq0 = irq<irq_type::disable>,
-  typename _irq1 = irq<irq_type::disable>,
-  typename _irq2 = irq<irq_type::disable>,
-  typename _irq3 = irq<irq_type::disable>
+  typename _irq0 = nvic::irq<nvic::irq_type::disable>,
+  typename _irq1 = nvic::irq<nvic::irq_type::disable>,
+  typename _irq2 = nvic::irq<nvic::irq_type::disable>,
+  typename _irq3 = nvic::irq<nvic::irq_type::disable>
 >
 struct module
 {
