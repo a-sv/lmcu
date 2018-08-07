@@ -100,5 +100,8 @@ void disable_events() { detail::disable_events<_module, _events...>(); }
 template<typename _module>
 event irq_source() { return detail::irq_source<_module>(); }
 
+template<typename _module, event ..._events>
+void irq_clear() { detail::irq_clear<_module, _events...>(); }
+
 } // namespace dma
 } // namespace lmcu

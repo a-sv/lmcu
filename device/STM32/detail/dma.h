@@ -136,6 +136,10 @@ void enable_irq()
         NVIC_SetPriority(DMA2_Channel5_IRQn, irqp);
         NVIC_EnableIRQ(DMA2_Channel5_IRQn);
         break;
+
+      case channel::ch6:
+      case channel::ch7:
+        break;
       }
     break;
   #endif
@@ -218,7 +222,7 @@ void configure()
 template<typename _module>
 void stop()
 {
-  detail::c_inst<_module::module_id, _module::channel>()->CCR &= ~DMA_CCR_EN;;
+  detail::c_inst<_module::module_id, _module::channel>()->CCR &= ~DMA_CCR_EN;
 }
 
 template<typename _module, typename _src, typename _dst>
@@ -245,6 +249,8 @@ void start(_src&& src, _dst&& dst, uint16_t size)
 template<event _event, event ..._events>
 constexpr uint32_t event_bits()
 {
+  static_assert(_event != event::cgi, "global interrupt flag cannot be enabled or disabled");
+
   constexpr auto bit = []() -> uint32_t
   {
     switch(_event)
@@ -288,6 +294,24 @@ event irq_source() {
   }
 
   return static_cast<event>(0);
+}
+
+template<channel _channel, event _event, event ..._events>
+constexpr uint32_t ifcr_bits()
+{
+  constexpr auto bit = []() -> uint32_t
+  {
+    return uint32_t(_event) << (uint32_t(_channel) * 4);
+  };
+
+  if constexpr(sizeof...(_events) > 0) { return bit() | ifcr_bits<_channel, _events...>(); }
+  return bit();
+}
+
+template<typename _module, event ..._events>
+void irq_clear()
+{
+  detail::inst<_module::module_id>()->IFCR = ifcr_bits<_module::channel, _events...>();
 }
 
 } // namespace detail
