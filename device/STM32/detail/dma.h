@@ -2,10 +2,10 @@
 
 namespace detail {
 
-template<module_id _module_id>
+template<typename _module>
 inline DMA_TypeDef *inst()
 {
-  switch(_module_id) {
+  switch(_module::module_id) {
 #if defined(DMA1)
   case module_id::dma1: return DMA1;
 #endif
@@ -18,17 +18,17 @@ inline DMA_TypeDef *inst()
   return nullptr;
 }
 
-template<module_id _module_id, channel _channel>
+template<typename _module>
 inline DMA_Channel_TypeDef *c_inst()
 {
-  if constexpr(_module_id == module_id::dma2) {
-    static_assert(_channel <= channel::ch5, "DMA2 has only 1 - 5 channel");
+  if constexpr(_module::module_id == module_id::dma2) {
+    static_assert(_module::channel <= channel::ch5, "DMA2 has only 1 - 5 channel");
   }
 
-  switch(_module_id) {
+  switch(_module::module_id) {
 #if defined(DMA1)
   case module_id::dma1:
-    switch(_channel)
+    switch(_module::channel)
     {
     case channel::ch1: return DMA1_Channel1;
     case channel::ch2: return DMA1_Channel2;
@@ -42,7 +42,7 @@ inline DMA_Channel_TypeDef *c_inst()
 
 #if defined(DMA2)
   case module_id::dma2:
-    switch(_channel)
+    switch(_module::channel)
     {
     case channel::ch1: return DMA2_Channel1;
     case channel::ch2: return DMA2_Channel2;
@@ -160,7 +160,7 @@ void configure()
 #endif
   }
 
-  auto c_inst = detail::c_inst<_module::module_id, _module::channel>();
+  auto c_inst = detail::c_inst<_module>();
 
   {
     auto r = c_inst->CCR;
@@ -222,13 +222,13 @@ void configure()
 template<typename _module>
 void stop()
 {
-  detail::c_inst<_module::module_id, _module::channel>()->CCR &= ~DMA_CCR_EN;
+  detail::c_inst<_module>()->CCR &= ~DMA_CCR_EN;
 }
 
 template<typename _module, typename _src, typename _dst>
 void start(_src&& src, _dst&& dst, uint16_t size)
 {
-  auto c_inst = detail::c_inst<_module::module_id, _module::channel>();
+  auto c_inst = detail::c_inst<_module>();
 
   stop<_module>();
 
@@ -269,18 +269,18 @@ constexpr uint32_t event_bits()
 template<typename _module, event ..._events>
 void enable_events()
 {
-  detail::c_inst<_module::module_id, _module::channel>()->CCR |= event_bits<_events...>();
+  detail::c_inst<_module>()->CCR |= event_bits<_events...>();
 }
 
 template<typename _module, event ..._events>
 void disable_events()
 {
-  detail::c_inst<_module::module_id, _module::channel>()->CCR &= ~event_bits<_events...>();
+  detail::c_inst<_module>()->CCR &= ~event_bits<_events...>();
 }
 
 template<typename _module>
 event irq_source() {
-  const uint32_t r = detail::inst<_module::module_id>()->ISR;
+  const uint32_t r = detail::inst<_module>()->ISR;
   return static_cast<event>(r >> (uint32_t(_module::channel) * 4));
 }
 
@@ -299,7 +299,7 @@ constexpr uint32_t ifcr_bits()
 template<typename _module, event ..._events>
 void irq_clear()
 {
-  detail::inst<_module::module_id>()->IFCR = ifcr_bits<_module::channel, _events...>();
+  detail::inst<_module>()->IFCR = ifcr_bits<_module::channel, _events...>();
 }
 
 } // namespace detail
