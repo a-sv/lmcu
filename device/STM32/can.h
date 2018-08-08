@@ -31,42 +31,42 @@ enum class mode
 
 enum class sjw
 {
-  tq1,
-  tq2,
-  tq3,
-  tq4
+  _1tq,
+  _2tq,
+  _3tq,
+  _4tq
 };
 
 enum class bs1
 {
-  tq1,
-  tq2,
-  tq3,
-  tq4,
-  tq5,
-  tq6,
-  tq7,
-  tq8,
-  tq9,
-  tq10,
-  tq11,
-  tq12,
-  tq13,
-  tq14,
-  tq15,
-  tq16
+  _1tq,
+  _2tq,
+  _3tq,
+  _4tq,
+  _5tq,
+  _6tq,
+  _7tq,
+  _8tq,
+  _9tq,
+  _10tq,
+  _11tq,
+  _12tq,
+  _13tq,
+  _14tq,
+  _15tq,
+  _16tq
 };
 
 enum class bs2
 {
-  tq1,
-  tq2,
-  tq3,
-  tq4,
-  tq5,
-  tq6,
-  tq7,
-  tq8
+  _1tq,
+  _2tq,
+  _3tq,
+  _4tq,
+  _5tq,
+  _6tq,
+  _7tq,
+  _8tq
 };
 
 enum class ttcm { enable, disable };
@@ -126,7 +126,7 @@ struct module
 enum class fifo { any, fifo_0, fifo_1 };
 
 enum class filter_mode { idmask, idlist };
-enum class filter_scale { fs16, fs32 };
+enum class filter_scale { _16bit, _32bit };
 
 template<
   uint32_t _number,
@@ -187,17 +187,17 @@ lmcu_enum_class_flags_impl(flags)
 
 #include "detail/can.h"
 
-template<typename ...args>
-void configure() { detail::configure<args...>(); }
+template<typename ..._modules>
+void configure() { detail::configure<_modules...>(); }
 
-template<typename _module, typename ...args>
+template<typename _module, typename ..._filters>
 void filter_enable(uint32_t id_high, uint32_t id_low, uint32_t maskid_high, uint32_t maskid_low)
 {
-  detail::filter_enable<_module, args...>(id_high, id_low, maskid_high, maskid_low);
+  detail::filter_enable<_module, _filters...>(id_high, id_low, maskid_high, maskid_low);
 }
 
-template<typename _module, typename ...args>
-void filter_disable() { detail::filter_disable<_module, args...>(); }
+template<typename _module, typename ..._filters>
+void filter_disable() { detail::filter_disable<_module, _filters...>(); }
 
 template<typename _module, io::type _iotype = io::type::blocking>
 io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
@@ -242,11 +242,11 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
   return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len, [&] { return t.expired(); });
 }
 
-template<typename _module, event ...evts>
-void enable_events() { detail::enable_events<_module, evts...>(); }
+template<typename _module, event ..._events>
+void enable_events() { detail::enable_events<_module, _events...>(); }
 
-template<typename _module, event ...evts>
-void disable_events() { detail::disable_events<_module, evts...>(); }
+template<typename _module, event ..._events>
+void disable_events() { detail::disable_events<_module, _events...>(); }
 
 template<typename _module, flags ..._flags>
 flags get_flags() { return detail::get_flags<_module, _flags...>(); }

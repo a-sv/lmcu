@@ -2,115 +2,77 @@
 
 namespace detail {
 
-template<module_id _module_id>
-CAN_TypeDef *inst()
+template<typename _module>
+inline CAN_TypeDef *inst()
 {
 #if defined(CAN1)
-  if constexpr(_module_id == module_id::can1) { return CAN1; }
+  if constexpr(_module::module_id == module_id::can1) { return CAN1; }
 #endif
 
 #if defined(CAN2)
-  if constexpr(_module_id == module_id::can2) { return CAN2; }
+  if constexpr(_module::module_id == module_id::can2) { return CAN2; }
 #endif
 
 #if defined(CAN3)
-  if constexpr(_module_id == module_id::can3) { return CAN3; }
+  if constexpr(_module::module_id == module_id::can3) { return CAN3; }
 #endif
 }
-
-template<module_id _module_id, typename arg1, typename ...args>
-constexpr bool has_module()
-{
-  if constexpr(sizeof...(args) > 0) { return has_module<_module_id, args...>(); }
-  return arg1().module_id == _module_id;
-}
-
-template<uint32_t r, typename arg1, typename ...args>
-uint32_t remap_bits();
 
 template<module_id _module_id, typename _irq>
 void enable_irq()
 {
-  constexpr auto irq = _irq();
-
-  if constexpr(irq.irq_type != nvic::irq_type::disable) {
-    const auto irqp = NVIC_EncodePriority(irq.prio_group, irq.preempt_prio, irq.sub_prio);
-
+  if constexpr(_irq::irq_type != nvic::irq_type::disable) {
 #if defined(CAN1)
     if constexpr(_module_id == module_id::can1) {
-      if constexpr(irq.irq_type == nvic::irq_type::tx) {
-        NVIC_SetPriority(CAN1_TX_IRQn, irqp);
-        NVIC_EnableIRQ(CAN1_TX_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::rx0) {
-        NVIC_SetPriority(CAN1_RX0_IRQn, irqp);
-        NVIC_EnableIRQ(CAN1_RX0_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::rx1) {
-        NVIC_SetPriority(CAN1_RX1_IRQn, irqp);
-        NVIC_EnableIRQ(CAN1_RX1_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::sce) {
-        NVIC_SetPriority(CAN1_SCE_IRQn, irqp);
-        NVIC_EnableIRQ(CAN1_SCE_IRQn);
+      switch(_irq::irq_type)
+      {
+      case nvic::irq_type::tx:  nvic::enable_irq<_irq, CAN1_TX_IRQn>();  break;
+      case nvic::irq_type::rx0: nvic::enable_irq<_irq, CAN1_RX0_IRQn>(); break;
+      case nvic::irq_type::rx1: nvic::enable_irq<_irq, CAN1_RX1_IRQn>(); break;
+      case nvic::irq_type::sce: nvic::enable_irq<_irq, CAN1_SCE_IRQn>(); break;
+      default : break;
       }
     }
 #endif
 
 #if defined(CAN2)
     if constexpr(_module_id == module_id::can2) {
-      if constexpr(irq.irq_type == nvic::irq_type::tx) {
-        NVIC_SetPriority(CAN2_TX_IRQn, irqp);
-        NVIC_EnableIRQ(CAN2_TX_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::rx0) {
-        NVIC_SetPriority(CAN2_RX0_IRQn, irqp);
-        NVIC_EnableIRQ(CAN2_RX0_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::rx1) {
-        NVIC_SetPriority(CAN2_RX1_IRQn, irqp);
-        NVIC_EnableIRQ(CAN2_RX1_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::sce) {
-        NVIC_SetPriority(CAN2_SCE_IRQn, irqp);
-        NVIC_EnableIRQ(CAN2_SCE_IRQn);
+      switch(_irq::irq_type)
+      {
+      case nvic::irq_type::tx:  nvic::enable_irq<_irq, CAN2_TX_IRQn>();  break;
+      case nvic::irq_type::rx0: nvic::enable_irq<_irq, CAN2_RX0_IRQn>(); break;
+      case nvic::irq_type::rx1: nvic::enable_irq<_irq, CAN2_RX1_IRQn>(); break;
+      case nvic::irq_type::sce: nvic::enable_irq<_irq, CAN2_SCE_IRQn>(); break;
+      default : break;
       }
     }
 #endif
 
 #if defined(CAN3)
     if constexpr(_module_id == module_id::can3) {
-      if constexpr(irq.irq_type == nvic::irq_type::tx) {
-        NVIC_SetPriority(CAN3_TX_IRQn, irqp);
-        NVIC_EnableIRQ(CAN3_TX_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::rx0) {
-        NVIC_SetPriority(CAN3_RX0_IRQn, irqp);
-        NVIC_EnableIRQ(CAN3_RX0_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::rx1) {
-        NVIC_SetPriority(CAN3_RX1_IRQn, irqp);
-        NVIC_EnableIRQ(CAN3_RX1_IRQn);
-      }
-      if constexpr(irq.irq_type == nvic::irq_type::sce) {
-        NVIC_SetPriority(CAN3_SCE_IRQn, irqp);
-        NVIC_EnableIRQ(CAN3_SCE_IRQn);
+      switch(_irq::irq_type)
+      {
+      case nvic::irq_type::tx:  nvic::enable_irq<_irq, CAN3_TX_IRQn>();  break;
+      case nvic::irq_type::rx0: nvic::enable_irq<_irq, CAN3_RX0_IRQn>(); break;
+      case nvic::irq_type::rx1: nvic::enable_irq<_irq, CAN3_RX1_IRQn>(); break;
+      case nvic::irq_type::sce: nvic::enable_irq<_irq, CAN3_SCE_IRQn>(); break;
+      default : break;
       }
     }
 #endif
   }
 }
 
-template<typename arg1, typename ...args>
+template<typename _module, typename ..._modules>
 void configure()
 {
-  if constexpr(sizeof...(args) > 0) { configure<args...>(); }
-  constexpr auto m = arg1();
+  if constexpr(sizeof...(_modules) > 0) { configure<_modules...>(); }
 
-  static_assert(m.prediv >= 1 && m.prediv <= 1024, "CAN prescaler must be >= 1 and <= 1024");
+  static_assert(_module::prediv >= 1 && _module::prediv <= 1024, "CAN prescaler must be >= 1 and "
+                                                                 "<= 1024");
 
 #if defined(CAN1)
-  if constexpr(m.module_id == module_id::can1) {
+  if constexpr(_module::module_id == module_id::can1) {
     RCC->APB1ENR  |=  RCC_APB1ENR_CAN1EN;
     RCC->APB1RSTR |=  RCC_APB1RSTR_CAN1RST;
     RCC->APB1RSTR &= ~RCC_APB1RSTR_CAN1RST;
@@ -118,7 +80,7 @@ void configure()
 #endif
 
 #if defined(CAN2)
-  if constexpr(m.module_id == module_id::can2) {
+  if constexpr(_module::module_id == module_id::can2) {
     RCC->APB1ENR  |=  RCC_APB1ENR_CAN1EN | RCC_APB1ENR_CAN2EN;
     RCC->APB1RSTR |=  RCC_APB1RSTR_CAN2RST;
     RCC->APB1RSTR &= ~RCC_APB1RSTR_CAN2RST;
@@ -126,14 +88,14 @@ void configure()
 #endif
 
 #if defined(CAN3)
-  if constexpr(m.module_id == module_id::can3) {
+  if constexpr(_module::module_id == module_id::can3) {
     RCC->APB1ENR  |=  RCC_APB1ENR_CAN3EN;
     RCC->APB1RSTR |=  RCC_APB1RSTR_CAN3RST;
     RCC->APB1RSTR &= ~RCC_APB1RSTR_CAN3RST;
   }
 #endif
 
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
   // exit from sleep mode
   inst->MCR &= ~CAN_MCR_SLEEP;
@@ -147,12 +109,12 @@ void configure()
     auto r = inst->MCR;
     r &= ~(CAN_MCR_TTCM | CAN_MCR_ABOM | CAN_MCR_AWUM | CAN_MCR_NART | CAN_MCR_RFLM | CAN_MCR_TXFP);
 
-    if constexpr(m.ttcm == ttcm::enable) { r |= CAN_MCR_TTCM; }
-    if constexpr(m.abom == abom::enable) { r |= CAN_MCR_ABOM; }
-    if constexpr(m.awum == awum::enable) { r |= CAN_MCR_AWUM; }
-    if constexpr(m.nart == nart::enable) { r |= CAN_MCR_NART; }
-    if constexpr(m.rflm == rflm::enable) { r |= CAN_MCR_RFLM; }
-    if constexpr(m.txfp == txfp::enable) { r |= CAN_MCR_TXFP; }
+    if constexpr(_module::ttcm == ttcm::enable) { r |= CAN_MCR_TTCM; }
+    if constexpr(_module::abom == abom::enable) { r |= CAN_MCR_ABOM; }
+    if constexpr(_module::awum == awum::enable) { r |= CAN_MCR_AWUM; }
+    if constexpr(_module::nart == nart::enable) { r |= CAN_MCR_NART; }
+    if constexpr(_module::rflm == rflm::enable) { r |= CAN_MCR_RFLM; }
+    if constexpr(_module::txfp == txfp::enable) { r |= CAN_MCR_TXFP; }
 
     inst->MCR = r;
   }
@@ -160,7 +122,7 @@ void configure()
   inst->BTR =
     []() -> uint32_t
     {
-      switch(m.mode) {
+      switch(_module::mode) {
       case mode::normal:          return 0;
       case mode::loopback:        return CAN_BTR_LBKM;
       case mode::silent:          return CAN_BTR_SILM;
@@ -169,48 +131,48 @@ void configure()
     }() |
     []() -> uint32_t
     {
-      switch(m.sjw) {
-      case sjw::tq1: return 0;
-      case sjw::tq2: return CAN_BTR_SJW_0;
-      case sjw::tq3: return CAN_BTR_SJW_1;
-      case sjw::tq4: return CAN_BTR_SJW;
+      switch(_module::sjw) {
+      case sjw::_1tq: return 0;
+      case sjw::_2tq: return CAN_BTR_SJW_0;
+      case sjw::_3tq: return CAN_BTR_SJW_1;
+      case sjw::_4tq: return CAN_BTR_SJW;
       }
     }() |
     []() -> uint32_t
     {
-      switch(m.bs1) {
-      case bs1::tq1:  return 0;
-      case bs1::tq2:  return 1  << CAN_BTR_TS1_Pos;
-      case bs1::tq3:  return 2  << CAN_BTR_TS1_Pos;
-      case bs1::tq4:  return 3  << CAN_BTR_TS1_Pos;
-      case bs1::tq5:  return 4  << CAN_BTR_TS1_Pos;
-      case bs1::tq6:  return 5  << CAN_BTR_TS1_Pos;
-      case bs1::tq7:  return 6  << CAN_BTR_TS1_Pos;
-      case bs1::tq8:  return 7  << CAN_BTR_TS1_Pos;
-      case bs1::tq9:  return 8  << CAN_BTR_TS1_Pos;
-      case bs1::tq10: return 9  << CAN_BTR_TS1_Pos;
-      case bs1::tq11: return 10 << CAN_BTR_TS1_Pos;
-      case bs1::tq12: return 11 << CAN_BTR_TS1_Pos;
-      case bs1::tq13: return 12 << CAN_BTR_TS1_Pos;
-      case bs1::tq14: return 13 << CAN_BTR_TS1_Pos;
-      case bs1::tq15: return 14 << CAN_BTR_TS1_Pos;
-      case bs1::tq16: return 15 << CAN_BTR_TS1_Pos;
+      switch(_module::bs1) {
+      case bs1::_1tq:  return 0;
+      case bs1::_2tq:  return 1  << CAN_BTR_TS1_Pos;
+      case bs1::_3tq:  return 2  << CAN_BTR_TS1_Pos;
+      case bs1::_4tq:  return 3  << CAN_BTR_TS1_Pos;
+      case bs1::_5tq:  return 4  << CAN_BTR_TS1_Pos;
+      case bs1::_6tq:  return 5  << CAN_BTR_TS1_Pos;
+      case bs1::_7tq:  return 6  << CAN_BTR_TS1_Pos;
+      case bs1::_8tq:  return 7  << CAN_BTR_TS1_Pos;
+      case bs1::_9tq:  return 8  << CAN_BTR_TS1_Pos;
+      case bs1::_10tq: return 9  << CAN_BTR_TS1_Pos;
+      case bs1::_11tq: return 10 << CAN_BTR_TS1_Pos;
+      case bs1::_12tq: return 11 << CAN_BTR_TS1_Pos;
+      case bs1::_13tq: return 12 << CAN_BTR_TS1_Pos;
+      case bs1::_14tq: return 13 << CAN_BTR_TS1_Pos;
+      case bs1::_15tq: return 14 << CAN_BTR_TS1_Pos;
+      case bs1::_16tq: return 15 << CAN_BTR_TS1_Pos;
       }
     }() |
     []() -> uint32_t
     {
-      switch(m.bs2) {
-      case bs2::tq1: return 0;
-      case bs2::tq2: return 1 << CAN_BTR_TS2_Pos;
-      case bs2::tq3: return 2 << CAN_BTR_TS2_Pos;
-      case bs2::tq4: return 3 << CAN_BTR_TS2_Pos;
-      case bs2::tq5: return 4 << CAN_BTR_TS2_Pos;
-      case bs2::tq6: return 5 << CAN_BTR_TS2_Pos;
-      case bs2::tq7: return 6 << CAN_BTR_TS2_Pos;
-      case bs2::tq8: return 7 << CAN_BTR_TS2_Pos;
+      switch(_module::bs2) {
+      case bs2::_1tq: return 0;
+      case bs2::_2tq: return 1 << CAN_BTR_TS2_Pos;
+      case bs2::_3tq: return 2 << CAN_BTR_TS2_Pos;
+      case bs2::_4tq: return 3 << CAN_BTR_TS2_Pos;
+      case bs2::_5tq: return 4 << CAN_BTR_TS2_Pos;
+      case bs2::_6tq: return 5 << CAN_BTR_TS2_Pos;
+      case bs2::_7tq: return 6 << CAN_BTR_TS2_Pos;
+      case bs2::_8tq: return 7 << CAN_BTR_TS2_Pos;
       }
     }() |
-    (m.prediv - 1)
+    (_module::prediv - 1)
   ;
 
   // request leave initialisation
@@ -219,56 +181,55 @@ void configure()
   while((inst->MSR & CAN_MSR_INAK) == 0)
     ;
 
-  enable_irq<m.module_id, decltype(m.irq0)>();
-  enable_irq<m.module_id, decltype(m.irq1)>();
-  enable_irq<m.module_id, decltype(m.irq2)>();
-  enable_irq<m.module_id, decltype(m.irq3)>();
+  enable_irq<_module::module_id, decltype(_module::irq0)>();
+  enable_irq<_module::module_id, decltype(_module::irq1)>();
+  enable_irq<_module::module_id, decltype(_module::irq2)>();
+  enable_irq<_module::module_id, decltype(_module::irq3)>();
 }
 
-template<typename _module, typename arg1, typename ...args>
+template<typename _module, typename _filter, typename ..._filters>
 void filter_enable(uint32_t id_high, uint32_t id_low, uint32_t maskid_high, uint32_t maskid_low)
 {
-  if constexpr(sizeof...(args) > 0) { filter_enable<_module, args...>(); }
-  constexpr auto m    = _module();
-  constexpr auto f    = arg1();
-  constexpr auto fnum = f.number;
-  constexpr auto fpos = 1 << fnum;
+  if constexpr(sizeof...(_filters) > 0) { filter_enable<_module, _filters...>(); }
+  constexpr auto fpos = 1 << _filter::number;
 
-  static_assert(fnum < 28, "filter number must be >= 0 and <= 27");
-  static_assert(f.fifo != fifo::any, "you must select fifo for filter");
+  static_assert(_filter::number < 28, "filter number must be >= 0 and <= 27");
+  static_assert(_filter::fifo != fifo::any, "you must select fifo for filter");
 
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
   // enter to initialisation mode
   auto r = inst->FMR;
   r &= CAN_FMR_CAN2SB;
-  r |= CAN_FMR_FINIT | (f.bank_num << CAN_FMR_CAN2SB_Pos);
+  r |= CAN_FMR_FINIT | (_filter::bank_num << CAN_FMR_CAN2SB_Pos);
   inst->FMR = r;
 
   // filter deactivation
   inst->FA1R &= ~fpos;
 
-  if constexpr(f.filter_scale == filter_scale::fs16) {
+  if constexpr(_filter::filter_scale == filter_scale::_16bit) {
     // 16-bit scale for the filter
     inst->FS1R &= ~fpos;
-    inst->sFilterRegister[fnum].FR1 = ((maskid_low & 0xffff) << 16) | (id_low & 0xffff);
-    inst->sFilterRegister[fnum].FR2 = ((maskid_high & 0xffff) << 16) | (id_high & 0xffff);
+    inst->sFilterRegister[_filter::number].FR1 = ((maskid_low & 0xffff) << 16) | (id_low & 0xffff);
+    inst->sFilterRegister[_filter::number].FR2 = ((maskid_high & 0xffff) << 16) |
+                                                 (id_high & 0xffff);
   }
   else {
     // 32-bit scale for the filter
     inst->FS1R |= fpos;
-    inst->sFilterRegister[fnum].FR1 = ((id_high & 0xffff) << 16) | (id_low & 0xffff);
-    inst->sFilterRegister[fnum].FR2 = ((maskid_high & 0xffff) << 16) | (maskid_low & 0xffff);
+    inst->sFilterRegister[_filter::number].FR1 = ((id_high & 0xffff) << 16) | (id_low & 0xffff);
+    inst->sFilterRegister[_filter::number].FR2 = ((maskid_high & 0xffff) << 16) |
+                                                 (maskid_low & 0xffff);
   }
 
-  if constexpr(f.filter_mode == filter_mode::idmask) {
+  if constexpr(_filter::filter_mode == filter_mode::idmask) {
     inst->FM1R &= ~fpos;
   }
   else {
     inst->FM1R |= fpos;
   }
 
-  if constexpr(f.fifo == fifo::fifo_0) {
+  if constexpr(_filter::fifo == fifo::fifo_0) {
     inst->FFA1R &= ~fpos;
   }
   else {
@@ -281,37 +242,33 @@ void filter_enable(uint32_t id_high, uint32_t id_low, uint32_t maskid_high, uint
   inst->FMR &= ~CAN_FMR_FINIT;
 }
 
-template<typename _module, typename arg1, typename ...args>
+template<typename _module, typename _filter, typename ..._filters>
 void filter_disable()
 {
-  if constexpr(sizeof...(args) > 0) { filter_enable<_module, args...>(); }
-  constexpr auto m    = _module();
-  constexpr auto f    = arg1();
-  constexpr auto fnum = f.number;
-  constexpr auto fpos = 1 << fnum;
+  if constexpr(sizeof...(_filters) > 0) { filter_enable<_module, _filters...>(); }
 
-  static_assert(fnum < 28, "filter number must be >= 0 and <= 27");
+  static_assert(_filter::number < 28, "filter number must be >= 0 and <= 27");
 
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
   // enter to initialisation mode
   auto r = inst->FMR;
   r &= CAN_FMR_CAN2SB;
-  r |= CAN_FMR_FINIT | (f.bank_num << CAN_FMR_CAN2SB_Pos);
+  r |= CAN_FMR_FINIT | (_filter::bank_num << CAN_FMR_CAN2SB_Pos);
   inst->FMR = r;
 
   // filter deactivation
-  inst->FA1R &= ~fpos;
+  inst->FA1R &= ~(1 << _filter::number);
   // leave the initialisation mode
   inst->FMR &= ~CAN_FMR_FINIT;
 }
 
-template<event evt, event ...evts>
+template<event _event, event ..._events>
 constexpr uint32_t event_bits()
 {
   constexpr auto bit = []() -> uint32_t
   {
-    switch(evt)
+    switch(_event)
     {
     case event::tme:   return CAN_IER_TMEIE;
     case event::fmp_0: return CAN_IER_FMPIE0;
@@ -331,24 +288,24 @@ constexpr uint32_t event_bits()
     return 0;
   };
 
-  if constexpr(sizeof...(evts) > 0) { return bit() | event_bits<evts...>(); }
+  if constexpr(sizeof...(_events) > 0) { return bit() | event_bits<_events...>(); }
   return bit();
 }
 
-template<typename _module, event ...evts>
-void enable_events() { detail::inst<_module().module_id>()->IER |= event_bits<evts...>(); }
+template<typename _module, event ..._events>
+void enable_events() { detail::inst<_module>()->IER |= event_bits<_events...>(); }
 
-template<typename _module, event ...evts>
-void disable_events() { detail::inst<_module().module_id>()->IER &= ~event_bits<evts...>(); }
+template<typename _module, event ..._events>
+void disable_events() { detail::inst<_module>()->IER &= ~event_bits<_events...>(); }
 
-template<flags _f, flags ..._flags>
+template<flags _flag, flags ..._flags>
 inline flags get_tsr_flags(const uint32_t reg)
 {
   auto flag = [=]
   {
     constexpr auto none = static_cast<flags>(0);
 
-    switch(_f)
+    switch(_flag)
     {
     case flags::rqcp_0: return (reg & CAN_TSR_RQCP0) == 0? none : flags::rqcp_0;
     case flags::rqcp_1: return (reg & CAN_TSR_RQCP1) == 0? none : flags::rqcp_1;
@@ -369,14 +326,14 @@ inline flags get_tsr_flags(const uint32_t reg)
   return flag();
 }
 
-template<flags _f, flags ..._flags>
+template<flags _flag, flags ..._flags>
 inline flags get_rf0r_flags(const uint32_t reg)
 {
   auto flag = [=]
   {
     constexpr auto none = static_cast<flags>(0);
 
-    switch(_f)
+    switch(_flag)
     {
     case flags::fmp_0: return (reg & CAN_RF0R_FMP0 ) == 0? none : flags::fmp_0;
     case flags::ff_0:  return (reg & CAN_RF0R_FULL0) == 0? none : flags::ff_0;
@@ -391,14 +348,14 @@ inline flags get_rf0r_flags(const uint32_t reg)
   return flag();
 }
 
-template<flags _f, flags ..._flags>
+template<flags _flag, flags ..._flags>
 inline flags get_rf1r_flags(const uint32_t reg)
 {
   auto flag = [=]
   {
     constexpr auto none = static_cast<flags>(0);
 
-    switch(_f)
+    switch(_flag)
     {
     case flags::fmp_1: return (reg & CAN_RF1R_FMP1 ) == 0? none : flags::fmp_1;
     case flags::ff_1:  return (reg & CAN_RF1R_FULL1) == 0? none : flags::ff_1;
@@ -413,14 +370,14 @@ inline flags get_rf1r_flags(const uint32_t reg)
   return flag();
 }
 
-template<flags _f, flags ..._flags>
+template<flags _flag, flags ..._flags>
 inline flags get_msr_flags(const uint32_t reg)
 {
   auto flag = [=]
   {
     constexpr auto none = static_cast<flags>(0);
 
-    switch(_f)
+    switch(_flag)
     {
     case flags::wku:   return (reg & CAN_MSR_WKUI ) == 0? none : flags::wku;
     case flags::slaki: return (reg & CAN_MSR_SLAKI) == 0? none : flags::slaki;
@@ -439,19 +396,19 @@ flags get_flags()
 {
   static_assert(sizeof...(_flags) > 0, "function must have at least one flag");
 
-  auto inst = detail::inst<_module().module_id>();
+  auto inst = detail::inst<_module>();
   return get_tsr_flags <_flags...>(inst->TSR)  |
          get_rf0r_flags<_flags...>(inst->RF0R) |
          get_rf1r_flags<_flags...>(inst->RF1R) |
          get_msr_flags <_flags...>(inst->MSR);
 }
 
-template<flags _f, flags ..._flags>
+template<flags _flag, flags ..._flags>
 constexpr uint32_t clr_tsr_flags()
 {
   constexpr auto bit = []() -> uint32_t
   {
-    switch(_f)
+    switch(_flag)
     {
     case flags::rqcp_0: return CAN_TSR_RQCP0;
     case flags::rqcp_1: return CAN_TSR_RQCP1;
@@ -471,12 +428,12 @@ constexpr uint32_t clr_tsr_flags()
   return bit();
 }
 
-template<flags _f, flags ..._flags>
+template<flags _flag, flags ..._flags>
 constexpr uint32_t clr_rf0r_flags()
 {
   constexpr auto bit = []() -> uint32_t
   {
-    switch(_f)
+    switch(_flag)
     {
     case flags::fmp_0: return CAN_RF0R_RFOM0;
     case flags::ff_0:  return CAN_RF0R_FULL0;
@@ -490,12 +447,12 @@ constexpr uint32_t clr_rf0r_flags()
   return bit();
 }
 
-template<flags _f, flags ..._flags>
+template<flags _flag, flags ..._flags>
 constexpr uint32_t clr_rf1r_flags()
 {
   constexpr auto bit = []() -> uint32_t
   {
-    switch(_f)
+    switch(_flag)
     {
     case flags::fmp_1: return CAN_RF1R_RFOM1;
     case flags::ff_1:  return CAN_RF1R_FULL1;
@@ -509,12 +466,12 @@ constexpr uint32_t clr_rf1r_flags()
   return bit();
 }
 
-template<flags _f, flags ..._flags>
+template<flags _flag, flags ..._flags>
 constexpr uint32_t clr_msr_flags()
 {
   constexpr auto bit = []() -> uint32_t
   {
-    switch(_f)
+    switch(_flag)
     {
     case flags::wku:   return CAN_MSR_WKUI;
     case flags::slaki: return CAN_MSR_SLAKI;
@@ -530,7 +487,7 @@ constexpr uint32_t clr_msr_flags()
 template<typename _module, flags ..._flags>
 void clear_flags()
 {
-  auto inst = detail::inst<_module().module_id>();
+  auto inst = detail::inst<_module>();
 
   {
     constexpr auto mask = clr_tsr_flags<_flags...>();
@@ -554,8 +511,9 @@ void clear_flags()
 }
 
 template<typename _module>
-event irq_source() {
-  auto inst = detail::inst<_module().module_id>();
+event irq_source()
+{
+  auto inst = detail::inst<_module>();
 
   event evt = static_cast<event>(0);
 
@@ -583,8 +541,7 @@ io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
 {
   if(len > 8) { return io::result::error; }
 
-  constexpr auto m = _module();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
   CAN_TxMailBox_TypeDef *mbox;
 
@@ -635,11 +592,10 @@ io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
   return io::result::success;
 }
 
-template<typename _module, typename abort_fn>
-io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len, abort_fn&& abort)
+template<typename _module, typename _abort_fn>
+io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len, _abort_fn&& abort)
 {
-  constexpr auto m = _module();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
   while((inst->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2)) == 0) {
     if(abort()) { return io::result::busy; }
@@ -648,10 +604,10 @@ io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len, ab
   return tx<_module>(id, ide, rtr, data, len);
 }
 
-template<typename _module, typename abort_fn>
-io::result tx_wait(abort_fn&& abort)
+template<typename _module, typename _abort_fn>
+io::result tx_wait(_abort_fn&& abort)
 {
-  auto inst = detail::inst<_module().module_id>();
+  auto inst = detail::inst<_module>();
 
   constexpr auto flags = (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2);
   while((inst->TSR & flags) != flags) {
@@ -664,8 +620,7 @@ io::result tx_wait(abort_fn&& abort)
 template<typename _module>
 void tx_abort()
 {
-  constexpr auto m = _module();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
   if((inst->TSR & CAN_TSR_TME0) == 0) { inst->TSR |= CAN_TSR_ABRQ0; }
   if((inst->TSR & CAN_TSR_TME1) == 0) { inst->TSR |= CAN_TSR_ABRQ1; }
@@ -675,8 +630,7 @@ void tx_abort()
 template<typename _module, fifo _fifo>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len)
 {
-  constexpr auto m = _module();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
   uint8_t fifo_n = 0xff;
 
@@ -736,9 +690,9 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
   return io::result::success;
 }
 
-template<typename _module, fifo _fifo, typename abort_fn>
+template<typename _module, fifo _fifo, typename _abort_fn>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len,
-              abort_fn&& abort)
+              _abort_fn&& abort)
 {
   while(!abort()) {
     const auto io_r = rx<_module, _fifo>(id, ide, rtr, fmi, data, len);
