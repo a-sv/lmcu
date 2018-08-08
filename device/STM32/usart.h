@@ -1,6 +1,6 @@
 #pragma once
 #include <lmcu/rcc>
-#include <lmcu/delay>
+#include "../../common/delay/expirable.h"
 #include "../../common/io.h"
 
 namespace lmcu {
@@ -90,7 +90,7 @@ template<typename _module, io::type _iotype = io::type::blocking>
 io::result rx(uint16_t &data) { return detail::rx<_module, _iotype>(data); }
 
 template<typename _module>
-io::result rx(uint16_t &data, const delay::timer &t)
+io::result rx(uint16_t &data, const delay::expirable &t)
 {
   while(!t.expired()) {
     auto iores = detail::rx<_module, io::type::nonblocking>(data);
@@ -103,7 +103,7 @@ template<typename _module, io::type _iotype = io::type::blocking>
 io::result tx(uint16_t data) { return detail::tx<_module, _iotype>(data); }
 
 template<typename _module>
-io::result tx(uint16_t data, const delay::timer &t)
+io::result tx(uint16_t data, const delay::expirable &t)
 {
   while(!t.expired()) {
     auto iores = detail::tx<_module, io::type::nonblocking>(data);
@@ -119,7 +119,7 @@ io::result write(const void *data, uint32_t size)
 }
 
 template<typename _module>
-io::result write(const void *data, uint32_t size, const delay::timer &t)
+io::result write(const void *data, uint32_t size, const delay::expirable &t)
 {
   return detail::write<_module>(data, size, [&] { return t.expired(); });
 }
@@ -131,7 +131,7 @@ io::result read(void *data, uint32_t size, uint32_t &rx_size)
 }
 
 template<typename _module>
-io::result read(void *data, uint32_t size, uint32_t &rx_size, const delay::timer &t)
+io::result read(void *data, uint32_t size, uint32_t &rx_size, const delay::expirable &t)
 {
   return detail::read<_module>(data, size, rx_size, [&] { return t.expired(); });
 }

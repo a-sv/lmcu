@@ -114,7 +114,7 @@ void configure()
 }
 
 template<typename _module, bool _start>
-io::result req_tx(uint16_t addr, const delay::timer &t)
+io::result req_tx(uint16_t addr, const delay::expirable &t)
 {
   auto inst = detail::inst<_module>();
 
@@ -161,7 +161,7 @@ io::result req_tx(uint16_t addr, const delay::timer &t)
 }
 
 template<typename _module>
-io::result tx(uint16_t addr, uint8_t data, const delay::timer &t)
+io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
 {
   auto inst = detail::inst<_module>();
 
@@ -191,7 +191,7 @@ io::result tx(uint16_t addr, uint8_t data, const delay::timer &t)
 }
 
 template<typename _module, typename _get_fn>
-io::result write(uint16_t addr, const delay::timer &t, _get_fn&& get)
+io::result write(uint16_t addr, const delay::expirable &t, _get_fn&& get)
 {
   auto inst = detail::inst<_module>();
 

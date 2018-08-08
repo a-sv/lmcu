@@ -1,5 +1,6 @@
 #pragma once
-#include <lmcu/delay>
+#include <lmcu/device>
+#include "../../common/delay/expirable.h"
 #include "../../common/def.h"
 #include "../../common/io.h"
 
@@ -209,7 +210,8 @@ io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
 }
 
 template<typename _module>
-io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len, const delay::timer &t)
+io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len,
+              const delay::expirable &t)
 {
   return detail::tx<_module>(id, ide, rtr, data, len, [&] { return t.expired(); });
 }
@@ -218,7 +220,7 @@ template<typename _module>
 void tx_wait() { detail::tx_wait<_module>([] { return false; }); }
 
 template<typename _module>
-io::result tx_wait(const delay::timer &t)
+io::result tx_wait(const delay::expirable &t)
 {
   return detail::tx_wait<_module>([&] { return t.expired(); });
 }
@@ -237,7 +239,7 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
 
 template<typename _module, fifo _fifo = fifo::any>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len,
-              const delay::timer &t)
+              const delay::expirable &t)
 {
   return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len, [&] { return t.expired(); });
 }

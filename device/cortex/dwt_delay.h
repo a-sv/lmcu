@@ -1,5 +1,6 @@
 #pragma once
 #include <lmcu/rcc>
+#include "../../common/delay/expirable.h"
 #include "../../common/def.h"
 
 namespace lmcu {
@@ -66,7 +67,7 @@ lmcu_force_inline void sec(const uint32_t sec)
   for(uint32_t n = 0; n < sec; n++) { us<1000000>(); }
 }
 
-class timer
+class dwt_timer : public expirable
 {
 public:
   enum units { cyc, us, ms, sec };
@@ -91,7 +92,7 @@ public:
     start_ = delay::start();
   }
 
-  lmcu_force_inline bool expired() const { return (DWT->CYCCNT + start_) >= expire_; }
+  lmcu_force_inline bool expired() const final { return (DWT->CYCCNT + start_) >= expire_; }
 
   template<units _units>
   lmcu_force_inline uint32_t elapsed() const

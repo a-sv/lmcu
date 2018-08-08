@@ -1,6 +1,6 @@
 #pragma once
 #include <lmcu/rcc>
-#include <lmcu/delay>
+#include "../../common/delay/expirable.h"
 #include "../../common/io.h"
 #include "../../common/defer.h"
 
@@ -72,15 +72,15 @@ template<typename ..._modules>
 void disable() { (detail::disable<_modules>(), ...); }
 
 template<typename _module>
-io::result tx(uint16_t addr, uint8_t data, const delay::timer &t)
+io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
 { return detail::tx<_module>(addr, data, t); }
 
 template<typename _module, typename _get_fn>
-io::result write(uint16_t addr, const delay::timer &t, _get_fn&& get)
+io::result write(uint16_t addr, const delay::expirable &t, _get_fn&& get)
 { return detail::write<_module>(addr, t, get); }
 
 template<typename _module>
-io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::timer &t)
+io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::expirable &t)
 {
   if(sz == 0) {
     return io::result::success;
