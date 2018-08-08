@@ -14,7 +14,7 @@ struct irq
   static constexpr auto sub_prio     = _sub_prio;
 };
 
-template<typename _irq, uint32_t _n>
+template<typename _irq, IRQn_Type _n>
 void enable_irq()
 {
   NVIC_SetPriority(_n, NVIC_EncodePriority(_irq::prio_group, _irq::preempt_prio, _irq::sub_prio));
