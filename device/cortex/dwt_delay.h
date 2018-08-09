@@ -67,7 +67,9 @@ lmcu_force_inline void sec(const uint32_t sec)
   for(uint32_t n = 0; n < sec; n++) { us<1000000>(); }
 }
 
-class dwt_timer : public expirable
+namespace dwt {
+
+class timer : public expirable
 {
 public:
   enum units { cyc, us, ms, sec };
@@ -117,8 +119,10 @@ public:
     return _us / 1000000;
   }
 private:
-  uint32_t start_, expire_;
+  uint32_t start_ = 0, expire_ = 0;
 };
+
+} // namespace dwt
 
 } // namespace delay
 } // namespace lmcu
