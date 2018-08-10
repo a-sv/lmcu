@@ -21,7 +21,7 @@ public:
 
   lmcu_force_inline uint32_t remain() const { return expire_ - elapsed(); }
 
-  static inline void tick() { counter_++; }
+  static lmcu_force_inline void tick() { counter_++; }
 private:
   uint32_t start_ = 0, expire_ = 0;
   static volatile uint32_t counter_;
