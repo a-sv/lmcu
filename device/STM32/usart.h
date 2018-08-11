@@ -2,9 +2,9 @@
 #include <lmcu/rcc>
 #include "../../common/delay/expirable.h"
 #include "../../common/io.h"
+#include "../../common/defer.h"
 
-namespace lmcu {
-namespace usart {
+namespace lmcu::usart {
 
 enum class module_id
 {
@@ -43,33 +43,46 @@ enum class module_id
 
 enum class mode { async, sync, half_duplex, mp_comm, irda, lin, smartcard };
 
-// word length with parity (bits)
-enum class data_size { ds_8, ds_9 };
+// word length with parity
+enum class data_size { _8bit, _9bit };
 
 enum class parity { disable, even, odd };
 
 enum class stop_bits
 {
-  sb_1,
-  sb_0_5,
-  sb_2,
-  sb_1_5
+  _1,
+  _0_5,
+  _2,
+  _1_5
 };
 
-enum class cts { enable, disable };
+enum class cts { disable, enable };
 
-enum class rts { enable, disable };
+enum class rts { disable, enable };
+
+enum class dma { disable, rx, tx, rxtx };
+
+namespace nvic {
+
+enum class irq_type { disable, usi };
+
+constexpr auto default_prio_group = 3;
+
+} // namespace nvic
+#include "../cortex/nvic.h"
 
 template<
   module_id _module_id,
   uint32_t _baud,
-  data_size _data_size = data_size::ds_8,
+  data_size _data_size = data_size::_8bit,
   parity _parity = parity::disable,
-  stop_bits _stop_bits = stop_bits::sb_1,
+  stop_bits _stop_bits = stop_bits::_1,
   cts _cts = cts::disable,
-  rts _rts = rts::disable
+  rts _rts = rts::disable,
+  dma _dma = dma::disable,
+  typename _irq = nvic::irq<nvic::irq_type::disable>
 >
-struct module
+struct module_async
 {
   static constexpr auto mode      = usart::mode::async;
   static constexpr auto module_id = _module_id;
@@ -79,62 +92,83 @@ struct module
   static constexpr auto stop_bits = _stop_bits;
   static constexpr auto cts       = _cts;
   static constexpr auto rts       = _rts;
+  static constexpr auto dma       = _dma;
+  static constexpr auto irq       = _irq();
 };
+
+enum class event
+{
+  pe   = 1 << 0, // Parity error
+  fe   = 1 << 1, // Framing error
+  ne   = 1 << 2, // Noise error
+  ore  = 1 << 3, // Overrun error
+  idle = 1 << 4, // IDLE line detected
+  rxne = 1 << 5, // Read data register not empty
+  tc   = 1 << 6, // Transmission complete
+  txe  = 1 << 7, // Transmit data register empty
+  lbd  = 1 << 8, // LIN break detection
+  cts  = 1 << 9  // CTS
+};
+lmcu_enum_class_flags_impl(event)
 
 #include "detail/usart.h"
 
-template<typename ...args>
-void configure() { detail::configure<args...>(); }
+template<typename ..._modules>
+void configure() { detail::configure<_modules...>(); }
 
-template<typename _module, io::type _iotype = io::type::blocking>
-io::result rx(uint16_t &data) { return detail::rx<_module, _iotype>(data); }
+template<typename ..._modules>
+void enable() { detail::enable<_modules...>(); }
+
+template<typename ..._modules>
+void disable() { detail::disable<_modules...>(); }
+
+template<typename _module>
+io::result rx(uint16_t &data) { return detail::rx<_module>(data); }
 
 template<typename _module>
 io::result rx(uint16_t &data, const delay::expirable &t)
 {
-  while(!t.expired()) {
-    auto iores = detail::rx<_module, io::type::nonblocking>(data);
-    if(iores != io::result::busy) { return iores; }
-  }
-  return io::result::busy;
+  io::result rc = io::result::busy;
+  while(rc == io::result::busy && !t.expired()) { rc = detail::rx<_module>(data); }
+  return rc;
 }
 
-template<typename _module, io::type _iotype = io::type::blocking>
-io::result tx(uint16_t data) { return detail::tx<_module, _iotype>(data); }
+template<typename _module>
+io::result tx(uint16_t data) { return detail::tx<_module>(data); }
 
 template<typename _module>
 io::result tx(uint16_t data, const delay::expirable &t)
 {
-  while(!t.expired()) {
-    auto iores = detail::tx<_module, io::type::nonblocking>(data);
-    if(iores != io::result::busy) { return iores; }
-  }
-  return io::result::busy;
+  io::result rc = io::result::busy;
+  while(rc == io::result::busy && !t.expired()) { rc = detail::tx<_module>(data); }
+  return rc;
 }
 
 template<typename _module>
-io::result write(const void *data, uint32_t size)
+io::result write(const void *data, uint32_t size, uint32_t &tx_size, const delay::expirable &t)
 {
-  return detail::write<_module>(data, size, [] { return false; });
-}
-
-template<typename _module>
-io::result write(const void *data, uint32_t size, const delay::expirable &t)
-{
-  return detail::write<_module>(data, size, [&] { return t.expired(); });
-}
-
-template<typename _module>
-io::result read(void *data, uint32_t size, uint32_t &rx_size)
-{
-  return detail::read<_module>(data, size, rx_size, [] { return false; });
+  return detail::write<_module>(data, size, tx_size, t);
 }
 
 template<typename _module>
 io::result read(void *data, uint32_t size, uint32_t &rx_size, const delay::expirable &t)
 {
-  return detail::read<_module>(data, size, rx_size, [&] { return t.expired(); });
+  return detail::read<_module>(data, size, rx_size, t);
 }
 
-} // namespace usart
-} // namespace lmcu
+template<typename _module>
+uint32_t dma_address() { return detail::dma_address<_module>(); }
+
+template<typename _module, event ..._events>
+void enable_events() { detail::enable_events<_module, _events...>(); }
+
+template<typename _module, event ..._events>
+void disable_events() { detail::disable_events<_module, _events...>(); }
+
+template<typename _module>
+event irq_source() { return detail::irq_source<_module>(); }
+
+template<typename _module, event ..._events>
+void irq_clear() { detail::irq_clear<_module, _events...>(); }
+
+} // namespace lmcu::usart
