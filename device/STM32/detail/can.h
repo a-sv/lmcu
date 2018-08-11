@@ -592,26 +592,27 @@ io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
   return io::result::success;
 }
 
-template<typename _module, typename _abort_fn>
-io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len, _abort_fn&& abort)
+template<typename _module>
+io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len,
+              const delay::expirable &t)
 {
-  auto inst = detail::inst<_module>();
+  io::result rc = io::result::busy;
 
-  while((inst->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2)) == 0) {
-    if(abort()) { return io::result::busy; }
+  while(rc == io::result::busy && !t.expired()) {
+    rc = tx<_module>(id, ide, rtr, data, len);
   }
 
-  return tx<_module>(id, ide, rtr, data, len);
+  return rc;
 }
 
-template<typename _module, typename _abort_fn>
-io::result tx_wait(_abort_fn&& abort)
+template<typename _module>
+io::result tx_wait(const delay::expirable &t)
 {
   auto inst = detail::inst<_module>();
 
   constexpr auto flags = (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2);
   while((inst->TSR & flags) != flags) {
-    if(abort()) { return io::result::busy; }
+    if(t.expired()) { return io::result::busy; }
   }
 
   return io::result::success;
@@ -690,15 +691,17 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
   return io::result::success;
 }
 
-template<typename _module, fifo _fifo, typename _abort_fn>
+template<typename _module, fifo _fifo>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len,
-              _abort_fn&& abort)
+              const delay::expirable &t)
 {
-  while(!abort()) {
-    const auto io_r = rx<_module, _fifo>(id, ide, rtr, fmi, data, len);
-    if(io_r != io::result::busy) { return io_r; }
+  io::result rc = io::result::busy;
+
+  while(rc == io::result::busy && !t.expired()) {
+    rc = rx<_module, _fifo>(id, ide, rtr, fmi, data, len);
   }
-  return io::result::busy;
+
+  return rc;
 }
 
 } // namespace detail

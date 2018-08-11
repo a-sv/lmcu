@@ -200,12 +200,9 @@ void filter_enable(uint32_t id_high, uint32_t id_low, uint32_t maskid_high, uint
 template<typename _module, typename ..._filters>
 void filter_disable() { detail::filter_disable<_module, _filters...>(); }
 
-template<typename _module, io::type _iotype = io::type::blocking>
+template<typename _module>
 io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
 {
-  if constexpr(_iotype == io::type::blocking) {
-    return detail::tx<_module>(id, ide, rtr, data, len, [] { return false; });
-  }
   return detail::tx<_module>(id, ide, rtr, data, len);
 }
 
@@ -213,27 +210,21 @@ template<typename _module>
 io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len,
               const delay::expirable &t)
 {
-  return detail::tx<_module>(id, ide, rtr, data, len, [&] { return t.expired(); });
+  return detail::tx<_module>(id, ide, rtr, data, len, t);
 }
-
-template<typename _module>
-void tx_wait() { detail::tx_wait<_module>([] { return false; }); }
 
 template<typename _module>
 io::result tx_wait(const delay::expirable &t)
 {
-  return detail::tx_wait<_module>([&] { return t.expired(); });
+  return detail::tx_wait<_module>(t);
 }
 
 template<typename _module>
 void tx_abort() { detail::tx_abort<_module>(); }
 
-template<typename _module, fifo _fifo = fifo::any, io::type _iotype = io::type::blocking>
+template<typename _module, fifo _fifo = fifo::any>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len)
 {
-  if constexpr(_iotype == io::type::blocking) {
-    return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len, [] { return false; });
-  }
   return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len);
 }
 
@@ -241,7 +232,7 @@ template<typename _module, fifo _fifo = fifo::any>
 io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8], uint8_t &len,
               const delay::expirable &t)
 {
-  return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len, [&] { return t.expired(); });
+  return detail::rx<_module, _fifo>(id, ide, rtr, fmi, data, len, t);
 }
 
 template<typename _module, event ..._events>
