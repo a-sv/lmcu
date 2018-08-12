@@ -4,8 +4,7 @@
 #include "../../common/def.h"
 #include "../../common/io.h"
 
-namespace lmcu {
-namespace can {
+namespace lmcu::can {
 
 enum class module_id
 {
@@ -250,5 +249,4 @@ void clear_flags() { detail::clear_flags<_module, _flags...>(); }
 template<typename _module>
 event irq_source() { return detail::irq_source<_module>(); }
 
-} // namespace can
-} // namespace lmcu
+} // namespace lmcu::can

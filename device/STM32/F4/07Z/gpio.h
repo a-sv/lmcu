@@ -1,8 +1,7 @@
 #pragma once
 #include "../gpio.h"
 
-namespace lmcu {
-namespace gpio {
+namespace lmcu::gpio {
 
 // ------------------------------------------------------------------------------------------------
 
@@ -294,5 +293,4 @@ lmcu_gpio_pin(H,0,  eventout = 15);
 
 lmcu_gpio_pin(H,1,  eventout = 15);
 
-} // namespace gpio
-} // namespace lmcu
+} // namespace lmcu::gpio

@@ -1,8 +1,7 @@
 #pragma once
 #include "../rcc.h"
 
-namespace lmcu {
-namespace rcc {
+namespace lmcu::rcc {
 
 enum class rtchse_prediv
 {
@@ -138,5 +137,4 @@ using mco2_prediv = mco1_prediv;
 
 #include "detail/rcc.h"
 
-} // namespace rcc
-} // namespace lmcu
+} // namespace lmcu::rcc

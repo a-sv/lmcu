@@ -4,8 +4,7 @@
 #include "../../common/io.h"
 #include "../../common/defer.h"
 
-namespace lmcu {
-namespace i2c {
+namespace lmcu::i2c {
 
 enum class module_id
 {
@@ -89,5 +88,4 @@ io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::expi
   return write<_module>(addr, t, [&b, e](auto&& r) { r = *b++; return b < e; } );
 }
 
-} // namespace i2c
-} // namespace lmcu
+} // namespace lmcu::i2c

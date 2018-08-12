@@ -2,10 +2,7 @@
 #include <lmcu/delay>
 #include "../../spi.h"
 
-namespace lmcu {
-namespace spi {
-namespace detail {
-namespace one_line {
+namespace lmcu::spi::detail::one_line {
 
 //
 // slave rx
@@ -145,7 +142,4 @@ void master_write(SPI_TypeDef *inst, const uint8_t *data, uint32_t count)
 void master_write_with_crc(SPI_TypeDef *inst, const uint8_t *data, uint32_t count)
 { detail::write<direction::one_line, true>(inst, data, count); }
 
-} // namespace one_line
-} // namespace detail
-} // namespace lmcu
-} // namespace spi
+} // namespace lmcu::spi::detail::one_line

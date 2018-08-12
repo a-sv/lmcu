@@ -2,8 +2,7 @@
 #include <lmcu/device>
 #include "../../../common/def.h"
 
-namespace lmcu {
-namespace dma {
+namespace lmcu::dma {
 
 enum class module_id
 {
@@ -103,5 +102,4 @@ event irq_source() { return detail::irq_source<_module>(); }
 template<typename _module, event ..._events>
 void irq_clear() { detail::irq_clear<_module, _events...>(); }
 
-} // namespace dma
-} // namespace lmcu
+} // namespace lmcu::dma

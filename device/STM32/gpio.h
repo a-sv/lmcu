@@ -1,8 +1,7 @@
 #pragma once
 #include <lmcu/device>
 
-namespace lmcu {
-namespace gpio {
+namespace lmcu::gpio {
 
 enum class port {
 #if defined(GPIOA)
@@ -135,5 +134,4 @@ void toggle() { get<_port>() ^= detail::mask<first, bits...>(); }
 template<typename ...args>
 void toggle() { detail::toggle<args...>(); }
 
-} // namespace gpio
-} // namespace lmcu
+} // namespace lmcu::gpio

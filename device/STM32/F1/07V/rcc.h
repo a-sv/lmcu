@@ -1,8 +1,7 @@
 #pragma once
 #include "../rcc.h"
 
-namespace lmcu {
-namespace rcc {
+namespace lmcu::rcc {
 
 enum class prediv1_mux { hse, pll2clk };
 
@@ -176,5 +175,4 @@ void configure()
   detail::osc_deconfigure<_osc_type, _rtcclk_mux>();
 }
 
-} // namespace rcc
-} // namespace lmcu
+} // namespace lmcu::rcc

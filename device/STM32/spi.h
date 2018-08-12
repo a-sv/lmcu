@@ -2,8 +2,7 @@
 #include <lmcu/rcc>
 #include <lmcu/delay>
 
-namespace lmcu {
-namespace spi {
+namespace lmcu::spi {
 
 enum class module_id
 {
@@ -196,5 +195,4 @@ uint16_t crc_txval() { return detail::crc_txval<module_t>(); }
 template<typename module_t>
 uint16_t crc_poly() { return detail::crc_poly<module_t>(); }
 
-} // namespace spi
-} // namespace lmcu
+} // namespace lmcu::spi

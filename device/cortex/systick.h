@@ -1,8 +1,7 @@
 #pragma once
 #include <lmcu/rcc>
 
-namespace lmcu {
-namespace systick {
+namespace lmcu::systick {
 
 enum class clk_source { cpu, ext };
 
@@ -23,5 +22,4 @@ static inline void disable() { detail::disable(); }
 
 static inline uint32_t value() { return detail::value(); }
 
-} // namespace systick
-} // namespace lmcu
+} // namespace lmcu::systick

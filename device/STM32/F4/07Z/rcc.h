@@ -1,8 +1,7 @@
 #pragma once
 #include "../rcc.h"
 
-namespace lmcu {
-namespace rcc {
+namespace lmcu::rcc {
 
 #include "detail/rcc.h"
 
@@ -96,5 +95,4 @@ void configure()
   detail::adc_clock      = round<uint32_t>(apb2clk);
 }
 
-} // namespace rcc
-} // namespace lmcu
+} // namespace lmcu::rcc

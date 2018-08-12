@@ -1,7 +1,6 @@
 #pragma once
 
-namespace lmcu {
-namespace delay {
+namespace lmcu::delay {
 
 class expirable
 {
@@ -15,5 +14,4 @@ public:
   bool expired() const final { return false; }
 };
 
-} // namespace delay
-} // namespace lmcu
+} // namespace lmcu::delay

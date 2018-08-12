@@ -2,8 +2,7 @@
 #include <lmcu/rcc>
 #include <lmcu/delay>
 
-namespace lmcu {
-namespace adc {
+namespace lmcu::adc {
 
 enum class module_id
 {
@@ -228,5 +227,4 @@ uint32_t read() { return detail::read<_conf, _jrank>(); }
 template<typename _conf>
 uint32_t dma_address() { return detail::dma_address<_conf>(); }
 
-} // namespace adc
-} // namespace lmcu
+} // namespace lmcu::adc

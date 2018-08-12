@@ -1,8 +1,7 @@
 #pragma once
 #include "../rcc.h"
 
-namespace lmcu {
-namespace rcc {
+namespace lmcu::rcc {
 
 enum class adc_prediv
 {
@@ -15,5 +14,4 @@ enum class adc_prediv
 
 #include "detail/rcc.h"
 
-} // namespace rcc
-} // namespace lmcu
+} // namespace lmcu::rcc

@@ -3,8 +3,7 @@
 #include "../../common/delay/expirable.h"
 #include "../../common/def.h"
 
-namespace lmcu {
-namespace delay {
+namespace lmcu::delay {
 
 lmcu_force_inline uint32_t start() { return (0xffffffff - DWT->CYCCNT) + 1; }
 
@@ -124,5 +123,4 @@ private:
 
 } // namespace dwt
 
-} // namespace delay
-} // namespace lmcu
+} // namespace lmcu::delay

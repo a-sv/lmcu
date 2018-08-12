@@ -1,8 +1,7 @@
 #pragma once
 #include "../gpio.h"
 
-namespace lmcu {
-namespace gpio {
+namespace lmcu::gpio {
 
 enum class remap
 {
@@ -179,5 +178,4 @@ void disable(bool afio_off = true) { detail::disable<args...>(afio_off); }
 template<remap ...args>
 void remap() { detail::remap<args...>(); }
 
-} // namespace gpio
-} // namespace lmcu
+} // namespace lmcu::gpio

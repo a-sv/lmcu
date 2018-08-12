@@ -3,8 +3,7 @@
 
 #include "../rcc.h"
 
-namespace lmcu {
-namespace rcc {
+namespace lmcu::rcc {
 
 namespace detail {
 
@@ -23,8 +22,7 @@ uint32_t apb2_timer_clock = 0;
 
 } // namespace detail
 
-} // namespace rcc
-} // namespace lmcu
+} // namespace lmcu::rcc
 
 extern "C" {
 

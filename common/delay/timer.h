@@ -3,8 +3,7 @@
 #include "expirable.h"
 #include "../def.h"
 
-namespace lmcu {
-namespace delay {
+namespace lmcu::delay {
 
 class timer : public expirable
 {
@@ -27,5 +26,4 @@ private:
   static volatile uint32_t counter_;
 };
 
-} // namespace delay
-} // namespace lmcu
+} // namespace lmcu::delay

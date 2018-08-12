@@ -2,10 +2,7 @@
 #include <lmcu/delay>
 #include "../../spi.h"
 
-namespace lmcu {
-namespace spi {
-namespace detail {
-namespace rxonly {
+namespace lmcu::spi::detail::rxonly {
 
 //
 // slave rx
@@ -101,7 +98,4 @@ void master_read_with_crc(SPI_TypeDef *inst, uint8_t *data, uint32_t count, uint
   );
 }
 
-} // namespace rxonly
-} // namespace detail
-} // namespace lmcu
-} // namespace spi
+} // namespace lmcu::spi::detail::rxonly

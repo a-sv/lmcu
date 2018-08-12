@@ -1,10 +1,8 @@
 #pragma once
 
-namespace lmcu {
-namespace io {
+namespace lmcu::io {
 
 enum class result { success, busy, error };
 enum class type { blocking, nonblocking };
 
-} // namespace io
-} // namespace lmcu
+} // namespace lmcu::io

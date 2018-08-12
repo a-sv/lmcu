@@ -1,8 +1,7 @@
 #pragma once
 #include <lmcu/device>
 
-namespace lmcu {
-namespace timer {
+namespace lmcu::timer {
 
 enum class module_id
 {
@@ -187,5 +186,4 @@ void main_output_ctrl() { detail::main_output_ctrl<_conf, _enable>(); }
 template<typename _conf, oc_type _oc_type, bool _enable>
 void channel_ctrl() { detail::channel_ctrl<_conf, _oc_type, _enable>(); }
 
-} // namespace timer
-} // namespace lmcu
+} // namespace lmcu::timer

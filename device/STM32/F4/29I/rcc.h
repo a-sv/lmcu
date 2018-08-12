@@ -1,8 +1,7 @@
 #pragma once
 #include "../rcc.h"
 
-namespace lmcu {
-namespace rcc {
+namespace lmcu::rcc {
 
 using plli2s_q = pll_q;
 
@@ -242,5 +241,4 @@ void configure()
   }
 }
 
-} // namespace rcc
-} // namespace lmcu
+} // namespace lmcu::rcc
