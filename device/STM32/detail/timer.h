@@ -5,10 +5,10 @@ namespace detail {
 constexpr uint32_t cce[]  = {TIM_CCER_CC1E,  TIM_CCER_CC2E,  TIM_CCER_CC3E, TIM_CCER_CC4E};
 constexpr uint32_t ccne[] = {TIM_CCER_CC1NE, TIM_CCER_CC2NE, TIM_CCER_CC3NE};
 
-template<module_id _module_id>
+template<typename _module>
 TIM_TypeDef *inst()
 {
-  switch(_module_id)
+  switch(_module::module_id)
   {
 #if defined(TIM1)
   case module_id::tim1: return TIM1;
@@ -68,10 +68,10 @@ TIM_TypeDef *inst()
   }
 }
 
-template<typename _conf>
+template<typename _module>
 constexpr tim_type get_tim_type()
 {
-  switch(_conf().module_id)
+  switch(_module::module_id)
   {
 #if defined(TIM1)
   case module_id::tim1: return tim_type::advanced;
@@ -131,22 +131,21 @@ constexpr tim_type get_tim_type()
   }
 }
 
-template<typename _conf>
-void set_prescaler(uint16_t val) { detail::inst<_conf().module_id>()->PSC = val; }
+template<typename _module>
+void set_prescaler(uint16_t val) { detail::inst<_module>()->PSC = val; }
 
-template<typename _conf>
-void set_period(uint16_t val) { detail::inst<_conf().module_id>()->ARR = val; }
+template<typename _module>
+void set_period(uint16_t val) { detail::inst<_module>()->ARR = val; }
 
-template<typename _conf>
-void emit_update_event() { detail::inst<_conf().module_id>()->EGR = TIM_EGR_UG; }
+template<typename _module>
+void emit_update_event() { detail::inst<_module>()->EGR = TIM_EGR_UG; }
 
-template<typename _conf>
+template<typename _module_oc>
 void set_pulse(uint16_t val)
 {
-  constexpr auto m = _conf();
-  auto inst = detail::inst<m.module.module_id>();
+  auto inst = detail::inst<decltype(_module_oc::module)>();
 
-  switch(m.oc_channel)
+  switch(_module_oc::oc_channel)
   {
     case oc_channel::oc_1: inst->CCR1 = val; break;
     case oc_channel::oc_2: inst->CCR2 = val; break;
@@ -155,27 +154,18 @@ void set_pulse(uint16_t val)
   }
 }
 
-template<typename _conf, bool _enable>
-void enable()
-{
-  constexpr auto m = _conf();
-  auto inst = detail::inst<m.module_id>();
+template<typename ..._modules>
+void enable() { ((detail::inst<_modules>()->CR1 |= TIM_CR1_CEN), ...); }
 
-  if constexpr(_enable) {
-    inst->CR1 |= TIM_CR1_CEN;
-  }
-  else {
-    inst->CR1 &= ~TIM_CR1_CEN;
-  }
-}
+template<typename ..._modules>
+void disable() { ((detail::inst<_modules>()->CR1 &= ~TIM_CR1_CEN), ...); }
 
-template<typename _conf>
+template<typename _module>
 void tim_configure()
 {
-  constexpr auto m = _conf();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
-  switch(m.module_id)
+  switch(_module::module_id)
   {
 #if defined(TIM1)
   case module_id::tim1:
@@ -290,13 +280,13 @@ void tim_configure()
 #endif
   }
 
-  enable<_conf, false>();
+  disable<_module>();
 
   {
     uint32_t r = inst->CR1;
 
     r &= ~(TIM_CR1_DIR | TIM_CR1_CMS);
-    switch(m.counter_mode)
+    switch(_module::counter_mode)
     {
     case counter_mode::down:             r |= TIM_CR1_DIR;            break;
     case counter_mode::center_aligned_1: r |= (1 << TIM_CR1_CMS_Pos); break;
@@ -306,14 +296,14 @@ void tim_configure()
     }
 
     r &= ~TIM_CR1_CKD;
-    switch(m.clock_prediv)
+    switch(_module::clock_prediv)
     {
     case clock_prediv::div_2: r |= (1 << TIM_CR1_CKD_Pos);
     case clock_prediv::div_4: r |= (2 << TIM_CR1_CKD_Pos);
     default : break;
     }
 
-    if constexpr(m.one_pulse == one_pulse::enable) {
+    if constexpr(_module::one_pulse == one_pulse::enable) {
       r |=  TIM_CR1_OPM;
     }
     else {
@@ -325,17 +315,16 @@ void tim_configure()
 
   inst->SMCR = 0; // disable slave mode
 
-  if constexpr(get_tim_type<_conf>() == tim_type::advanced) { inst->RCR = m.rep_count; }
+  if constexpr(get_tim_type<_conf>() == tim_type::advanced) { inst->RCR = _module::rep_count; }
 }
 
-template<typename _conf>
+template<typename _module_oc>
 void oc_configure()
 {
-  constexpr auto m = _conf();
-  auto inst = detail::inst<m.module.module_id>();
+  auto inst = detail::inst<decltype(_module_oc::module)>();
 
-  constexpr auto oc_channel = uint32_t(m.oc_channel);
-  constexpr auto tim_type   = get_tim_type<decltype(m.module)>();
+  constexpr auto oc_channel = uint32_t(_module_oc::oc_channel);
+  constexpr auto tim_type   = get_tim_type<decltype(_module_oc::module)>();
 
   {
     uint32_t r = inst->CCER;
@@ -348,7 +337,7 @@ void oc_configure()
   {
     constexpr auto ocm_pos = []() -> uint32_t
     {
-      switch(m.oc_channel)
+      switch(_module_oc::oc_channel)
       {
         case oc_channel::oc_1: return TIM_CCMR1_OC1M_Pos;
         case oc_channel::oc_2: return TIM_CCMR1_OC2M_Pos;
@@ -357,7 +346,7 @@ void oc_configure()
       }
     }();
 
-    switch(m.oc_mode) {
+    switch(_module_oc::oc_mode) {
     case oc_mode::active:          r |= (1 << ocm_pos); break;
     case oc_mode::inactive:        r |= (2 << ocm_pos); break;
     case oc_mode::toggle:          r |= (3 << ocm_pos); break;
@@ -384,11 +373,12 @@ void oc_configure()
     r &= ~(ocm[oc_channel] | ccs[oc_channel]);
     set_ocm(r);
 
-    if constexpr(m.oc_mode == oc_mode::pwm1 || m.oc_mode == oc_mode::pwm2) {
+    if constexpr(_module_oc::oc_mode == oc_mode::pwm1 || _module_oc::oc_mode == oc_mode::pwm2) {
       r |=  ocpe[oc_channel];
     }
 
-    if constexpr(m.oc_mode == oc_mode::pwm1_fast || m.oc_mode == oc_mode::pwm2_fast) {
+    if constexpr(_module_oc::oc_mode == oc_mode::pwm1_fast ||
+                 _module_oc::oc_mode == oc_mode::pwm2_fast) {
       r |=  ocfe[oc_channel];
       r |=  ocpe[oc_channel];
     }
@@ -407,7 +397,7 @@ void oc_configure()
 
     uint32_t r = inst->CCER;
 
-    if constexpr(m.oc_polarity == oc_polarity::low) {
+    if constexpr(_module_oc::oc_polarity == oc_polarity::low) {
       r |=  ccp[oc_channel];
     }
     else {
@@ -415,7 +405,7 @@ void oc_configure()
     }
 
     if constexpr(tim_type == tim_type::advanced && oc_channel < 3) {
-      if constexpr(m.oc_polarity == oc_polarity::low) {
+      if constexpr(_module_oc::oc_polarity == oc_polarity::low) {
         r |=  ccnp[oc_channel];
       }
       else {
@@ -434,7 +424,7 @@ void oc_configure()
 
     uint32_t r = inst->CR2;
 
-    if constexpr(m.oc_idle_state == oc_idle_state::set) {
+    if constexpr(_module_oc::oc_idle_state == oc_idle_state::set) {
       r |=  ois[oc_channel];
     }
     else {
@@ -442,7 +432,7 @@ void oc_configure()
     }
 
     if constexpr(tim_type == tim_type::advanced && oc_channel < 3) {
-      if constexpr(m.oc_n_idle_state == oc_idle_state::set) {
+      if constexpr(_module_oc::oc_n_idle_state == oc_idle_state::set) {
         r |=  oisn[oc_channel];
       }
       else {
@@ -454,57 +444,61 @@ void oc_configure()
   }
 }
 
-template<typename _conf, typename ...args>
+template<typename _module, typename ..._modules>
 void configure()
 {
-  constexpr auto m = _conf();
+  if constexpr(_module::conf == conf::tim) { tim_configure<_conf>(); }
+  if constexpr(_module::conf == conf::oc)  { oc_configure<_conf>();  }
 
-  if constexpr(m.conf == conf::tim) { tim_configure<_conf>(); }
-  if constexpr(m.conf == conf::oc)  { oc_configure<_conf>();  }
-
-  if constexpr(sizeof...(args) > 0) { configure<args...>(); }
+  if constexpr(sizeof...(_modules) > 0) { configure<_modules...>(); }
 }
 
-template<typename _conf, bool _enable>
-void main_output_ctrl()
+template<typename ..._modules>
+void main_output_enable()  { ((detail::inst<_modules::module_id>()->BDTR |=  TIM_BDTR_MOE), ...); }
+
+template<typename ..._modules>
+void main_output_disable() { ((detail::inst<_modules::module_id>()->BDTR &= ~TIM_BDTR_MOE), ...); }
+
+template<typename _module_oc, oc_type _oc_type>
+constexpr void timer_type_check()
 {
-  constexpr auto m = _conf();
-  auto inst = detail::inst<m.module_id>();
-
-  if constexpr(_enable) {
-    inst->BDTR |=  TIM_BDTR_MOE;
-  }
-  else {
-    inst->BDTR &= ~TIM_BDTR_MOE;
-  }
-}
-
-template<typename _conf, oc_type _oc_type, bool _enable>
-void channel_ctrl()
-{
-  constexpr auto m = _conf();
-  auto inst = detail::inst<m.module.module_id>();
-
-  constexpr auto oc_channel = uint32_t(m.oc_channel);
-
   if constexpr(_oc_type & oc_type::comp) {
-    constexpr auto tim_type = get_tim_type<decltype(m.module)>();
+    constexpr auto tim_type = get_tim_type<decltype(_module_oc::module)>();
 
     static_assert(tim_type == tim_type::advanced, "complementary outputs support only for advanced "
                                                   "timers");
-    static_assert(oc_channel < 3, "complementary outputs support only for 1 - 3 main channels");
+    static_assert(_module_oc::oc_channel < 3, "complementary outputs support only for 1 - 3 main "
+                                              "channels");
   }
+}
+
+template<typename _module_oc, oc_type _oc_type>
+void channel_enable()
+{
+  auto inst = detail::inst<decltype(_module_oc::module)>();
+
+  constexpr auto oc_channel = uint32_t(_module_oc::oc_channel);
+
+  timer_type_check<_module_oc, _oc_type>();
 
   uint32_t r = inst->CCER;
+  if constexpr(_oc_type & oc_type::main) { r |= cce[oc_channel];  }
+  if constexpr(_oc_type & oc_type::comp) { r |= ccne[oc_channel]; }
+  inst->CCER = r;
+}
 
-  if constexpr(_oc_type & oc_type::main) {
-    if constexpr(_enable) { r |= cce[oc_channel]; } else { r &= ~cce[oc_channel]; }
-  }
+template<typename _module_oc, oc_type _oc_type>
+void channel_disable()
+{
+  auto inst = detail::inst<decltype(_module_oc::module)>();
 
-  if constexpr(_oc_type & oc_type::comp) {
-    if constexpr(_enable) { r |= ccne[oc_channel]; } else { r &= ~ccne[oc_channel]; }
-  }
+  constexpr auto oc_channel = uint32_t(_module_oc::oc_channel);
 
+  timer_type_check<_module_oc, _oc_type>();
+
+  uint32_t r = inst->CCER;
+  if constexpr(_oc_type & oc_type::main) { r &= ~cce[oc_channel];  }
+  if constexpr(_oc_type & oc_type::comp) { r &= ~ccne[oc_channel]; }
   inst->CCER = r;
 }
 

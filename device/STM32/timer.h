@@ -159,8 +159,8 @@ lmcu_enum_class_flags_impl(oc_type)
 
 #include "detail/timer.h"
 
-template<typename ...args>
-void configure() { detail::configure<args...>(); }
+template<typename ..._modules>
+void configure() { detail::configure<_module...>(); }
 
 template<typename _module>
 void set_prescaler(uint16_t val) { detail::set_prescaler<_module>(val); }
@@ -168,22 +168,28 @@ void set_prescaler(uint16_t val) { detail::set_prescaler<_module>(val); }
 template<typename _module>
 void set_period(uint16_t val) { detail::set_period<_module>(val); }
 
-template<typename _conf>
-void set_pulse(uint16_t val) { detail::set_pulse<_conf>(val); }
+template<typename _module_oc>
+void set_pulse(uint16_t val) { detail::set_pulse<_module_oc>(val); }
 
-template<typename _conf>
-void emit_update_event() { detail::emit_update_event<_conf>(); }
+template<typename _module>
+void emit_update_event() { detail::emit_update_event<_module>(); }
 
-template<typename _conf, bool _enable>
-void enable() { detail::enable<_conf, _enable>(); }
+template<typename ..._modules>
+void enable() { detail::enable<_modules...>(); }
+
+template<typename ..._modules>
+void disable() { detail::disable<_modules...>(); }
 
 template<typename _module>
 constexpr tim_type get_tim_type() { return detail::get_tim_type<_module>(); }
 
-template<typename _conf, bool _enable>
-void main_output_ctrl() { detail::main_output_ctrl<_conf, _enable>(); }
+template<typename ..._modules>
+void main_output_enable() { detail::main_output_enable<_modules...>(); }
 
-template<typename _conf, oc_type _oc_type, bool _enable>
-void channel_ctrl() { detail::channel_ctrl<_conf, _oc_type, _enable>(); }
+template<typename _module_oc, oc_type _oc_type>
+void channel_enable() { detail::channel_enable<_module_oc, _oc_type>(); }
+
+template<typename _module_oc, oc_type _oc_type>
+void channel_disable() { detail::channel_disable<_module_oc, _oc_type>(); }
 
 } // namespace lmcu::timer
