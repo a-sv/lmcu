@@ -8,9 +8,9 @@ namespace lmcu::rcc {
 namespace detail {
 
 #if defined(_LMCU_DEVICE_STM32F4_)
-uint32_t system_clock   = 16_MHz;
+uint32_t system_clock     = 16_MHz;
 #else
-uint32_t system_clock   = 8_MHz;
+uint32_t system_clock     = 8_MHz;
 #endif
 
 uint32_t hardware_clock   = 0;

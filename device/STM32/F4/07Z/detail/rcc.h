@@ -41,7 +41,7 @@ void configure()
     RCC->CR &= ~RCC_CR_CSSON;
   }
 
-    // disable PLL's
+  // disable PLL's
   RCC->CR &= ~(RCC_CR_PLLI2SON | RCC_CR_PLLON);
   while((RCC->CR & (RCC_CR_PLLI2SRDY | RCC_CR_PLLRDY)) != 0)
     ;
