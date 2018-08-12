@@ -27,7 +27,7 @@ void configure()
   set_hw_clocks<_ahb_prediv, _apb1_prediv, _apb2_prediv>();
 
   {
-    auto r = RCC->CFGR;
+    uint32_t r = RCC->CFGR;
     r &= ~(RCC_CFGR_MCO1 | RCC_CFGR_MCO2 | RCC_CFGR_MCO1PRE | RCC_CFGR_MCO2PRE);
 
     //
@@ -88,7 +88,7 @@ void configure()
   //
 
   if constexpr(_sysclk_mux == sysclk_mux::pllclk || _pll_q != pll_q::disable) {
-    auto r = RCC->PLLCFGR;
+    uint32_t r = RCC->PLLCFGR;
 
     r &= ~RCC_PLLCFGR_PLLQ;
     if constexpr(_pll_q != pll_q::disable) { r |= (uint32_t(_pll_q) << RCC_PLLCFGR_PLLQ_Pos); }

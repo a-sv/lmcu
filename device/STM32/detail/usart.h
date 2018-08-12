@@ -89,7 +89,7 @@ void configure_async()
   auto inst = detail::inst<_module>();
 
   {
-    auto r = inst->CR1;
+    uint32_t r = inst->CR1;
 
     if constexpr(_module::data_size == data_size::_8bit) {
       r &= ~USART_CR1_M;
@@ -117,7 +117,7 @@ void configure_async()
   }
 
   {
-    auto r = inst->CR2;
+    uint32_t r = inst->CR2;
 
     r &= ~(USART_CR2_STOP | USART_CR2_LINEN);
 
@@ -132,7 +132,7 @@ void configure_async()
     inst->CR2 = r;
   }
 
-  auto r = inst->CR3;
+  uint32_t r = inst->CR3;
 
   r &= ~(USART_CR3_SCEN | USART_CR3_HDSEL | USART_CR3_IREN);
 

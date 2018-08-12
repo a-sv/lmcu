@@ -106,7 +106,7 @@ void configure()
     ;
 
   {
-    auto r = inst->MCR;
+    uint32_t r = inst->MCR;
     r &= ~(CAN_MCR_TTCM | CAN_MCR_ABOM | CAN_MCR_AWUM | CAN_MCR_NART | CAN_MCR_RFLM | CAN_MCR_TXFP);
 
     if constexpr(_module::ttcm == ttcm::enable) { r |= CAN_MCR_TTCM; }
@@ -199,7 +199,7 @@ void filter_enable(uint32_t id_high, uint32_t id_low, uint32_t maskid_high, uint
   auto inst = detail::inst<_module>();
 
   // enter to initialisation mode
-  auto r = inst->FMR;
+  uint32_t r = inst->FMR;
   r &= CAN_FMR_CAN2SB;
   r |= CAN_FMR_FINIT | (_filter::bank_num << CAN_FMR_CAN2SB_Pos);
   inst->FMR = r;
@@ -252,7 +252,7 @@ void filter_disable()
   auto inst = detail::inst<_module>();
 
   // enter to initialisation mode
-  auto r = inst->FMR;
+  uint32_t r = inst->FMR;
   r &= CAN_FMR_CAN2SB;
   r |= CAN_FMR_FINIT | (_filter::bank_num << CAN_FMR_CAN2SB_Pos);
   inst->FMR = r;

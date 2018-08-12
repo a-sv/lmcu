@@ -5,7 +5,7 @@ namespace detail {
 template<auto _sysclk>
 constexpr void set_flash_latency()
 {
-  auto r = FLASH->ACR;
+  uint32_t r = FLASH->ACR;
   r &= ~FLASH_ACR_LATENCY;
   if constexpr(_sysclk > 24_MHz && _sysclk <= 48_MHz) { r |= 1 << FLASH_ACR_LATENCY_Pos; }
   if constexpr(_sysclk > 48_MHz) { r |= 2 << FLASH_ACR_LATENCY_Pos; }

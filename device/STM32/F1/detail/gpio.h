@@ -420,7 +420,7 @@ void remap()
   {
     constexpr auto mask = mapr_mask<0, args...>();
     if constexpr(mask != 0) {
-      auto r = AFIO->MAPR;
+      uint32_t r = AFIO->MAPR;
       r &= ~mask;
       r |=  mapr_bits<0, args...>();
       AFIO->MAPR = r;
@@ -430,7 +430,7 @@ void remap()
   {
     constexpr auto mask = mapr2_mask<0, args...>();
     if constexpr(mask != 0) {
-      auto r = AFIO->MAPR2;
+      uint32_t r = AFIO->MAPR2;
       r &= ~mask;
       r |=  mapr2_bits<0, args...>();
       AFIO->MAPR2 = r;

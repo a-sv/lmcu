@@ -116,7 +116,7 @@ void configure()
   auto c_inst = detail::c_inst<_module>();
 
   {
-    auto r = c_inst->CCR;
+    uint32_t r = c_inst->CCR;
 
     r &= ~DMA_CCR_EN;
 

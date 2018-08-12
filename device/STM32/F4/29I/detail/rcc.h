@@ -61,7 +61,7 @@ void configure()
             _i2sclk_mux>();
 
   {
-    auto r = RCC->DCKCFGR;
+    uint32_t r = RCC->DCKCFGR;
 
     if constexpr(_timpre == timpre::pre_0) {
       r &= ~RCC_DCKCFGR_TIMPRE;
@@ -106,7 +106,7 @@ void configure()
     _sai1_a_mux == sai1_a_mux::plli2s ||
     _sai1_b_mux == sai1_b_mux::plli2s
   ) {
-    auto r = RCC->PLLI2SCFGR;
+    uint32_t r = RCC->PLLI2SCFGR;
 
     r &= ~(RCC_PLLI2SCFGR_PLLI2SN | RCC_PLLI2SCFGR_PLLI2SR | RCC_PLLI2SCFGR_PLLI2SQ);
     r |= (uint32_t(_plli2s_n) << RCC_PLLI2SCFGR_PLLI2SN_Pos);
@@ -131,7 +131,7 @@ void configure()
     _sai1_b_mux == sai1_b_mux::pllsai ||
     _pllsai_r != pllsai_r::disable
   ) {
-    auto r = RCC->PLLSAICFGR;
+    uint32_t r = RCC->PLLSAICFGR;
 
     r &= ~(RCC_PLLSAICFGR_PLLSAIN | RCC_PLLSAICFGR_PLLSAIR | RCC_PLLSAICFGR_PLLSAIQ);
     r |= (uint32_t(_pllsai_n) << RCC_PLLSAICFGR_PLLSAIN_Pos);

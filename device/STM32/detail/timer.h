@@ -293,7 +293,7 @@ void tim_configure()
   enable<_conf, false>();
 
   {
-    auto r = inst->CR1;
+    uint32_t r = inst->CR1;
 
     r &= ~(TIM_CR1_DIR | TIM_CR1_CMS);
     switch(m.counter_mode)
@@ -338,7 +338,7 @@ void oc_configure()
   constexpr auto tim_type   = get_tim_type<decltype(m.module)>();
 
   {
-    auto r = inst->CCER;
+    uint32_t r = inst->CCER;
     r &= ~cce[oc_channel];
     if constexpr(tim_type == tim_type::advanced && oc_channel < 3) { r &= ~ccne[oc_channel]; }
     inst->CCER = r;
@@ -379,7 +379,7 @@ void oc_configure()
       ocpe[] = {TIM_CCMR1_OC1PE, TIM_CCMR1_OC2PE, TIM_CCMR2_OC3PE, TIM_CCMR2_OC4PE}
     ;
 
-    auto r = (oc_channel < 2)? inst->CCMR1 : inst->CCMR2;
+    uint32_t r = (oc_channel < 2)? inst->CCMR1 : inst->CCMR2;
 
     r &= ~(ocm[oc_channel] | ccs[oc_channel]);
     set_ocm(r);
@@ -405,7 +405,7 @@ void oc_configure()
       ccnp[] = {TIM_CCER_CC1NP, TIM_CCER_CC2NP, TIM_CCER_CC3NP}
     ;
 
-    auto r = inst->CCER;
+    uint32_t r = inst->CCER;
 
     if constexpr(m.oc_polarity == oc_polarity::low) {
       r |=  ccp[oc_channel];
@@ -432,7 +432,7 @@ void oc_configure()
       oisn[] = {TIM_CR2_OIS1N, TIM_CR2_OIS2N, TIM_CR2_OIS3N}
     ;
 
-    auto r = inst->CR2;
+    uint32_t r = inst->CR2;
 
     if constexpr(m.oc_idle_state == oc_idle_state::set) {
       r |=  ois[oc_channel];
@@ -495,7 +495,7 @@ void channel_ctrl()
     static_assert(oc_channel < 3, "complementary outputs support only for 1 - 3 main channels");
   }
 
-  auto r = inst->CCER;
+  uint32_t r = inst->CCER;
 
   if constexpr(_oc_type & oc_type::main) {
     if constexpr(_enable) { r |= cce[oc_channel]; } else { r &= ~cce[oc_channel]; }

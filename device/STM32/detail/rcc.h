@@ -30,7 +30,7 @@ void set_bkp_write_acces()
 template<sysclk_mux _sysclk_mux>
 void switch_sysclk()
 {
-  auto r = RCC->CFGR;
+  uint32_t r = RCC->CFGR;
   r &= ~RCC_CFGR_SW;
   switch(_sysclk_mux) {
   case sysclk_mux::hse:    r |= RCC_CFGR_SW_HSE; break;
@@ -102,7 +102,7 @@ void osc_configure()
   //
 
   if constexpr(_osc_type & osc_type::hsi) {
-    auto r = RCC->CR;
+    uint32_t r = RCC->CR;
     r &= ~RCC_CR_HSITRIM;
     if constexpr(_hsi_cal != 0) { r |= (_hsi_cal << RCC_CR_HSITRIM_Pos); }
     RCC->CR = r;
@@ -118,7 +118,7 @@ void osc_configure()
   //
 
   if constexpr((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) {
-    auto r = RCC->CR;
+    uint32_t r = RCC->CR;
     if constexpr(_osc_type & osc_type::hse_bypass) {
       r |= RCC_CR_HSEBYP;
     }
@@ -138,7 +138,7 @@ void osc_configure()
   //
 
   if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
-    auto r = RCC->BDCR;
+    uint32_t r = RCC->BDCR;
     if constexpr(_osc_type & osc_type::lse_bypass) {
       r |= RCC_BDCR_LSEBYP;
     }
@@ -167,7 +167,7 @@ void osc_configure()
   //
 
   {
-    auto r = RCC->BDCR;
+    uint32_t r = RCC->BDCR;
     r &= ~RCC_BDCR_RTCSEL;
     switch (_rtcclk_mux) {
     case rtcclk_mux::lse: r |= (1 << RCC_BDCR_RTCSEL_Pos); break;
@@ -230,7 +230,7 @@ void osc_deconfigure()
 template<ahb_prediv _ahb_prediv, apb1_prediv _apb1_prediv, apb2_prediv _apb2_prediv>
 void set_hw_clocks()
 {
-  auto r = RCC->CFGR;
+  uint32_t r = RCC->CFGR;
   r &= ~(RCC_CFGR_HPRE | RCC_CFGR_PPRE1 | RCC_CFGR_PPRE2);
 
   switch(_ahb_prediv) {

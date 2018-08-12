@@ -31,7 +31,7 @@ void configure()
   //
 
   {
-    auto r = RCC->CFGR;
+    uint32_t r = RCC->CFGR;
     r &= ~RCC_CFGR_MCO;
     switch(_mco_mux) {
     case mco_mux::sysclk:      r |= RCC_CFGR_MCOSEL_SYSCLK;   break;
@@ -53,7 +53,7 @@ void configure()
     ;
 
   {
-    auto r = RCC->CFGR;
+    uint32_t r = RCC->CFGR;
 
     if constexpr(_sysclk_mux == sysclk_mux::pllclk) {
       if constexpr(_pll_mux == pll_mux::hsi) {

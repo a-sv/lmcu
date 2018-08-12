@@ -135,7 +135,7 @@ void adc_configure()
     }
 
     {
-      auto r = inst->CR1;
+      uint32_t r = inst->CR1;
 
       r &= ~ADC_CR1_DUALMOD;
       switch(m.dual_mode)
@@ -189,7 +189,7 @@ void adc_configure()
     }
 
     {
-      auto r = inst->CR2;
+      uint32_t r = inst->CR2;
 
       if constexpr(m.temp_sensor == temp_sensor::disable) {
         r &= ~ADC_CR2_TSVREFE;
@@ -364,21 +364,21 @@ constexpr void reg_seqence_configure()
     [[maybe_unused]] auto inst = detail::inst<_module_id>();
 
     if constexpr(mask_3) {
-      auto r = inst->SQR3;
+      uint32_t r = inst->SQR3;
       r &= ~mask_3;
       r |=  bits_3;
       inst->SQR3 = r;
     }
 
     if constexpr(mask_2) {
-      auto r = inst->SQR2;
+      uint32_t r = inst->SQR2;
       r &= ~mask_2;
       r |=  bits_2;
       inst->SQR2 = r;
     }
 
     if constexpr(mask_1 || mask_2 || mask_3) {
-      auto r = inst->SQR1;
+      uint32_t r = inst->SQR1;
 
       if constexpr(mask_1) {
         r &= ~mask_1;
@@ -502,7 +502,7 @@ void sample_rate_conf()
   {
     constexpr auto mask = smpr_mask<0, _module_id, 0, 9, args...>();
     if constexpr(mask != 0) {
-      auto r = inst->SMPR2;
+      uint32_t r = inst->SMPR2;
       r &= ~mask;
       r |= smpr_bits<0, _module_id, 0, 9, args...>();
       inst->SMPR2 = r;
@@ -513,7 +513,7 @@ void sample_rate_conf()
   {
     constexpr auto mask = smpr_mask<0, _module_id, 10, 17, args...>();
     if constexpr(mask != 0) {
-      auto r = inst->SMPR1;
+      uint32_t r = inst->SMPR1;
       r &= ~mask;
       r |= smpr_bits<0, _module_id, 10, 17, args...>();
       inst->SMPR1 = r;

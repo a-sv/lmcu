@@ -55,7 +55,7 @@ void configure()
   //
 
   if constexpr(_i2sclk_mux == i2sclk_mux::plli2s) {
-    auto r = RCC->PLLI2SCFGR;
+    uint32_t r = RCC->PLLI2SCFGR;
 
     r &= ~(RCC_PLLI2SCFGR_PLLI2SN | RCC_PLLI2SCFGR_PLLI2SR);
     r |= (uint32_t(_plli2s_n) << RCC_PLLI2SCFGR_PLLI2SN_Pos);
