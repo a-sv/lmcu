@@ -97,41 +97,42 @@ struct pin
 
 #include "detail/gpio.h"
 
-template<typename ...args>
+template<typename ..._pins>
 void configure()
 {
-  static_assert(sizeof...(args), "requires at least 1 argument");
-  detail::configure<args...>();
+  static_assert(sizeof...(_pins), "requires at least 1 argument");
+  detail::configure<_pins...>();
 }
 
-template<bool val, typename ...args>
-void set() { detail::set<val, args...>(); }
+template<bool _val, typename ..._pins>
+void set() { detail::set<_val, _pins...>(); }
 
 template<port _port>
 auto &get() { return detail::get<_port>(); }
 
-template<port _port, uint8_t first, uint8_t ...bits>
-auto get() { return get<_port>() & detail::mask<first, bits...>(); }
+template<port _port, uint8_t _first, uint8_t ..._bits>
+auto get() { return get<_port>() & detail::mask<_first, _bits...>(); }
 
-template<typename pin, typename = decltype(pin::port, pin::mask)>
-bool get() { return (get<pin().port>() & pin().mask) != 0; }
+template<typename _pin, typename = decltype(_pin::port, _pin::mask)>
+bool get() { return (get<_pin::port>() & _pin::mask) != 0; }
 
 template<port _port>
 auto &read() { return detail::read<_port>(); }
 
-template<port _port, uint8_t first, uint8_t ...bits>
-auto read() { return read<_port>() & detail::mask<first, bits...>(); }
+template<port _port, uint8_t _first, uint8_t ..._bits>
+auto read() { return read<_port>() & detail::mask<_first, _bits...>(); }
 
-template<typename pin, typename = decltype(pin::port, pin::mask)>
-bool read() {
-  static_assert(pin().mode == mode::input, "pin must be configured as input");
-  return (read<pin().port>() & pin().mask) != 0;
+template<typename _pin, typename = decltype(_pin::port, _pin::mask)>
+bool read()
+{
+  static_assert(_pin::mode == mode::input, "pin must be configured as input");
+  return (read<_pin::port>() & _pin::mask) != 0;
 }
 
-template<port _port, uint8_t first, uint8_t ...bits>
-void toggle() { get<_port>() ^= detail::mask<first, bits...>(); }
+template<port _port, uint8_t _first, uint8_t ..._pins>
+void toggle() { get<_port>() ^= detail::mask<_first, _pins...>(); }
 
-template<typename ...args>
-void toggle() { detail::toggle<args...>(); }
+template<typename ..._pins>
+void toggle() { detail::toggle<_pins...>(); }
 
 } // namespace lmcu::gpio

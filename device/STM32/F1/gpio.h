@@ -169,13 +169,13 @@ enum class remap
 
 #include "detail/gpio.h"
 
-template<port ...args>
-void enable(bool afio_on = true) { detail::enable<args...>(afio_on); }
+template<port ..._ports>
+void enable(bool afio_on = true) { detail::enable<_ports...>(afio_on); }
 
-template<port ...args>
-void disable(bool afio_off = true) { detail::disable<args...>(afio_off); }
+template<port ..._ports>
+void disable(bool afio_off = true) { detail::disable<_ports...>(afio_off); }
 
-template<remap ...args>
-void remap() { detail::remap<args...>(); }
+template<remap ..._ports>
+void remap() { detail::remap<_ports...>(); }
 
 } // namespace lmcu::gpio

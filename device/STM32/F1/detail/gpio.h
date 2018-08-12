@@ -2,166 +2,163 @@
 
 namespace detail {
 
-template<uint32_t r, port _port, bool low, typename pin, typename ...args>
+template<port _port, bool _low, typename _pin, typename ..._pins>
 constexpr auto cr_bits()
 {
-  constexpr auto cr_cnf = []() -> decltype(r)
+  constexpr auto cr_cnf = []() -> uint32_t
   {
-    if constexpr(pin().mode == mode::analog) { return 0; }
+    if constexpr(_pin::mode == mode::analog) { return 0; }
 
-    if constexpr(pin().mode == mode::input) {
-      if constexpr(pin().pull == pull::no_pull) { return 0b01; }
-      if constexpr(pin().pull == pull::down || pin().pull == pull::up) { return 0b10;}
+    if constexpr(_pin::mode == mode::input) {
+      if constexpr(_pin::pull == pull::no_pull) { return 0b01; }
+      if constexpr(_pin::pull == pull::down || _pin::pull == pull::up) { return 0b10;}
     }
 
-    if constexpr(pin().mode == mode::output_push_pull) { return 0; }
-    if constexpr(pin().mode == mode::output_open_drain) { return 0b01; }
-    if constexpr(pin().mode == mode::af_push_pull) { return 0b10; }
-    if constexpr(pin().mode == mode::af_open_drain) { return 0b11; }
+    if constexpr(_pin::mode == mode::output_push_pull) { return 0; }
+    if constexpr(_pin::mode == mode::output_open_drain) { return 0b01; }
+    if constexpr(_pin::mode == mode::af_push_pull) { return 0b10; }
+    if constexpr(_pin::mode == mode::af_open_drain) { return 0b11; }
   };
 
-  constexpr auto cr_mode = []() -> decltype(r)
+  constexpr auto cr_mode = []() -> uint32_t
   {
-    if constexpr(pin().mode == mode::input || pin().mode == mode::analog) { return 0; }
-    if constexpr(pin().speed == speed::low) { return 0b10; }
-    if constexpr(pin().speed == speed::medium) { return 0b01; }
-    if constexpr(pin().speed == speed::high || pin().speed == speed::very_high) { return 0b11; }
+    if constexpr(_pin::mode == mode::input || _pin::mode == mode::analog) { return 0; }
+    if constexpr(_pin::speed == speed::low) { return 0b10; }
+    if constexpr(_pin::speed == speed::medium) { return 0b01; }
+    if constexpr(_pin::speed == speed::high || _pin::speed == speed::very_high) { return 0b11; }
   };
 
   [[maybe_unused]] constexpr auto cr = (cr_cnf() << 2) | cr_mode();
 
-  constexpr auto bits = []() -> decltype(r)
+  constexpr auto bit = []() -> uint32_t
   {
-    if constexpr(pin().port == _port) {
-      if constexpr(low) {
-        if constexpr(pin().bit < 8) { return r | (cr << (pin().bit * 4)); }
+    if constexpr(_pin::port == _port) {
+      if constexpr(_low) {
+        if constexpr(_pin::bit < 8) { return cr << (_pin::bit * 4); }
       }
       else {
-        if constexpr(pin().bit >= 8) { return r | (cr << ((pin().bit - 8) * 4)); }
+        if constexpr(_pin::bit >= 8) { return cr << ((_pin::bit - 8) * 4); }
       }
     }
-    return r;
+    return 0;
   };
 
-  if constexpr(sizeof...(args) > 0) { return cr_bits<bits(), _port, low, args...>(); }
-  return bits();
+  if constexpr(sizeof...(_pins) > 0) { return bit() | cr_bits<_port, _low, _pins...>(); }
+  return bit();
 }
 
-template<uint32_t r, port _port, typename pin, typename ...args>
+template<port _port, typename _pin, typename ..._pins>
 constexpr auto pull_bits()
 {
-  if constexpr(pin().pull != pull::no_pull) {
-    static_assert(pin().mode == mode::input || pin().mode == mode::analog,
+  if constexpr(_pin::pull != pull::no_pull) {
+    static_assert(_pin::mode == mode::input || _pin::mode == mode::analog,
                   "pull's supported only in input pin mode");
   }
 
-  constexpr auto bits = []() -> decltype(r)
+  constexpr auto bit = []() -> uint32_t
   {
-    if constexpr(pin().port == _port && pin().pull != pull::no_pull) {
-      if constexpr(pin().pull == pull::up) {
-        return r | (1 << pin().bit);
-      }
-      return r | (0x10000 << pin().bit);
+    if constexpr(_pin::port == _port && _pin::pull != pull::no_pull) {
+      return _pin::pull == pull::up? (1 << _pin::bit) : (0x10000 << _pin::bit);
     }
-    return r;
+    return 0;
   };
 
-  if constexpr(sizeof...(args) > 0) { return pull_bits<bits(), _port, args...>(); }
-  return bits();
+  if constexpr(sizeof...(_pins) > 0) { return bit() | pull_bits<_port, _pins...>(); }
+  return bit();
 }
 
-template<port _port, typename ...args>
+template<port _port, typename ..._pins>
 void configure_port(GPIO_TypeDef *inst)
 {
-  if constexpr(!pins_in_port<_port, args...>()) { return; }
+  if constexpr(!pins_in_port<_port, _pins...>()) { return; }
 
-  if constexpr(pin_in_range<_port, 0, 7, args...>()) {
-    constexpr auto mask4 = ~mask<_port, 4, 0, 0, 7, args...>();
-    inst->CRL = (inst->CRL & mask4) | cr_bits<0, _port, true, args...>();
+  if constexpr(pin_in_range<_port, 0, 7, _pins...>()) {
+    constexpr auto mask4 = ~mask<_port, 4, 0, 0, 7, _pins...>();
+    inst->CRL = (inst->CRL & mask4) | cr_bits<_port, true, _pins...>();
   }
 
-  if constexpr(pin_in_range<_port, 8, 15, args...>()) {
-    constexpr auto mask4 = ~mask<_port, 4, 8, 8, 15, args...>();
-    inst->CRH = (inst->CRH & mask4) | cr_bits<0, _port, false, args...>();
+  if constexpr(pin_in_range<_port, 8, 15, _pins...>()) {
+    constexpr auto mask4 = ~mask<_port, 4, 8, 8, 15, _pins...>();
+    inst->CRH = (inst->CRH & mask4) | cr_bits<_port, false, _pins...>();
   }
 
-  constexpr auto pb = pull_bits<0, _port, args...>();
+  constexpr auto pb = pull_bits<_port, _pins...>();
   if constexpr(pb != 0) { inst->BSRR = pb; }
 }
 
-template<uint32_t r, port arg1, port ...args>
+template<port _port, port ..._ports>
 constexpr auto rcc_bits()
 {
-  constexpr auto bits = []() -> decltype(r)
+  constexpr auto bit = []() -> uint32_t
   {
 #if defined(RCC_APB2ENR_IOPAEN)
-    if constexpr(arg1 == port::A) { return r | RCC_APB2ENR_IOPAEN; }
+    if constexpr(_port == port::A) { return RCC_APB2ENR_IOPAEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPBEN)
-    if constexpr(arg1 == port::B) { return r | RCC_APB2ENR_IOPBEN; }
+    if constexpr(_port == port::B) { return RCC_APB2ENR_IOPBEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPCEN)
-    if constexpr(arg1 == port::C) { return r | RCC_APB2ENR_IOPCEN; }
+    if constexpr(_port == port::C) { return RCC_APB2ENR_IOPCEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPDEN)
-    if constexpr(arg1 == port::D) { return r | RCC_APB2ENR_IOPDEN; }
+    if constexpr(_port == port::D) { return RCC_APB2ENR_IOPDEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPEEN)
-    if constexpr(arg1 == port::E) { return r | RCC_APB2ENR_IOPEEN; }
+    if constexpr(_port == port::E) { return RCC_APB2ENR_IOPEEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPFEN)
-    if constexpr(arg1 == port::F) { return r | RCC_APB2ENR_IOPFEN; }
+    if constexpr(_port == port::F) { return RCC_APB2ENR_IOPFEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPGEN)
-    if constexpr(arg1 == port::G) { return r | RCC_APB2ENR_IOPGEN; }
+    if constexpr(_port == port::G) { return RCC_APB2ENR_IOPGEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPHEN)
-    if constexpr(arg1 == port::H) { return r | RCC_APB2ENR_IOPHEN; }
+    if constexpr(_port == port::H) { return RCC_APB2ENR_IOPHEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPIEN)
-    if constexpr(arg1 == port::I) { return r | RCC_APB2ENR_IOPIEN; }
+    if constexpr(_port == port::I) { return RCC_APB2ENR_IOPIEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPJEN)
-    if constexpr(arg1 == port::J) { return r | RCC_APB2ENR_IOPJEN; }
+    if constexpr(_port == port::J) { return RCC_APB2ENR_IOPJEN; }
 #endif
 
 #if defined(RCC_APB2ENR_IOPKEN)
-    if constexpr(arg1 == port::K) { return r | RCC_APB2ENR_IOPKEN; }
+    if constexpr(_port == port::K) { return RCC_APB2ENR_IOPKEN; }
 #endif
-    return r;
+    return 0;
   };
 
-  if constexpr(sizeof...(args) > 0) { return rcc_bits<bits(), args...>(); }
-  return bits();
+  if constexpr(sizeof...(_ports) > 0) { return bit() | rcc_bits<_ports...>(); }
+  return bit();
 }
 
-template<port ...args>
+template<port ..._ports>
 void enable(bool afio_on)
 {
   constexpr auto rcc_bits = []() -> uint32_t
   {
-    if constexpr(sizeof...(args) > 0) { return detail::rcc_bits<0, args...>(); }
+    if constexpr(sizeof...(_ports) > 0) { return detail::rcc_bits<_ports...>(); }
     return 0;
   }();
 
   RCC->APB2ENR |= rcc_bits | (afio_on? RCC_APB2ENR_AFIOEN : 0);
 }
 
-template<port ...args>
+template<port ..._ports>
 void disable(bool afio_off)
 {
   constexpr auto rcc_bits = []() -> uint32_t
   {
-    if constexpr(sizeof...(args) > 0) { return detail::rcc_bits<0, args...>(); }
+    if constexpr(sizeof...(_ports) > 0) { return detail::rcc_bits<_ports...>(); }
     return 0;
   }();
 
@@ -378,61 +375,61 @@ constexpr uint32_t mapr_bits_table[] = {
 
 constexpr auto mapr2_index = 54;
 
-template<uint32_t _r, remap _arg1, remap ...args>
+template<remap _remap, remap ..._remaps>
 constexpr uint32_t mapr_mask()
 {
-  constexpr auto idx = uint32_t(_arg1);
-  constexpr auto r = (idx < mapr2_index)? _r | mapr_mask_table[idx] : _r;
-  if constexpr(sizeof...(args) > 0) { return mapr_mask<r, args...>(); }
+  constexpr auto idx = uint32_t(_remap);
+  constexpr auto r   = (idx < mapr2_index)? mapr_mask_table[idx] : 0;
+  if constexpr(sizeof...(_remaps) > 0) { return r | mapr_mask<_remaps...>(); }
   return r;
 }
 
-template<uint32_t _r, remap _arg1, remap ...args>
+template<remap _remap, remap ..._remaps>
 constexpr uint32_t mapr2_mask()
 {
-  constexpr auto idx = uint32_t(_arg1);
-  constexpr auto r = (idx >= mapr2_index)? _r | mapr_mask_table[idx] : _r;
-  if constexpr(sizeof...(args) > 0) { return mapr_mask<_r, args...>(); }
+  constexpr auto idx = uint32_t(_remap);
+  constexpr auto r   = (idx >= mapr2_index)? mapr_mask_table[idx] : 0;
+  if constexpr(sizeof...(_remaps) > 0) { return r | mapr2_mask<_remaps...>(); }
   return r;
 }
 
-template<uint32_t _r, remap _arg1, remap ...args>
+template<remap _remap, remap ..._remaps>
 constexpr uint32_t mapr_bits()
 {
-  constexpr auto idx = uint32_t(_arg1);
-  constexpr auto r = (idx < mapr2_index)? _r | mapr_bits_table[idx] : _r;
-  if constexpr(sizeof...(args) > 0) { return mapr_bits<r, args...>(); }
+  constexpr auto idx = uint32_t(_remap);
+  constexpr auto r   = (idx < mapr2_index)? mapr_bits_table[idx] : 0;
+  if constexpr(sizeof...(_remaps) > 0) { return r | mapr_bits<_remaps...>(); }
   return r;
 }
 
-template<uint32_t _r, remap _arg1, remap ...args>
+template<remap _remap, remap ..._remaps>
 constexpr uint32_t mapr2_bits()
 {
-  constexpr auto idx = uint32_t(_arg1);
-  constexpr auto r = (idx >= mapr2_index)? _r | mapr_bits_table[idx] : _r;
-  if constexpr(sizeof...(args) > 0) { return mapr2_bits<r, args...>(); }
+  constexpr auto idx = uint32_t(_remap);
+  constexpr auto r   = (idx >= mapr2_index)? mapr_bits_table[idx] : 0;
+  if constexpr(sizeof...(_remaps) > 0) { return r | mapr2_bits<_remaps...>(); }
   return r;
 }
 
-template<remap ...args>
+template<remap ..._remaps>
 void remap()
 {
   {
-    constexpr auto mask = mapr_mask<0, args...>();
+    constexpr auto mask = mapr_mask<_remaps...>();
     if constexpr(mask != 0) {
       uint32_t r = AFIO->MAPR;
       r &= ~mask;
-      r |=  mapr_bits<0, args...>();
+      r |=  mapr_bits<_remaps...>();
       AFIO->MAPR = r;
     }
   }
 
   {
-    constexpr auto mask = mapr2_mask<0, args...>();
+    constexpr auto mask = mapr2_mask<_remaps...>();
     if constexpr(mask != 0) {
       uint32_t r = AFIO->MAPR2;
       r &= ~mask;
-      r |=  mapr2_bits<0, args...>();
+      r |=  mapr2_bits<0, _remaps...>();
       AFIO->MAPR2 = r;
     }
   }
