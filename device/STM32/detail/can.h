@@ -560,31 +560,41 @@ io::result tx(uint32_t id, bool ide, bool rtr, const void *data, uint8_t len)
     return io::result::busy;
   }
 
+  uint32_t tir;
+
   if(ide) {
-    mbox->TIR = (id << CAN_TI0R_EXID_Pos) | CAN_TI0R_IDE;
+    tir = (id << CAN_TI0R_EXID_Pos) | CAN_TI0R_IDE;
   }
   else {
-    mbox->TIR = id << CAN_TI0R_STID_Pos;
+    tir = id << CAN_TI0R_STID_Pos;
   }
 
-  mbox->TDTR = (len & 0xf);
+  if(rtr) {
+    tir |= CAN_TI0R_RTR;
+    mbox->TDTR = 0;
+  }
+  else {
+    mbox->TDTR = (len & 0xf);
 
-  auto p = static_cast<const uint8_t*>(data);
+    auto p = static_cast<const uint8_t*>(data);
 
-  uint32_t dh = 0, dl = 0;
-  switch(len)
-  {
-  case 8: dh |= uint32_t(p[7]) << 24;
-  case 7: dh |= uint32_t(p[6]) << 16;
-  case 6: dh |= uint32_t(p[5]) << 8;
-  case 5: dh |= uint32_t(p[4]);
-  case 4: dl |= uint32_t(p[3]) << 24;
-  case 3: dl |= uint32_t(p[2]) << 16;
-  case 2: dl |= uint32_t(p[1]) << 8;
-  case 1: dl |= uint32_t(p[0]);
-  };
-  mbox->TDLR = dl;
-  mbox->TDHR = dh;
+    uint32_t dh = 0, dl = 0;
+    switch(len)
+    {
+    case 8: dh |= uint32_t(p[7]) << 24;
+    case 7: dh |= uint32_t(p[6]) << 16;
+    case 6: dh |= uint32_t(p[5]) << 8;
+    case 5: dh |= uint32_t(p[4]);
+    case 4: dl |= uint32_t(p[3]) << 24;
+    case 3: dl |= uint32_t(p[2]) << 16;
+    case 2: dl |= uint32_t(p[1]) << 8;
+    case 1: dl |= uint32_t(p[0]);
+    };
+    mbox->TDLR = dl;
+    mbox->TDHR = dh;
+  }
+
+  mbox->TIR = tir;
 
   // request transmission
   mbox->TIR |= CAN_TI0R_TXRQ;
