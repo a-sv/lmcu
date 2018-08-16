@@ -113,6 +113,8 @@ void osc_configure()
     ;
   switch_sysclk<sysclk_mux::hsi>();
 
+  lmcu::detail::read_device_signature();
+
   //
   // HSE
   //

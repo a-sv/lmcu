@@ -4,6 +4,7 @@
 #include "../../common/units.h"
 #include "../../common/round.h"
 #include "../cortex/dwt.h"
+#include "detail/uid.h"
 
 namespace lmcu::rcc {
 
@@ -59,3 +60,4 @@ static inline uint32_t apb1_timer_clock() { return detail::apb1_timer_clock; }
 static inline uint32_t apb2_timer_clock() { return detail::apb2_timer_clock; }
 
 } // namespace lmcu::rcc
+
