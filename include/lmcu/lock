@@ -1,0 +1,8 @@
+#pragma once
+#include <lmcu/device>
+
+#if defined(_LMCU_DEVICE_STM32_)
+#include "../../device/cortex/lock.h"
+#else
+  #error "device not supported"
+#endif
