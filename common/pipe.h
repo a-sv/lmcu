@@ -73,6 +73,18 @@ public:
     return rc;
   }
 
+  inline io::result read(void *data, _sz_type sz)
+  {
+    _sz_type n;
+    return read(data, sz, n);
+  }
+
+  inline io::result read(void *data, _sz_type sz, const delay::expirable &t)
+  {
+    _sz_type n;
+    return read(data, sz, n, t);
+  }
+
   /**
    * Fetch one byte from PIPE
    *
@@ -168,6 +180,18 @@ public:
     auto rc = io::result::busy;
     while(!t.expired() && rc == io::result::busy) { rc = write(data, sz, n); }
     return rc;
+  }
+
+  inline io::result write(void *data, _sz_type sz)
+  {
+    _sz_type n;
+    return write(data, sz, n);
+  }
+
+  inline io::result write(void *data, _sz_type sz, const delay::expirable &t)
+  {
+    _sz_type n;
+    return write(data, sz, n, t);
   }
 
   /**
