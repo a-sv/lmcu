@@ -179,20 +179,22 @@ public:
    *
    * @return     - io::result::busy if PIPE full and timeout occurred otherwise io::result::success
   */
-  inline io::result write(void *data, _sz_type sz, _sz_type &n, const delay::expirable &t)
+  inline io::result write(const void *data, _sz_type sz, _sz_type &n, const delay::expirable &t)
   {
     auto rc = io::result::busy;
-    while(!t.expired() && rc == io::result::busy) { rc = write(data, sz, n); }
+    auto b = static_cast<const uint8_t*>(data), e = b + sz;
+    while(!t.expired() && rc == io::result::busy) { rc = write(b, e - b, n); b += n; }
+    n = b - static_cast<const uint8_t*>(data);
     return rc;
   }
 
-  inline io::result write(void *data, _sz_type sz)
+  inline io::result write(const void *data, _sz_type sz)
   {
     _sz_type n;
     return write(data, sz, n);
   }
 
-  inline io::result write(void *data, _sz_type sz, const delay::expirable &t)
+  inline io::result write(const void *data, _sz_type sz, const delay::expirable &t)
   {
     _sz_type n;
     return write(data, sz, n, t);
