@@ -92,7 +92,8 @@ public:
    *
    * @return     - io::result::busy if PIPE empty otherwise io::result::success
   */
-  io::result getb(uint8_t &data)
+  template<typename _data>
+  io::result getb(_data&& data)
   {
     lmcu_scoped_lock();
 
@@ -113,7 +114,8 @@ public:
    *
    * @return     - io::result::busy if PIPE empty and timeout occurred otherwise io::result::success
   */
-  inline io::result getb(uint8_t &data, const delay::expirable &t)
+  template<typename _data>
+  inline io::result getb(_data&& data, const delay::expirable &t)
   {
     auto rc = io::result::busy;
     while(!t.expired() && rc == io::result::busy) { rc = getb(data); }
@@ -201,7 +203,8 @@ public:
    *
    * @return     - io::result::busy if PIPE full and otherwise io::result::success
   */
-  io::result putb(uint8_t data)
+  template<typename _data>
+  io::result putb(_data&& data)
   {
     lmcu_scoped_lock();
 
@@ -210,7 +213,12 @@ public:
     }
     if(ovf_ && w_ >= r_) { return io::result::busy; }
 
-    *w_++ = data;
+    if constexpr(sizeof(_data) == 1) {
+      *w_++ = static_cast<uint8_t>(data);
+    }
+    else {
+      *w_++ = static_cast<uint8_t>(data & 0xff);
+    }
 
     return io::result::success;
   }
@@ -222,7 +230,8 @@ public:
    *
    * @return     - io::result::busy if PIPE full and timeout occurred otherwise io::result::success
   */
-  inline io::result putb(uint8_t data, const delay::expirable &t)
+  template<typename _data>
+  inline io::result putb(_data&& data, const delay::expirable &t)
   {
     auto rc = io::result::busy;
     while(!t.expired() && rc == io::result::busy) { rc = putb(data); }
