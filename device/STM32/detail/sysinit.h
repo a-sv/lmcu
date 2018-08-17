@@ -2,6 +2,6 @@
 
 namespace lmcu::detail {
 
-void read_device_signature();
+void sysinit_low_freq_stage();
 
 } // namespace lmcu::detail

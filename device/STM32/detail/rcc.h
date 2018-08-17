@@ -95,8 +95,6 @@ void osc_configure()
     );
   }
 
-  dwt::enable_cyccnt();
-
   //
   // HSI
   //
@@ -113,7 +111,7 @@ void osc_configure()
     ;
   switch_sysclk<sysclk_mux::hsi>();
 
-  lmcu::detail::read_device_signature();
+  lmcu::detail::sysinit_low_freq_stage();
 
   //
   // HSE

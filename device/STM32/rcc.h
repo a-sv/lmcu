@@ -3,8 +3,7 @@
 #include "../../common/def.h"
 #include "../../common/units.h"
 #include "../../common/round.h"
-#include "../cortex/dwt.h"
-#include "detail/uid.h"
+#include "detail/sysinit.h"
 
 namespace lmcu::rcc {
 
