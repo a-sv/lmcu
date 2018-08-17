@@ -69,7 +69,9 @@ public:
   inline io::result read(void *data, _sz_type sz, _sz_type &n, const delay::expirable &t)
   {
     auto rc = io::result::busy;
-    while(!t.expired() && rc == io::result::busy) { rc = read(data, sz, n); }
+    auto b = static_cast<uint8_t*>(data), e = b + sz;
+    while(!t.expired() && rc == io::result::busy) { rc = read(b, e - b, n); b += n; }
+    n = b - static_cast<uint8_t*>(data);
     return rc;
   }
 
