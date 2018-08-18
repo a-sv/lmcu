@@ -1,8 +1,7 @@
 #pragma once
 #include <lmcu/device>
-#include "../../common/delay/expirable.h"
-#include "../../common/def.h"
-#include "../../common/io.h"
+#include <lmcu/common>
+#include <lmcu/delay>
 
 namespace lmcu::can {
 

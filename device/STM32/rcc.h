@@ -1,8 +1,6 @@
 #pragma once
 #include <lmcu/device>
-#include "../../common/def.h"
-#include "../../common/units.h"
-#include "../../common/round.h"
+#include <lmcu/common>
 #include "detail/sysinit.h"
 
 namespace lmcu::rcc {

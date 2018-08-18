@@ -2,8 +2,8 @@
 
 #if defined(_LMCU_DEVICE_STM32_)
 
+#include <lmcu/common>
 #include "../uid.h"
-#include "../../../common/mem_ptr.h"
 
 #if defined(_LMCU_DEVICE_STM32F4_)
 constexpr auto uid_reg      = lmcu::mem_ptr<uint32_t, 0x1FFF7A10>();

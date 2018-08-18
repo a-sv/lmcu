@@ -1,6 +1,6 @@
 #pragma once
 #include <lmcu/device>
-#include "../../../common/def.h"
+#include <lmcu/common>
 
 namespace lmcu::dma {
 
