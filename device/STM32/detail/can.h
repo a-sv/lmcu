@@ -18,6 +18,22 @@ inline CAN_TypeDef *inst()
 #endif
 }
 
+template<typename _module>
+inline CAN_TypeDef *master_inst()
+{
+#if defined(CAN1)
+  if constexpr(_module::module_id == module_id::can1) { return CAN1; }
+#endif
+
+#if defined(CAN2)
+  if constexpr(_module::module_id == module_id::can2) { return CAN1; }
+#endif
+
+#if defined(CAN3)
+  if constexpr(_module::module_id == module_id::can3) { return CAN3; }
+#endif
+}
+
 template<module_id _module_id, typename _irq>
 void enable_irq()
 {
@@ -196,7 +212,7 @@ void filter_enable(uint32_t id_high, uint32_t id_low, uint32_t maskid_high, uint
   static_assert(_filter::number < 28, "filter number must be >= 0 and <= 27");
   static_assert(_filter::fifo != fifo::any, "you must select fifo for filter");
 
-  auto inst = detail::inst<_module>();
+  auto inst = detail::master_inst<_module>();
 
   // enter to initialisation mode
   uint32_t r = inst->FMR;
