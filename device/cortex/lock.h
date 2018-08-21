@@ -23,4 +23,4 @@ private:
 #define __lock_9ec0ab5f_1(line) __lock_9ec0ab5f_obj_##line
 #define __lock_9ec0ab5f_2(line) __lock_9ec0ab5f_1(line)
 
-#define lmcu_scoped_lock() __lock_9ec0ab5f __lock_9ec0ab5f_2(__LINE__)()
+#define lmcu_scoped_lock() __lock_9ec0ab5f __lock_9ec0ab5f_2(__LINE__)
