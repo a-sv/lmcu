@@ -243,6 +243,17 @@ public:
   }
 
   /**
+   * Clear all data stored in PIPE
+  */
+  inline void clear()
+  {
+    lmcu_scoped_lock();
+
+    r_ = w_ = beg();
+    ovf_ = false;
+  }
+
+  /**
    * Data size stored in PIPE
   */
   inline _sz_type size() const
