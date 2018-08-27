@@ -150,8 +150,22 @@ io::result write(const void *data, uint32_t size, uint32_t &tx_size, const delay
 }
 
 template<typename _module>
+io::result write(const void *data, uint32_t size, const delay::expirable &t)
+{
+  uint32_t tx_size;
+  return detail::write<_module>(data, size, tx_size, t);
+}
+
+template<typename _module>
 io::result read(void *data, uint32_t size, uint32_t &rx_size, const delay::expirable &t)
 {
+  return detail::read<_module>(data, size, rx_size, t);
+}
+
+template<typename _module>
+io::result read(void *data, uint32_t size, const delay::expirable &t)
+{
+  uint32_t rx_size;
   return detail::read<_module>(data, size, rx_size, t);
 }
 
