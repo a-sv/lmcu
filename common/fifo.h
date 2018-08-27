@@ -1,5 +1,6 @@
 #pragma once
 #include <lmcu/lock>
+#include "delay/expirable.h"
 
 namespace lmcu {
 
@@ -34,6 +35,9 @@ public:
     inline auto operator ->() const { return &item(idx_).data_; }
     inline auto &operator *() const { return item(idx_).data_; }
 
+    /**
+     * Release the element held by a reference
+    */
     void reset()
     {
       lmcu_scoped_lock();
@@ -62,6 +66,10 @@ public:
         item(idx_).next_ = invalid_index;
       }
     }
+
+    explicit push_ref(fifo &f, bool)
+    : f_(f)
+    { }
 
     inline auto &item(_idx_type idx) const { return f_.items_[idx]; }
 
@@ -93,6 +101,9 @@ public:
     auto operator ->() const { return &item(idx_).data_; }
     auto &operator *() const { return item(idx_).data_; }
 
+    /**
+     * Release the element held by a reference
+    */
     void reset()
     {
       lmcu_scoped_lock();
@@ -116,14 +127,15 @@ public:
       }
     }
 
+    explicit pop_ref(fifo &f, bool)
+    : f_(f)
+    { }
+
     auto &item(_idx_type idx) const { return f_.items_[idx]; }
 
     _idx_type idx_ = invalid_index;
     fifo &f_;
   };
-
-  _type &first() { return items_[first_busy_].data_; }
-  _type &last()  { return items_[last_busy_].data_;  }
 
   fifo()
   {
@@ -133,9 +145,73 @@ public:
     for(auto&& it : items_) { it.next_ = n + 1; ++n; }
   }
 
+  /**
+   * Return reference to first element in fifo
+   *
+   * @return  - reference to _type
+   * @warning - Unsafe function! Interrupt may overwrite data. Protect result by lmcu_scoped_lock
+   *            if you using FIFO with interrupts.
+  */
+  _type &first() { return items_[first_busy_].data_; }
+
+  /**
+   * Return reference to last element in fifo
+   *
+   * @return  - reference to _type
+   * @warning - Unsafe function! Interrupt may overwrite data. Protect result by lmcu_scoped_lock
+   *            if you using FIFO with interrupts.
+  */
+  _type &last()  { return items_[last_busy_].data_; }
+
+  /**
+   * Fetch an empty element in the push_ref constructor and puts it to FIFO in the destructor.
+   *
+   * @return - push_ref
+  */
   inline auto push() { return push_ref(*this); }
+
+  /**
+   * Fetch an empty element in the push_ref constructor and puts it to FIFO in the destructor.
+   *
+   * @param t - timeout
+   * @return - push_ref
+  */
+  auto push(const delay::expirable &t)
+  {
+    while(!t.expired()) {
+      auto ref = push();
+      if(ref) { return ref; }
+    }
+    return push_ref(*this, true);
+  }
+
+  /**
+   * Fetch busy element from FIFO in the pop_ref constructor and puts it to empty list in the
+   * destructor.
+   *
+   * @return - pop_ref
+  */
   inline auto pop() { return pop_ref(*this); }
 
+  /**
+   * Fetch busy element from FIFO in the pop_ref constructor and puts it to empty list in the
+   * destructor.
+   *
+   * @param t - timeout
+   * @return - pop_ref
+  */
+  auto pop(const delay::expirable &t)
+  {
+    while(!t.expired()) {
+      auto ref = pop();
+      if(ref) { return ref; }
+    }
+    return pop_ref(*this, true);
+  }
+
+  /**
+   * Remove all elements from FIFO.
+  */
   void clear()
   {
     lmcu_scoped_lock();
@@ -150,8 +226,19 @@ public:
     }
   }
 
+  /**
+   * Return true if FIFO empty.
+  */
   inline auto empty() const { return !is_valid_index(first_busy_); }
+
+  /**
+   * Return FIFO size.
+  */
   inline auto size() const { return size_; }
+
+  /**
+   * Return max count of elements may stored in FIFO.
+  */
   inline auto capacity() const { return _count; }
 private:
   struct item
