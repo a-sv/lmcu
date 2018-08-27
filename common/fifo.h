@@ -127,6 +127,8 @@ public:
 
   fifo()
   {
+    lmcu_scoped_lock();
+
     _idx_type n = 0;
     for(auto &it : items_) { it.next_ = n + 1; ++n; }
     size_       = 0;
@@ -135,11 +137,26 @@ public:
     empty_      = 0;
   }
 
-  auto push() { return push_ref(*this); }
-  auto pop() { return pop_ref(*this); }
-  auto empty() const { return !is_valid_index(first_busy_); }
-  auto size() const { return size_; }
-  auto capacity() const { return _count; }
+  inline auto push() { return push_ref(*this); }
+  inline auto pop() { return pop_ref(*this); }
+
+  void clear()
+  {
+    lmcu_scoped_lock();
+
+    while(is_valid_index(first_busy_)) {
+      auto next = items_[first_busy_].next_;
+
+      items_[first_busy_].next_ = empty_;
+      empty_ = first_busy_;
+
+      first_busy_ = next;
+    }
+  }
+
+  inline auto empty() const { return !is_valid_index(first_busy_); }
+  inline auto size() const { return size_; }
+  inline auto capacity() const { return _count; }
 private:
   struct item
   {
