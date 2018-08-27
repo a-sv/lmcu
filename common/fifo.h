@@ -130,11 +130,7 @@ public:
     lmcu_scoped_lock();
 
     _idx_type n = 0;
-    for(auto &it : items_) { it.next_ = n + 1; ++n; }
-    size_       = 0;
-    first_busy_ = invalid_index;
-    last_busy_  = invalid_index;
-    empty_      = 0;
+    for(auto&& it : items_) { it.next_ = n + 1; ++n; }
   }
 
   inline auto push() { return push_ref(*this); }
