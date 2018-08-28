@@ -18,7 +18,7 @@ template<typename _irq, IRQn_Type _n>
 void enable_irq()
 {
   NVIC_SetPriority(_n, NVIC_EncodePriority(_irq::prio_group, _irq::preempt_prio, _irq::sub_prio));
-  NVIC_EnableIRQ(_n);
+  if constexpr(_n >= 0) { NVIC_EnableIRQ(_n); }
 }
 
 } // namespace nvic
