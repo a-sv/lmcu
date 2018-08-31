@@ -56,6 +56,12 @@ public:
     return rc;
   }
 
+  inline io::result read(void *data, _sz_type sz)
+  {
+    _sz_type n;
+    return read(data, sz, n);
+  }
+
   /**
    * Read data from PIPE
    *
@@ -63,22 +69,31 @@ public:
    * @param sz   - size to read
    * @param n    - size of the really readed
    * @param t    - timeout
+   * @param poll - poll callback
    *
    * @return     - io::result::busy if PIPE empty and timeout occurred otherwise io::result::success
   */
-  inline io::result read(void *data, _sz_type sz, _sz_type &n, const delay::expirable &t)
+  template<typename _poll>
+  inline io::result read(void *data, _sz_type sz, _sz_type &n, const delay::expirable &t,
+                         _poll&& poll)
   {
     auto rc = io::result::busy;
     auto b = static_cast<uint8_t*>(data), e = b + sz;
-    while(!t.expired() && rc == io::result::busy) { rc = read(b, e - b, n); b += n; }
+    while(!t.expired() && rc == io::result::busy) { rc = read(b, e - b, n); b += n; poll(); }
     n = b - static_cast<uint8_t*>(data);
     return rc;
   }
 
-  inline io::result read(void *data, _sz_type sz)
+  template<typename _poll>
+  inline io::result read(void *data, _sz_type sz, const delay::expirable &t, _poll&& poll)
   {
     _sz_type n;
-    return read(data, sz, n);
+    return read(data, sz, n, t, poll);
+  }
+
+  inline io::result read(void *data, _sz_type sz, _sz_type &n, const delay::expirable &t)
+  {
+    return read(data, sz, n, t, []{});
   }
 
   inline io::result read(void *data, _sz_type sz, const delay::expirable &t)
@@ -113,15 +128,22 @@ public:
    * Fetch one byte from PIPE
    *
    * @param data - dst buffer
+   * @param poll - poll callback
    *
    * @return     - io::result::busy if PIPE empty and timeout occurred otherwise io::result::success
   */
+  template<typename _data, typename _poll>
+  inline io::result getb(_data&& data, const delay::expirable &t, _poll&& poll)
+  {
+    auto rc = io::result::busy;
+    while(!t.expired() && rc == io::result::busy) { rc = getb(data); poll(); }
+    return rc;
+  }
+
   template<typename _data>
   inline io::result getb(_data&& data, const delay::expirable &t)
   {
-    auto rc = io::result::busy;
-    while(!t.expired() && rc == io::result::busy) { rc = getb(data); }
-    return rc;
+    return getb(data, t, []{});
   }
 
   /**
@@ -170,28 +192,43 @@ public:
     return rc;
   }
 
+  inline io::result write(const void *data, _sz_type sz)
+  {
+    _sz_type n;
+    return write(data, sz, n);
+  }
+
   /**
    * Write data to PIPE
    *
    * @param data - ptr to data
    * @param sz   - size to write
    * @param n    - size of the really writed
+   * @param poll - poll callback
    *
    * @return     - io::result::busy if PIPE full and timeout occurred otherwise io::result::success
   */
-  inline io::result write(const void *data, _sz_type sz, _sz_type &n, const delay::expirable &t)
+  template<typename _poll>
+  inline io::result write(const void *data, _sz_type sz, _sz_type &n, const delay::expirable &t,
+                          _poll&& poll)
   {
     auto rc = io::result::busy;
     auto b = static_cast<const uint8_t*>(data), e = b + sz;
-    while(!t.expired() && rc == io::result::busy) { rc = write(b, e - b, n); b += n; }
+    while(!t.expired() && rc == io::result::busy) { rc = write(b, e - b, n); b += n; poll(); }
     n = b - static_cast<const uint8_t*>(data);
     return rc;
   }
 
-  inline io::result write(const void *data, _sz_type sz)
+  template<typename _poll>
+  inline io::result write(const void *data, _sz_type sz, const delay::expirable &t, _poll&& poll)
   {
     _sz_type n;
-    return write(data, sz, n);
+    return write(data, sz, n, t, poll);
+  }
+
+  inline io::result write(const void *data, _sz_type sz, _sz_type &n, const delay::expirable &t)
+  {
+    return write(data, sz, n, t, []{});
   }
 
   inline io::result write(const void *data, _sz_type sz, const delay::expirable &t)
@@ -231,15 +268,22 @@ public:
    * Put one byte to PIPE
    *
    * @param data - data to write
+   * @param poll - poll callback
    *
    * @return     - io::result::busy if PIPE full and timeout occurred otherwise io::result::success
   */
+  template<typename _data, typename _poll>
+  inline io::result putb(_data&& data, const delay::expirable &t, _poll&& poll)
+  {
+    auto rc = io::result::busy;
+    while(!t.expired() && rc == io::result::busy) { rc = putb(data); poll(); }
+    return rc;
+  }
+
   template<typename _data>
   inline io::result putb(_data&& data, const delay::expirable &t)
   {
-    auto rc = io::result::busy;
-    while(!t.expired() && rc == io::result::busy) { rc = putb(data); }
-    return rc;
+    return putb(data, t, []{});
   }
 
   /**
