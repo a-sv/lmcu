@@ -1,11 +1,12 @@
 #pragma once
+#include <utility>
 #include <lmcu/device>
 #include <lmcu/common>
 #include <lmcu/delay>
 
 namespace lmcu::stack::can {
 
-template<typename _iface, uint16_t _rx_timeout, uint8_t _rx_pipe_sz>
+template<typename _iface, uint32_t _rx_fifo_sz>
 class lawicel
 {
 public:
@@ -35,50 +36,72 @@ public:
 
   enum class auto_startup { off, normal, listen_only };
 
-  enum class open_mode { closed, normal, listen_only };
+  enum class channel_state { closed, normal, listen_only };
 
   enum class filter_mode { single, dual };
 
-  static constexpr uint32_t std_id_mask = 0x7FF;
-  static constexpr uint32_t ext_id      = 0x80000000;
-  static constexpr uint32_t ext_id_mask = 0x1FFFFFFF;
+  static constexpr uint32_t
+    std_id_mask = 0x7FF,
+    ext_id      = 0x80000000,
+    ext_id_mask = 0x1FFFFFFF
+  ;
 
   inline void run()
   {
     while(true) {
       task();
-      if(auto_poll_) { rx_frame(); }
+      if(iface()->auto_poll_active()) { rx_frame(); }
+      if(rx_fifo_.empty()) { iface()->idle(); }
     }
   }
 
-  inline io::result in(const void *data, uint8_t sz) { return rx_pipe_.write(data, sz); }
-  inline io::result in(uint8_t data) { return rx_pipe_.putb(data); }
-private:
-  bool auto_poll_ = false;
-  bool ts_en_     = false;
-  pipe<uint8_t, _rx_pipe_sz> rx_pipe_;
-
-  io::result rxcmd(void *data, uint8_t sz, const delay::expirable &t)
+  inline io::result in(uint8_t data)
   {
-    auto poll = [this]
-    {
-      if(auto_poll_) { rx_frame(); }
-    };
-
-    auto b = static_cast<uint8_t*>(data), e = b + sz;
-    while(b < e) {
-      if(rx_pipe_.getb(*b, t, poll) != io::result::success) { return io::result::error; }
-
-      if(*b == '\r') {
-        if((e - b) == 1) { return io::result::success; }
-        break;
-      }
-      ++b;
+    if(uint8_t(in_ref_->len_ + 1) > sizeof(in_ref_->data_)) {
+      // command too long
+      in_ref_->len_ = 0; return io::result::error;
     }
-    return io::result::error;
+
+    if(data == '\r') {
+      auto ref = rx_fifo_.push();
+
+      if(ref) {
+        in_ref_       = std::move(ref);
+        in_ref_->len_ = 0;
+        return io::result::success;
+      }
+
+      in_ref_->len_ = 0;
+      return io::result::busy;
+    }
+
+    in_ref_->data_[in_ref_->len_++] = data;
+
+    return io::result::success;
   }
 
-  enum class status { ok, z, Z, fmt_err, err };
+  void tick()
+  {
+    if(++ts_ > 0xEA5F) { ts_ = 0; }
+  }
+private:
+  struct pkt
+  {
+    uint8_t len_ = 0;
+    uint8_t data_[32];
+  };
+
+  using fifo_type = fifo<pkt, _rx_fifo_sz, decltype(_rx_fifo_sz)>;
+
+  fifo_type rx_fifo_;
+  typename fifo_type::push_ref in_ref_ = rx_fifo_.push();
+
+  uint16_t ts_ = 0;
+
+  inline auto iface() { return static_cast<_iface*>(this); }
+  inline auto iface() const { return static_cast<const _iface*>(this); }
+
+  enum class status { ok, z, Z, err };
 
   void send_status(status s)
   {
@@ -93,8 +116,6 @@ private:
     case status::Z:
       iface()->out("Z\r", 2);
       break;
-    case status::fmt_err:
-      rx_pipe_.clear();
     case status::err:
       iface()->out(0x7);
       break;
@@ -103,27 +124,25 @@ private:
 
   bool rx_frame()
   {
+    if(!channel_is_open()) { return false; }
+
     uint32_t id = 0;
     bool rtr = false;
-    uint8_t data[8];
-    uint8_t len = 0;
-    uint16_t ts = 0;
+    uint8_t data[8] = {0}, len = 0;
 
-    if(ts_en_) {
-      if(!iface()->rx(id, rtr, data, len, ts) || len > 8) { return false; }
-    }
-    else {
-      if(!iface()->rx(id, rtr, data, len) || len > 8) { return false; }
-    }
+    if(!iface()->rx(id, rtr, data, len) || len > 8) { return false; }
 
-    if(id & ext_id) {
+    const bool ide = id & ext_id;
+
+    if(ide) {
+      id &= ~ext_id;
       iface()->out(rtr? 'R' : 'T');
     }
     else {
       iface()->out(rtr? 'r' : 't');
     }
 
-    for(uint8_t i = (id & ext_id)? 8 : 3; i > 0; --i) {
+    for(uint8_t i = ide? 8 : 3; i > 0; --i) {
       iface()->out(hex::upper(id >> 28)); id <<= 4;
     }
 
@@ -134,50 +153,59 @@ private:
       iface()->out(hex::upper(data[i]));
     }
 
+    if(iface()->timestamp_active()) {
+      const auto ts = ts_;
+      hex::upper(ts >> 8,   &data[0]);
+      hex::upper(ts & 0xFF, &data[2]);
+      iface()->out(data, 4);
+    }
+
     send_status(status::ok);
     return true;
   }
 
-  template<bool _eid>
-  void tx_frame(bool rtr, uint8_t *data, const delay::expirable &t)
+  template<bool _eid, typename _ref>
+  void tx_frame(bool rtr, _ref&& ref)
   {
-    auto poll = [this]
-    {
-      if(auto_poll_) { rx_frame(); }
-    };
-
-    if(rx_pipe_.read(data, _eid? 9 : 4, t, poll) != io::result::success) {
-      send_status(status::fmt_err); return;
+    if(
+      iface()->get_channel_state() != channel_state::normal ||
+      _eid? (ref->len_ < 10 || ref->len_ > 30) : (ref->len_ < 5 || ref->len_ > 21)
+    ) {
+      send_status(status::err); return;
     }
 
-    uint32_t id;
-    uint8_t len;
+    uint32_t id, len;
 
     if constexpr(_eid) {
-      hex::to_dec(data, 9);
-      id = *reinterpret_cast<uint32_t*>(data);
-      len = data[4];
+      hex::to_dec(&ref->data_[1], 9);
+      id  = __builtin_bswap32(*reinterpret_cast<uint32_t*>(&ref->data_[1]));
+      len = ref->data_[5] >> 4;
     }
     else {
-      id = hex::to_dec(data[0]);
-      id <<= 8;
-      id |= hex::to_dec(data[1], data[2]);
-      len = hex::to_dec(data[3]);
+      hex::to_dec(&ref->data_[1], 4);
+      id  = __builtin_bswap16(*reinterpret_cast<uint16_t*>(&ref->data_[1]));
+      len = id & 0xF;
+      id >>= 4;
     }
 
-    if(id > (_eid? ext_id_mask : std_id_mask) || len > 8) { send_status(status::fmt_err); return; }
+    if(id > (_eid? ext_id_mask : std_id_mask) || len > 8) { send_status(status::err); return; }
 
     if(rtr) {
-      if(rxcmd(data, 1, t) != io::result::success) { send_status(status::fmt_err); return; }
+      if(ref->len_ > 10) { send_status(status::err); return; }
     }
     else {
       const uint8_t n = len * 2;
-      if(rxcmd(data, n + 1, t) != io::result::success) { send_status(status::fmt_err); return; }
-      hex::to_dec(data, n);
+
+      if constexpr(_eid) {
+        hex::to_dec(&ref->data_[10], n);
+      }
+      else {
+        hex::to_dec(&ref->data_[5], n);
+      }
     }
 
-    if(iface()->tx(id | (_eid? ext_id : 0), rtr, data, len)) {
-      send_status(auto_poll_? (_eid? status::Z : status::z) : status::ok);
+    if(iface()->tx(id | (_eid? ext_id : 0), rtr, _eid? &ref->data_[10] : &ref->data_[5], len)) {
+      send_status(iface()->auto_poll_active()? (_eid? status::Z : status::z) : status::ok);
     }
     else {
       send_status(status::err);
@@ -186,211 +214,179 @@ private:
 
   void task()
   {
-    uint8_t data[17];
+    auto ref = rx_fifo_.pop();
+    if(!ref || ref->len_ == 0) { return; }
 
-    uint8_t c = 0;
-    if(rx_pipe_.getb(c) != io::result::success) { return; }
-
-    bool err = false;
-
-    delay::dwt::timer t;
-    t.start<delay::dwt::timer::ms>(_rx_timeout);
+    bool ok = false;
+    const auto c = ref->data_[0];
 
     switch(c) {
-    // set standard CAN bit-rates
-    case 'S': {
-      if(rxcmd(data, 2, t) != io::result::success) { send_status(status::fmt_err); return; }
+    // tx frame with standard id
+    case 't':
+    case 'r': { tx_frame<false>(c == 'r', ref); } break;
 
-      switch(data[0]) {
-      case '0': err = iface()->set_baudrate(can_baud::_10Kbit);   break;
-      case '1': err = iface()->set_baudrate(can_baud::_20Kbit);   break;
-      case '2': err = iface()->set_baudrate(can_baud::_50Kbit);   break;
-      case '3': err = iface()->set_baudrate(can_baud::_100Kbit);  break;
-      case '4': err = iface()->set_baudrate(can_baud::_125Kbit);  break;
-      case '5': err = iface()->set_baudrate(can_baud::_250Kbit);  break;
-      case '6': err = iface()->set_baudrate(can_baud::_500Kbit);  break;
-      case '7': err = iface()->set_baudrate(can_baud::_800Kbit);  break;
-      case '8': err = iface()->set_baudrate(can_baud::_1000Kbit); break;
-      default : err = true; break;
+    // tx frame with extend id
+    case 'T':
+    case 'R': { tx_frame<true>(c == 'R', ref); } break;
+
+    // poll frames
+    case 'P':
+    case 'A': {
+      if(ref->len_ != 1 || iface()->auto_poll_active() || !channel_is_open()) {
+        send_status(status::err); return;
       }
 
-      if(err) { send_status(status::err); } else { send_status(status::ok); }
+      if(c == 'A') {
+        while(rx_frame())
+          ;
+        iface()->out('A');
+        send_status(status::ok);
+      }
+      else {
+        rx_frame();
+      }
+    } break;
+
+      // set standard CAN bit-rates
+    case 'S': {
+      if(ref->len_ != 2 || channel_is_open()) { send_status(status::err); return; }
+
+      switch(ref->data_[1]) {
+      case '0': ok = iface()->set_baudrate(can_baud::_10Kbit);   break;
+      case '1': ok = iface()->set_baudrate(can_baud::_20Kbit);   break;
+      case '2': ok = iface()->set_baudrate(can_baud::_50Kbit);   break;
+      case '3': ok = iface()->set_baudrate(can_baud::_100Kbit);  break;
+      case '4': ok = iface()->set_baudrate(can_baud::_125Kbit);  break;
+      case '5': ok = iface()->set_baudrate(can_baud::_250Kbit);  break;
+      case '6': ok = iface()->set_baudrate(can_baud::_500Kbit);  break;
+      case '7': ok = iface()->set_baudrate(can_baud::_800Kbit);  break;
+      case '8': ok = iface()->set_baudrate(can_baud::_1000Kbit); break;
+      default : break;
+      }
+
+      send_status(ok? status::ok : status::err);
     } break;
 
     // set CAN bit-rate
     case 's': {
-      if(rxcmd(data, 5, t) != io::result::success) { send_status(status::fmt_err); return; }
+      if(ref->len_ != 5 || channel_is_open()) { send_status(status::err); return; }
 
-      err = iface()->set_baudrate(
-        hex::to_dec(data[0], data[1]), // BTR0
-        hex::to_dec(data[2], data[3])  // BTR1
+      ok = iface()->set_baudrate(
+        hex::to_dec(ref->data_[1], ref->data_[2]), // BTR0
+        hex::to_dec(ref->data_[3], ref->data_[4])  // BTR1
       );
 
-      if(err) { send_status(status::err); } else { send_status(status::ok); }
+      send_status(ok? status::ok : status::err);
     } break;
 
     // open CAN channel
     case 'O':
     case 'L': {
-      if(rxcmd(data, 1, t) != io::result::success) { send_status(status::fmt_err); return; }
-
-      if(iface()->open_channel(c == 'O'? open_mode::normal : open_mode::listen_only)) {
-        send_status(status::ok);
-      }
-      else {
-        send_status(status::err);
-      }
+      ok = ref->len_ == 1 &&
+           !channel_is_open() &&
+           iface()->set_channel_state((c == 'O')? channel_state::normal :
+                                                  channel_state::listen_only)
+      ;
+      send_status(ok? status::ok : status::err);
     } break;
 
     // close CAN channel
     case 'C': {
-      if(rxcmd(data, 1, t) != io::result::success) { send_status(status::fmt_err); return; }
-      send_status(iface()->close_channel()? status::ok : status::err);
+      ok = ref->len_ == 1 && channel_is_open() && iface()->set_channel_state(channel_state::closed);
+      send_status(ok? status::ok : status::err);
     } break;
 
-    // tx frame with standard id
-    case 't':
-    case 'r': { tx_frame<false>(c == 'r', data, t); } break;
-
-    // tx frame with extend id
-    case 'T':
-    case 'R': { tx_frame<true>(c == 'R', data, t); } break;
-
-    case 'P':
-    case 'A': {
-      if(rxcmd(data, 1, t) != io::result::success) { send_status(status::fmt_err); return; }
-
-      if(auto_poll_) { send_status(status::err); return; }
-
-      rx_frame();
-      if(c == 'A') { while(rx_frame()); }
-    } break;
-
+    // read status flags
     case 'F': {
-      if(rxcmd(data, 1, t) != io::result::success) { send_status(status::fmt_err); return; }
+      if(ref->len_ != 1 || !channel_is_open()) { send_status(status::err); return; }
 
-      uint8_t s = 0;
-      if(iface()->status(s)) {
-        uint8_t data[2];
-        hex::upper(s, data);
-        iface()->out(data, sizeof(data));
-        send_status(status::ok);
-      }
-      else {
-        send_status(status::err);
-      }
-    } break;
-
-    case 'X':
-    case 'W':
-    case 'Z': {
-      if(rxcmd(data, 2, t) != io::result::success) { send_status(status::fmt_err); return; }
-
-      if(c == 'X') {
-        bool en = data[0] == '1';
-        if(iface()->auto_poll_enable(en)) {
-          auto_poll_ = en;
-          send_status(status::ok);
-        }
-        else {
-          send_status(status::err);
-        }
-      }
-      else
-      if(c == 'W') {
-        send_status(
-          iface()->set_filter_mode(data[0] == '0'? filter_mode::dual : filter_mode::single)?
-              status::ok : status::err
-        );
-      }
-      else {
-        bool en = data[0] == '1';
-        if(iface()->enable_timestamp(en)) {
-          ts_en_ = en;
-          send_status(status::ok);
-        }
-        else {
-          send_status(status::err);
-        }
-      }
-    } break;
-
-    case 'M':
-    case 'm': {
-      if(rxcmd(data, 9, t) != io::result::success) { send_status(status::fmt_err); return; }
-
-      hex::to_dec(data, 8);
-
-      if(c == 'M') {
-        send_status(
-          iface()->set_accept_code(*reinterpret_cast<uint32_t*>(&data[0]))?
-            status::ok : status::err
-        );
-      }
-      else {
-        send_status(
-          iface()->set_accept_mask(*reinterpret_cast<uint32_t*>(&data[0]))?
-            status::ok : status::err
-        );
-      }
-    } break;
-
-    case 'U': {
-      if(rxcmd(data, 2, t) != io::result::success) { send_status(status::fmt_err); return; }
-
-      switch(data[0]) {
-      case '0': err = iface()->set_baudrate(uart_baud::_230400); break;
-      case '1': err = iface()->set_baudrate(uart_baud::_115200); break;
-      case '2': err = iface()->set_baudrate(uart_baud::_57600 ); break;
-      case '3': err = iface()->set_baudrate(uart_baud::_38400 ); break;
-      case '4': err = iface()->set_baudrate(uart_baud::_19200 ); break;
-      case '5': err = iface()->set_baudrate(uart_baud::_9600  ); break;
-      case '6': err = iface()->set_baudrate(uart_baud::_2400  ); break;
-      default : err = true; break;
-      }
-
-      send_status(err? status::ok : status::err);
-    } break;
-
-    case 'V':
-    case 'N': {
-      if(rxcmd(data, 1, t) != io::result::success) { send_status(status::fmt_err); return; }
-
-      uint16_t val = 0;
-
-      if(c == 'V') {
-        iface()->get_version(val);
-      }
-      else {
-        iface()->get_serial(val);
-      }
-
-      data[0] = c;
-      hex::upper(val >> 8,   &data[1]);
-      hex::upper(val & 0xFF, &data[3]);
-
-      iface()->out(data, 5);
+      hex::upper(iface()->get_status(), &ref->data_[1]);
+      iface()->out(ref->data_, 3);
       send_status(status::ok);
     } break;
 
-    case 'Q': {
-      if(rxcmd(data, 2, t) != io::result::success) { send_status(status::fmt_err); return; }
+    case 'X': // auto poll on|off
+    case 'W': // filter mode
+    case 'Z': { // timestamp on/off
+      if(ref->len_ != 2 || channel_is_open()) { send_status(status::err); return; }
 
-      switch(data[0]) {
-      case '0': err = iface()->set_auto_startup(auto_startup::off);         break;
-      case '1': err = iface()->set_auto_startup(auto_startup::normal);      break;
-      case '2': err = iface()->set_auto_startup(auto_startup::listen_only); break;
-      default : err = true; break;
+      if(c == 'X') {
+        ok = iface()->auto_poll_enable(ref->data_[1] == '1');
+      }
+      else
+      if(c == 'W') {
+        ok = iface()->set_filter_mode((ref->data_[1] == '0')? filter_mode::dual :
+                                                              filter_mode::single);
+      }
+      else {
+        ok = iface()->timestamp_enable(ref->data_[1] == '1');
       }
 
-      send_status(err? status::ok : status::err);
+      send_status(ok? status::ok : status::err);
     } break;
 
-    default: return;
+    case 'M': // set acceptance code
+    case 'm': { // set acceptance mask
+      if(ref->len_ != 9 || channel_is_open()) { send_status(status::err); return; }
+
+      hex::to_dec(&ref->data_[1], 8);
+      const auto val = *reinterpret_cast<uint32_t*>(&ref->data_[1]);
+
+      ok = (c == 'M')? iface()->set_accept_code(val) : iface()->set_accept_mask(val);
+      send_status(ok? status::ok : status::err);
+    } break;
+
+    case 'U': { // set UART baud rate
+      if(ref->len_ != 2 || channel_is_open()) { send_status(status::err); return; }
+
+      switch(ref->data_[1]) {
+      case '0': ok = iface()->set_baudrate(uart_baud::_230400); break;
+      case '1': ok = iface()->set_baudrate(uart_baud::_115200); break;
+      case '2': ok = iface()->set_baudrate(uart_baud::_57600 ); break;
+      case '3': ok = iface()->set_baudrate(uart_baud::_38400 ); break;
+      case '4': ok = iface()->set_baudrate(uart_baud::_19200 ); break;
+      case '5': ok = iface()->set_baudrate(uart_baud::_9600  ); break;
+      case '6': ok = iface()->set_baudrate(uart_baud::_2400  ); break;
+      default : break;
+      }
+
+      send_status(ok? status::ok : status::err);
+    } break;
+
+    case 'V': // get version
+    case 'N': { // get serial number
+      if(ref->len_ != 1) { send_status(status::err); return; }
+
+      const uint16_t val = (c == 'V')? iface()->get_version() : iface()->get_serial();
+
+      hex::upper(val >> 8,   &ref->data_[1]);
+      hex::upper(val & 0xFF, &ref->data_[3]);
+
+      iface()->out(ref->data_, 5);
+      send_status(status::ok);
+    } break;
+
+    case 'Q': { // set auto startup mode
+      if(ref->len_ != 2 || !channel_is_open()) { send_status(status::err); return; }
+
+      switch(ref->data_[1]) {
+      case '0': ok = iface()->set_auto_startup(auto_startup::off);         break;
+      case '1': ok = iface()->set_auto_startup(auto_startup::normal);      break;
+      case '2': ok = iface()->set_auto_startup(auto_startup::listen_only); break;
+      default : break;
+      }
+
+      send_status(ok? status::ok : status::err);
+    } break;
+
+    default: break;
     }
   }
 
-  inline auto iface() { return static_cast<_iface*>(this); }
+  inline bool channel_is_open() const
+  {
+    return iface()->get_channel_state() != channel_state::closed;
+  }
 };
 
-} // lmcu::stack::can::lawicel
+} // lmcu::stack::can
