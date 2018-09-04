@@ -18,6 +18,16 @@ public:
     push_ref(const push_ref &rhs) = delete;
     void operator =(const push_ref &rhs) = delete;
 
+    void operator =(push_ref&& rhs)
+    {
+      lmcu_scoped_lock();
+
+      reset();
+      f_       = rhs.f_;
+      idx_     = rhs.idx_;
+      rhs.idx_ = invalid_index;
+    }
+
     push_ref(push_ref&& rhs)
     : f_(rhs.f_)
     {
@@ -83,6 +93,16 @@ public:
   public:
     pop_ref(const pop_ref &rhs) = delete;
     void operator =(const pop_ref &rhs) = delete;
+
+    void operator =(pop_ref&& rhs)
+    {
+      lmcu_scoped_lock();
+
+      reset();
+      f_       = rhs.f_;
+      idx_     = rhs.idx_;
+      rhs.idx_ = invalid_index;
+    }
 
     pop_ref(pop_ref&& rhs)
     : f_(rhs.f_)
