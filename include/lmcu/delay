@@ -1,10 +1,24 @@
 #pragma once
 #include <lmcu/device>
 
+#ifdef __cplusplus
+
 #include "../../common/delay/timer.h"
 
 #if defined(_LMCU_DEVICE_STM32_)
   #include "../../device/cortex/dwt_delay.h"
 #else
   #error "device not supported"
+#endif
+
+#endif // __cplusplus
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void lmcu_delay_ms(uint32_t ms);
+
+#ifdef __cplusplus
+}
 #endif
