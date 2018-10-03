@@ -59,7 +59,7 @@ io::result erase_page(uint32_t addr, const delay::expirable &t)
   if(wait_op(t) != io::result::success) { return io::result::busy; }
 
 #if defined(FLASH_KEYR2)
-  if(size() > 512 && addr >= FLASH_BASE + (512 * 1024)) {
+  if(addr > FLASH_BANK1_END_ADDRESS) {
     FLASH->CR2 |= FLASH_CR2_PER;
     FLASH->AR2  = addr;
     FLASH->CR2 |= FLASH_CR2_STRT;
@@ -100,7 +100,7 @@ io::result program(uint32_t addr, uint16_t data, const delay::expirable &t)
   if(wait_op(t) != io::result::success) { return io::result::busy; }
 
 #if defined(FLASH_KEYR2)
-  if(size() > 512 && addr >= FLASH_BASE + (512 * 1024)) {
+  if(addr > FLASH_BANK1_END_ADDRESS) {
     FLASH->CR2 |= FLASH_CR2_PG;
     lmcu_defer([] { FLASH->CR2 &= ~FLASH_CR2_PG; });
     *reinterpret_cast<volatile uint16_t*>(addr) = data;
@@ -125,15 +125,13 @@ status read_status()
 void clear_status(status s)
 {
 #if defined(FLASH_KEYR2)
-  if(size() > 512) {
-    if(s & status::eop)      { FLASH->SR2 |= FLASH_SR2_EOP;      }
-    if(s & status::wrprterr) { FLASH->SR2 |= FLASH_SR2_WRPRTERR; }
-    if(s & status::pgerr)    { FLASH->SR2 |= FLASH_SR2_PGERR;    }
-  }
+  if(s & status::eop)      { FLASH->SR2 |= FLASH_SR2_EOP;      }
+  if(s & status::wrprterr) { FLASH->SR2 |= FLASH_SR2_WRPRTERR; }
+  if(s & status::pgerr)    { FLASH->SR2 |= FLASH_SR2_PGERR;    }
 #endif
-  if(s & status::eop)      { FLASH->SR |= FLASH_SR_EOP;      }
-  if(s & status::wrprterr) { FLASH->SR |= FLASH_SR_WRPRTERR; }
-  if(s & status::pgerr)    { FLASH->SR |= FLASH_SR_PGERR;    }
+  if(s & status::eop)      { FLASH->SR |= FLASH_SR_EOP;        }
+  if(s & status::wrprterr) { FLASH->SR |= FLASH_SR_WRPRTERR;   }
+  if(s & status::pgerr)    { FLASH->SR |= FLASH_SR_PGERR;      }
 }
 
 } // namespace lmcu::flash
