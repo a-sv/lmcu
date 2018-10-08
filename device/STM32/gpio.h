@@ -107,6 +107,9 @@ void configure()
 template<bool _val, typename ..._pins>
 void set() { detail::set<_val, _pins...>(); }
 
+template<typename ..._pins>
+void set(bool val) { detail::set<_pins...>(val); }
+
 template<port _port>
 auto &get() { return detail::get<_port>(); }
 
