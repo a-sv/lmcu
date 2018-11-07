@@ -239,7 +239,7 @@ public:
   io::result rxtx(uint32_t in, uint32_t &out, uint32_t bits, state target)
   {
     if(bits == 0) { return io::result::success; }
-    if(bits > 64 || (state_ != state::shift_ir && state_ != state::shift_dr)) {
+    if(bits > 32 || (state_ != state::shift_ir && state_ != state::shift_dr)) {
       return io::result::error;
     }
     if(state_ != target) { bits--; }
@@ -278,9 +278,7 @@ public:
   io::result rxtx(const void *in, void *out, uint32_t bits, state target)
   {
     if(bits == 0) { return io::result::success; }
-    if(bits > 64 || (state_ != state::shift_ir && state_ != state::shift_dr)) {
-      return io::result::error;
-    }
+    if(state_ != state::shift_ir && state_ != state::shift_dr) { return io::result::error; }
     if(state_ != target) { bits--; }
 
     auto in_p  = static_cast<const uint32_t*>(in);
@@ -288,7 +286,7 @@ public:
 
     while(bits >= 32) {
       rxtx_word(*in_p, *out_p, 32);
-      bits  -= 32;
+      bits -= 32;
       ++in_p;
       ++out_p;
     }
@@ -297,6 +295,49 @@ public:
 
     if(state_ != target) {
       gpio::set<_tdi>(*in_p & (1 << shr));
+
+      *out_p |= uint32_t(
+        set_state((state_ == state::shift_ir)? state::exit1_ir : state::exit1_dr)
+      ) << shr;
+    }
+
+    set_state(target);
+
+    return io::result::success;
+  }
+
+  /**
+   * Receive and transmit data into IR or DR registers
+   *
+   * @param in     - input data, will be shifted into TDI
+   * @param out    - output data, will be shifted from TDO
+   * @param bits   - count of bits to rxtx
+   * @param target - target TAP controller state
+   * @return       - io::result
+  */
+  io::result rxtx(uint8_t in, void *out, uint32_t bits, state target)
+  {
+    if(bits == 0) { return io::result::success; }
+    if(state_ != state::shift_ir && state_ != state::shift_dr) { return io::result::error; }
+    if(state_ != target) { bits--; }
+
+    const union {
+      uint8_t bytes[4];
+      uint32_t in;
+    } d{ {in, in, in, in} };
+
+    auto out_p = static_cast<uint32_t*>(out);
+
+    while(bits >= 32) {
+      rxtx_word(d.in, *out_p, 32);
+      bits -= 32;
+      ++out_p;
+    }
+
+    uint32_t shr = rxtx_word(d.in, *out_p, bits);
+
+    if(state_ != target) {
+      gpio::set<_tdi>(d.in & (1 << shr));
 
       *out_p |= uint32_t(
         set_state((state_ == state::shift_ir)? state::exit1_ir : state::exit1_dr)
@@ -341,7 +382,7 @@ public:
 
     tx_word(in, bits);
 
-    if(state_ != target) { gpio::set<_tdi>(in & 1); }
+    if(state_ != target) { gpio::set<_tdi>((in >> bits) & 1); }
     set_state(target);
 
     return io::result::success;
@@ -363,10 +404,10 @@ public:
 
     auto p = static_cast<const uint32_t*>(data);
 
-    while(bits >= 32) { tx_word(*p++, bits); bits -= 32; }
+    while(bits >= 32) { tx_word(*p++, 32); bits -= 32; }
     tx_word(*p, bits);
 
-    if(state_ != target) { gpio::set<_tdi>((*p) & 1); }
+    if(state_ != target) { gpio::set<_tdi>((*p >> bits) & 1); }
     set_state(target);
 
     return io::result::success;
@@ -397,13 +438,18 @@ private:
   template<typename _io>
   uint32_t rxtx_word(_io in, _io &out, uint32_t bits)
   {
+    if(!bits) { return 0; }
+
+    out          = 0;
     uint32_t shr = 0;
-    while(bits) {
+
+    do {
       gpio::set<_tdi>(in & 1);
       in >>= 1;
       out |= uint32_t(clock()) << shr++;
       --bits;
-    }
+    } while(bits);
+
     return shr;
   }
 };
