@@ -1,7 +1,7 @@
+#ifdef _LMCU_DEVICE_STM32F1_
+
 #include <lmcu/common>
 #include "../flash.h"
-
-#ifdef _LMCU_DEVICE_STM32_
 
 namespace lmcu::flash {
 
@@ -86,4 +86,4 @@ void clear_status(status s)
 
 } // namespace lmcu::flash
 
-#endif // _LMCU_DEVICE_STM32_
+#endif // _LMCU_DEVICE_STM32F1_

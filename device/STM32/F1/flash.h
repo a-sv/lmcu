@@ -14,6 +14,7 @@ lmcu_enum_class_flags_impl(status)
 
 #include "detail/flash.h"
 
+
 /**
  * Lock the FLASH control register access
 */
