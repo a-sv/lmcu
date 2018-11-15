@@ -1,6 +1,7 @@
+#include <lmcu/common>
+
 #ifdef _LMCU_DEVICE_STM32F1_
 
-#include <lmcu/common>
 #include "../flash.h"
 
 namespace lmcu::flash {
