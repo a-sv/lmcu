@@ -123,9 +123,9 @@ struct module
 };
 
 enum class fifo { any, fifo_0, fifo_1 };
-
 enum class filter_mode { idmask, idlist };
 enum class filter_scale { _16bit, _32bit };
+enum class sleep_mode { enable, disable };
 
 template<
   uint32_t _number,
@@ -185,6 +185,9 @@ enum class flags : uint32_t
 lmcu_enum_class_flags_impl(flags)
 
 #include "detail/can.h"
+
+template<typename _module, sleep_mode _sleep_mode>
+void set_sleep_mode() { detail::set_sleep_mode<_module, _sleep_mode>(); }
 
 template<typename ..._modules>
 void configure() { detail::configure<_modules...>(); }

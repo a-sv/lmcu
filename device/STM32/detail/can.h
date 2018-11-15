@@ -79,6 +79,19 @@ void enable_irq()
   }
 }
 
+template<typename _module, sleep_mode _sleep_mode>
+void set_sleep_mode()
+{
+  auto inst = detail::inst<_module>();
+
+  if constexpr(_sleep_mode == sleep_mode::enable) {
+    inst->MCR |= CAN_MCR_SLEEP;
+  }
+  else {
+    inst->MCR &= ~CAN_MCR_SLEEP;
+  }
+}
+
 template<typename _module, typename ..._modules>
 void configure()
 {
@@ -113,8 +126,8 @@ void configure()
 
   auto inst = detail::inst<_module>();
 
-  // exit from sleep mode
-  inst->MCR &= ~CAN_MCR_SLEEP;
+  set_sleep_mode<_module, sleep_mode::disable>();
+
   // request initialisation
   inst->MCR |= CAN_MCR_INRQ;
   // wait the acknowledge
