@@ -152,25 +152,24 @@ void configure()
     []() -> uint32_t
     {
       switch(_module::mode) {
-      case mode::normal:          return 0;
       case mode::loopback:        return CAN_BTR_LBKM;
       case mode::silent:          return CAN_BTR_SILM;
       case mode::silent_loopback: return CAN_BTR_LBKM | CAN_BTR_SILM;
+      default: return 0; // normal mode
       }
     }() |
     []() -> uint32_t
     {
       switch(_module::sjw) {
-      case sjw::_1tq: return 0;
       case sjw::_2tq: return CAN_BTR_SJW_0;
       case sjw::_3tq: return CAN_BTR_SJW_1;
       case sjw::_4tq: return CAN_BTR_SJW;
+      default: return 0; // 1tq
       }
     }() |
     []() -> uint32_t
     {
       switch(_module::bs1) {
-      case bs1::_1tq:  return 0;
       case bs1::_2tq:  return 1  << CAN_BTR_TS1_Pos;
       case bs1::_3tq:  return 2  << CAN_BTR_TS1_Pos;
       case bs1::_4tq:  return 3  << CAN_BTR_TS1_Pos;
@@ -186,12 +185,12 @@ void configure()
       case bs1::_14tq: return 13 << CAN_BTR_TS1_Pos;
       case bs1::_15tq: return 14 << CAN_BTR_TS1_Pos;
       case bs1::_16tq: return 15 << CAN_BTR_TS1_Pos;
+      default: return 0; // 1tq
       }
     }() |
     []() -> uint32_t
     {
       switch(_module::bs2) {
-      case bs2::_1tq: return 0;
       case bs2::_2tq: return 1 << CAN_BTR_TS2_Pos;
       case bs2::_3tq: return 2 << CAN_BTR_TS2_Pos;
       case bs2::_4tq: return 3 << CAN_BTR_TS2_Pos;
@@ -199,6 +198,7 @@ void configure()
       case bs2::_6tq: return 5 << CAN_BTR_TS2_Pos;
       case bs2::_7tq: return 6 << CAN_BTR_TS2_Pos;
       case bs2::_8tq: return 7 << CAN_BTR_TS2_Pos;
+      default: return 0; // 1tq
       }
     }() |
     (_module::prediv - 1)

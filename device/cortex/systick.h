@@ -5,8 +5,6 @@ namespace lmcu::systick {
 
 enum class clk_source { cpu, ext };
 
-//enum class interrupt { disable, enable };
-
 namespace nvic {
 
 enum class irq_type { disable, sysi };
