@@ -1,5 +1,5 @@
 #pragma once
-#include <lmcu/delay>
+#include "../flash.h"
 
 namespace lmcu::flash {
 
@@ -14,32 +14,6 @@ lmcu_enum_class_flags_impl(status)
 
 #include "detail/flash.h"
 
-
-/**
- * Lock the FLASH control register access
-*/
-static inline void lock() { detail::lock(); }
-
-/**
- * Unlock the FLASH control register access
-*/
-static inline void unlock() { detail::unlock(); }
-
-/**
- * Lock the FLASH option control registers access.
-*/
-static inline void ob_lock() { detail::ob_lock(); }
-
-/**
- * Unlock the FLASH option control registers access.
-*/
-static inline void ob_unlock() { detail::ob_unlock(); }
-
-/**
- * Return FLASH size in Kbytes
-*/
-static inline uint32_t size() { return detail::size(); }
-
 /**
  * Erase FLASH page
  *
@@ -48,7 +22,10 @@ static inline uint32_t size() { return detail::size(); }
  *
  * @return io::result::sucess on operation done, or io::result::busy at timeout exceed
 */
-io::result erase_page(uint32_t addr, const delay::expirable &t);
+static inline io::result erase_page(uint32_t addr, const delay::expirable &t)
+{
+  return detail::erase_page(addr, t);
+}
 
 /**
  * FLASH mass erase
@@ -57,7 +34,7 @@ io::result erase_page(uint32_t addr, const delay::expirable &t);
  *
  * @return io::result::sucess on operation done, or io::result::busy at timeout exceed
 */
-io::result erase_all(const delay::expirable &t);
+static inline io::result erase_all(const delay::expirable &t) { return detail::erase_all(t); }
 
 /**
  * Program half-word at specified address
@@ -68,17 +45,10 @@ io::result erase_all(const delay::expirable &t);
  *
  * @return io::result::sucess on operation done, or io::result::busy at timeout exceed
 */
-io::result program(uint32_t addr, uint16_t data, const delay::expirable &t);
-
-/**
- * Read FLASH status register
-*/
-static inline status read_status() { return detail::read_status(); }
-
-/**
- * Clear selected FLASH status flags
-*/
-void clear_status(status);
+static inline io::result program(uint32_t addr, uint16_t data, const delay::expirable &t)
+{
+  return detail::program(addr, data, t);
+}
 
 /**
  * Enable power saving read access
