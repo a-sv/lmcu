@@ -15,7 +15,7 @@ static inline void lock() { detail::lock(); }
 /**
  * Unlock the FLASH control register access
 */
-static inline void unlock() { detail::unlock(); }
+static inline bool unlock() { return detail::unlock(); }
 
 /**
  * Lock the FLASH option control registers access.

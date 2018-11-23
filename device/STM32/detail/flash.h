@@ -18,7 +18,7 @@ static inline void lock()
 #endif
 }
 
-static inline void unlock()
+static inline bool unlock()
 {
   if(FLASH->CR & FLASH_CR_LOCK) {
     FLASH->KEYR = key1;
@@ -31,6 +31,14 @@ static inline void unlock()
     FLASH->KEYR2 = key2;
   }
 #endif
+
+  return
+    ((FLASH->CR & FLASH_CR_LOCK) == 0)
+#if defined(FLASH_KEYR2)
+    &&
+    ((FLASH->CR2 & FLASH_CR2_LOCK) == 0)
+#endif
+  ;
 }
 
 static inline void ob_lock()

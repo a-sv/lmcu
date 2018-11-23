@@ -33,8 +33,9 @@ io::result erase_sector(uint32_t sector, const delay::expirable &t)
   r &= ~(FLASH_CR_PSIZE | FLASH_CR_SNB);
   r |= (uint32_t(_pg_size) << FLASH_CR_PSIZE_Pos) | (sector << FLASH_CR_SNB_Pos) | FLASH_CR_SER;
   FLASH->CR = r;
-
   FLASH->CR |= FLASH_CR_STRT;
+
+  lmcu_defer([] { FLASH->CR &= ~(FLASH_CR_SER | FLASH_CR_SNB); });
 
   return wait_op(t);
 }
