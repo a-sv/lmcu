@@ -12,7 +12,7 @@ private:
   T fn_;
 };
 
-#define __defer_9ec0ab5f_1(line) __defer_9ec0ab5f_obj_##line
-#define __defer_9ec0ab5f_2(line) __defer_9ec0ab5f_1(line)
+#define defer_9ec0ab5f_1(line) __defer_9ec0ab5f_obj_##line
+#define defer_9ec0ab5f_2(line) defer_9ec0ab5f_1(line)
 
-#define lmcu_defer(fn) __defer_9ec0ab5f __defer_9ec0ab5f_2(__LINE__)(fn)
+#define lmcu_defer(...) __defer_9ec0ab5f defer_9ec0ab5f_2(__LINE__)(__VA_ARGS__)
