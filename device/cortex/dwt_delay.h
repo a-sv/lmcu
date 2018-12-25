@@ -3,13 +3,13 @@
 
 namespace lmcu::delay {
 
-static inline uint32_t start() { return (0xffffffff - DWT->CYCCNT) + 1; }
+lmcu_force_inline uint32_t start() { return (0xffffffff - DWT->CYCCNT) + 1; }
 
 /**
  * @brief Delay in cycles.
  * @param cyc: cycles to wait
 */
-static inline void cyc(const uint32_t cyc)
+lmcu_force_inline void cyc(const uint32_t cyc)
 {
   const uint32_t ovf = start();
   while(cyc > (DWT->CYCCNT + ovf))
@@ -20,7 +20,7 @@ static inline void cyc(const uint32_t cyc)
  * @brief Delay in nanoseconds.
  * @param ns: nanoseconds to wait
 */
-static inline void ns(const uint64_t ns)
+lmcu_force_inline void ns(const uint64_t ns)
 {
   uint32_t n = to_cycles<units::ns>(ns);
   if(!__builtin_usubl_overflow(n, 8, &n)) { cyc(n); }
@@ -32,13 +32,17 @@ static inline void ns(const uint64_t ns)
  *
  * @note IMPORTANT: max_delay = (0xffffffff / f_cpu) * 1e6
 */
-static inline void us(const uint32_t us) { ns(us * 1000); }
+lmcu_force_inline void us(const uint32_t us)
+{
+  uint32_t n = to_cycles<units::us>(us);
+  if(!__builtin_usubl_overflow(n, 8, &n)) { cyc(n); }
+}
 
 /**
  * @brief Delay in millisecond.
  * @param ms: milliseconds to wait
 */
-static inline void ms(const uint32_t ms)
+lmcu_force_inline void ms(const uint32_t ms)
 {
   for(uint32_t n = 0; n < ms; n++) { us(1000); }
 }
@@ -47,7 +51,7 @@ static inline void ms(const uint32_t ms)
  * @brief Delay in seconds.
  * @param sec: seconds to wait
 */
-static inline void sec(const uint32_t sec)
+lmcu_force_inline void sec(const uint32_t sec)
 {
   for(uint32_t n = 0; n < sec; n++) { us(1000000); }
 }
