@@ -5,6 +5,7 @@ namespace lmcu::delay {
 class expirable
 {
 public:
+  virtual ~expirable() = default;
   virtual bool expired() const = 0;
 };
 
