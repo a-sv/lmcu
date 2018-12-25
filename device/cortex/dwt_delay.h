@@ -28,7 +28,7 @@ static inline void ns(const uint64_t ns)
 
 /**
  * @brief Delay in microseconds.
- * @param _us: microsecond to wait
+ * @param us: microsecond to wait
  *
  * @note IMPORTANT: max_delay = (0xffffffff / f_cpu) * 1e6
 */
