@@ -1,5 +1,5 @@
 #pragma once
-#include <lmcu/common>
+#include <lmcu/hwi/common>
 
 class __lock_9ec0ab5f
 {

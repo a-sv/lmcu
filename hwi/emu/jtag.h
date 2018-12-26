@@ -33,7 +33,7 @@ public:
   state get_state() const { return state_; }
 
   /**
-   * Reset TAP controller
+   * @brief Reset TAP controller
   */
   void reset()
   {
@@ -50,7 +50,7 @@ public:
   }
 
   /**
-   * Set TAP controller state
+   * @brief Set TAP controller state
    *
    * @param target - target TAP controller state
    * @return       - true if 1 on tdo signal, else false
@@ -228,7 +228,7 @@ public:
   }
 
   /**
-   * Receive and transmit data into IR or DR registers
+   * @brief Receive and transmit data into IR or DR registers
    *
    * @param in     - input data, will be shifted into TDI
    * @param out    - output data, will be shifted from TDO
@@ -267,7 +267,7 @@ public:
   }
 
   /**
-   * Receive and transmit data into IR or DR registers
+   * @brief Receive and transmit data into IR or DR registers
    *
    * @param in     - input data, will be shifted into TDI
    * @param out    - output data, will be shifted from TDO
@@ -307,7 +307,7 @@ public:
   }
 
   /**
-   * Receive and transmit data into IR or DR registers
+   * @brief Receive and transmit data into IR or DR registers
    *
    * @param in     - input data, will be shifted into TDI
    * @param out    - output data, will be shifted from TDO
@@ -350,7 +350,7 @@ public:
   }
 
   /**
-   * Write data into IR or DR registers
+   * @brief Write data into IR or DR registers
    *
    * @param in     - input data, will be shifted into TDI
    * @param bits   - count of bits to rxtx
@@ -367,7 +367,7 @@ public:
   }
 
   /**
-   * Write data into IR or DR registers
+   * @brief Write data into IR or DR registers
    *
    * @param in     - input data, will be shifted into TDI
    * @param bits   - count of bits to tx
@@ -389,7 +389,7 @@ public:
   }
 
   /**
-   * Write data into IR or DR registers
+   * @brief Write data into IR or DR registers
    *
    * @param data   - input data, will be shifted into TDI
    * @param bits   - count of bits to tx

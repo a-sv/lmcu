@@ -1,13 +1,13 @@
 #pragma once
 
 #if defined(STM32F407ZG)
-#include "../../device/STM32/F4/07Z/rcc.h"
+  #include "../../device/mcu/STM32/F4/07Z/rcc.h"
 #elif defined(STM32F429IG)
-#include "../../device/STM32/F4/29I/rcc.h"
+  #include "../../device/mcu/STM32/F4/29I/rcc.h"
 #elif defined(STM32F103C8)
-#include "../../device/STM32/F1/03C/rcc.h"
+  #include "../../device/mcu/STM32/F1/03C/rcc.h"
 #elif defined(STM32F107RC) || defined(STM32F107VC)
-#include "../../device/STM32/F1/07V/rcc.h"
+  #include "../../device/mcu/STM32/F1/07V/rcc.h"
 #else
   #error "device not supported"
 #endif

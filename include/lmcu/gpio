@@ -1,15 +1,15 @@
 #pragma once
 
 #if defined(STM32F407ZG)
-#include "../../device/STM32/F4/07Z/gpio.h"
+  #include "../../device/mcu/STM32/F4/07Z/gpio.h"
 #elif defined(STM32F429IG)
-#include "../../device/STM32/F4/29I/gpio.h"
+  #include "../../device/mcu/STM32/F4/29I/gpio.h"
 #elif defined(STM32F103C8)
-#include "../../device/STM32/F1/03C/gpio.h"
+  #include "../../device/mcu/STM32/F1/03C/gpio.h"
 #elif defined(STM32F107RC)
-#include "../../device/STM32/F1/07R/gpio.h"
+  #include "../../device/mcu/STM32/F1/07R/gpio.h"
 #elif defined(STM32F107VC)
-#include "../../device/STM32/F1/07V/gpio.h"
+  #include "../../device/mcu/STM32/F1/07V/gpio.h"
 #else
   #error "device not supported"
 #endif

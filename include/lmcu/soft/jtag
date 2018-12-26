@@ -1,4 +1,0 @@
-#pragma once
-#include <lmcu/device>
-
-#include "../../../device/soft/jtag.h"

@@ -2,7 +2,7 @@
 #include <lmcu/device>
 
 #if defined(_LMCU_DEVICE_STM32F1_)
-#include "../../device/STM32/F1/dma.h"
+  #include "../../device/mcu/STM32/F1/dma.h"
 #else
   #error "device not supported"
 #endif

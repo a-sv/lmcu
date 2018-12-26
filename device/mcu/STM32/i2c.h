@@ -1,6 +1,5 @@
 #pragma once
 #include <lmcu/rcc>
-#include <lmcu/common>
 #include <lmcu/delay>
 
 namespace lmcu::i2c {

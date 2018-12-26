@@ -1,7 +1,7 @@
 #pragma once
 #include <lmcu/rcc>
 #include "expirable.h"
-#include "../def.h"
+#include "../common/def.h"
 
 namespace lmcu::delay {
 
@@ -29,19 +29,19 @@ lmcu_force_inline uint32_t to_cycles(uint32_t val)
 class timer : public expirable
 {
 public:
-  lmcu_force_inline void start(uint32_t delay)
+  inline void start(uint32_t delay)
   {
     start_  = (0xffffffff - counter_) + 1;
     expire_ = delay;
   }
 
-  lmcu_force_inline bool expired() const final { return (counter_ + start_) >= expire_; }
+  inline bool expired() const final { return (counter_ + start_) >= expire_; }
 
-  lmcu_force_inline uint32_t elapsed() const { return counter_ + start_; }
+  inline uint32_t elapsed() const { return counter_ + start_; }
 
-  lmcu_force_inline uint32_t remain() const { return expire_ - elapsed(); }
+  inline uint32_t remain() const { return expire_ - elapsed(); }
 
-  static lmcu_force_inline void tick() { counter_++; }
+  static inline void tick() { counter_++; }
 private:
   uint32_t start_ = 0, expire_ = 0;
   static volatile uint32_t counter_;

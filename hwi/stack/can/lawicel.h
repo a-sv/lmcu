@@ -1,7 +1,7 @@
 #pragma once
 #include <utility>
 #include <lmcu/device>
-#include <lmcu/common>
+#include <lmcu/hwi/common>
 #include <lmcu/delay>
 
 namespace lmcu::stack::can {

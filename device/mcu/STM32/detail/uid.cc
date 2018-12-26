@@ -2,7 +2,7 @@
 
 #if defined(_LMCU_DEVICE_STM32_)
 
-#include <lmcu/common>
+#include <lmcu/hwi/common>
 #include "../uid.h"
 
 #if defined(_LMCU_DEVICE_STM32F4_)

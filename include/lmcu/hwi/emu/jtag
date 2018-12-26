@@ -1,0 +1,3 @@
+#pragma once
+#include <lmcu/device>
+#include "../../../../hwi/emu/jtag.h"

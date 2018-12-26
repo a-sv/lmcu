@@ -1,7 +1,7 @@
 #pragma once
 #include <cstring>
 #include <lmcu/lock>
-#include "io.h"
+#include "common/io.h"
 #include "delay/expirable.h"
 
 namespace lmcu {
