@@ -196,7 +196,7 @@ void adc_configure()
       }
       else {
         r |=  ADC_CR2_TSVREFE;
-        delay::us<10>();
+        delay::us(10);
       }
 
       if constexpr(m.reg_trig == reg_trig::disable) {

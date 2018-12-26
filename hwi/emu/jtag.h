@@ -46,7 +46,7 @@ public:
     else {
       set_state(state::test_logic_reset);
     }
-    delay::us<1500>();
+    delay::us(1500);
   }
 
   /**
