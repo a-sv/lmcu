@@ -1,4 +1,5 @@
 #pragma once
+#include <lmcu/hwi/common>
 #include <lmcu/rcc>
 #include <lmcu/delay>
 
@@ -45,6 +46,7 @@ template<
 >
 struct module
 {
+  static constexpr auto module_type  = lmcu::module_type::i2c;
   static constexpr auto module_id    = _module_id;
   static constexpr auto clock        = _clock;
   static constexpr auto addr_mode    = _addr_mode;
