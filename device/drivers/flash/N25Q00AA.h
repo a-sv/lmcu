@@ -204,18 +204,20 @@ public:
 
     if(pg_end >= page_count) { return io::result::error; }
 
-    if(auto r = pe_wait(t); r != io::result::success) { return r; }
-    busy_ = true;
-
     for(; pg_start < pg_end; pg_start++) {
       const auto a_bytes = get_address_bytes(pg_start * page_size);
 
-      lmcu_scoped_lock();
+      if(auto r = pe_wait(t); r != io::result::success) { return r; }
+      busy_ = true;
 
-      select();
-      spi::tx<_spi>(cmd_subsector_erase);
-      spi::write<_spi>(&a_bytes[0], 4);
-      deselect();
+      {
+        lmcu_scoped_lock();
+
+        select();
+        spi::tx<_spi>(cmd_subsector_erase);
+        spi::write<_spi>(&a_bytes[0], 4);
+        deselect();
+      }
     }
 
     return io::result::success;
