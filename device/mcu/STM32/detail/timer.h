@@ -447,8 +447,8 @@ void oc_configure()
 template<typename _module, typename ..._modules>
 void configure()
 {
-  if constexpr(_module::conf == conf::tim) { tim_configure<_conf>(); }
-  if constexpr(_module::conf == conf::oc)  { oc_configure<_conf>();  }
+  if constexpr(_module::module_type == module_type::timer) { tim_configure<_conf>(); }
+  if constexpr(_module::module_type == module_type::timer_oc) { oc_configure<_conf>();  }
 
   if constexpr(sizeof...(_modules) > 0) { configure<_modules...>(); }
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <lmcu/hwi/common>
 #include <lmcu/rcc>
 #include <lmcu/delay>
 
@@ -120,8 +121,6 @@ enum class sample_time
   _239_5cyc
 };
 
-enum class conf { adc, reg_chan, inj_chan };
-
 template<
   module_id _module_id,
   data_align _data_align,
@@ -137,7 +136,7 @@ template<
 >
 struct module
 {
-  static constexpr auto conf        = adc::conf::adc;
+  static constexpr auto module_type = lmcu::module_type::adc;
   static constexpr auto module_id   = _module_id;
   static constexpr auto data_align  = _data_align;
   static constexpr auto scan        = _scan;
@@ -154,7 +153,7 @@ struct module
 template<typename _module, uint8_t _chan_num, sample_time _sample_time>
 struct rchannel_conf
 {
-  static constexpr auto conf        = adc::conf::reg_chan;
+  static constexpr auto module_type = lmcu::module_type::adc_reg_channel;
   static constexpr auto module      = _module();
   static constexpr auto chan_num    = _chan_num;
   static constexpr auto sample_time = _sample_time;
@@ -163,7 +162,7 @@ struct rchannel_conf
 template<typename _module, uint8_t _chan_num, sample_time _sample_time, uint16_t _data_offset = 0>
 struct jchannel_conf
 {
-  static constexpr auto conf        = adc::conf::inj_chan;
+  static constexpr auto module_type = lmcu::module_type::adc_inj_channel;
   static constexpr auto module      = _module();
   static constexpr auto chan_num    = _chan_num;
   static constexpr auto sample_time = _sample_time;

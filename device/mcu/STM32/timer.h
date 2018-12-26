@@ -1,5 +1,6 @@
 #pragma once
 #include <lmcu/device>
+#include <lmcu/hwi/common>
 
 namespace lmcu::timer {
 
@@ -92,8 +93,6 @@ enum class update_evt { enable, disable };
 
 enum class tim_type { basic, general, advanced };
 
-enum class conf { tim, oc };
-
 template<
   module_id _module_id,
   counter_mode _counter_mode = counter_mode::up,
@@ -103,7 +102,7 @@ template<
 >
 struct module
 {
-  static constexpr auto conf         = timer::conf::tim;
+  static constexpr auto module_type  = lmcu::module_type::timer;
   static constexpr auto module_id    = _module_id;
   static constexpr auto counter_mode = _counter_mode;
   static constexpr auto clock_prediv = _clock_prediv;
@@ -144,7 +143,7 @@ template<
 >
 struct oc_conf
 {
-  static constexpr auto conf            = timer::conf::oc;
+  static constexpr auto module_type     = lmcu::module_type::timer_oc;
   static constexpr auto module          = _module();
   static constexpr auto oc_channel      = _oc_channel;
   static constexpr auto oc_mode         = _oc_mode;

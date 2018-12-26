@@ -1,4 +1,5 @@
 #pragma once
+#include <lmcu/hwi/common>
 #include <lmcu/rcc>
 #include <lmcu/delay>
 
@@ -38,8 +39,6 @@ enum class module_id
   usart8
 #endif
 };
-
-enum class mode { async, sync, half_duplex, mp_comm, irda, lin, smartcard };
 
 // word length with parity
 enum class data_size { _8bit, _9bit };
@@ -82,16 +81,16 @@ template<
 >
 struct module_async
 {
-  static constexpr auto mode      = usart::mode::async;
-  static constexpr auto module_id = _module_id;
-  static constexpr auto baud      = _baud;
-  static constexpr auto data_size = _data_size;
-  static constexpr auto parity    = _parity;
-  static constexpr auto stop_bits = _stop_bits;
-  static constexpr auto cts       = _cts;
-  static constexpr auto rts       = _rts;
-  static constexpr auto dma       = _dma;
-  static constexpr auto irq       = _irq();
+  static constexpr auto module_type = lmcu::module_type::usart_async;
+  static constexpr auto module_id   = _module_id;
+  static constexpr auto baud        = _baud;
+  static constexpr auto data_size   = _data_size;
+  static constexpr auto parity      = _parity;
+  static constexpr auto stop_bits   = _stop_bits;
+  static constexpr auto cts         = _cts;
+  static constexpr auto rts         = _rts;
+  static constexpr auto dma         = _dma;
+  static constexpr auto irq         = _irq();
 };
 
 enum class event

@@ -245,7 +245,7 @@ void configure()
     inst->BRR = (m << 4) | ((f * 16) / 100);
   }
 
-  if constexpr(_module::mode == mode::async) { configure_async<_module>(); }
+  if constexpr(_module::module_type == module_type::usart_async) { configure_async<_module>(); }
 
   {
     uint32_t r = inst->CR3;
