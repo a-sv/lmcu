@@ -4,7 +4,7 @@
   #include "../../device/mcu/STM32/F4/07Z/gpio.h"
 #elif defined(STM32F429IG)
   #include "../../device/mcu/STM32/F4/29I/gpio.h"
-#elif defined(STM32F103C8)
+#elif defined(STM32F103C8) || defined(STM32F103CB)
   #include "../../device/mcu/STM32/F1/03C/gpio.h"
 #elif defined(STM32F107RC)
   #include "../../device/mcu/STM32/F1/07R/gpio.h"
