@@ -78,15 +78,17 @@ public:
   static io::result write(const void *data, uint32_t sz, const delay::expirable &t)
   {
     if(sz == 0) { return io::result::success; }
-
     auto b = static_cast<const uint8_t*>(data), e = b + sz;
-
     bool start = true;
 
     return lmcu::i2c::write<_module>(_i2c_addr, t, [&start, &b, e](auto&& r)
     {
-      if(start) { r = 0x40; start = false; }
-      r = *b++;
+      if(start) {
+        r = 0x40; start = false;
+      }
+      else {
+        r = *b++;
+      }
       return b < e;
     });
   }
