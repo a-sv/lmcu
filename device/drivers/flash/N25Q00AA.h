@@ -9,12 +9,16 @@ namespace lmcu::drivers::flash {
 
 template<
   typename _spi,
-  typename _nss_pin,
-  typename _wp_pin   = lmcu::gpio::not_connected,
-  typename _hold_pin = lmcu::gpio::not_connected
+  typename _nss,
+  typename _wp   = gpio::not_connected,
+  typename _hold = gpio::not_connected
 >
 class N25Q00A
 {
+  static_assert(_spi::module_type == module_type::spi, "_spi must have type 'spi'");
+  static_assert(_nss::module_type == module_type::gpio_pin, "_nss must have type 'gpio_pin'");
+  static_assert(_wp::module_type == module_type::gpio_pin, "_wp must have type 'gpio_pin'");
+  static_assert(_hold::module_type == module_type::gpio_pin, "_hold must have type 'gpio_pin'");
 public:
   static constexpr uint32_t
     sector_size  = 64_Kbyte,
@@ -22,7 +26,7 @@ public:
     capacity     = sector_size * sector_count,
     page_size    = 4_Kbyte,
     page_count   = capacity / page_size,
-    progbuf_size = 256
+    databuf_size = 256
   ;
 
   enum class status : uint8_t
@@ -54,7 +58,7 @@ public:
   */
   static inline void hold_enable(bool en)
   {
-    if constexpr(!_hold_pin::nc) { gpio::set<_hold_pin>(!en); }
+    if constexpr(!_hold::nc) { gpio::set<_hold>(!en); }
   }
 
   /**
@@ -105,6 +109,12 @@ public:
     return io::result::success;
   }
 
+  /**
+   * @brief Read flash status register
+   *
+   * @param s - status flags
+   * @param t - timeout
+  */
   io::result read_status(status &s, const delay::expirable &t)
   {
     if(auto r = pe_wait(t); r != io::result::success) { s = status(0); return r; }
@@ -118,16 +128,29 @@ public:
     return io::result::success;
   }
 
+  /**
+   * @brief Read data from flash
+   *
+   * @param addr - absolute offset from begining
+   * @param data - buffer for data
+   * @param sz   - size to be read
+   * @param t    - timeout
+  */
   io::result read(uint32_t addr, void *data, uint32_t sz, const delay::expirable &t)
   {
-    if(auto r = pe_wait(t); r != io::result::success) { return r; }
+    if(op_ == op::init) {
+      if(auto r = pe_wait(t); r != io::result::success) { return r; }
+    }
+
+    if(auto r = suspend<true>(t); r != io::result::success) { return r; }
+
     lmcu_scoped_lock();
 
     const auto a_bytes = get_address_bytes(addr);
 
     select();
 
-    if(!wren_ && addr <= 0xFFFFFF) {
+    if(!ex_addr_ && addr <= 0xFFFFFF) {
       spi::tx<_spi>(cmd_read3);
       spi::write<_spi>(&a_bytes[1], 3);
     }
@@ -140,84 +163,89 @@ public:
 
     deselect();
 
+    if(auto r = suspend<false>(t); r != io::result::success) { return r; }
+
     return io::result::success;
   }
 
-  io::result write_en(bool en, const delay::expirable &t)
+  /**
+   * @brief Write data to flash
+   *
+   * @param addr - absolute offset from begining
+   * @param data - data to be writed
+   * @param sz   - data size (must be > 0 and < databuf_size)
+   * @param t    - timeout
+  */
+  io::result page_program(uint32_t addr, const void *data, uint32_t sz, const delay::expirable &t)
   {
+    if(sz < 1 || sz > databuf_size) { return io::result::error; }
+
     if(auto r = pe_wait(t); r != io::result::success) { return r; }
+    if(auto r = exaddr_enable(t); r != io::result::success) { return r; }
 
-    lmcu_scoped_lock();
+    const auto a_bytes = get_address_bytes(addr);
 
-    select();
-    spi::tx<_spi>(cmd_write_enable);
-    deselect();
+    op_ = op::program;
 
-    if(en) {
-      select();
-      spi::tx<_spi>(cmd_4byte_mode_on);
-      deselect();
+    {
+      lmcu_scoped_lock();
+
+      wp_enable(false);
 
       select();
       spi::tx<_spi>(cmd_write_enable);
       deselect();
-    }
-    else {
-      select();
-      spi::tx<_spi>(cmd_4byte_mode_off);
-      deselect();
 
       select();
-      spi::tx<_spi>(cmd_write_disable);
+      spi::tx<_spi>(cmd_page_program);
+      spi::write<_spi>(&a_bytes[0], 4);
+      spi::write<_spi>(data, sz);
       deselect();
-    }
 
-    wp_enable(!en);
-    wren_ = en;
+      wp_enable(true);
+    }
 
     return io::result::success;
   }
 
-  io::result page_program(uint32_t addr, const void *data, uint32_t sz, const delay::expirable &t)
-  {
-    if(!wren_ || sz < 1 || sz > progbuf_size) { return io::result::error; }
-
-    if(auto r = pe_wait(t); r != io::result::success) { return r; }
-    busy_ = true;
-
-    lmcu_scoped_lock();
-
-    const auto a_bytes = get_address_bytes(addr);
-
-    select();
-    spi::tx<_spi>(cmd_page_program);
-    spi::write<_spi>(&a_bytes[0], 4);
-    spi::write<_spi>(data, sz);
-    deselect();
-
-    return io::result::success;
-  }
-
+  /**
+   * @brief Erase pages sequence
+   *
+   * @param pg_start - start page index
+   * @param pg_count - count of pages to be erased
+   * @param t        - timeout
+  */
   io::result page_erase(uint32_t pg_start, uint32_t pg_count, const delay::expirable &t)
   {
     const uint32_t pg_end = pg_start + pg_count;
-
     if(pg_end >= page_count) { return io::result::error; }
+
+    if(auto r = pe_wait(t); r != io::result::success) { return r; }
+    if(auto r = exaddr_enable(t); r != io::result::success) { return r; }
 
     for(; pg_start < pg_end; pg_start++) {
       const auto a_bytes = get_address_bytes(pg_start * page_size);
 
-      if(auto r = pe_wait(t); r != io::result::success) { return r; }
-      busy_ = true;
+      op_ = op::erase;
 
       {
         lmcu_scoped_lock();
+
+        wp_enable(false);
+
+        select();
+        spi::tx<_spi>(cmd_write_enable);
+        deselect();
 
         select();
         spi::tx<_spi>(cmd_subsector_erase);
         spi::write<_spi>(&a_bytes[0], 4);
         deselect();
+
+        wp_enable(true);
       }
+
+      if(auto r = pe_wait(t); r != io::result::success) { return r; }
     }
 
     return io::result::success;
@@ -254,9 +282,14 @@ private:
     pe_controller = 1 << 7  // Program or Erase in progress
   };
 
-  bool busy_ = true;
-  bool wren_ = false;
+  enum class op : uint32_t { init, idle, program, erase };
 
+  op op_        = op::init;
+  bool ex_addr_ = false;
+
+  /**
+   * @brief Check busy flag for PROGRAM / ERASE operations
+  */
   static inline bool pe_busy()
   {
     return (uint8_t(read_flags()) & uint8_t(flags::pe_controller)) == 0;
@@ -270,14 +303,14 @@ private:
   */
   inline io::result pe_wait(const delay::expirable &t)
   {
-    if(!busy_) { return io::result::success; }
+    if(op_ == op::idle) { return io::result::success; }
 
     do {
       if(t.expired()) { return io::result::busy; }
     }
     while(pe_busy());
 
-    busy_ = false;
+    op_ = op::idle;
 
     return io::result::success;
   }
@@ -285,12 +318,12 @@ private:
   /**
    * @brief Set CS signal to low level
   */
-  static inline void select() { gpio::set<false, _nss_pin>(); }
+  static inline void select() { gpio::set<false, _nss>(); }
 
   /**
    * @brief Set CS signal to high level
   */
-  static inline void deselect() { gpio::set<true, _nss_pin>(); delay::ns(50); }
+  static inline void deselect() { gpio::set<true, _nss>(); delay::ns(50); }
 
   /**
    * @brief Hardware write protect enable / disable
@@ -299,9 +332,37 @@ private:
   */
   static inline void wp_enable(bool en)
   {
-    if constexpr(!_wp_pin::nc) { gpio::set<_wp_pin>(!en); }
+    if constexpr(!_wp::nc) { gpio::set<_wp>(!en); }
   }
 
+  /**
+   * @brief Enable 4-byte extended address
+  */
+  io::result exaddr_enable(const delay::expirable&)
+  {
+    if(ex_addr_) { return io::result::success; }
+
+    lmcu_scoped_lock();
+
+    select();
+    spi::tx<_spi>(cmd_write_enable);
+    deselect();
+
+    select();
+    spi::tx<_spi>(cmd_4byte_mode_on);
+    deselect();
+
+    ex_addr_ = true;
+
+    return io::result::success;
+  }
+
+  /**
+   * @brief Convert address to flash format
+   *
+   * @param addr - address
+   * @return 4 address bytes
+  */
   static inline auto get_address_bytes(uint32_t addr)
   {
     const union {
@@ -312,6 +373,9 @@ private:
     return a.bytes;
   }
 
+  /**
+   * @brief Read status flags
+  */
   static inline flags read_flags()
   {
     select();
@@ -319,6 +383,54 @@ private:
 
     spi::tx<_spi>(cmd_read_flags);
     return flags( spi::rx<_spi>() );
+  }
+
+  /**
+   * @brief Suspend or resume PROGRAM / ERASE operations
+   *
+   * @tparam _suspend - if 'true' perform SUSPEND operation, else RESUME
+   * @param  t        - timeout
+  */
+  template<bool _suspend>
+  io::result suspend(const delay::expirable &t)
+  {
+    if(op_ == op::idle || op_ == op::init) { return io::result::success; }
+
+    flags f;
+
+    if(op_ == op::program) {
+      f = flags::program_susp;
+    }
+    else
+    if(op_ == op::erase) {
+      f = flags::erase_susp;
+    }
+    else { return io::result::error; }
+
+    do {
+      lmcu_scoped_lock();
+
+      select();
+      if constexpr(_suspend) {
+        spi::tx<_spi>(cmd_pe_suspend);
+      }
+      else {
+        spi::tx<_spi>(cmd_pe_resume);
+      }
+      deselect();
+
+      if(t.expired()) { return io::result::busy; }
+    }
+    while((uint8_t(read_flags()) & uint8_t(f)) == (_suspend? 0 : uint8_t(f)));
+
+    if constexpr(_suspend) {
+      do {
+        if(t.expired()) { return io::result::busy; }
+      }
+      while(pe_busy());
+    }
+
+    return io::result::success;
   }
 };
 
