@@ -74,19 +74,32 @@ void configure()
 
   auto inst = detail::inst<_module>();
 
-  const auto fr = rcc::apb1_clock() / 1_MHz;
+  const uint32_t fr = rcc::apb1_clock() / 1_MHz;
 
   inst->CR2   = fr;
   inst->TRISE = (_module::clock <= 100_kHz)? fr + 1 : ((fr * 300) / 1000) + 1;
 
+  uint32_t r = rcc::apb1_clock() / _module::clock;
+
   if constexpr(_module::clock <= 100_kHz) {
-    auto r = (rcc::apb1_clock() / _module::clock) >> 1;
-    inst->CCR = ((r & I2C_CCR_CCR) < 4)? 4 : r;
+    // duty cycle 50% / 50%
+    r /= 2;
+    inst->CCR = (r < 4)? 4 : r;
   }
   else {
-    auto r = rcc::apb1_clock() / (_module::clock * (_module::dutycycle == dutycycle::_2? 3 : 25));
-    if constexpr(_module::dutycycle == dutycycle::_16_9) { r |= I2C_CCR_DUTY; }
-    inst->CCR = (r & I2C_CCR_CCR) == 0? 1 : (r | I2C_CCR_FS);
+    if constexpr(_module::dutycycle == dutycycle::_16_9) {
+      // T_high = 9 * CCR * T_pclk1
+      // T_low  = 16 * CCR * T_pclk1
+      r  /= 25;
+      r |= I2C_CCR_DUTY;
+    }
+    else {
+      // T_high = CCR * T_pclk1
+      // T_low  = 2 * T_high
+      r /= 3;
+    }
+
+    inst->CCR = I2C_CCR_FS | (r < 1? 1 : r);
   }
 
   inst->CR1 = (_module::general_call == general_call::enable? I2C_CR1_ENGC : 0) |
@@ -109,8 +122,6 @@ void configure()
 
   inst->OAR2 = (_module::dual_addr == dual_addr::enable? I2C_OAR2_ENDUAL : 0) |
                (_module::own_addr_2 << 1);
-
-  enable<_module>();
 }
 
 template<typename _module, bool _start>
