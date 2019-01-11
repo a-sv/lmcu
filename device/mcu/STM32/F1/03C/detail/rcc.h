@@ -64,7 +64,7 @@ void configure()
         r |= RCC_CFGR_PLLSRC;
       }
 
-      if constexpr(_hse_pll_prediv == hse_pll_prediv::div_2) {
+      if constexpr(_hse_pll_prediv == hse_pll_prediv::_2) {
         r |= RCC_CFGR_PLLXTPRE;
       }
       else {
@@ -73,25 +73,25 @@ void configure()
 
       r &= ~RCC_CFGR_PLLMULL;
       switch(_pll_mul) {
-      case pll_mul::mul_2:  r |= RCC_CFGR_PLLMULL2;  break;
-      case pll_mul::mul_3:  r |= RCC_CFGR_PLLMULL3;  break;
-      case pll_mul::mul_4:  r |= RCC_CFGR_PLLMULL4;  break;
-      case pll_mul::mul_5:  r |= RCC_CFGR_PLLMULL5;  break;
-      case pll_mul::mul_6:  r |= RCC_CFGR_PLLMULL6;  break;
-      case pll_mul::mul_7:  r |= RCC_CFGR_PLLMULL7;  break;
-      case pll_mul::mul_8:  r |= RCC_CFGR_PLLMULL8;  break;
-      case pll_mul::mul_9:  r |= RCC_CFGR_PLLMULL9;  break;
-      case pll_mul::mul_10: r |= RCC_CFGR_PLLMULL10; break;
-      case pll_mul::mul_11: r |= RCC_CFGR_PLLMULL11; break;
-      case pll_mul::mul_12: r |= RCC_CFGR_PLLMULL12; break;
-      case pll_mul::mul_13: r |= RCC_CFGR_PLLMULL13; break;
-      case pll_mul::mul_14: r |= RCC_CFGR_PLLMULL14; break;
-      case pll_mul::mul_15: r |= RCC_CFGR_PLLMULL15; break;
-      case pll_mul::mul_16: r |= RCC_CFGR_PLLMULL16; break;
+      case pll_mul::_2:  r |= RCC_CFGR_PLLMULL2;  break;
+      case pll_mul::_3:  r |= RCC_CFGR_PLLMULL3;  break;
+      case pll_mul::_4:  r |= RCC_CFGR_PLLMULL4;  break;
+      case pll_mul::_5:  r |= RCC_CFGR_PLLMULL5;  break;
+      case pll_mul::_6:  r |= RCC_CFGR_PLLMULL6;  break;
+      case pll_mul::_7:  r |= RCC_CFGR_PLLMULL7;  break;
+      case pll_mul::_8:  r |= RCC_CFGR_PLLMULL8;  break;
+      case pll_mul::_9:  r |= RCC_CFGR_PLLMULL9;  break;
+      case pll_mul::_10: r |= RCC_CFGR_PLLMULL10; break;
+      case pll_mul::_11: r |= RCC_CFGR_PLLMULL11; break;
+      case pll_mul::_12: r |= RCC_CFGR_PLLMULL12; break;
+      case pll_mul::_13: r |= RCC_CFGR_PLLMULL13; break;
+      case pll_mul::_14: r |= RCC_CFGR_PLLMULL14; break;
+      case pll_mul::_15: r |= RCC_CFGR_PLLMULL15; break;
+      case pll_mul::_16: r |= RCC_CFGR_PLLMULL16; break;
       }
     }
 
-    if constexpr(_usb_prediv == usb_prediv::div_1_5) {
+    if constexpr(_usb_prediv == usb_prediv::_1_5) {
       r &= ~RCC_CFGR_USBPRE;
     }
     else {

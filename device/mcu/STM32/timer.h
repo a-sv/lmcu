@@ -72,7 +72,7 @@ enum class counter_mode
   center_aligned_3
 };
 
-enum class clock_prediv { div_1, div_2, div_4 };
+enum class clock_prediv { _1, _2, _4 };
 
 enum class auto_reload_buffer { enable, disable };
 
@@ -96,7 +96,7 @@ enum class tim_type { basic, general, advanced };
 template<
   module_id _module_id,
   counter_mode _counter_mode = counter_mode::up,
-  clock_prediv _clock_prediv = clock_prediv::div_1,
+  clock_prediv _clock_prediv = clock_prediv::_1,
   uint32_t _rep_count = 0,
   one_pulse _one_pulse = one_pulse::disable
 >

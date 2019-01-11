@@ -230,30 +230,30 @@ void set_hw_clocks()
   r &= ~(RCC_CFGR_HPRE | RCC_CFGR_PPRE1 | RCC_CFGR_PPRE2);
 
   switch(_ahb_prediv) {
-  case ahb_prediv::div_2:   r |= RCC_CFGR_HPRE_DIV2;   break;
-  case ahb_prediv::div_4:   r |= RCC_CFGR_HPRE_DIV4;   break;
-  case ahb_prediv::div_8:   r |= RCC_CFGR_HPRE_DIV8;   break;
-  case ahb_prediv::div_16:  r |= RCC_CFGR_HPRE_DIV16;  break;
-  case ahb_prediv::div_64:  r |= RCC_CFGR_HPRE_DIV64;  break;
-  case ahb_prediv::div_128: r |= RCC_CFGR_HPRE_DIV128; break;
-  case ahb_prediv::div_256: r |= RCC_CFGR_HPRE_DIV256; break;
-  case ahb_prediv::div_512: r |= RCC_CFGR_HPRE_DIV512; break;
+  case ahb_prediv::_2:   r |= RCC_CFGR_HPRE_DIV2;   break;
+  case ahb_prediv::_4:   r |= RCC_CFGR_HPRE_DIV4;   break;
+  case ahb_prediv::_8:   r |= RCC_CFGR_HPRE_DIV8;   break;
+  case ahb_prediv::_16:  r |= RCC_CFGR_HPRE_DIV16;  break;
+  case ahb_prediv::_64:  r |= RCC_CFGR_HPRE_DIV64;  break;
+  case ahb_prediv::_128: r |= RCC_CFGR_HPRE_DIV128; break;
+  case ahb_prediv::_256: r |= RCC_CFGR_HPRE_DIV256; break;
+  case ahb_prediv::_512: r |= RCC_CFGR_HPRE_DIV512; break;
   default : break;
   }
 
   switch(_apb1_prediv) {
-  case apb1_prediv::div_2:  r |= RCC_CFGR_PPRE1_DIV2;  break;
-  case apb1_prediv::div_4:  r |= RCC_CFGR_PPRE1_DIV4;  break;
-  case apb1_prediv::div_8:  r |= RCC_CFGR_PPRE1_DIV8;  break;
-  case apb1_prediv::div_16: r |= RCC_CFGR_PPRE1_DIV16; break;
+  case apb1_prediv::_2:  r |= RCC_CFGR_PPRE1_DIV2;  break;
+  case apb1_prediv::_4:  r |= RCC_CFGR_PPRE1_DIV4;  break;
+  case apb1_prediv::_8:  r |= RCC_CFGR_PPRE1_DIV8;  break;
+  case apb1_prediv::_16: r |= RCC_CFGR_PPRE1_DIV16; break;
   default : break;
   }
 
   switch(_apb2_prediv) {
-  case apb2_prediv::div_2:  r |= RCC_CFGR_PPRE2_DIV2;  break;
-  case apb2_prediv::div_4:  r |= RCC_CFGR_PPRE2_DIV4;  break;
-  case apb2_prediv::div_8:  r |= RCC_CFGR_PPRE2_DIV8;  break;
-  case apb2_prediv::div_16: r |= RCC_CFGR_PPRE2_DIV16; break;
+  case apb2_prediv::_2:  r |= RCC_CFGR_PPRE2_DIV2;  break;
+  case apb2_prediv::_4:  r |= RCC_CFGR_PPRE2_DIV4;  break;
+  case apb2_prediv::_8:  r |= RCC_CFGR_PPRE2_DIV8;  break;
+  case apb2_prediv::_16: r |= RCC_CFGR_PPRE2_DIV16; break;
   default : break;
   }
 

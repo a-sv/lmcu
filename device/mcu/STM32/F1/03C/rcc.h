@@ -3,32 +3,32 @@
 
 namespace lmcu::rcc {
 
-enum class hse_pll_prediv { div_1 = 1, div_2 = 2 };
+enum class hse_pll_prediv { _1 = 1, _2 = 2 };
 
 enum class usb_prediv
 {
   disable, // USB not used
-  div_1   = 10,
-  div_1_5 = 15
+  _1   = 10,
+  _1_5 = 15
 };
 
 enum class pll_mul
 {
-  mul_2  = 2,
-  mul_3  = 3,
-  mul_4  = 4,
-  mul_5  = 5,
-  mul_6  = 6,
-  mul_7  = 7,
-  mul_8  = 8,
-  mul_9  = 9,
-  mul_10 = 10,
-  mul_11 = 11,
-  mul_12 = 12,
-  mul_13 = 13,
-  mul_14 = 14,
-  mul_15 = 15,
-  mul_16 = 16
+  _2  = 2,
+  _3  = 3,
+  _4  = 4,
+  _5  = 5,
+  _6  = 6,
+  _7  = 7,
+  _8  = 8,
+  _9  = 9,
+  _10 = 10,
+  _11 = 11,
+  _12 = 12,
+  _13 = 13,
+  _14 = 14,
+  _15 = 15,
+  _16 = 16
 };
 
 enum class pll_mux { hse, hsi };
@@ -53,7 +53,7 @@ template<
   pll_mul _pll_mul,
   pll_mux _pll_mux,
   osc_type _osc_type,
-  hse_pll_prediv _hse_pll_prediv = hse_pll_prediv::div_1,
+  hse_pll_prediv _hse_pll_prediv = hse_pll_prediv::_1,
   adc_prediv _adc_prediv = adc_prediv::disable,
   usb_prediv _usb_prediv = usb_prediv::disable,
   rtcclk_mux _rtcclk_mux = rtcclk_mux::disable,

@@ -40,8 +40,8 @@ constexpr void configure_periph_clocks()
     adc_clock = 0;
   }
 
-  apb1_timer_clock = (_apb1_prediv == apb1_prediv::div_1)? apb1_clock : apb1_clock * 2;
-  apb2_timer_clock = (_apb2_prediv == apb2_prediv::div_1)? apb2_clock : apb2_clock * 2;
+  apb1_timer_clock = (_apb1_prediv == apb1_prediv::_1)? apb1_clock : apb1_clock * 2;
+  apb2_timer_clock = (_apb2_prediv == apb2_prediv::_1)? apb2_clock : apb2_clock * 2;
 
   set_hw_clocks<_ahb_prediv, _apb1_prediv, _apb2_prediv>();
 }

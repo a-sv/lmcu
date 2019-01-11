@@ -42,10 +42,10 @@ void configure()
     }
 
     switch(_mco1_prediv) {
-    case mco1_prediv::div_2: r |= (0b100 << RCC_CFGR_MCO1PRE_Pos); break;
-    case mco1_prediv::div_3: r |= (0b101 << RCC_CFGR_MCO1PRE_Pos); break;
-    case mco1_prediv::div_4: r |= (0b110 << RCC_CFGR_MCO1PRE_Pos); break;
-    case mco1_prediv::div_5: r |= (0b111 << RCC_CFGR_MCO1PRE_Pos); break;
+    case mco1_prediv::_2: r |= (0b100 << RCC_CFGR_MCO1PRE_Pos); break;
+    case mco1_prediv::_3: r |= (0b101 << RCC_CFGR_MCO1PRE_Pos); break;
+    case mco1_prediv::_4: r |= (0b110 << RCC_CFGR_MCO1PRE_Pos); break;
+    case mco1_prediv::_5: r |= (0b111 << RCC_CFGR_MCO1PRE_Pos); break;
     default : break;
     }
 
@@ -61,10 +61,10 @@ void configure()
     }
 
     switch(_mco2_prediv) {
-    case mco2_prediv::div_2: r |= (0b100 << RCC_CFGR_MCO2PRE_Pos); break;
-    case mco2_prediv::div_3: r |= (0b101 << RCC_CFGR_MCO2PRE_Pos); break;
-    case mco2_prediv::div_4: r |= (0b110 << RCC_CFGR_MCO2PRE_Pos); break;
-    case mco2_prediv::div_5: r |= (0b111 << RCC_CFGR_MCO2PRE_Pos); break;
+    case mco2_prediv::_2: r |= (0b100 << RCC_CFGR_MCO2PRE_Pos); break;
+    case mco2_prediv::_3: r |= (0b101 << RCC_CFGR_MCO2PRE_Pos); break;
+    case mco2_prediv::_4: r |= (0b110 << RCC_CFGR_MCO2PRE_Pos); break;
+    case mco2_prediv::_5: r |= (0b111 << RCC_CFGR_MCO2PRE_Pos); break;
     default : break;
     }
 
@@ -102,9 +102,9 @@ void configure()
 
     r &= ~RCC_PLLCFGR_PLLP;
     switch(_pll_p) {
-    case pll_p::div_4: r |= (1 << RCC_PLLCFGR_PLLP_Pos); break;
-    case pll_p::div_6: r |= (2 << RCC_PLLCFGR_PLLP_Pos); break;
-    case pll_p::div_8: r |= (3 << RCC_PLLCFGR_PLLP_Pos); break;
+    case pll_p::_4: r |= (1 << RCC_PLLCFGR_PLLP_Pos); break;
+    case pll_p::_6: r |= (2 << RCC_PLLCFGR_PLLP_Pos); break;
+    case pll_p::_8: r |= (3 << RCC_PLLCFGR_PLLP_Pos); break;
     default : break;
     }
 

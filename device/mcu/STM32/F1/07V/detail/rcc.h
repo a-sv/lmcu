@@ -87,17 +87,17 @@ void configure()
       }
       r &= ~RCC_CFGR_PLLMULL;
       switch(_pll_mul) {
-      case pll_mul::mul_4:   r |= RCC_CFGR_PLLMULL4;   break;
-      case pll_mul::mul_5:   r |= RCC_CFGR_PLLMULL5;   break;
-      case pll_mul::mul_6:   r |= RCC_CFGR_PLLMULL6;   break;
-      case pll_mul::mul_6_5: r |= RCC_CFGR_PLLMULL6_5; break;
-      case pll_mul::mul_7:   r |= RCC_CFGR_PLLMULL7;   break;
-      case pll_mul::mul_8:   r |= RCC_CFGR_PLLMULL8;   break;
-      case pll_mul::mul_9:   r |= RCC_CFGR_PLLMULL9;   break;
+      case pll_mul::_4:   r |= RCC_CFGR_PLLMULL4;   break;
+      case pll_mul::_5:   r |= RCC_CFGR_PLLMULL5;   break;
+      case pll_mul::_6:   r |= RCC_CFGR_PLLMULL6;   break;
+      case pll_mul::_6_5: r |= RCC_CFGR_PLLMULL6_5; break;
+      case pll_mul::_7:   r |= RCC_CFGR_PLLMULL7;   break;
+      case pll_mul::_8:   r |= RCC_CFGR_PLLMULL8;   break;
+      case pll_mul::_9:   r |= RCC_CFGR_PLLMULL9;   break;
       }
     }
 
-    if constexpr(_usb_prediv == usb_prediv::div_3) {
+    if constexpr(_usb_prediv == usb_prediv::_3) {
       r &= ~RCC_CFGR_OTGFSPRE;
     }
     else {
@@ -131,15 +131,15 @@ void configure()
         // set PLL2 multiplication factor
         r &= ~RCC_CFGR2_PLL2MUL;
         switch(_pll2_mul) {
-        case pll2_mul::mul_8:  r |= RCC_CFGR2_PLL2MUL8;  break;
-        case pll2_mul::mul_9:  r |= RCC_CFGR2_PLL2MUL9;  break;
-        case pll2_mul::mul_10: r |= RCC_CFGR2_PLL2MUL10; break;
-        case pll2_mul::mul_11: r |= RCC_CFGR2_PLL2MUL11; break;
-        case pll2_mul::mul_12: r |= RCC_CFGR2_PLL2MUL12; break;
-        case pll2_mul::mul_13: r |= RCC_CFGR2_PLL2MUL13; break;
-        case pll2_mul::mul_14: r |= RCC_CFGR2_PLL2MUL14; break;
-        case pll2_mul::mul_16: r |= RCC_CFGR2_PLL2MUL16; break;
-        case pll2_mul::mul_20: r |= RCC_CFGR2_PLL2MUL20; break;
+        case pll2_mul::_8:  r |= RCC_CFGR2_PLL2MUL8;  break;
+        case pll2_mul::_9:  r |= RCC_CFGR2_PLL2MUL9;  break;
+        case pll2_mul::_10: r |= RCC_CFGR2_PLL2MUL10; break;
+        case pll2_mul::_11: r |= RCC_CFGR2_PLL2MUL11; break;
+        case pll2_mul::_12: r |= RCC_CFGR2_PLL2MUL12; break;
+        case pll2_mul::_13: r |= RCC_CFGR2_PLL2MUL13; break;
+        case pll2_mul::_14: r |= RCC_CFGR2_PLL2MUL14; break;
+        case pll2_mul::_16: r |= RCC_CFGR2_PLL2MUL16; break;
+        case pll2_mul::_20: r |= RCC_CFGR2_PLL2MUL20; break;
         }
       }
 
@@ -147,15 +147,15 @@ void configure()
         // set PLL3 multiplication factor
         r &= ~RCC_CFGR2_PLL3MUL;
         switch(_pll3_mul) {
-        case pll3_mul::mul_8:  r |= RCC_CFGR2_PLL3MUL8;  break;
-        case pll3_mul::mul_9:  r |= RCC_CFGR2_PLL3MUL9;  break;
-        case pll3_mul::mul_10: r |= RCC_CFGR2_PLL3MUL10; break;
-        case pll3_mul::mul_11: r |= RCC_CFGR2_PLL3MUL11; break;
-        case pll3_mul::mul_12: r |= RCC_CFGR2_PLL3MUL12; break;
-        case pll3_mul::mul_13: r |= RCC_CFGR2_PLL3MUL13; break;
-        case pll3_mul::mul_14: r |= RCC_CFGR2_PLL3MUL14; break;
-        case pll3_mul::mul_16: r |= RCC_CFGR2_PLL3MUL16; break;
-        case pll3_mul::mul_20: r |= RCC_CFGR2_PLL3MUL20; break;
+        case pll3_mul::_8:  r |= RCC_CFGR2_PLL3MUL8;  break;
+        case pll3_mul::_9:  r |= RCC_CFGR2_PLL3MUL9;  break;
+        case pll3_mul::_10: r |= RCC_CFGR2_PLL3MUL10; break;
+        case pll3_mul::_11: r |= RCC_CFGR2_PLL3MUL11; break;
+        case pll3_mul::_12: r |= RCC_CFGR2_PLL3MUL12; break;
+        case pll3_mul::_13: r |= RCC_CFGR2_PLL3MUL13; break;
+        case pll3_mul::_14: r |= RCC_CFGR2_PLL3MUL14; break;
+        case pll3_mul::_16: r |= RCC_CFGR2_PLL3MUL16; break;
+        case pll3_mul::_20: r |= RCC_CFGR2_PLL3MUL20; break;
         }
       }
 

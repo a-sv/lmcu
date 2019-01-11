@@ -84,9 +84,9 @@ void configure()
     if constexpr(_pllsai_r != pllsai_r::disable) {
       switch(_pllsai_div_r)
       {
-      case pllsai_div_r::div_4:  r |= (1 << RCC_DCKCFGR_PLLSAIDIVR_Pos); break;
-      case pllsai_div_r::div_8:  r |= (2 << RCC_DCKCFGR_PLLSAIDIVR_Pos); break;
-      case pllsai_div_r::div_16: r |= (3 << RCC_DCKCFGR_PLLSAIDIVR_Pos); break;
+      case pllsai_div_r::_4:  r |= (1 << RCC_DCKCFGR_PLLSAIDIVR_Pos); break;
+      case pllsai_div_r::_8:  r |= (2 << RCC_DCKCFGR_PLLSAIDIVR_Pos); break;
+      case pllsai_div_r::_16: r |= (3 << RCC_DCKCFGR_PLLSAIDIVR_Pos); break;
       default : break;
       }
     }

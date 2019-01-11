@@ -18,14 +18,14 @@ template<
   osc_type _osc_type,
   pll_q _pll_q = pll_q::disable,
   rtcclk_mux _rtcclk_mux = rtcclk_mux::disable,
-  rtchse_prediv _rtchse_prediv = rtchse_prediv::div_2,
+  rtchse_prediv _rtchse_prediv = rtchse_prediv::_2,
   mco1_mux _mco1_mux = mco1_mux::disable,
-  mco1_prediv _mco1_prediv = mco1_prediv::div_1,
+  mco1_prediv _mco1_prediv = mco1_prediv::_1,
   mco2_mux _mco2_mux = mco2_mux::disable,
-  mco2_prediv _mco2_prediv = mco2_prediv::div_1,
+  mco2_prediv _mco2_prediv = mco2_prediv::_1,
   i2sclk_mux _i2sclk_mux = i2sclk_mux::extclk,
-  plli2s_n _plli2s_n = plli2s_n::mul_192,
-  plli2s_r _plli2s_r = plli2s_r::div_2,
+  plli2s_n _plli2s_n = plli2s_n::_192,
+  plli2s_r _plli2s_r = plli2s_r::_2,
   uint32_t _hsi_cal = 16
 >
 void configure()

@@ -26,24 +26,24 @@ enum class rtcclk_mux { disable, hse, lse, lsi };
 
 enum class ahb_prediv
 {
-  div_1   = 1,
-  div_2   = 2,
-  div_4   = 4,
-  div_8   = 8,
-  div_16  = 16,
-  div_64  = 64,
-  div_128 = 128,
-  div_256 = 256,
-  div_512 = 512
+  _1   = 1,
+  _2   = 2,
+  _4   = 4,
+  _8   = 8,
+  _16  = 16,
+  _64  = 64,
+  _128 = 128,
+  _256 = 256,
+  _512 = 512
 };
 
 enum class apb1_prediv
 {
-  div_1  = 1,
-  div_2  = 2,
-  div_4  = 4,
-  div_8  = 8,
-  div_16 = 16
+  _1  = 1,
+  _2  = 2,
+  _4  = 4,
+  _8  = 8,
+  _16 = 16
 };
 using apb2_prediv = apb1_prediv;
 

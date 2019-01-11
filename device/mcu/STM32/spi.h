@@ -45,14 +45,14 @@ enum class nss { soft, hard };
 
 enum class baud_prediv
 {
-  div_2   = 2,
-  div_4   = 4,
-  div_8   = 8,
-  div_16  = 16,
-  div_32  = 32,
-  div_64  = 64,
-  div_128 = 128,
-  div_256 = 256
+  _2   = 2,
+  _4   = 4,
+  _8   = 8,
+  _16  = 16,
+  _32  = 32,
+  _64  = 64,
+  _128 = 128,
+  _256 = 256
 };
 
 enum class bit_order { msb, lsb };

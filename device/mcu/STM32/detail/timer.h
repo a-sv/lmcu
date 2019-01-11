@@ -298,8 +298,8 @@ void tim_configure()
     r &= ~TIM_CR1_CKD;
     switch(_module::clock_prediv)
     {
-    case clock_prediv::div_2: r |= (1 << TIM_CR1_CKD_Pos);
-    case clock_prediv::div_4: r |= (2 << TIM_CR1_CKD_Pos);
+    case clock_prediv::_2: r |= (1 << TIM_CR1_CKD_Pos);
+    case clock_prediv::_4: r |= (2 << TIM_CR1_CKD_Pos);
     default : break;
     }
 

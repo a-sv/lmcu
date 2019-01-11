@@ -25,54 +25,54 @@ enum class mco_mux
 
 enum class prediv1
 {
-  div_1 = 1,
-  div_2,
-  div_3,
-  div_4,
-  div_5,
-  div_6,
-  div_7,
-  div_8,
-  div_9,
-  div_10,
-  div_11,
-  div_12,
-  div_13,
-  div_14,
-  div_15,
-  div_16
+  _1 = 1,
+  _2,
+  _3,
+  _4,
+  _5,
+  _6,
+  _7,
+  _8,
+  _9,
+  _10,
+  _11,
+  _12,
+  _13,
+  _14,
+  _15,
+  _16
 };
 using prediv2 = prediv1;
 
 enum class usb_prediv
 {
   disable, // USB not used
-  div_2 = 2,
-  div_3 = 3
+  _2 = 2,
+  _3 = 3
 };
 
 enum class pll_mul
 {
-  mul_4   = 40,
-  mul_5   = 50,
-  mul_6   = 60,
-  mul_6_5 = 65,
-  mul_7   = 70,
-  mul_8   = 80,
-  mul_9   = 90
+  _4   = 40,
+  _5   = 50,
+  _6   = 60,
+  _6_5 = 65,
+  _7   = 70,
+  _8   = 80,
+  _9   = 90
 };
 
 enum class pll2_mul
 {
-  mul_8  = 8,
-  mul_9  = 9,
-  mul_10 = 10,
-  mul_11 = 11,
-  mul_12 = 12,
-  mul_13 = 13,
-  mul_14 = 14,
-  mul_16 = 16,
-  mul_20 = 20
+  _8  = 8,
+  _9  = 9,
+  _10 = 10,
+  _11 = 11,
+  _12 = 12,
+  _13 = 13,
+  _14 = 14,
+  _16 = 16,
+  _20 = 20
 };
 using pll3_mul = pll2_mul;
 
@@ -87,15 +87,15 @@ template<
   pll_mul _pll_mul,
   pll_mux _pll_mux,
   osc_type _osc_type,
-  prediv1 _prediv1 = prediv1::div_1,
+  prediv1 _prediv1 = prediv1::_1,
   prediv1_mux _prediv1_mux = prediv1_mux::hse,
-  prediv2 _prediv2 = prediv2::div_1,
-  pll2_mul _pll2_mul = pll2_mul::mul_8,
+  prediv2 _prediv2 = prediv2::_1,
+  pll2_mul _pll2_mul = pll2_mul::_8,
   adc_prediv _adc_prediv = adc_prediv::disable,
   usb_prediv _usb_prediv = usb_prediv::disable,
   rtcclk_mux _rtcclk_mux = rtcclk_mux::disable,
   mco_mux _mco_mux = mco_mux::disable,
-  pll3_mul _pll3_mul = pll3_mul::mul_8,
+  pll3_mul _pll3_mul = pll3_mul::_8,
   i2s2_clk_mux _i2s2_clk_mux = i2s2_clk_mux::sysclk,
   i2s3_clk_mux _i2s3_clk_mux = i2s3_clk_mux::sysclk,
   uint32_t _hsi_cal = 16

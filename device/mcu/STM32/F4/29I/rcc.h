@@ -7,50 +7,50 @@ using plli2s_q = pll_q;
 
 enum class plli2s_div_q
 {
-  div_1 = 0, div_2, div_3, div_4, div_5, div_6, div_7, div_8, div_9, div_10, div_11, div_12, div_13,
-  div_14, div_15, div_16, div_17, div_18, div_19, div_20, div_21, div_22, div_23, div_24, div_25,
-  div_26, div_27, div_28, div_29, div_30, div_31, div_32
+  _1 = 0, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13,
+  _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25,
+  _26, _27, _28, _29, _30, _31, _32
 };
 
 using pllsai_n = pll_n;
 
 enum class pllsai_q
 {
-  div_2 = 2,
-  div_3,
-  div_4,
-  div_5,
-  div_6,
-  div_7,
-  div_8,
-  div_9,
-  div_10,
-  div_11,
-  div_12,
-  div_13,
-  div_14,
-  div_15
+  _2 = 2,
+  _3,
+  _4,
+  _5,
+  _6,
+  _7,
+  _8,
+  _9,
+  _10,
+  _11,
+  _12,
+  _13,
+  _14,
+  _15
 };
 
 enum class pllsai_r
 {
   disable = 1,
-  div_2,
-  div_3,
-  div_4,
-  div_5,
-  div_6,
-  div_7
+  _2,
+  _3,
+  _4,
+  _5,
+  _6,
+  _7
 };
 
 using pllsai_div_q = plli2s_div_q;
 
 enum class pllsai_div_r
 {
-  div_2,
-  div_4,
-  div_8,
-  div_16
+  _2,
+  _4,
+  _8,
+  _16
 };
 
 enum class sai1_a_mux { pllsai, plli2s, extclk };
@@ -89,21 +89,21 @@ template<
   pll_q _pll_q = pll_q::disable,
   timpre _timpre = timpre::pre_0,
   rtcclk_mux _rtcclk_mux = rtcclk_mux::disable,
-  rtchse_prediv _rtchse_prediv = rtchse_prediv::div_2,
+  rtchse_prediv _rtchse_prediv = rtchse_prediv::_2,
   mco1_mux _mco1_mux = mco1_mux::disable,
-  mco1_prediv _mco1_prediv = mco1_prediv::div_1,
+  mco1_prediv _mco1_prediv = mco1_prediv::_1,
   mco2_mux _mco2_mux = mco2_mux::disable,
-  mco2_prediv _mco2_prediv = mco2_prediv::div_1,
+  mco2_prediv _mco2_prediv = mco2_prediv::_1,
   i2sclk_mux _i2sclk_mux = i2sclk_mux::extclk,
-  plli2s_n _plli2s_n = plli2s_n::mul_192,
-  plli2s_r _plli2s_r = plli2s_r::div_2,
-  plli2s_q _plli2s_q = plli2s_q::div_2,
-  plli2s_div_q _plli2s_div_q = plli2s_div_q::div_1,
-  pllsai_n _pllsai_n = pllsai_n::mul_50,
-  pllsai_q _pllsai_q = pllsai_q::div_2,
+  plli2s_n _plli2s_n = plli2s_n::_192,
+  plli2s_r _plli2s_r = plli2s_r::_2,
+  plli2s_q _plli2s_q = plli2s_q::_2,
+  plli2s_div_q _plli2s_div_q = plli2s_div_q::_1,
+  pllsai_n _pllsai_n = pllsai_n::_50,
+  pllsai_q _pllsai_q = pllsai_q::_2,
   pllsai_r _pllsai_r = pllsai_r::disable,
-  pllsai_div_q _pllsai_div_q = pllsai_div_q::div_1,
-  pllsai_div_r _pllsai_div_r = pllsai_div_r::div_2,
+  pllsai_div_q _pllsai_div_q = pllsai_div_q::_1,
+  pllsai_div_r _pllsai_div_r = pllsai_div_r::_2,
   sai1_a_mux _sai1_a_mux = sai1_a_mux::pllsai,
   sai1_b_mux _sai1_b_mux = sai1_b_mux::pllsai,
   uint32_t _hsi_cal = 16
@@ -219,20 +219,20 @@ void configure()
   detail::adc_clock      = round<uint32_t>(apb2clk);
 
   if constexpr(_timpre == timpre::pre_0) {
-    detail::apb1_timer_clock = round<uint32_t>((_apb1_prediv == apb1_prediv::div_1)?
+    detail::apb1_timer_clock = round<uint32_t>((_apb1_prediv == apb1_prediv::_1)?
                                                 apb1clk : apb1clk * 2);
-    detail::apb2_timer_clock = round<uint32_t>((_apb2_prediv == apb2_prediv::div_1)?
+    detail::apb2_timer_clock = round<uint32_t>((_apb2_prediv == apb2_prediv::_1)?
                                                 apb2clk : apb2clk * 2);
   }
   else {
-    if constexpr(_apb1_prediv < apb1_prediv::div_8) {
+    if constexpr(_apb1_prediv < apb1_prediv::_8) {
       detail::apb1_timer_clock = round<uint32_t>(hclk);
     }
     else {
       detail::apb1_timer_clock = round<uint32_t>(apb1clk * 4);
     }
 
-    if constexpr(_apb2_prediv < apb2_prediv::div_8) {
+    if constexpr(_apb2_prediv < apb2_prediv::_8) {
       detail::apb2_timer_clock = round<uint32_t>(hclk);
     }
     else {

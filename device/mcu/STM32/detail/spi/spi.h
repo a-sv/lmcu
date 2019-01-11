@@ -99,13 +99,13 @@ void configure()
     []() -> uint32_t
     {
       switch(m.baud_prediv) {
-      case baud_prediv::div_4:   return 1 << SPI_CR1_BR_Pos;
-      case baud_prediv::div_8:   return 2 << SPI_CR1_BR_Pos;
-      case baud_prediv::div_16:  return 3 << SPI_CR1_BR_Pos;
-      case baud_prediv::div_32:  return 4 << SPI_CR1_BR_Pos;
-      case baud_prediv::div_64:  return 5 << SPI_CR1_BR_Pos;
-      case baud_prediv::div_128: return 6 << SPI_CR1_BR_Pos;
-      case baud_prediv::div_256: return 7 << SPI_CR1_BR_Pos;
+      case baud_prediv::_4:   return 1 << SPI_CR1_BR_Pos;
+      case baud_prediv::_8:   return 2 << SPI_CR1_BR_Pos;
+      case baud_prediv::_16:  return 3 << SPI_CR1_BR_Pos;
+      case baud_prediv::_32:  return 4 << SPI_CR1_BR_Pos;
+      case baud_prediv::_64:  return 5 << SPI_CR1_BR_Pos;
+      case baud_prediv::_128: return 6 << SPI_CR1_BR_Pos;
+      case baud_prediv::_256: return 7 << SPI_CR1_BR_Pos;
       default: return 0;
       }
     }() |
