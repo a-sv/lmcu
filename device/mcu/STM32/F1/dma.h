@@ -42,14 +42,15 @@ constexpr auto default_prio_group = 5;
 } // namespace nvic
 #include "../../cortex/nvic.h"
 
-enum class event
+enum class event : uint32_t
 {
+  lmcu_flags_object,
+
   cgi = 1 << 0, // Channel global int
   cct = 1 << 1, // Channel complete transfer
   cht = 1 << 2, // Channel half transfer
   cte = 1 << 3  // Channel transfer error
 };
-lmcu_enum_class_flags_impl(event)
 
 template<
   module_id _module_id,

@@ -74,11 +74,11 @@ void configure()
 
   if constexpr(_mco1_mux != mco1_mux::disable) {
     if constexpr(_mco1_mux == mco1_mux::lse) {
-      static_assert((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass),
+      static_assert(flags::any(_osc_type, osc_type::lse, osc_type::lse_bypass),
                     "MCO1 set to LSE, but LSE generator turned off");
     }
     if constexpr(_mco1_mux == mco1_mux::hse) {
-      static_assert((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass),
+      static_assert(flags::any(_osc_type, osc_type::hse, osc_type::hse_bypass),
                     "MCO1 set to HSE, but HSE generator turned off");
     }
   }

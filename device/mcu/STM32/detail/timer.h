@@ -462,7 +462,7 @@ void main_output_disable() { ((detail::inst<_modules::module_id>()->BDTR &= ~TIM
 template<typename _module_oc, oc_type _oc_type>
 constexpr void timer_type_check()
 {
-  if constexpr(_oc_type & oc_type::comp) {
+  if constexpr(flags::all(_oc_type, oc_type::comp)) {
     constexpr auto tim_type = get_tim_type<decltype(_module_oc::module)>();
 
     static_assert(tim_type == tim_type::advanced, "complementary outputs support only for advanced "
@@ -482,8 +482,8 @@ void channel_enable()
   timer_type_check<_module_oc, _oc_type>();
 
   uint32_t r = inst->CCER;
-  if constexpr(_oc_type & oc_type::main) { r |= cce[oc_channel];  }
-  if constexpr(_oc_type & oc_type::comp) { r |= ccne[oc_channel]; }
+  if constexpr(flags::all(_oc_type, oc_type::main)) { r |= cce[oc_channel];  }
+  if constexpr(flags::all(_oc_type, oc_type::comp)) { r |= ccne[oc_channel]; }
   inst->CCER = r;
 }
 
@@ -497,8 +497,8 @@ void channel_disable()
   timer_type_check<_module_oc, _oc_type>();
 
   uint32_t r = inst->CCER;
-  if constexpr(_oc_type & oc_type::main) { r &= ~cce[oc_channel];  }
-  if constexpr(_oc_type & oc_type::comp) { r &= ~ccne[oc_channel]; }
+  if constexpr(flags::all(_oc_type, oc_type::main)) { r &= ~cce[oc_channel];  }
+  if constexpr(flags::all(_oc_type, oc_type::comp)) { r &= ~ccne[oc_channel]; }
   inst->CCER = r;
 }
 

@@ -144,46 +144,71 @@ struct filter
   static constexpr auto bank_num     = _bank_num;
 };
 
-enum class event
+enum class event : uint32_t
 {
-  tme   = 1 << 0,  // transmit mailbox empty
-  fmp_0 = 1 << 1,  // FIFO 0 message pending
-  ff_0  = 1 << 2,  // FIFO 0 full
-  fov_0 = 1 << 3,  // FIFO 0 overrun
-  fmp_1 = 1 << 4,  // FIFO 1 message pending
-  ff_1  = 1 << 5,  // FIFO 1 full
-  fov_1 = 1 << 6,  // FIFO 1 overrun
-  wku   = 1 << 7,  // wake-up
-  slk   = 1 << 8,  // sleep acknowledge
-  ewg   = 1 << 9,  // error warning
-  epv   = 1 << 10, // error passive
-  bof   = 1 << 11, // bus-off
-  lec   = 1 << 12, // last error code
-  err   = 1 << 13  // error
+  lmcu_flags_object,
+
+  tme   = CAN_IER_TMEIE,  // transmit mailbox empty
+  fmp_0 = CAN_IER_FMPIE0, // FIFO 0 message pending
+  ff_0  = CAN_IER_FFIE0,  // FIFO 0 full
+  fov_0 = CAN_IER_FOVIE0, // FIFO 0 overrun
+  fmp_1 = CAN_IER_FMPIE1, // FIFO 1 message pending
+  ff_1  = CAN_IER_FFIE1,  // FIFO 1 full
+  fov_1 = CAN_IER_FOVIE1, // FIFO 1 overrun
+  wku   = CAN_IER_WKUIE,  // wake-up
+  slk   = CAN_IER_SLKIE,  // sleep acknowledge
+  ewg   = CAN_IER_EWGIE,  // error warning
+  epv   = CAN_IER_EPVIE,  // error passive
+  bof   = CAN_IER_BOFIE,  // bus-off
+  lec   = CAN_IER_LECIE,  // last error code
+  err   = CAN_IER_ERRIE   // error
 };
-lmcu_enum_class_flags_impl(event)
 
 enum class flags : uint32_t
 {
-  rqcp_0 = 1 << 0,  // request MailBox0 Flag
-  rqcp_1 = 1 << 1,  // request MailBox1 Flag
-  rqcp_2 = 1 << 2,  // request MailBox2 Flag
-  txok_0 = 1 << 3,  // transmission OK MailBox0 Flag
-  txok_1 = 1 << 4,  // transmission OK MailBox1 Flag
-  txok_2 = 1 << 5,  // transmission OK MailBox2 Flag
-  tme_0  = 1 << 6,  // transmit mailbox 0 empty Flag
-  tme_1  = 1 << 7,  // transmit mailbox 1 empty Flag
-  tme_2  = 1 << 8,  // transmit mailbox 2 empty Flag
-  fmp_0  = 1 << 9,  // FIFO 0 Message Pending Flag
-  ff_0   = 1 << 10, // FIFO 0 Full Flag
-  fov_0  = 1 << 11, // FIFO 0 Overrun Flag
-  fmp_1  = 1 << 12, // FIFO 1 Message Pending Flag
-  ff_1   = 1 << 13, // FIFO 1 Full Flag
-  fov_1  = 1 << 14, // FIFO 1 Overrun Flag
-  wku    = 1 << 15, // wake up Flag
-  slaki  = 1 << 16  // sleep acknowledge Flag
+  lmcu_flags_object,
+
+  // TSR flags
+  low_2  = CAN_TSR_LOW2,  // lowest priority flag for mailbox 2
+  low_1  = CAN_TSR_LOW1,  // lowest priority flag for mailbox 1
+  low_0  = CAN_TSR_LOW0,  // lowest priority flag for mailbox 0
+  tme_2  = CAN_TSR_TME2,  // transmit mailbox 2 empty Flag
+  tme_1  = CAN_TSR_TME1,  // transmit mailbox 1 empty Flag
+  tme_0  = CAN_TSR_TME0,  // transmit mailbox 0 empty Flag
+
+  terr_2 = CAN_TSR_TERR2, // transmission error of mailbox 2
+  alst_2 = CAN_TSR_ALST2, // arbitration lost for mailbox 2
+  txok_2 = CAN_TSR_TXOK2, // transmission OK for mailbox 2
+  rqcp_2 = CAN_TSR_RQCP2, // request completed mailbox 2
+
+  terr_1 = CAN_TSR_TERR1, // transmission error of mailbox 1
+  alst_1 = CAN_TSR_ALST1, // arbitration lost for mailbox 1
+  txok_1 = CAN_TSR_TXOK1, // transmission OK for mailbox 1
+  rqcp_1 = CAN_TSR_RQCP1, // request completed for mailbox 1
+
+  terr_0 = CAN_TSR_TERR0, // transmission error of mailbox 0
+  alst_0 = CAN_TSR_ALST0, // arbitration lost for mailbox 0
+  txok_0 = CAN_TSR_TXOK0, // transmission OK for mailbox 0
+  rqcp_0 = CAN_TSR_RQCP0, // request for mailbox 0
+
+  // RF0R flags
+  ff_0   = 1 << 4,        // FIFO 0 full flag
+  fov_0  = 1 << 5,        // FIFO 0 overrun flag
+
+  //  RF1R flags
+  ff_1   = 1 << 6,        // FIFO 1 full flag
+  fov_1  = 1 << 7,        // FIFO 1 overrun flag
+
+  // MSR flags
+  erri   = 1 << 12,       //  error interrupt
+  wkui   = 1 << 13,       //  wakeup interrupt
+  slaki  = 1 << 14,       //  sleep acknowledge interrupt
+
+  rx     = 1 << 20,       // CAN RX signal
+  samp   = 1 << 21,       // the value of RX on the last sample point (current received bit value)
+  rxm    = 1 << 22,       // the CAN hardware is currently receiver
+  txm    = 1 << 23        // the CAN hardware is currently transmitter
 };
-lmcu_enum_class_flags_impl(flags)
 
 #include "detail/can.h"
 
@@ -251,5 +276,8 @@ void clear_flags() { detail::clear_flags<_module, _flags...>(); }
 
 template<typename _module>
 event irq_source() { return detail::irq_source<_module>(); }
+
+template<typename _module, fifo _fifo>
+uint32_t get_msg_pending() { return detail::get_msg_pending<_module, _fifo>(); }
 
 } // namespace lmcu::can

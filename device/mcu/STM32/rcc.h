@@ -5,8 +5,10 @@
 
 namespace lmcu::rcc {
 
-enum class osc_type
+enum class osc_type : uint32_t
 {
+  lmcu_flags_object,
+
   hse        = 1 << 0,
   hse_bypass = 1 << 1,
   hsi        = 1 << 2,
@@ -14,7 +16,6 @@ enum class osc_type
   lse_bypass = 1 << 4,
   lsi        = 1 << 5
 };
-lmcu_enum_class_flags_impl(osc_type)
 
 // clock security system
 enum class css { disable, enable };

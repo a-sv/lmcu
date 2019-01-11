@@ -395,29 +395,27 @@ template<typename _module, event ..._events>
 void disable_events() { detail::inst<_module>()->CR1 &= ~event_bits<_events...>(); }
 
 template<typename _module>
-event irq_source() { return static_cast<event>(detail::inst<_module>()->SR); }
+event irq_source() { return flags::from_value<event>(detail::inst<_module>()->SR); }
 
 template<typename _module, event ..._events>
 void irq_clear()
 {
-  constexpr auto events = (_events | ...);
+  constexpr auto events = (_events + ...);
 
   static_assert(!(events & event::txe), "for clear TXE flag you must use tx or write functions");
 
   auto inst = detail::inst<_module>();
 
-  if constexpr((events & event::pe) || (events & event::fe) || (events & event::ne) ||
-               (events & event::ore) || (events & event::idle)) {
+  if constexpr(flags::any(events, event::pe, event::fe, event::ne, event::ore, event::idle)) {
     (void)(inst->DR);
   }
 
-  if constexpr((events & event::rxne) || (events & event::tc) || (events & event::lbd) ||
-               (events & event::cts)) {
+  if constexpr(flags::any(events, event::rxne, event::tc, event::lbd, event::cts)) {
     uint32_t r = inst->SR;
-    if constexpr(events & event::rxne) { r &= ~USART_SR_RXNE; }
-    if constexpr(events & event::tc)   { r &= ~USART_SR_TC;   }
-    if constexpr(events & event::lbd)  { r &= ~USART_SR_LBD;  }
-    if constexpr(events & event::cts)  { r &= ~USART_SR_CTS;  }
+    if constexpr(flags::all(events, event::rxne)) { r &= ~USART_SR_RXNE; }
+    if constexpr(flags::all(events, event::tc))   { r &= ~USART_SR_TC;   }
+    if constexpr(flags::all(events, event::lbd))  { r &= ~USART_SR_LBD;  }
+    if constexpr(flags::all(events, event::cts))  { r &= ~USART_SR_CTS;  }
     inst->SR = r;
   }
 }

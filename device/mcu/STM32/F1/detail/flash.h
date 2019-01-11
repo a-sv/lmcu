@@ -8,8 +8,8 @@ static inline io::result wait_op(const delay::expirable &t)
     if(t.expired()) { return io::result::busy; }
   } while((FLASH->SR & FLASH_SR_BSY) != 0);
 
-  const auto s = read_status();
-  return ((s & status::pgerr) || (s & status::wrprterr))? io::result::error : io::result::success;
+  return flags::any(read_status(), status::pgerr, status::wrprterr)? io::result::error :
+                                                                     io::result::success;
 }
 
 static inline io::result erase_page(uint32_t addr, const delay::expirable &t)
@@ -99,16 +99,16 @@ void clear_status()
 
 #if defined(FLASH_SR2_EOP)
   r = 0;
-  if constexpr(_status & status::eop)      { r |= FLASH_SR2_EOP;      }
-  if constexpr(_status & status::wrprterr) { r |= FLASH_SR2_WRPRTERR; }
-  if constexpr(_status & status::pgerr)    { r |= FLASH_SR2_PGERR;    }
+  if constexpr(flags::all(_status, status::eop))      { r |= FLASH_SR2_EOP;      }
+  if constexpr(flags::all(_status, status::wrprterr)) { r |= FLASH_SR2_WRPRTERR; }
+  if constexpr(flags::all(_status, status::pgerr))    { r |= FLASH_SR2_PGERR;    }
   FLASH->SR2 = r;
 #endif
 
   r = 0;
-  if constexpr(_status & status::eop)      { r |= FLASH_SR_EOP;       }
-  if constexpr(_status & status::wrprterr) { r |= FLASH_SR_WRPRTERR;  }
-  if constexpr(_status & status::pgerr)    { r |= FLASH_SR_PGERR;     }
+  if constexpr(flags::all(_status, status::eop))      { r |= FLASH_SR_EOP;       }
+  if constexpr(flags::all(_status, status::wrprterr)) { r |= FLASH_SR_WRPRTERR;  }
+  if constexpr(flags::all(_status, status::pgerr))    { r |= FLASH_SR_PGERR;     }
   FLASH->SR = r;
 }
 

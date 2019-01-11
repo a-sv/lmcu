@@ -30,7 +30,7 @@ void configure()
   osc_configure<_osc_type, _hsi_cal, _rtcclk_mux>();
 
   if constexpr(
-    ((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) &&
+    flags::any(_osc_type, osc_type::hse, osc_type::hse_bypass) &&
     (_sysclk_mux == sysclk_mux::hse || (_pll_mux == pll_mux::hse &&
                                         _sysclk_mux == sysclk_mux::pllclk)) &&
     (_css == css::enable)

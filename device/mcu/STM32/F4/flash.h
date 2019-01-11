@@ -3,8 +3,10 @@
 
 namespace lmcu::flash {
 
-enum class status
+enum class status : uint32_t
 {
+  lmcu_flags_object,
+
   eop      = 1 << 0, // end of operation
   operr    = 1 << 1, // operation error
   wrprterr = 1 << 4, // write protection error
@@ -13,7 +15,6 @@ enum class status
   pgserr   = 1 << 7, // programming sequence error
   busy     = 1 << 16 // busy flag
 };
-lmcu_enum_class_flags_impl(status)
 
 // program size
 enum class pg_size { _8bit, _16bit, _32bit, _64bit };

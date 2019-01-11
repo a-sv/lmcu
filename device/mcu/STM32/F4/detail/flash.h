@@ -10,15 +10,11 @@ static inline io::result wait_op(const delay::expirable &t)
 
   if( (FLASH->SR & FLASH_SR_EOP) != 0 ) { FLASH->SR |= FLASH_SR_EOP; }
 
-  const auto s = read_status();
-
-  if(
-    (s & status::operr)    ||
-    (s & status::wrprterr) ||
-    (s & status::pgaerr)   ||
-    (s & status::pgperr)   ||
-    (s & status::pgserr)
-  ) { return io::result::error; }
+  if(flags::any(read_status(), status::operr, status::wrprterr, status::pgaerr, status::pgperr,
+                               status::pgserr))
+  ) {
+    return io::result::error;
+  }
 
   return io::result::success;
 }
@@ -93,6 +89,6 @@ io::result program(uint32_t addr, uint64_t data, const delay::expirable &t)
 }
 
 template<status _status>
-void clear_status() { FLASH->SR = uint32_t(_status); }
+void clear_status() { FLASH->SR = flags::value(_status); }
 
 } // namespace detail

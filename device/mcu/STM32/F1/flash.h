@@ -3,14 +3,15 @@
 
 namespace lmcu::flash {
 
-enum class status
+enum class status : uint32_t
 {
+  lmcu_flags_object,
+
   eop      = 1 << 5, // end of operation
   wrprterr = 1 << 4, // write protection error
   pgerr    = 1 << 2, // programming error
   busy     = 1 << 0  // busy flag
 };
-lmcu_enum_class_flags_impl(status)
 
 #include "detail/flash.h"
 

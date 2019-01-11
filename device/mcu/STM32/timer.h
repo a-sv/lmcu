@@ -153,8 +153,13 @@ struct oc_conf
   static constexpr auto oc_n_idle_state = _oc_n_idle_state;
 };
 
-enum class oc_type { main = 1, comp = 2 };
-lmcu_enum_class_flags_impl(oc_type)
+enum class oc_type : uint32_t
+{
+  lmcu_flags_object,
+
+  main = 1 << 0,
+  comp = 1 << 1
+};
 
 #include "detail/timer.h"
 

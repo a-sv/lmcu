@@ -1,4 +1,12 @@
 #pragma once
+
+#if defined(__NO_INLINE__)
+  #define lmcu_force_inline inline
+  #pragma message("warning: inlining disabled, this may cause problems with lmcu correct working!")
+#else
+  #define lmcu_force_inline inline __attribute__((always_inline))
+#endif
+
 #include "../../../hwi/common/units.h"
 #include "../../../hwi/common/round.h"
 #include "../../../hwi/common/mem_ptr.h"
@@ -6,4 +14,4 @@
 #include "../../../hwi/common/io.h"
 #include "../../../hwi/common/hex.h"
 #include "../../../hwi/common/defer.h"
-#include "../../../hwi/common/def.h"
+#include "../../../hwi/common/flags.h"

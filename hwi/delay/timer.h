@@ -1,7 +1,6 @@
 #pragma once
 #include <lmcu/rcc>
 #include "expirable.h"
-#include "../common/def.h"
 
 namespace lmcu::delay {
 

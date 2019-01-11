@@ -231,7 +231,7 @@ void disable_events()
 template<typename _module>
 event irq_source() {
   const uint32_t r = detail::inst<_module>()->ISR;
-  return static_cast<event>(r >> (uint32_t(_module::channel) * 4));
+  return flags::from_value<event>(r >> (uint32_t(_module::channel) * 4));
 }
 
 template<channel _channel, event _event, event ..._events>

@@ -93,20 +93,21 @@ struct module_async
   static constexpr auto irq         = _irq();
 };
 
-enum class event
+enum class event : uint32_t
 {
-  pe   = 1 << 0, // Parity error
-  fe   = 1 << 1, // Framing error
-  ne   = 1 << 2, // Noise error
-  ore  = 1 << 3, // Overrun error
-  idle = 1 << 4, // IDLE line detected
-  rxne = 1 << 5, // Read data register not empty
-  tc   = 1 << 6, // Transmission complete
-  txe  = 1 << 7, // Transmit data register empty
-  lbd  = 1 << 8, // LIN break detection
-  cts  = 1 << 9  // CTS
+  lmcu_flags_object,
+
+  pe   = USART_SR_PE,   // Parity error
+  fe   = USART_SR_FE,   // Framing error
+  ne   = USART_SR_NE,   // Noise error
+  ore  = USART_SR_ORE,  // Overrun error
+  idle = USART_SR_IDLE, // IDLE line detected
+  rxne = USART_SR_RXNE, // Read data register not empty
+  tc   = USART_SR_TC,   // Transmission complete
+  txe  = USART_SR_TXE,  // Transmit data register empty
+  lbd  = USART_SR_LBD,  // LIN break detection
+  cts  = USART_SR_CTS   // CTS
 };
-lmcu_enum_class_flags_impl(event)
 
 #include "detail/usart.h"
 

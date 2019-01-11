@@ -29,19 +29,17 @@ public:
     databuf_size = 256
   ;
 
-  enum class status : uint8_t
+  enum class status : uint32_t
   {
-    wip    = 1 << 0, // Write in progress
+    lmcu_flags_object,
 
-    wel    = 1 << 1, // Write enable latch
-
-    bp_0   = 1 << 2, // Block protect bits
+    wip    = 1 << 0, // write in progress
+    wel    = 1 << 1, // write enable latch
+    bp_0   = 1 << 2, // block protect bits
     bp_1   = 1 << 4,
     bp_3   = 1 << 6,
-
-    bottom = 1 << 5, // Top / bottom protected memory area
-
-    srwe   = 1 << 7  // Status register write enable / disable
+    bottom = 1 << 5, // top / bottom protected memory area
+    srwe   = 1 << 7  // status register write enable / disable
   };
 
   N25Q00A()
@@ -98,7 +96,12 @@ public:
   */
   io::result read_id(dev_id &id, const delay::expirable &t)
   {
-    if(auto r = pe_wait(t); r != io::result::success) { return r; }
+    if(op_ == op::init) {
+      if(auto r = pe_wait(t); r != io::result::success) { return r; }
+    }
+
+    if(auto r = suspend<true>(t); r != io::result::success) { return r; }
+
     lmcu_scoped_lock();
 
     select();
@@ -106,7 +109,7 @@ public:
     spi::read<_spi>(&id, sizeof(dev_id));
     deselect();
 
-    return io::result::success;
+    return suspend<false>(t);
   }
 
   /**
@@ -115,14 +118,13 @@ public:
    * @param s - status flags
    * @param t - timeout
   */
-  io::result read_status(status &s, const delay::expirable &t)
+  io::result read_status(status &s, const delay::expirable&)
   {
-    if(auto r = pe_wait(t); r != io::result::success) { s = status(0); return r; }
     lmcu_scoped_lock();
 
     select();
     spi::tx<_spi>(cmd_read_status);
-    s = status( spi::rx<_spi>() );
+    s = flags::from_value<status>( spi::rx<_spi>() );
     deselect();
 
     return io::result::success;
@@ -270,8 +272,10 @@ private:
     cmd_subsector_erase = 0x20
   ;
 
-  enum class flags : uint8_t
+  enum class state_flags : uint8_t
   {
+    lmcu_flags_object,
+
     addressing    = 1 << 0, // 3-byte or 4-byte address mode selected
     protection    = 1 << 1, // Attempt Erase or Program protected sector
     program_susp  = 1 << 2, // Program operation suspend
@@ -292,7 +296,7 @@ private:
   */
   static inline bool pe_busy()
   {
-    return (uint8_t(read_flags()) & uint8_t(flags::pe_controller)) == 0;
+    return flags::none(read_flags(), state_flags::pe_controller);
   }
 
   /**
@@ -376,13 +380,13 @@ private:
   /**
    * @brief Read status flags
   */
-  static inline flags read_flags()
+  static inline auto read_flags()
   {
     select();
     lmcu_defer([] { deselect(); });
 
     spi::tx<_spi>(cmd_read_flags);
-    return flags( spi::rx<_spi>() );
+    return flags::from_value<state_flags>( spi::rx<_spi>() );
   }
 
   /**
@@ -396,14 +400,14 @@ private:
   {
     if(op_ == op::idle || op_ == op::init) { return io::result::success; }
 
-    flags f;
+    state_flags f;
 
     if(op_ == op::program) {
-      f = flags::program_susp;
+      f = state_flags::program_susp;
     }
     else
     if(op_ == op::erase) {
-      f = flags::erase_susp;
+      f = state_flags::erase_susp;
     }
     else { return io::result::error; }
 
@@ -421,7 +425,7 @@ private:
 
       if(t.expired()) { return io::result::busy; }
     }
-    while((uint8_t(read_flags()) & uint8_t(f)) == (_suspend? 0 : uint8_t(f)));
+    while(flags::check<!_suspend>(read_flags(), f));
 
     if constexpr(_suspend) {
       do {

@@ -59,47 +59,43 @@ template<osc_type _osc_type, uint32_t _hsi_cal, rtcclk_mux _rtcclk_mux>
 void osc_configure()
 {
   static_assert(_hsi_cal <= 0x1f);
-  static_assert(!((_osc_type & osc_type::hse) && (_osc_type & osc_type::hse_bypass)),
+  static_assert(!flags::all(_osc_type, osc_type::hse, osc_type::hse_bypass),
                 "unable to enable hse and hse_bypass mode together");
-  static_assert(!((_osc_type & osc_type::lse) && (_osc_type & osc_type::lse_bypass)),
+  static_assert(!flags::all(_osc_type, osc_type::lse, osc_type::lse_bypass),
                 "unable to enable lse and lse_bypass mode together");
   static_assert(
-    !(((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) &&
-      (_osc_type & osc_type::lsi)),
+    !(flags::any(_osc_type, osc_type::lse, osc_type::lse_bypass) && flags::all(_osc_type,
+                                                                               osc_type::lsi)),
     "unable to enable lse* and lsi mode together"
   );
   static_assert(
-    (_osc_type & osc_type::hse) ||
-    (_osc_type & osc_type::hse_bypass) ||
-    (_osc_type & osc_type::hsi),
+    flags::any(_osc_type, osc_type::hse, osc_type::hse_bypass, osc_type::hsi),
     "you must select at least one of high speed generators"
   );
-  if constexpr(_osc_type & osc_type::lsi) {
+  if constexpr(flags::all(_osc_type, osc_type::lsi)) {
     static_assert(_rtcclk_mux == rtcclk_mux::lsi, "LSI generator turned on, but not used");
   }
   if constexpr(_rtcclk_mux == rtcclk_mux::lsi) {
-    static_assert(_osc_type & osc_type::lsi, "RTC clock source connected to LSI, but LSI "
-                                             "turned off");
+    static_assert(flags::all(_osc_type, osc_type::lsi), "RTC clock source connected to LSI, but "
+                                                        "LSI turned off");
   }
-  if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
+  if constexpr(flags::any(_osc_type, osc_type::lse, osc_type::lse_bypass)) {
     static_assert(_rtcclk_mux == rtcclk_mux::lse, "LSE generator turned on, but not used");
   }
   if constexpr(_rtcclk_mux == rtcclk_mux::lse) {
-    static_assert((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass),
+    static_assert(flags::any(_osc_type, osc_type::lse, osc_type::lse_bypass),
                   "RTC clock source connected to LSE, but LSE turned off");
   }
   if constexpr(_rtcclk_mux == rtcclk_mux::hse) {
-    static_assert(
-      (_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass),
-      "HSE generator selected as RTC clock, but HSE is disabled"
-    );
+    static_assert(flags::any(_osc_type, osc_type::hse, osc_type::hse_bypass),
+                  "HSE generator selected as RTC clock, but HSE is disabled");
   }
 
   //
   // HSI
   //
 
-  if constexpr(_osc_type & osc_type::hsi) {
+  if constexpr(flags::all(_osc_type, osc_type::hsi)) {
     uint32_t r = RCC->CR;
     r &= ~RCC_CR_HSITRIM;
     if constexpr(_hsi_cal != 0) { r |= (_hsi_cal << RCC_CR_HSITRIM_Pos); }
@@ -117,9 +113,9 @@ void osc_configure()
   // HSE
   //
 
-  if constexpr((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass)) {
+  if constexpr(flags::any(_osc_type, osc_type::hse, osc_type::hse_bypass)) {
     uint32_t r = RCC->CR;
-    if constexpr(_osc_type & osc_type::hse_bypass) {
+    if constexpr(flags::all(_osc_type, osc_type::hse_bypass)) {
       r |= RCC_CR_HSEBYP;
     }
     else {
@@ -137,9 +133,9 @@ void osc_configure()
   // LSE
   //
 
-  if constexpr((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass)) {
+  if constexpr(flags::any(_osc_type, osc_type::lse, osc_type::lse_bypass)) {
     uint32_t r = RCC->BDCR;
-    if constexpr(_osc_type & osc_type::lse_bypass) {
+    if constexpr(flags::all(_osc_type, osc_type::lse_bypass)) {
       r |= RCC_BDCR_LSEBYP;
     }
     else {
@@ -156,7 +152,7 @@ void osc_configure()
   // LSI
   //
 
-  if constexpr(_osc_type & osc_type::lsi) {
+  if constexpr(flags::all(_osc_type, osc_type::lsi)) {
     RCC->CSR |= RCC_CSR_LSION;
     while((RCC->CSR & RCC_CSR_LSIRDY) == 0)
       ;
@@ -186,7 +182,7 @@ void osc_deconfigure()
   // HSI
   //
 
-  if constexpr(!(_osc_type & osc_type::hsi)) {
+  if constexpr(flags::none(_osc_type, osc_type::hsi)) {
     RCC->CR &= ~RCC_CR_HSION;
     while((RCC->CR & RCC_CR_HSIRDY) != 0)
       ;
@@ -196,7 +192,7 @@ void osc_deconfigure()
   // HSE
   //
 
-  if constexpr(!((_osc_type & osc_type::hse) || (_osc_type & osc_type::hse_bypass))) {
+  if constexpr(flags::none(_osc_type, osc_type::hse, osc_type::hse_bypass)) {
     RCC->CR &= ~(RCC_CR_HSEON | RCC_CR_HSEBYP);
     while((RCC->CR & RCC_CR_HSERDY) != 0)
       ;
@@ -206,7 +202,7 @@ void osc_deconfigure()
   // LSI
   //
 
-  if constexpr(!(_osc_type & osc_type::lsi)) {
+  if constexpr(flags::none(_osc_type, osc_type::lsi)) {
     RCC->CSR &= ~RCC_CSR_LSION;
     while((RCC->CSR & RCC_CSR_LSIRDY) != 0)
       ;
@@ -216,7 +212,7 @@ void osc_deconfigure()
   // LSE
   //
 
-  if constexpr(!((_osc_type & osc_type::lse) || (_osc_type & osc_type::lse_bypass))) {
+  if constexpr(flags::none(_osc_type, osc_type::lse, osc_type::lse_bypass)) {
     RCC->BDCR &= ~(RCC_BDCR_LSEON | RCC_BDCR_LSEBYP);
     while((RCC->BDCR & RCC_BDCR_LSERDY) != 0)
       ;
