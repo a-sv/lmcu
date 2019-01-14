@@ -1,18 +1,17 @@
-template<typename module_t>
+template<typename _module>
 inline uint32_t one_cycle_delay()
 {
-  return (rcc::system_clock() / (rcc::apb2_clock() / uint32_t(module_t().baud_prediv)));
+  return (rcc::system_clock() / (rcc::apb2_clock() / uint32_t(_module::baud_prediv)));
 }
 
-template<typename module_t, crc _crc>
+template<typename _module, crc _crc>
 uint16_t rx()
 {
-  constexpr auto m = module_t();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
-  if constexpr(m.mode == mode::master) {
+  if constexpr(_module::mode == mode::master) {
     // one SPI cycle in system clocks
-    const uint32_t delay_val = one_cycle_delay<module_t>();
+    const uint32_t delay_val = one_cycle_delay<_module>();
     if constexpr(_crc == crc::enable) {
       if(delay_val <= 8) { return master_rx_with_crc(inst); }
       return master_rx_with_crc(inst, delay_val - 8);
@@ -25,15 +24,14 @@ uint16_t rx()
   return slave_rx(inst);
 }
 
-template<typename module_t, crc _crc, typename data_t>
-void read(data_t *data, uint32_t count)
+template<typename _module, crc _crc, typename _data>
+void read(_data *data, uint32_t count)
 {
-  constexpr auto m = module_t();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
-  if constexpr(m.mode == mode::master) {
+  if constexpr(_module::mode == mode::master) {
     // one SPI cycle in system clocks
-    const uint32_t delay_val = one_cycle_delay<module_t>();
+    const uint32_t delay_val = one_cycle_delay<_module>();
     if constexpr(_crc == crc::enable) {
       if(delay_val <= 8) { master_read_with_crc(inst, data, count); }
       else { master_read_with_crc(inst, data, count, delay_val - 8); }

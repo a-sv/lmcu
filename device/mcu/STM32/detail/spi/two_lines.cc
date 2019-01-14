@@ -1,4 +1,7 @@
 #include <lmcu/device>
+
+#ifdef _LMCU_DEVICE_STM32_
+
 #include <lmcu/delay>
 #include "../../spi.h"
 
@@ -109,3 +112,5 @@ void master_write_with_crc(SPI_TypeDef *inst, const uint8_t *data, uint32_t coun
 { detail::write<direction::two_lines, true>(inst, data, count); }
 
 } // namespace lmcu::spi::detail::two_lines
+
+#endif // _LMCU_DEVICE_STM32_

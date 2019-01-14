@@ -2,54 +2,47 @@
 
 namespace detail {
 
-template<module_id _module_id>
+template<typename _module>
 SPI_TypeDef *inst()
 {
 #if defined(SPI1)
-  if constexpr(_module_id == module_id::spi1) { return SPI1; }
+  if constexpr(_module::module_id == module_id::spi1) { return SPI1; }
 #endif
 
 #if defined(SPI2)
-  if constexpr(_module_id == module_id::spi2) { return SPI2; }
+  if constexpr(_module::module_id == module_id::spi2) { return SPI2; }
 #endif
 
 #if defined(SPI3)
-  if constexpr(_module_id == module_id::spi3) { return SPI3; }
+  if constexpr(_module::module_id == module_id::spi3) { return SPI3; }
 #endif
 
 #if defined(SPI4)
-  if constexpr(_module_id == module_id::spi4) { return SPI4; }
+  if constexpr(_module::module_id == module_id::spi4) { return SPI4; }
 #endif
 
 #if defined(SPI5)
-  if constexpr(_module_id == module_id::spi5) { return SPI5; }
+  if constexpr(_module::module_id == module_id::spi5) { return SPI5; }
 #endif
 
 #if defined(SPI6)
-  if constexpr(_module_id == module_id::spi6) { return SPI6; }
+  if constexpr(_module::module_id == module_id::spi6) { return SPI6; }
 #endif
 }
 
-template<typename module_t, bool _en>
-void enable()
-{
-  auto inst = detail::inst<module_t().module_id>();
-  if constexpr(_en) {
-    inst->CR1 |= SPI_CR1_SPE;
-  }
-  else {
-    inst->CR1 &= ~SPI_CR1_SPE;
-  }
-}
+template<typename _module>
+void enable() { detail::inst<_module>()->CR1 |= SPI_CR1_SPE; }
 
-template<typename arg1, typename ...args>
+template<typename _module>
+void disable() { detail::inst<_module>()->CR1 &= ~SPI_CR1_SPE; }
+
+template<typename _module, typename ..._modules>
 void configure()
 {
-  if constexpr(sizeof...(args) > 0) { configure<args...>(); }
-  constexpr auto m = arg1();
+  if constexpr(sizeof...(_modules) > 0) { configure<_modules...>(); }
 
 #if defined(SPI1)
-  if constexpr(m.module_id == module_id::spi1) {
+  if constexpr(_module::module_id == module_id::spi1) {
     RCC->APB2ENR  |=  RCC_APB2ENR_SPI1EN;
     RCC->APB2RSTR |=  RCC_APB2RSTR_SPI1RST;
     RCC->APB2RSTR &= ~RCC_APB2RSTR_SPI1RST;
@@ -57,7 +50,7 @@ void configure()
 #endif
 
 #if defined(SPI2)
-  if constexpr(m.module_id == module_id::spi2) {
+  if constexpr(_module::module_id == module_id::spi2) {
     RCC->APB1ENR  |=  RCC_APB1ENR_SPI2EN;
     RCC->APB1RSTR |=  RCC_APB1RSTR_SPI2RST;
     RCC->APB1RSTR &= ~RCC_APB1RSTR_SPI2RST;
@@ -65,40 +58,41 @@ void configure()
 #endif
 
 #if defined(SPI3)
-  if constexpr(m.module_id == module_id::spi3) {
+  if constexpr(_module::module_id == module_id::spi3) {
     RCC->APB1ENR  |=  RCC_APB1ENR_SPI3EN;
     RCC->APB1RSTR |=  RCC_APB1RSTR_SPI3RST;
     RCC->APB1RSTR &= ~RCC_APB1RSTR_SPI3RST;
   }
 #endif
 
-  enable<arg1, false>();
+  disable<_module>();
 
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
+
   inst->CR1 =
-    ((m.mode == mode::master || m.mode == mode::multi_master)? SPI_CR1_MSTR : 0) |
+    ((_module::mode == mode::master || _module::mode == mode::multi_master)? SPI_CR1_MSTR : 0) |
     []() -> uint32_t
     {
-      switch(m.direction) {
+      switch(_module::direction) {
       case direction::one_line: return SPI_CR1_BIDIMODE;
       case direction::two_lines_rxonly: return SPI_CR1_RXONLY;
       default: return 0;
       }
     }() |
-    (m.datasize == datasize::word? SPI_CR1_DFF : 0) |
-    (m.polarity == polarity::high? SPI_CR1_CPOL : 0) |
-    (m.phase == phase::two_edge? SPI_CR1_CPHA : 0) |
+    (_module::datasize == datasize::word? SPI_CR1_DFF : 0) |
+    (_module::polarity == polarity::high? SPI_CR1_CPOL : 0) |
+    (_module::phase == phase::two_edge? SPI_CR1_CPHA : 0) |
     []() -> uint32_t
     {
-      if constexpr(m.mode == mode::slave) {
-        if constexpr(m.nss == nss::soft) { return SPI_CR1_SSM; }
+      if constexpr(_module::mode == mode::slave) {
+        if constexpr(_module::nss == nss::soft) { return SPI_CR1_SSM; }
         return 0;
       }
-      return m.mode == mode::master? (SPI_CR1_SSM | SPI_CR1_SSI) : 0;
+      return _module::mode == mode::master? (SPI_CR1_SSM | SPI_CR1_SSI) : 0;
     }() |
     []() -> uint32_t
     {
-      switch(m.baud_prediv) {
+      switch(_module::baud_prediv) {
       case baud_prediv::_4:   return 1 << SPI_CR1_BR_Pos;
       case baud_prediv::_8:   return 2 << SPI_CR1_BR_Pos;
       case baud_prediv::_16:  return 3 << SPI_CR1_BR_Pos;
@@ -109,14 +103,17 @@ void configure()
       default: return 0;
       }
     }() |
-    (m.bit_order == bit_order::lsb? SPI_CR1_LSBFIRST : 0)
+    (_module::bit_order == bit_order::lsb? SPI_CR1_LSBFIRST : 0)
   ;
-  inst->CR2   = m.mode == mode::master? SPI_CR2_SSOE : 0;
-  inst->CRCPR = m.crc_poly;
+  inst->CR2   = _module::mode == mode::master? SPI_CR2_SSOE : 0;
+  inst->CRCPR = _module::crc_poly;
 
   if constexpr(
-    m.mode == mode::slave || (m.mode == mode::master && m.direction == direction::two_lines)
-  ) { enable<arg1, true>(); }
+    _module::enable || _module::mode == mode::slave ||
+    (_module::mode == mode::master && _module::direction == direction::two_lines)
+  ) {
+    enable<_module>();
+  }
 }
 
 template<typename arg1, typename ...args>
@@ -138,35 +135,34 @@ void deconfigure()
 #endif
 }
 
-template<bool _nss, typename arg1, typename ...args>
+template<bool _nss, typename _module, typename ..._modules>
 void set_nss()
 {
-  if constexpr(sizeof...(args) > 0) { set_nss<_nss, args...>(); }
-  constexpr auto m = arg1();
+  if constexpr(sizeof...(_modules) > 0) { set_nss<_nss, _modules...>(); }
 
-  static_assert(m.nss == nss::soft || m.mode == mode::master);
+  static_assert(_module::nss == nss::soft || _module::mode == mode::master);
 
   if constexpr(_nss) {
-    detail::inst<m.module_id>()->CR1 |= SPI_CR1_SSI;
+    detail::inst<_module>()->CR1 |= SPI_CR1_SSI;
   }
   else {
-    detail::inst<m.module_id>()->CR1 &= ~SPI_CR1_SSI;
+    detail::inst<_module>()->CR1 &= ~SPI_CR1_SSI;
   }
 }
 
-template<typename module_t, bool _crc_en>
+template<typename _module, bool _crc_en>
 void crc_init()
 {
-  auto inst = detail::inst<module_t().module_id>();
+  auto inst = detail::inst<_module>();
 
   inst->CR1 &= ~SPI_CR1_CRCEN;
   if constexpr(_crc_en) { inst->CR1 |= SPI_CR1_CRCEN; }
 }
 
-template<typename module_t>
+template<typename _module>
 bool crc_ok()
 {
-  auto inst = detail::inst<module_t().module_id>();
+  auto inst = detail::inst<_module>();
 
   auto r = (inst->SR & SPI_SR_CRCERR) == 0;
   inst->SR &= ~SPI_SR_CRCERR;
@@ -174,14 +170,14 @@ bool crc_ok()
   return r;
 }
 
-template<typename module_t>
-uint16_t crc_rxval() { return detail::inst<module_t().module_id>()->RXCRCR; }
+template<typename _module>
+uint16_t crc_rxval() { return detail::inst<_module>()->RXCRCR; }
 
-template<typename module_t>
-uint16_t crc_txval() { return detail::inst<module_t().module_id>()->TXCRCR; }
+template<typename _module>
+uint16_t crc_txval() { return detail::inst<_module>()->TXCRCR; }
 
-template<typename module_t>
-uint16_t crc_poly() { return detail::inst<module_t().module_id>()->CRCPR; }
+template<typename _module>
+uint16_t crc_poly() { return detail::inst<_module>()->CRCPR; }
 
 template<bool _master, direction _direction, bool _crc_send>
 lmcu_force_inline void rx_begin(SPI_TypeDef *inst)

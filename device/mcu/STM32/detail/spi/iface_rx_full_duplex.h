@@ -1,10 +1,9 @@
-template<typename module_t, crc _crc>
+template<typename _module, crc _crc>
 uint16_t rx()
 {
-  constexpr auto m = module_t();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
-  if constexpr(m.mode == mode::master) {
+  if constexpr(_module::mode == mode::master) {
     if constexpr(_crc == crc::enable) { return master_rx_with_crc(inst); }
     return master_rx(inst);
   }
@@ -13,13 +12,12 @@ uint16_t rx()
   return slave_rx(inst);
 }
 
-template<typename module_t, crc _crc, typename data_t>
-void read(data_t *data, uint32_t count)
+template<typename _module, crc _crc, typename _data>
+void read(_data *data, uint32_t count)
 {
-  constexpr auto m = module_t();
-  auto inst = detail::inst<m.module_id>();
+  auto inst = detail::inst<_module>();
 
-  if constexpr(m.mode == mode::master) {
+  if constexpr(_module::mode == mode::master) {
     if constexpr(_crc == crc::enable) { master_read_with_crc(inst, data, count); }
     else { master_read(inst, data, count); }
   }

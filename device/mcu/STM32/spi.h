@@ -71,7 +71,8 @@ template<
   nss _nss,
   baud_prediv _baud_prediv,
   bit_order _bit_order,
-  uint16_t _crc_poly = 0x7
+  uint16_t _crc_poly = 0x7,
+  bool _enable = true
 >
 struct module
 {
@@ -86,13 +87,17 @@ struct module
   static constexpr auto baud_prediv = _baud_prediv;
   static constexpr auto bit_order   = _bit_order;
   static constexpr auto crc_poly    = _crc_poly;
+  static constexpr auto enable      = _enable;
 };
 
-template<typename module_t, bool _en>
-void enable() { detail::enable<module_t, _en>(); }
+template<typename _module>
+void enable() { detail::enable<_module>(); }
 
-template<typename ...args>
-void configure() { detail::configure<args...>(); }
+template<typename _module>
+void disable() { detail::disable<_module>(); }
+
+template<typename ..._modules>
+void configure() { detail::configure<_modules...>(); }
 
 template<typename ...args>
 void deconfigure() { detail::deconfigure<args...>(); }
