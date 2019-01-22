@@ -48,6 +48,9 @@ public:
     hold_enable(false);
   }
 
+  N25Q00A(const N25Q00A&) = delete;
+  N25Q00A &operator =(const N25Q00A&) = delete;
+
   /**
    * @brief Enable / disable HOLD signal. Pauses any serial communications with the device without
    *        deselecting the device.
