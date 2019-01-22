@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 #include <lmcu/delay>
 
 namespace lmcu::delay {
@@ -152,7 +153,12 @@ public:
     start_ = delay::start();
   }
 
-  inline bool expired() const final { return (DWT->CYCCNT + start_) >= expire_; }
+  inline bool expired() const final
+  {
+    if((DWT->CYCCNT + start_) >= expire_) { return true; }
+    yield();
+    return false;
+  }
 
   template<units _units>
   uint32_t elapsed() const

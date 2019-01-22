@@ -34,7 +34,12 @@ public:
     expire_ = delay;
   }
 
-  inline bool expired() const final { return (counter_ + start_) >= expire_; }
+  inline bool expired() const final
+  {
+    if((counter_ + start_) >= expire_) { return true; }
+    yield();
+    return false;
+  }
 
   inline uint32_t elapsed() const { return counter_ + start_; }
 
