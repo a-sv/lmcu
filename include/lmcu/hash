@@ -4,3 +4,5 @@
 #if defined(_LMCU_DEVICE_STM32_)
   #include "../../device/mcu/STM32/crc32.h"
 #endif
+
+#include "../../hwi/hash/ecc.h"
