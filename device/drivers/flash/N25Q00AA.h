@@ -4,6 +4,7 @@
 #include <lmcu/gpio>
 #include <lmcu/spi>
 #include <lmcu/delay>
+#include "flash.h"
 
 namespace lmcu::drivers::flash {
 
@@ -20,6 +21,10 @@ class N25Q00A
   static_assert(_wp::module_type == module_type::gpio_pin, "_wp must have type 'gpio_pin'");
   static_assert(_hold::module_type == module_type::gpio_pin, "_hold must have type 'gpio_pin'");
 public:
+  static constexpr auto
+    type = flash::type::nor
+  ;
+
   static constexpr uint32_t
     sector_size  = 64_Kbyte,
     sector_count = 2048,
@@ -35,9 +40,9 @@ public:
 
     wip    = 1 << 0, // write in progress
     wel    = 1 << 1, // write enable latch
-    bp_0   = 1 << 2, // block protect bits
-    bp_1   = 1 << 4,
-    bp_3   = 1 << 6,
+    bp_0   = 1 << 2, //
+    bp_1   = 1 << 4, // block protect bits
+    bp_3   = 1 << 6, //
     bottom = 1 << 5, // top / bottom protected memory area
     srwe   = 1 << 7  // status register write enable / disable
   };
@@ -181,7 +186,7 @@ public:
    * @param sz   - data size (must be > 0 and < databuf_size)
    * @param t    - timeout
   */
-  io::result page_program(uint32_t addr, const void *data, uint32_t sz, const delay::expirable &t)
+  io::result write(uint32_t addr, const void *data, uint32_t sz, const delay::expirable &t)
   {
     if(sz < 1 || sz > databuf_size) { return io::result::error; }
 
