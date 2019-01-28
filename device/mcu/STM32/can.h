@@ -280,4 +280,7 @@ event irq_source() { return detail::irq_source<_module>(); }
 template<typename _module, fifo _fifo>
 uint32_t get_msg_pending() { return detail::get_msg_pending<_module, _fifo>(); }
 
+template<typename _module, fifo _fifo>
+void fifo_release() { detail::fifo_release<_module, _fifo>(); }
+
 } // namespace lmcu::can

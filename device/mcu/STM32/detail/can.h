@@ -103,6 +103,19 @@ uint32_t get_msg_pending()
   return ((inst->RF0R >> CAN_RF0R_FMP0_Pos) & 0x3) + ((inst->RF1R >> CAN_RF1R_FMP1_Pos) & 0x3);
 }
 
+template<typename _module, fifo _fifo>
+void fifo_release()
+{
+  auto inst = detail::inst<_module>();
+
+  if constexpr(_fifo == fifo::fifo_0) {
+    inst->RF0R |= CAN_RF0R_RFOM0;
+  }
+  else {
+    inst->RF1R |= CAN_RF1R_RFOM1;
+  }
+}
+
 template<typename _module, typename ..._modules>
 void configure()
 {
@@ -616,10 +629,10 @@ io::result rx(uint32_t &id, bool &ide, bool &rtr, uint8_t &fmi, uint8_t data[8],
 
   // fifo release
   if(fifo_n == 0) {
-    inst->RF0R |= CAN_RF0R_RFOM0;
+    fifo_release<_module, fifo::fifo_0>();
   }
   else {
-    inst->RF1R |= CAN_RF1R_RFOM1;
+    fifo_release<_module, fifo::fifo_1>();
   }
 
   return io::result::success;
