@@ -18,7 +18,7 @@ static inline void disable() { detail::disable(); }
 /**
  * @brief Reset CRC calculation
 */
-void reset() { detail::reset(); }
+static inline void reset() { detail::reset(); }
 
 /**
  * @brief Append data to CRC calculation
