@@ -3,7 +3,7 @@
 
 namespace lmcu::flash {
 
-enum class status;
+enum class status : uint32_t;
 
 #include "detail/flash.h"
 
