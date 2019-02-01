@@ -26,12 +26,15 @@ public:
   ;
 
   static constexpr uint32_t
-    sector_size  = 64_Kbyte,
-    sector_count = 2048,
-    capacity     = sector_size * sector_count,
-    page_size    = 4_Kbyte,
-    page_count   = capacity / page_size,
-    databuf_size = 256
+    subsector_size  = 4_Kbyte,
+    sector_size     = 64_Kbyte,
+    die_size        = 32_Mbyte,
+    subsector_count = 32768,
+    sector_count    = 2048,
+    die_count       = 4,
+    capacity        = subsector_size * subsector_count,
+    page_size       = subsector_size,
+    page_count      = subsector_count
   ;
 
   enum class status : uint32_t
@@ -45,6 +48,21 @@ public:
     bp_3   = 1 << 6, //
     bottom = 1 << 5, // top / bottom protected memory area
     srwe   = 1 << 7  // status register write enable / disable
+  };
+
+  struct dev_id
+  {
+    uint8_t mid;      // Manufacturer ID
+    uint8_t mem_type; // Memory Type
+    uint8_t capacity; // Memory Capacity
+    uint8_t uid[17];  // Unique ID
+  };
+
+  enum class page_type
+  {
+    subsector, //  4 Kbyte
+    sector,    // 64 Kbyte
+    die        // 32 Mbyte
   };
 
   N25Q00A()
@@ -72,7 +90,7 @@ public:
   */
   io::result reset(const delay::expirable &t)
   {
-    if(auto r = pe_wait(t); r != io::result::success) { return r; }
+    if(auto r = sync(t); r != io::result::success) { return r; }
 
     {
       lmcu_scoped_lock();
@@ -89,14 +107,6 @@ public:
     return delay::us(31, t)? io::result::success : io::result::busy;
   }
 
-  struct dev_id
-  {
-    uint8_t mid;      // Manufacturer ID
-    uint8_t mem_type; // Memory Type
-    uint8_t capacity; // Memory Capacity
-    uint8_t uid[17];  // Unique ID
-  };
-
   /**
    * @brief Read device ID
    *
@@ -105,7 +115,7 @@ public:
   io::result read_id(dev_id &id, const delay::expirable &t)
   {
     if(op_ == op::init) {
-      if(auto r = pe_wait(t); r != io::result::success) { return r; }
+      if(auto r = sync(t); r != io::result::success) { return r; }
     }
 
     if(auto r = suspend<true>(t); r != io::result::success) { return r; }
@@ -149,29 +159,57 @@ public:
   io::result read(uint32_t addr, void *data, uint32_t sz, const delay::expirable &t)
   {
     if(op_ == op::init) {
-      if(auto r = pe_wait(t); r != io::result::success) { return r; }
+      if(auto r = sync(t); r != io::result::success) { return r; }
     }
 
     if(auto r = suspend<true>(t); r != io::result::success) { return r; }
 
-    lmcu_scoped_lock();
+    auto do_read = [this, &t](uint32_t addr, uint8_t *data, uint32_t sz)
+    {
+      if(t.expired()) { return io::result::busy; }
 
-    const auto a_bytes = get_address_bytes(addr);
+      lmcu_scoped_lock();
 
-    select();
+      const auto a_bytes = get_address_bytes(addr);
 
-    if(!ex_addr_ && addr <= 0xFFFFFF) {
-      spi::tx<_spi>(cmd_read3);
-      spi::write<_spi>(&a_bytes[1], 3);
+      select();
+
+      if(!ex_addr_ && addr <= 0xFFFFFF) {
+        spi::tx<_spi>(cmd_read3);
+        spi::write<_spi>(&a_bytes[1], 3);
+      }
+      else {
+        spi::tx<_spi>(cmd_read4);
+        spi::write<_spi>(&a_bytes[0], 4);
+      }
+
+      spi::read<_spi>(data, sz);
+
+      deselect();
+
+      return io::result::success;
+    };
+
+    auto p = static_cast<uint8_t*>(data);
+
+    const uint32_t n = std::min<uint32_t>(sz, die_size - (addr % die_size));
+    if(n > 0) {
+      if(auto res = do_read(addr, p, n); res != io::result::success) { return res; }
+
+      addr += n;
+      p    += n;
+      sz   -= n;
     }
-    else {
-      spi::tx<_spi>(cmd_read4);
-      spi::write<_spi>(&a_bytes[0], 4);
+
+    while(sz > 0) {
+      const uint32_t n = std::min<uint32_t>(sz, die_size);
+
+      if(auto res = do_read(addr, p, n); res != io::result::success) { return res; }
+
+      addr += n;
+      p    += n;
+      sz   -= n;
     }
-
-    spi::read<_spi>(data, sz);
-
-    deselect();
 
     if(auto r = suspend<false>(t); r != io::result::success) { return r; }
 
@@ -183,21 +221,20 @@ public:
    *
    * @param addr - absolute offset from begining
    * @param data - data to be writed
-   * @param sz   - data size (must be > 0 and < databuf_size)
+   * @param sz   - data size
    * @param t    - timeout
   */
   io::result write(uint32_t addr, const void *data, uint32_t sz, const delay::expirable &t)
   {
-    if(sz < 1 || sz > databuf_size) { return io::result::error; }
-
-    if(auto r = pe_wait(t); r != io::result::success) { return r; }
-    if(auto r = exaddr_enable(t); r != io::result::success) { return r; }
-
-    const auto a_bytes = get_address_bytes(addr);
-
-    op_ = op::program;
-
+    auto do_write = [this, &t](uint32_t addr, const uint8_t *data, uint32_t sz)
     {
+      if(auto res = sync(t); res != io::result::success) { return res; }
+      if(auto res = exaddr_enable(t); res != io::result::success) { return res; }
+
+      op_ = op::program;
+
+      const auto a_bytes = get_address_bytes(addr);
+
       lmcu_scoped_lock();
 
       wp_enable(false);
@@ -213,6 +250,29 @@ public:
       deselect();
 
       wp_enable(true);
+
+      return io::result::success;
+    };
+
+    auto p = static_cast<const uint8_t*>(data);
+
+    const uint32_t n = std::min<uint32_t>(sz, 256 - (addr % 256));
+    if(n > 0) {
+      if(auto res = do_write(addr, p, n); res != io::result::success) { return res; }
+
+      addr += n;
+      p    += n;
+      sz   -= n;
+    }
+
+    while(sz > 0) {
+      const uint32_t n = std::min<uint32_t>(sz, 256);
+
+      if(auto res = do_write(addr, p, n); res != io::result::success) { return res; }
+
+      addr += n;
+      p    += n;
+      sz   -= n;
     }
 
     return io::result::success;
@@ -221,20 +281,36 @@ public:
   /**
    * @brief Erase pages sequence
    *
-   * @param pg_start - start page index
-   * @param pg_count - count of pages to be erased
-   * @param t        - timeout
+   * @tparam _page_type - selects flash sector type
+   * @param  start      - start page index
+   * @param  count      - count of pages to be erased
+   * @param  t          - timeout
   */
-  io::result page_erase(uint32_t pg_start, uint32_t pg_count, const delay::expirable &t)
+  template<page_type _page_type = page_type::subsector>
+  io::result page_erase(uint32_t start, uint32_t count, const delay::expirable &t)
   {
-    const uint32_t pg_end = pg_start + pg_count;
-    if(pg_end >= page_count) { return io::result::error; }
+    constexpr uint32_t pg_size = []
+    {
+      if constexpr(_page_type == page_type::subsector) { return subsector_size; }
+      if constexpr(_page_type == page_type::sector) { return sector_size; }
+      return die_size;
+    }();
 
-    if(auto r = pe_wait(t); r != io::result::success) { return r; }
-    if(auto r = exaddr_enable(t); r != io::result::success) { return r; }
+    constexpr uint32_t pg_count = []
+    {
+      if constexpr(_page_type == page_type::subsector) { return subsector_count; }
+      if constexpr(_page_type == page_type::sector) { return sector_count; }
+      return die_count;
+    }();
 
-    for(; pg_start < pg_end; pg_start++) {
-      const auto a_bytes = get_address_bytes(pg_start * page_size);
+    const uint32_t end = start + count;
+    if(end >= pg_count) { return io::result::error; }
+
+    if(auto res = sync(t); res != io::result::success) { return res; }
+    if(auto res = exaddr_enable(t); res != io::result::success) { return res; }
+
+    for(; start < end; start++) {
+      const auto a_bytes = get_address_bytes(start * pg_size);
 
       op_ = op::erase;
 
@@ -248,15 +324,54 @@ public:
         deselect();
 
         select();
-        spi::tx<_spi>(cmd_subsector_erase);
+        if constexpr(_page_type == page_type::subsector) {
+          spi::tx<_spi>(cmd_subsector_erase);
+        }
+        else
+        if constexpr(_page_type == page_type::sector) {
+          spi::tx<_spi>(cmd_sector_erase);
+        }
+        else {
+          spi::tx<_spi>(cmd_die_erase);
+        }
         spi::write<_spi>(&a_bytes[0], 4);
         deselect();
 
         wp_enable(true);
       }
 
-      if(auto r = pe_wait(t); r != io::result::success) { return r; }
+      if(auto r = sync(t); r != io::result::success) { return r; }
     }
+
+    return io::result::success;
+  }
+
+  /**
+   * @brief Erase whole flash memory
+   *
+   * @param t - timeout
+   */
+  io::result mass_erase(const delay::expirable &t)
+  {
+    return page_erase<page_type::die>(0, die_count, t);
+  }
+
+  /**
+   * @brief Wait for PROGRAM or ERASE operation finish
+   *
+   * @param t - timeout
+   * @return 'busy' - if timeout expired, else 'success'
+  */
+  inline io::result sync(const delay::expirable &t)
+  {
+    if(op_ == op::idle) { return io::result::success; }
+
+    do {
+      if(t.expired()) { return io::result::busy; }
+    }
+    while(flags::none(read_flags(), state_flags::pe_controller));
+
+    op_ = op::idle;
 
     return io::result::success;
   }
@@ -268,16 +383,15 @@ private:
     cmd_read3           = 0x03, // 3-byte read
     cmd_read4           = 0x13, // 4-byte read
     cmd_write_enable    = 0x06,
-    cmd_write_disable   = 0x04,
     cmd_read_status     = 0x05,
     cmd_page_program    = 0x02,
     cmd_read_flags      = 0x70,
-    cmd_clear_flags     = 0x50,
     cmd_pe_resume       = 0x7A,
     cmd_pe_suspend      = 0x75,
     cmd_4byte_mode_on   = 0xB7,
-    cmd_4byte_mode_off  = 0xE9,
-    cmd_subsector_erase = 0x20
+    cmd_subsector_erase = 0x20,
+    cmd_sector_erase    = 0xD8,
+    cmd_die_erase       = 0xC4
   ;
 
   enum class state_flags : uint8_t
@@ -298,34 +412,6 @@ private:
 
   op op_        = op::init;
   bool ex_addr_ = false;
-
-  /**
-   * @brief Check busy flag for PROGRAM / ERASE operations
-  */
-  static inline bool pe_busy()
-  {
-    return flags::none(read_flags(), state_flags::pe_controller);
-  }
-
-  /**
-   * @brief Wait for PROGRAM or ERASE operation finish
-   *
-   * @param t - timeout
-   * @return 'busy' - if timeout expired, else 'success'
-  */
-  inline io::result pe_wait(const delay::expirable &t)
-  {
-    if(op_ == op::idle) { return io::result::success; }
-
-    do {
-      if(t.expired()) { return io::result::busy; }
-    }
-    while(pe_busy());
-
-    op_ = op::idle;
-
-    return io::result::success;
-  }
 
   /**
    * @brief Set CS signal to low level
@@ -350,19 +436,24 @@ private:
   /**
    * @brief Enable 4-byte extended address
   */
-  io::result exaddr_enable(const delay::expirable&)
+  io::result exaddr_enable(const delay::expirable &t)
   {
     if(ex_addr_) { return io::result::success; }
 
     lmcu_scoped_lock();
 
-    select();
-    spi::tx<_spi>(cmd_write_enable);
-    deselect();
+    while(true) {
+      if(t.expired()) { return io::result::busy; }
+      if(flags::all(read_flags(), state_flags::addressing)) { break; }
 
-    select();
-    spi::tx<_spi>(cmd_4byte_mode_on);
-    deselect();
+      select();
+      spi::tx<_spi>(cmd_write_enable);
+      deselect();
+
+      select();
+      spi::tx<_spi>(cmd_4byte_mode_on);
+      deselect();
+    }
 
     ex_addr_ = true;
 
@@ -398,7 +489,7 @@ private:
   }
 
   /**
-   * @brief Suspend or resume PROGRAM / ERASE operations
+   * @brief Suspend or resume PROGRAM / ERASE operations when they in progress
    *
    * @tparam _suspend - if 'true' perform SUSPEND operation, else RESUME
    * @param  t        - timeout
@@ -417,10 +508,24 @@ private:
     if(op_ == op::erase) {
       f = state_flags::erase_susp;
     }
-    else { return io::result::error; }
+    else {
+      return io::result::error;
+    }
 
     do {
+      if(t.expired()) { return io::result::busy; }
+
       lmcu_scoped_lock();
+
+      const auto status = read_flags();
+
+      if constexpr(_suspend) {
+        if(flags::all(status, state_flags::pe_controller)) {
+          op_ = op::idle; return io::result::success;
+        }
+      }
+
+      if(flags::check<_suspend>(status, f)) { break; }
 
       select();
       if constexpr(_suspend) {
@@ -430,17 +535,10 @@ private:
         spi::tx<_spi>(cmd_pe_resume);
       }
       deselect();
-
-      if(t.expired()) { return io::result::busy; }
     }
-    while(flags::check<!_suspend>(read_flags(), f));
+    while(true);
 
-    if constexpr(_suspend) {
-      do {
-        if(t.expired()) { return io::result::busy; }
-      }
-      while(pe_busy());
-    }
+    if constexpr(_suspend) { return sync(t); }
 
     return io::result::success;
   }
