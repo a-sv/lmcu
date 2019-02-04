@@ -93,7 +93,7 @@ public:
     if(auto r = sync(t); r != io::result::success) { return r; }
 
     {
-      lmcu_scoped_lock();
+      lmcu_disable_irq();
 
       select();
       spi::tx<_spi>(cmd_reset_enable);
@@ -120,7 +120,7 @@ public:
 
     if(auto r = suspend<true>(t); r != io::result::success) { return r; }
 
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     select();
     spi::tx<_spi>(cmd_read_id);
@@ -138,7 +138,7 @@ public:
   */
   io::result read_status(status &s, const delay::expirable&)
   {
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     select();
     spi::tx<_spi>(cmd_read_status);
@@ -168,7 +168,7 @@ public:
     {
       if(t.expired()) { return io::result::busy; }
 
-      lmcu_scoped_lock();
+      lmcu_disable_irq();
 
       const auto a_bytes = get_address_bytes(addr);
 
@@ -235,7 +235,7 @@ public:
 
       const auto a_bytes = get_address_bytes(addr);
 
-      lmcu_scoped_lock();
+      lmcu_disable_irq();
 
       wp_enable(false);
 
@@ -315,7 +315,7 @@ public:
       op_ = op::erase;
 
       {
-        lmcu_scoped_lock();
+        lmcu_disable_irq();
 
         wp_enable(false);
 
@@ -440,7 +440,7 @@ private:
   {
     if(ex_addr_) { return io::result::success; }
 
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     while(true) {
       if(t.expired()) { return io::result::busy; }
@@ -515,7 +515,7 @@ private:
     do {
       if(t.expired()) { return io::result::busy; }
 
-      lmcu_scoped_lock();
+      lmcu_disable_irq();
 
       const auto status = read_flags();
 

@@ -26,7 +26,7 @@ public:
 
     _sz_type avail;
 
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     while(b < e) {
       if(ovf_) {
@@ -112,7 +112,7 @@ public:
   template<typename _data>
   io::result getb(_data&& data)
   {
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     if(ovf_) {
       if(r_ >= end()) { ovf_ = false; r_ = beg(); }
@@ -162,7 +162,7 @@ public:
 
     _sz_type avail;
 
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     while(b < e) {
       if(ovf_) {
@@ -247,7 +247,7 @@ public:
   template<typename _data>
   io::result putb(_data&& data)
   {
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     if(!ovf_) {
       if(w_ >= end()) { ovf_ = true; w_ = beg(); }
@@ -291,7 +291,7 @@ public:
   */
   inline void clear()
   {
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     r_ = w_ = beg();
     ovf_ = false;
@@ -302,7 +302,7 @@ public:
   */
   inline _sz_type size() const
   {
-    lmcu_scoped_lock();
+    lmcu_disable_irq();
 
     if(ovf_) { return (end() - r_) + (w_ - beg()); }
     return w_ - r_;
