@@ -81,21 +81,21 @@ enum class speed
 // not connected pin
 struct not_connected
 {
-  static constexpr auto module_type = lmcu::module_type::gpio_pin;
-  static constexpr auto nc          = true;
+  static constexpr auto dev_class = lmcu::dev_class::gpio_pin;
+  static constexpr auto nc        = true;
 };
 
 template<port _port, uint16_t _bit, mode _mode, pull _pull, speed _speed>
 struct pin
 {
-  static constexpr auto module_type = lmcu::module_type::gpio_pin;
-  static constexpr auto port        = _port;
-  static constexpr auto bit         = _bit;
-  static constexpr auto mask        = 1 << _bit;
-  static constexpr auto mode        = _mode;
-  static constexpr auto pull        = _pull;
-  static constexpr auto speed       = _speed;
-  static constexpr auto nc          = false;
+  static constexpr auto dev_class = lmcu::dev_class::gpio_pin;
+  static constexpr auto port      = _port;
+  static constexpr auto bit       = _bit;
+  static constexpr auto mask      = 1 << _bit;
+  static constexpr auto mode      = _mode;
+  static constexpr auto pull      = _pull;
+  static constexpr auto speed     = _speed;
+  static constexpr auto nc        = false;
 };
 
 #include "detail/gpio.h"

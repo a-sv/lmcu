@@ -16,11 +16,15 @@ template<
 >
 class N25Q00A
 {
-  static_assert(_spi::module_type == module_type::spi, "_spi must have type 'spi'");
-  static_assert(_nss::module_type == module_type::gpio_pin, "_nss must have type 'gpio_pin'");
-  static_assert(_wp::module_type == module_type::gpio_pin, "_wp must have type 'gpio_pin'");
-  static_assert(_hold::module_type == module_type::gpio_pin, "_hold must have type 'gpio_pin'");
+  static_assert(_spi::dev_class == lmcu::dev_class::spi, "_spi must have type 'spi'");
+  static_assert(_nss::dev_class == lmcu::dev_class::gpio_pin, "_nss must have type 'gpio_pin'");
+  static_assert(_wp::dev_class == lmcu::dev_class::gpio_pin, "_wp must have type 'gpio_pin'");
+  static_assert(_hold::dev_class == lmcu::dev_class::gpio_pin, "_hold must have type 'gpio_pin'");
 public:
+  static constexpr auto
+    dev_class = lmcu::dev_class::mtd
+  ;
+
   static constexpr auto
     type = flash::type::nor
   ;

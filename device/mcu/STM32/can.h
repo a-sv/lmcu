@@ -104,23 +104,23 @@ template<
 >
 struct module
 {
-  static constexpr auto module_type = lmcu::module_type::can;
-  static constexpr auto module_id   = _module_id;
-  static constexpr auto prediv      = _prediv;
-  static constexpr auto sjw         = _sjw;
-  static constexpr auto bs1         = _bs1;
-  static constexpr auto bs2         = _bs2;
-  static constexpr auto ttcm        = _ttcm;
-  static constexpr auto abom        = _abom;
-  static constexpr auto awum        = _awum;
-  static constexpr auto nart        = _nart;
-  static constexpr auto rflm        = _rflm;
-  static constexpr auto txfp        = _txfp;
-  static constexpr auto mode        = _mode;
-  static constexpr auto irq0        = _irq0();
-  static constexpr auto irq1        = _irq1();
-  static constexpr auto irq2        = _irq2();
-  static constexpr auto irq3        = _irq3();
+  static constexpr auto dev_class = lmcu::dev_class::can;
+  static constexpr auto module_id = _module_id;
+  static constexpr auto prediv    = _prediv;
+  static constexpr auto sjw       = _sjw;
+  static constexpr auto bs1       = _bs1;
+  static constexpr auto bs2       = _bs2;
+  static constexpr auto ttcm      = _ttcm;
+  static constexpr auto abom      = _abom;
+  static constexpr auto awum      = _awum;
+  static constexpr auto nart      = _nart;
+  static constexpr auto rflm      = _rflm;
+  static constexpr auto txfp      = _txfp;
+  static constexpr auto mode      = _mode;
+  static constexpr auto irq0      = _irq0();
+  static constexpr auto irq1      = _irq1();
+  static constexpr auto irq2      = _irq2();
+  static constexpr auto irq3      = _irq3();
 };
 
 enum class fifo { any, fifo_0, fifo_1 };

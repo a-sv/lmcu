@@ -10,7 +10,7 @@
 #include "../../../hwi/common/units.h"
 #include "../../../hwi/common/round.h"
 #include "../../../hwi/common/mem_ptr.h"
-#include "../../../hwi/common/module_type.h"
+#include "../../../hwi/common/dev_class.h"
 #include "../../../hwi/common/io.h"
 #include "../../../hwi/common/hex.h"
 #include "../../../hwi/common/defer.h"

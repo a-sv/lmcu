@@ -102,7 +102,7 @@ template<
 >
 struct module
 {
-  static constexpr auto module_type  = lmcu::module_type::timer;
+  static constexpr auto dev_class    = lmcu::dev_class::timer;
   static constexpr auto module_id    = _module_id;
   static constexpr auto counter_mode = _counter_mode;
   static constexpr auto clock_prediv = _clock_prediv;
@@ -143,7 +143,7 @@ template<
 >
 struct oc_conf
 {
-  static constexpr auto module_type     = lmcu::module_type::timer_oc;
+  static constexpr auto dev_class       = lmcu::dev_class::timer_oc;
   static constexpr auto module          = _module();
   static constexpr auto oc_channel      = _oc_channel;
   static constexpr auto oc_mode         = _oc_mode;

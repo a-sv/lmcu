@@ -12,7 +12,7 @@ template <
 >
 class SSD1306
 {
-  static_assert(_module::module_type == module_type::i2c, "only I2C interface supported for now");
+  static_assert(_module::dev_class == lmcu::dev_class::i2c, "only I2C interface supported for now");
   static_assert(_width > 0 && _width <= 128, "display width must be > 0 and <= 128");
   static_assert(_height > 0 && _height <= 64, "display height must be > 0 and <= 64");
 public:

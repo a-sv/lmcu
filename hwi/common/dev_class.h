@@ -2,7 +2,7 @@
 
 namespace lmcu {
 
-enum class module_type
+enum class dev_class
 {
   usart_async,
   usart_sync,
@@ -20,7 +20,8 @@ enum class module_type
   adc_reg_channel,
   adc_inj_channel,
   timer,
-  timer_oc
+  timer_oc,
+  mtd
 };
 
 } // namespace lmcu

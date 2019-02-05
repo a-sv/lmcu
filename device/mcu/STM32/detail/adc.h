@@ -51,7 +51,7 @@ template<typename _conf, typename ...args>
 void adc_configure()
 {
   constexpr auto m = _conf();
-  if constexpr(m.module_type == module_type::adc) {
+  if constexpr(m.dev_class == lmcu::dev_class::adc) {
     auto inst = detail::inst<m.module_id>();
 
     detail::disable<_conf>();
@@ -303,7 +303,7 @@ constexpr void reg_seqence_configure()
 
   constexpr auto match = [m]
   {
-    if constexpr(m.module_type == module_type::adc_reg_channel) {
+    if constexpr(m.dev_class == lmcu::dev_class::adc_reg_channel) {
       return m.module.module_id == _module_id;
     }
     return false;
@@ -412,7 +412,7 @@ constexpr void inj_seqence_configure()
 
   constexpr auto match = [m]
   {
-    if constexpr(m.module_type == module_type::adc_inj_channel) {
+    if constexpr(m.dev_class == lmcu::dev_class::adc_inj_channel) {
       return m.module.module_id == _module_id;
     }
     return false;
@@ -470,7 +470,7 @@ template<module_id _module_id, uint8_t _low, uint8_t _high, typename _conf>
 constexpr bool is_reg_chan_in_range()
 {
   constexpr auto m = _conf();
-  if constexpr(m.module_type == module_type::adc_reg_channel) {
+  if constexpr(m.dev_class == lmcu::dev_class::adc_reg_channel) {
     return m.module.module_id == _module_id && m.chan_num >= _low && m.chan_num <= _high;
   }
   return false;
@@ -595,7 +595,7 @@ uint32_t read()
     }
   }
 
-  if constexpr(m.module_type == module_type::adc) { return inst->DR; }
+  if constexpr(m.dev_class == lmcu::dev_class::adc) { return inst->DR; }
 
   return 0;
 }

@@ -76,7 +76,7 @@ template<
 >
 struct module
 {
-  static constexpr auto module_type = lmcu::module_type::spi;
+  static constexpr auto dev_class   = lmcu::dev_class::spi;
   static constexpr auto module_id   = _module_id;
   static constexpr auto mode        = _mode;
   static constexpr auto direction   = _direction;
