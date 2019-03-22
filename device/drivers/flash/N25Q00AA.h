@@ -283,6 +283,85 @@ public:
   }
 
   /**
+   * @brief Check page for empty
+   *
+   * @tparam _page_type - selects flash sector type
+   * @param  start      - start page index
+   * @param  count      - count of pages to be checked
+   * @param  is_empty   - 'true' if all page data is 0xFF, else 'false'
+   * @param  t          - timeout
+  */
+  template<page_type _page_type = page_type::subsector>
+  io::result page_empty(uint32_t start, uint32_t count, bool &is_empty, const delay::expirable &t)
+  {
+    if(op_ == op::init) {
+      if(auto r = sync(t); r != io::result::success) { return r; }
+    }
+
+    constexpr auto page_sz = [] {
+      switch(_page_type)
+      {
+        case page_type::subsector: return subsector_size;
+        case page_type::sector:    return sector_size;
+        case page_type::die:       return die_size;
+      }
+    }();
+
+    uint32_t
+      addr = start * page_sz,
+      sz   = count * page_sz
+    ;
+
+    bool res = true;
+
+    uint32_t n = std::min<uint32_t>(sz, die_size - (addr % die_size));
+
+    for(; sz > 0; sz -= n) {
+      if(t.expired()) { return io::result::busy; }
+
+      const auto a_bytes = get_address_bytes(addr);
+
+      select();
+      lmcu_defer([] { deselect(); });
+
+      {
+        lmcu_disable_irq();
+
+        if(!ex_addr_ && addr <= 0xFFFFFF) {
+          spi::tx<_spi>(cmd_read3);
+          spi::write<_spi>(&a_bytes[1], 3);
+        } else {
+          spi::tx<_spi>(cmd_read4);
+          spi::write<_spi>(&a_bytes[0], 4);
+        }
+      }
+
+      addr += n;
+
+      uint32_t buf[4];
+
+      for(; n; n -= sizeof(buf)) {
+        if(t.expired()) { return io::result::busy; }
+
+        lmcu_disable_irq();
+
+        spi::read<_spi>(&buf, sizeof(buf));
+        if(
+          buf[0] != 0xFFFFFFFF ||
+          buf[1] != 0xFFFFFFFF ||
+          buf[2] != 0xFFFFFFFF ||
+          buf[3] != 0xFFFFFFFF
+        ) { sz = 0; res = false; break; }
+      }
+
+      n = std::min<uint32_t>(sz, die_size);
+    }
+
+    is_empty = res;
+    return io::result::success;
+  }
+
+  /**
    * @brief Erase pages sequence
    *
    * @tparam _page_type - selects flash sector type
