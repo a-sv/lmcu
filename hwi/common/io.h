@@ -2,6 +2,6 @@
 
 namespace lmcu::io {
 
-enum class result { success, busy, error };
+enum class result { success, busy, error, eof };
 
 } // namespace lmcu::io
