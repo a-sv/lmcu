@@ -4,21 +4,20 @@
 
 namespace lmcu::drivers::display {
 
+enum class SSD1306_size { _128x32, _128x64 };
+
 template <
   typename _module,
-  uint8_t  _width    = 128,
-  uint8_t  _height   = 64,
+  SSD1306_size _size,
   uint8_t  _i2c_addr = 0x3C
 >
 class SSD1306
 {
   static_assert(_module::dev_class == lmcu::dev_class::i2c, "only I2C interface supported for now");
-  static_assert(_width > 0 && _width <= 128, "display width must be > 0 and <= 128");
-  static_assert(_height > 0 && _height <= 64, "display height must be > 0 and <= 64");
 public:
   static constexpr uint8_t
-    width  = _width,
-    height = _height
+    width  = 128,
+    height = (_size == SSD1306_size::_128x32)? 32 : 64
   ;
 
   static void init(const delay::expirable &t)
@@ -27,7 +26,7 @@ public:
       cmd_displayoff,
       cmd_setdisplayclockdiv, 0x80,
 
-      cmd_setmultiplex, uint8_t(_height - 1),
+      cmd_setmultiplex, uint8_t(height - 1),
 
       cmd_setdisplayoffset, 0x0,
       cmd_setstartline,
@@ -36,7 +35,7 @@ public:
       cmd_segremap,
       cmd_comscandec,
 
-      cmd_setcompins, 0x12,
+      cmd_setcompins, ((_size == SSD1306_size::_128x32)? 0x2 : 0x12),
       cmd_setcontrast, 0x7f,
 
       cmd_setprecharge, 0x22,
@@ -47,8 +46,8 @@ public:
 
       cmd_scan_dir_left_to_right,
 
-      cmd_columnaddr, 0x0, uint8_t(_width - 1),
-      cmd_pageaddr, 0x0, uint8_t(_height / 8 - 1)
+      cmd_columnaddr, 0x0, uint8_t(width - 1),
+      cmd_pageaddr, 0x0, uint8_t(height / 8 - 1)
     });
   }
 
