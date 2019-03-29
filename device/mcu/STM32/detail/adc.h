@@ -480,22 +480,34 @@ template<uint32_t _r, module_id _module_id, uint8_t _low, uint8_t _high, typenam
          typename ...args>
 constexpr uint32_t smpr_mask()
 {
-  if constexpr(is_reg_chan_in_range<_module_id, _low, _high, _conf>()) {
-    return _r | (0x7 << ((_conf().chan_num - _low) * 3));
+  constexpr auto r = []() -> uint32_t
+  {
+    if constexpr(is_reg_chan_in_range<_module_id, _low, _high, _conf>()) {
+      return _r | (uint32_t(0x7) << ((_conf().chan_num - _low) * 3));
+    }
+    return _r;
+  }();
+
+  if constexpr(sizeof...(args) > 0) {
+    return smpr_mask<r, _module_id, _low, _high, args...>();
   }
-  if constexpr(sizeof...(args) > 0) { return smpr_mask<_r, _module_id, _low, _high, args...>(); }
-  return _r;
+  return r;
 }
 
 template<uint32_t _r, module_id _module_id, uint8_t _low, uint8_t _high, typename _conf,
          typename ...args>
 constexpr uint32_t smpr_bits()
 {
-  if constexpr(is_reg_chan_in_range<_module_id, _low, _high, _conf>()) {
-    return _r | (uint32_t(_conf().sample_time) << ((_conf().chan_num - _low) * 3));
-  }
-  if constexpr(sizeof...(args) > 0) { return smpr_bits<_r, _module_id, _low, _high, args...>(); }
-  return _r;
+  constexpr auto r = []() -> uint32_t
+  {
+    if constexpr(is_reg_chan_in_range<_module_id, _low, _high, _conf>()) {
+      return _r | (uint32_t(_conf().sample_time) << ((_conf().chan_num - _low) * 3));
+    }
+    return _r;
+  }();
+
+  if constexpr(sizeof...(args) > 0) { return smpr_bits<r, _module_id, _low, _high, args...>(); }
+  return r;
 }
 
 template<module_id _module_id, typename ...args>
@@ -512,7 +524,6 @@ void sample_rate_conf()
       inst->SMPR2 = r;
     }
   }
-
 
   {
     constexpr auto mask = smpr_mask<0, _module_id, 10, 17, args...>();
