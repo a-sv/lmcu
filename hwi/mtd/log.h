@@ -98,7 +98,7 @@ public:
         return res;
       }
       ofs += sizeof(rec);
-      if(r.crc == r.data.calc_crc()) { bi_.end.ofs = ofs; count = n; }
+      if(r.crc == r.data.calc_checksum()) { bi_.end.ofs = ofs; count = n; }
     }
 
     if constexpr(_seekable) {
@@ -205,7 +205,7 @@ public:
     rec r;
     if(auto res = dev_.read(ofs, &r, sizeof(r), t); res != io::result::success) { return res; }
 
-    if(r.crc != r.data.calc_crc()) { return io::result::error; }
+    if(r.crc != r.data.calc_checksum()) { return io::result::error; }
 
     data = r.data;
 
@@ -430,7 +430,7 @@ private:
 
   struct rec
   {
-    uint32_t crc;
+    decltype(_struct().calc_checksum()) crc;
     _struct data;
   };
 
