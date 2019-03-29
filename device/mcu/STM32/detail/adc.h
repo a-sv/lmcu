@@ -191,7 +191,7 @@ void adc_configure()
     {
       uint32_t r = inst->CR2;
 
-      if constexpr(m.temp_sensor == temp_sensor::disable) {
+      if constexpr(m.temp_refint == temp_refint::disable) {
         r &= ~ADC_CR2_TSVREFE;
       }
       else {

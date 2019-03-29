@@ -46,7 +46,7 @@ enum class inj_auto { enable, disable };
 
 enum class scan { enable, disable };
 
-enum class temp_sensor { enable, disable };
+enum class temp_refint { enable, disable };
 
 enum class reg_trig
 {
@@ -132,7 +132,7 @@ template<
   inj_auto _inj_auto = inj_auto::disable,
   dma _dma = dma::disable,
   dual_mode _dual_mode = dual_mode::independent,
-  temp_sensor _temp_sensor = temp_sensor::disable
+  temp_refint _temp_refint = temp_refint::disable
 >
 struct module
 {
@@ -147,7 +147,7 @@ struct module
   static constexpr auto inj_auto    = _inj_auto;
   static constexpr auto dma         = _dma;
   static constexpr auto dual_mode   = _dual_mode;
-  static constexpr auto temp_sensor = _temp_sensor;
+  static constexpr auto temp_refint = _temp_refint;
 };
 
 template<typename _module, uint8_t _chan_num, sample_time _sample_time>
