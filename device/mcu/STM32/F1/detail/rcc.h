@@ -31,14 +31,25 @@ constexpr void configure_periph_clocks()
   constexpr auto pclk2 = hclk / static_cast<uint32_t>(_apb2_prediv);
   apb2_clock = round<uint32_t>(pclk2);
 
+  uint32_t r = RCC->CFGR;
+  r &= ~RCC_CFGR_ADCPRE;
+
   if constexpr(_adc_prediv != adc_prediv::disable) {
     constexpr auto adc_clk = pclk2 / static_cast<uint32_t>(_adc_prediv);
     static_assert(adc_clk <= 14_MHz, "ADC clock must be <= 14MHz");
     adc_clock = round<uint32_t>(adc_clk);
+
+    switch(_adc_prediv) {
+    case adc_prediv::_4: r |= RCC_CFGR_ADCPRE_DIV4; break;
+    case adc_prediv::_6: r |= RCC_CFGR_ADCPRE_DIV6; break;
+    case adc_prediv::_8: r |= RCC_CFGR_ADCPRE_DIV8; break;
+    }
   }
   else {
     adc_clock = 0;
   }
+
+  RCC->CFGR = r;
 
   apb1_timer_clock = (_apb1_prediv == apb1_prediv::_1)? apb1_clock : apb1_clock * 2;
   apb2_timer_clock = (_apb2_prediv == apb2_prediv::_1)? apb2_clock : apb2_clock * 2;
