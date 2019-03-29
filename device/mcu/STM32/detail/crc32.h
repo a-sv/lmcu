@@ -2,9 +2,23 @@
 
 namespace detail {
 
-static inline void enable() { RCC->AHB1ENR |= RCC_AHB1ENR_CRCEN; }
+static inline void enable()
+{
+#ifdef _LMCU_DEVICE_STM32F1_
+  RCC->AHBENR |= RCC_AHBENR_CRCEN;
+#else
+  RCC->AHB1ENR |= RCC_AHB1ENR_CRCEN;
+#endif
+}
 
-static inline void disable() { RCC->AHB1ENR &= ~RCC_AHB1ENR_CRCEN; }
+static inline void disable()
+{
+#ifdef _LMCU_DEVICE_STM32F1_
+  RCC->AHBENR &= ~RCC_AHBENR_CRCEN;
+#else
+  RCC->AHB1ENR &= ~RCC_AHB1ENR_CRCEN;
+#endif
+}
 
 static inline void reset() { CRC->CR |= CRC_CR_RESET; }
 
