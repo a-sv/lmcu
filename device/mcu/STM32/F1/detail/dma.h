@@ -79,7 +79,7 @@ void enable_irq()
       case channel::ch7: nvic::enable_irq<_irq, DMA1_Channel7_IRQn>(); break;
       }
     break;
-  #endif
+#endif
 
 #if defined(DMA2)
     case module_id::dma2:
@@ -95,7 +95,7 @@ void enable_irq()
         break;
       }
     break;
-  #endif
+#endif
     }
   }
 }
