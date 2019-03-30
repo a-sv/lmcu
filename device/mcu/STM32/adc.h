@@ -171,59 +171,62 @@ struct jchannel_conf
 
 #include "detail/adc.h"
 
-template<typename ...args>
+template<typename ..._args>
 void configure()
 {
-  detail::adc_configure<args...>();
+  detail::adc_configure<_args...>();
 
 #if defined(ADC1)
-  detail::reg_chan_configure<module_id::adc1, args...>();
-  detail::inj_chan_configure<module_id::adc1, args...>();
+  detail::reg_chan_configure<module_id::adc1, _args...>();
+  detail::inj_chan_configure<module_id::adc1, _args...>();
 #endif
 
 #if defined(ADC2)
-  detail::reg_chan_configure<module_id::adc2, args...>();
-  detail::inj_chan_configure<module_id::adc2, args...>();
+  detail::reg_chan_configure<module_id::adc2, _args...>();
+  detail::inj_chan_configure<module_id::adc2, _args...>();
 #endif
 
 #if defined(ADC3)
-  detail::reg_chan_configure<module_id::adc3, args...>();
-  detail::inj_chan_configure<module_id::adc3, args...>();
+  detail::reg_chan_configure<module_id::adc3, _args...>();
+  detail::inj_chan_configure<module_id::adc3, _args...>();
 #endif
 
 #if defined(ADC4)
-  detail::reg_chan_configure<module_id::adc4, args...>();
-  detail::inj_chan_configure<module_id::adc4, args...>();
+  detail::reg_chan_configure<module_id::adc4, _args...>();
+  detail::inj_chan_configure<module_id::adc4, _args...>();
 #endif
 }
 
-template<typename _arg1, typename ...args>
+template<typename _module, typename ..._modules>
 void enable()
 {
-  detail::enable<_arg1>();
-  if constexpr(sizeof...(args) > 0) { enable<args...>(); }
+  detail::enable<_module>();
+  if constexpr(sizeof...(_modules) > 0) { enable<_modules...>(); }
 }
 
-template<typename _arg1, typename ...args>
+template<typename _module, typename ..._modules>
 void disable()
 {
-  detail::disable<_arg1>();
-  if constexpr(sizeof...(args) > 0) { disable<args...>(); }
+  detail::disable<_module>();
+  if constexpr(sizeof...(_modules) > 0) { disable<_modules...>(); }
 }
 
-template<typename ...args>
-void calibrate() { detail::calibrate<args...>(); }
+template<typename ..._modules>
+void calibrate() { detail::calibrate<_modules...>(); }
 
-template<typename ...args>
-void regular_soft_start() { detail::regular_soft_start<args...>(); }
+template<typename ..._modules>
+void regular_soft_start() { detail::regular_soft_start<_modules...>(); }
 
-template<typename ...args>
-void injected_soft_start() { detail::injected_soft_start<args...>(); }
+template<typename ..._modules>
+void injected_soft_start() { detail::injected_soft_start<_modules...>(); }
 
-template<typename _conf, uint8_t _jrank = 0>
-uint32_t read() { return detail::read<_conf, _jrank>(); }
+template<typename _module>
+uint32_t read() { return detail::read<_module>(); }
 
-template<typename _conf>
-uint32_t dma_address() { return detail::dma_address<_conf>(); }
+template<typename _module, uint8_t _jrank>
+uint32_t read() { return detail::read<_module, _jrank>(); }
+
+template<typename _module>
+uint32_t dma_address() { return detail::dma_address<_module>(); }
 
 } // namespace lmcu::adc
