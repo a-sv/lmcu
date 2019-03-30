@@ -281,6 +281,16 @@ void adc_configure()
 
       inst->CR2 = r;
     }
+
+    if constexpr(_module::irq.irq_type != nvic::irq_type::disable) {
+#ifdef _LMCU_DEVICE_STM32F1_
+      nvic::enable_irq<decltype(_module::irq), ADC1_2_IRQn>();
+#endif
+
+#ifdef _LMCU_DEVICE_STM32F4_
+      nvic::enable_irq<decltype(_module::irq), ADC_IRQn>();
+#endif
+    }
   }
 
   if constexpr(sizeof...(_modules) > 0) { adc_configure<_modules...>(); }
@@ -302,7 +312,7 @@ constexpr void reg_seqence_configure()
 {
   constexpr auto match = []
   {
-    if constexpr(_chconf::dev_class == lmcu::dev_class::adc_reg_channel) {
+    if constexpr(_chconf::dev_class == dev_class::adc_reg_channel) {
       return _chconf::module.module_id == _module_id;
     }
     return false;
@@ -409,7 +419,7 @@ constexpr void inj_seqence_configure()
 {
   constexpr auto match = []
   {
-    if constexpr(_chconf::dev_class == lmcu::dev_class::adc_inj_channel) {
+    if constexpr(_chconf::dev_class == dev_class::adc_inj_channel) {
       return _chconf::module.module_id == _module_id;
     }
     return false;
@@ -611,6 +621,62 @@ uint32_t read()
 
   return 0;
 }
+
+template<typename _module, event ..._events>
+event get_flags() { return flags::from_value<event>(detail::inst<_module>()->SR); }
+
+template<typename _module, event ..._events>
+void clear_flags()
+{
+  auto inst = detail::inst<_module>();
+
+  constexpr auto events = (_events + ...);
+  static_assert(flags::none(events, event::eoc), "use 'read' function for clear EOC event");
+
+  uint32_t r = 0;
+  if constexpr(flags::all(events, event::awd))    { r |= ADC_SR_AWD;   }
+  if constexpr(flags::all(events, event::jeoc))   { r |= ADC_SR_JEOC;  }
+  if constexpr(flags::all(events, event::jstart)) { r |= ADC_SR_JSTRT; }
+  if constexpr(flags::all(events, event::start))  { r |= ADC_SR_STRT;  }
+  inst->SR = ~r;
+}
+
+template<typename _module, event ..._events>
+void enable_events()
+{
+  auto inst = detail::inst<_module>();
+
+  constexpr auto events = (_events + ...);
+
+  static_assert(flags::none(events, event::start, event::jstart), "events 'start' and 'jstart' "
+                                                                  "cannot be enabled");
+
+  uint32_t r = inst->CR1;
+  if constexpr(flags::all(events, event::awd))  { r |= ADC_CR1_AWDIE;  }
+  if constexpr(flags::all(events, event::eoc))  { r |= ADC_CR1_EOCIE;  }
+  if constexpr(flags::all(events, event::jeoc)) { r |= ADC_CR1_JEOCIE; }
+  inst->CR1 = r;
+}
+
+template<typename _module, event ..._events>
+void disable_events()
+{
+  auto inst = detail::inst<_module>();
+
+  constexpr auto events = (_events + ...);
+
+  static_assert(flags::none(events, event::start, event::jstart), "events 'start' and 'jstart' "
+                                                                  "cannot be disabled");
+
+  uint32_t r = inst->CR1;
+  if constexpr(flags::all(events, event::awd))  { r &= ~ADC_CR1_AWDIE;  }
+  if constexpr(flags::all(events, event::eoc))  { r &= ~ADC_CR1_EOCIE;  }
+  if constexpr(flags::all(events, event::jeoc)) { r &= ~ADC_CR1_JEOCIE; }
+  inst->CR1 = r;
+}
+
+template<typename _module>
+event irq_source() { return flags::from_value<event>(detail::inst<_module>()->SR & 0x7); }
 
 template<typename _module>
 uint32_t dma_address() { return uint32_t(&detail::inst<_module>()->DR); }

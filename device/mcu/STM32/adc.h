@@ -121,6 +121,15 @@ enum class sample_time
   _239_5cyc
 };
 
+namespace nvic {
+
+enum class irq_type { disable, adci };
+
+constexpr auto default_prio_group = 3;
+
+} // namespace nvic
+#include "../cortex/nvic.h"
+
 template<
   module_id _module_id,
   data_align _data_align,
@@ -132,7 +141,8 @@ template<
   inj_auto _inj_auto = inj_auto::disable,
   dma _dma = dma::disable,
   dual_mode _dual_mode = dual_mode::independent,
-  temp_refint _temp_refint = temp_refint::disable
+  temp_refint _temp_refint = temp_refint::disable,
+  typename _irq = nvic::irq<nvic::irq_type::disable>
 >
 struct module
 {
@@ -148,6 +158,7 @@ struct module
   static constexpr auto dma         = _dma;
   static constexpr auto dual_mode   = _dual_mode;
   static constexpr auto temp_refint = _temp_refint;
+  static constexpr auto irq         = _irq();
 };
 
 template<typename _module, uint8_t _chan_num, sample_time _sample_time>
@@ -167,6 +178,17 @@ struct jchannel_conf
   static constexpr auto chan_num    = _chan_num;
   static constexpr auto sample_time = _sample_time;
   static constexpr auto data_offset = _data_offset;
+};
+
+enum class event : uint32_t
+{
+  lmcu_flags_object,
+
+  awd    = 1 << 0, // analog watchdog
+  eoc    = 1 << 1, // regular end of conversion
+  jeoc   = 1 << 2, // injected channels end of conversion
+  jstart = 1 << 3, // injected channel start flag
+  start  = 1 << 4  // regular channel start flag
 };
 
 #include "detail/adc.h"
@@ -225,6 +247,24 @@ uint32_t read() { return detail::read<_module>(); }
 
 template<typename _module, uint8_t _jrank>
 uint32_t read() { return detail::read<_module, _jrank>(); }
+
+template<typename _module, event ..._events>
+event get_flags() { return detail::get_flags<_module, _events...>(); }
+
+template<typename _module, event ..._events>
+void clear_flags() { detail::clear_flags<_module, _events...>(); }
+
+template<typename _module, event ..._events>
+void enable_events() { detail::enable_events<_module, _events...>(); }
+
+template<typename _module, event ..._events>
+void disable_events() { detail::disable_events<_module, _events...>(); }
+
+template<typename _module>
+event irq_source() { return detail::irq_source<_module>(); }
+
+template<typename _module, event ..._events>
+void irq_clear() { detail::clear_flags<_module, _events...>(); }
 
 template<typename _module>
 uint32_t dma_address() { return detail::dma_address<_module>(); }
