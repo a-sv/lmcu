@@ -464,9 +464,12 @@ constexpr void inj_seqence_configure()
 }
 
 template<module_id _module_id, uint8_t _low, uint8_t _high, typename _chconf>
-constexpr bool is_reg_chan_in_range()
+constexpr bool channel_in_range()
 {
-  if constexpr(_chconf::dev_class == lmcu::dev_class::adc_reg_channel) {
+  if constexpr(
+    _chconf::dev_class == dev_class::adc_reg_channel ||
+    _chconf::dev_class == dev_class::adc_inj_channel
+  ) {
     return _chconf::module.module_id == _module_id && _chconf::chan_num >= _low &&
            _chconf::chan_num <= _high;
   }
@@ -479,7 +482,7 @@ constexpr uint32_t smpr_mask()
 {
   constexpr auto r = []() -> uint32_t
   {
-    if constexpr(is_reg_chan_in_range<_module_id, _low, _high, _chconf>()) {
+    if constexpr(channel_in_range<_module_id, _low, _high, _chconf>()) {
       return uint32_t(0x7) << ((_chconf::chan_num - _low) * 3);
     }
     return 0;
@@ -497,7 +500,7 @@ constexpr uint32_t smpr_bits()
 {
   constexpr auto r = []() -> uint32_t
   {
-    if constexpr(is_reg_chan_in_range<_module_id, _low, _high, _chconf>()) {
+    if constexpr(channel_in_range<_module_id, _low, _high, _chconf>()) {
       return uint32_t(_chconf::sample_time) << ((_chconf::chan_num - _low) * 3);
     }
     return 0;
