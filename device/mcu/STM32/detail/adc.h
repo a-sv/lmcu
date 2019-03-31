@@ -34,7 +34,7 @@ void enable()
 {
   auto inst = detail::inst<_module>();
 
-  inst->CR2 |=  ADC_CR2_ADON;
+  inst->CR2 |= ADC_CR2_ADON;
   while((inst->CR2 & ADC_CR2_ADON) == 0)
     ;
 }
@@ -49,14 +49,121 @@ void disable()
     ;
 }
 
-template<typename _module, typename ..._modules>
-void adc_configure()
+template<data_align _data_align, typename _cr2>
+void set_data_align(_cr2&& cr2)
 {
-  if constexpr(_module::dev_class == lmcu::dev_class::adc) {
-    auto inst = detail::inst<_module>();
+  if constexpr(_data_align == data_align::right) {
+    cr2 &= ~ADC_CR2_ALIGN;
+  }
+  else {
+    cr2 |=  ADC_CR2_ALIGN;
+  }
+}
 
-    detail::disable<_module>();
+template<typename _module, data_align _data_align>
+void set_data_align() { set_data_align<_data_align>(detail::inst<_module>()->CR2); }
 
+template<typename _module>
+data_align get_data_align()
+{
+  if((detail::inst<_module>()->CR2 & ADC_CR2_ALIGN) == 0) { return data_align::right; }
+  return data_align::left;
+}
+
+template<scan _scan, typename _cr1>
+void set_scan(_cr1&& cr1)
+{
+  if constexpr(_scan == scan::disable) {
+    cr1 &= ~ADC_CR1_SCAN;
+  }
+  else {
+    cr1 |=  ADC_CR1_SCAN;
+  }
+}
+
+template<typename _module, scan _scan>
+void set_scan() { set_scan<_scan>(detail::inst<_module>()->CR1); }
+
+template<typename _module>
+scan get_scan()
+{
+  if((detail::inst<_module>()->CR1 & ADC_CR1_SCAN) == 0) { return scan::disable; }
+  return scan::enable;
+}
+
+template<disc_mode _disc_mode, typename _cr1, typename _cr2>
+void set_disc_mode(_cr1&& cr1, _cr2&& cr2)
+{
+  if constexpr(_disc_mode == disc_mode::regular) {
+    cr1 |=  ADC_CR1_DISCEN;
+  }
+  else {
+    cr1 &= ~ADC_CR1_DISCEN;
+  }
+
+  if constexpr(_disc_mode == disc_mode::injected) {
+    cr1 |=  ADC_CR1_JDISCEN;
+  }
+  else {
+    cr1 &= ~ADC_CR1_JDISCEN;
+  }
+
+  if constexpr(_disc_mode == disc_mode::disable) {
+    cr2 |=  ADC_CR2_CONT;
+  }
+  else {
+    cr2 &= ~ADC_CR2_CONT;
+  }
+}
+
+template<typename _module, disc_mode _disc_mode>
+void set_disc_mode()
+{
+  auto inst = detail::inst<_module>();
+  uint32_t cr1 = inst->CR1, cr2 = inst->CR2;
+  set_disc_mode<_disc_mode>(cr1, cr2);
+  inst->CR1 = cr1;
+  inst->CR2 = cr2;
+}
+
+template<typename _module>
+disc_mode get_disc_mode()
+{
+  auto inst = detail::inst<_module>();
+
+  const uint32_t cr1 = inst->CR1;
+
+  if(cr1 & ADC_CR1_DISCEN)  { return disc_mode::regular;  }
+  if(cr1 & ADC_CR1_JDISCEN) { return disc_mode::injected; }
+
+  return disc_mode::disable;
+}
+
+template<reg_discnum _reg_discnum, typename _cr1>
+void set_reg_discnum(_cr1&& cr1)
+{
+  cr1 &= ~ADC_CR1_DISCNUM;
+  cr1 |= (uint32_t(_reg_discnum) << ADC_CR1_DISCNUM_Pos);
+}
+
+template<typename _module, reg_discnum _reg_discnum>
+void set_reg_discnum()
+{
+  auto inst = detail::inst<_module>();
+  uint32_t cr1 = inst->CR1;
+  set_reg_discnum<_reg_discnum>(cr1);
+  inst->CR1 = cr1;
+}
+
+template<typename _module>
+reg_discnum get_reg_discnum()
+{
+  return reg_discnum( (detail::inst<_module>()->CR1 & ADC_CR1_DISCNUM) >> ADC_CR1_DISCNUM_Pos );
+}
+
+template<typename _module>
+constexpr void reg_trig_check()
+{
 #if defined(ADC1)
     if constexpr(
       _module::reg_trig == reg_trig::tim1_cc1          ||
@@ -65,12 +172,7 @@ void adc_configure()
       _module::reg_trig == reg_trig::tim2_cc2          ||
       _module::reg_trig == reg_trig::tim3_trgo         ||
       _module::reg_trig == reg_trig::tim4_cc4          ||
-      _module::reg_trig == reg_trig::exti11__tim8_trgo ||
-      _module::inj_trig == inj_trig::tim2_trgo         ||
-      _module::inj_trig == inj_trig::tim2_cc1          ||
-      _module::inj_trig == inj_trig::tim3_cc4          ||
-      _module::inj_trig == inj_trig::tim4_trgo         ||
-      _module::inj_trig == inj_trig::exti15__tim8_cc4
+      _module::reg_trig == reg_trig::exti11__tim8_trgo
     ) {
       static_assert(
         _module::module_id == module_id::adc1
@@ -89,7 +191,129 @@ void adc_configure()
       _module::reg_trig == reg_trig::tim8_cc1  ||
       _module::reg_trig == reg_trig::tim8_trgo ||
       _module::reg_trig == reg_trig::tim5_cc1  ||
-      _module::reg_trig == reg_trig::tim5_cc3  ||
+      _module::reg_trig == reg_trig::tim5_cc3
+    ) {
+      static_assert(_module::module_id == module_id::adc3);
+    }
+#endif
+}
+
+template<reg_trig _reg_trig, typename _cr2>
+void set_reg_trig(_cr2&& cr2)
+{
+  if constexpr(_reg_trig == reg_trig::disable) {
+    cr2 &= ~ADC_CR2_EXTTRIG;
+  }
+  else {
+    cr2 |=  ADC_CR2_EXTTRIG;
+    cr2 &= ~ADC_CR2_EXTSEL;
+    switch(_reg_trig) {
+#if defined(ADC1)
+    case reg_trig::tim1_cc2:          cr2 |= (1 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim1_cc3:          cr2 |= (2 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim2_cc2:          cr2 |= (3 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim3_trgo:         cr2 |= (4 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim4_cc4:          cr2 |= (5 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::exti11__tim8_trgo: cr2 |= (6 << ADC_CR2_EXTSEL_Pos); break;
+#endif
+
+#if defined(ADC3)
+    case reg_trig::tim2_cc3:          cr2 |= (1 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim1_cc3:          cr2 |= (2 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim8_cc1:          cr2 |= (3 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim8_trgo:         cr2 |= (4 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim5_cc1:          cr2 |= (5 << ADC_CR2_EXTSEL_Pos); break;
+    case reg_trig::tim5_cc3:          cr2 |= (6 << ADC_CR2_EXTSEL_Pos); break;
+#endif
+    case reg_trig::sw_start:          cr2 |= (7 << ADC_CR2_EXTSEL_Pos); break;
+    default : break;
+    }
+  }
+}
+
+template<typename _module, reg_trig _reg_trig>
+void set_reg_trig()
+{
+  reg_trig_check<_module>();
+
+  auto inst = detail::inst<_module>();
+  uint32_t cr2 = inst->CR2;
+  set_reg_trig<_reg_trig>(cr2);
+  inst->CR2 = cr2;
+}
+
+template<typename _module>
+reg_trig get_reg_trig()
+{
+  const uint32_t cr2 = detail::inst<_module>()->CR2;
+
+  if((cr2 & ADC_CR2_EXTTRIG) == 0) { return reg_trig::disable; }
+
+  constexpr auto adc_1_2 = []
+  {
+#if defined(ADC1)
+    if constexpr(_module::module_id == module_id::adc1) { return true; }
+#endif
+
+#if defined(ADC2)
+    if constexpr(_module::module_id == module_id::adc2) { return true; }
+#endif
+
+    return false;
+  }();
+
+  if constexpr(adc_1_2) {
+    switch(cr2 & ADC_CR2_EXTSEL) {
+    case (1 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim1_cc2;
+    case (2 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim1_cc3;
+    case (3 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim2_cc2;
+    case (4 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim3_trgo;
+    case (5 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim4_cc4;
+    case (6 << ADC_CR2_EXTSEL_Pos): return reg_trig::exti11__tim8_trgo;
+    default: break;
+    }
+  }
+
+#if defined(ADC3)
+  if constexpr(_module::module_id == module_id::adc3) {
+    switch(cr2 & ADC_CR2_EXTSEL) {
+    case (1 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim2_cc3;
+    case (2 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim1_cc3;
+    case (3 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim8_cc1;
+    case (4 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim8_trgo;
+    case (5 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim5_cc1;
+    case (6 << ADC_CR2_EXTSEL_Pos): return reg_trig::tim5_cc3;
+    default: break;
+    }
+  }
+#endif
+
+  if((cr2 & (7 << ADC_CR2_EXTSEL_Pos)) != 0) { return reg_trig::sw_start; }
+  return reg_trig::disable;
+}
+
+template<typename _module>
+constexpr void inj_trig_check()
+{
+#if defined(ADC1)
+    if constexpr(
+      _module::inj_trig == inj_trig::tim2_trgo         ||
+      _module::inj_trig == inj_trig::tim2_cc1          ||
+      _module::inj_trig == inj_trig::tim3_cc4          ||
+      _module::inj_trig == inj_trig::tim4_trgo         ||
+      _module::inj_trig == inj_trig::exti15__tim8_cc4
+    ) {
+      static_assert(
+        _module::module_id == module_id::adc1
+  #if defined(ADC2)
+        || _module::module_id == module_id::adc2
+  #endif
+      );
+    }
+#endif
+
+#if defined(ADC3)
+    if constexpr(
       _module::inj_trig == inj_trig::tim4_cc3  ||
       _module::inj_trig == inj_trig::tim8_cc2  ||
       _module::inj_trig == inj_trig::tim8_cc4  ||
@@ -99,6 +323,321 @@ void adc_configure()
       static_assert(_module::module_id == module_id::adc3);
     }
 #endif
+}
+
+template<inj_trig _inj_trig, typename _cr2>
+void set_inj_trig(_cr2&& cr2)
+{
+  if constexpr(_inj_trig == inj_trig::disable) {
+    cr2 &= ~ADC_CR2_JEXTTRIG;
+  }
+  else {
+    cr2 |=  ADC_CR2_JEXTTRIG;
+    cr2 &= ~ADC_CR2_JEXTSEL;
+    switch(_inj_trig) {
+    case inj_trig::tim1_cc4:         cr2 |= (1 << ADC_CR2_JEXTSEL_Pos); break;
+
+#if defined(ADC1)
+    case inj_trig::tim2_trgo:        cr2 |= (2 << ADC_CR2_JEXTSEL_Pos); break;
+    case inj_trig::tim2_cc1:         cr2 |= (3 << ADC_CR2_JEXTSEL_Pos); break;
+    case inj_trig::tim3_cc4:         cr2 |= (4 << ADC_CR2_JEXTSEL_Pos); break;
+    case inj_trig::tim4_trgo:        cr2 |= (5 << ADC_CR2_JEXTSEL_Pos); break;
+    case inj_trig::exti15__tim8_cc4: cr2 |= (6 << ADC_CR2_JEXTSEL_Pos); break;
+#endif
+
+#if defined(ADC3)
+    case inj_trig::tim4_cc3:         cr2 |= (2 << ADC_CR2_JEXTSEL_Pos); break;
+    case inj_trig::tim8_cc2:         cr2 |= (3 << ADC_CR2_JEXTSEL_Pos); break;
+    case inj_trig::tim8_cc4:         cr2 |= (4 << ADC_CR2_JEXTSEL_Pos); break;
+    case inj_trig::tim5_trgo:        cr2 |= (5 << ADC_CR2_JEXTSEL_Pos); break;
+    case inj_trig::tim5_cc4:         cr2 |= (6 << ADC_CR2_JEXTSEL_Pos); break;
+#endif
+    case inj_trig::jsw_start:        cr2 |= (7 << ADC_CR2_JEXTSEL_Pos); break;
+    default: break;
+    }
+  }
+}
+
+template<typename _module, inj_trig _inj_trig>
+void set_inj_trig()
+{
+  inj_trig_check<_module>();
+
+  auto inst = detail::inst<_module>();
+  uint32_t cr2 = inst->CR2;
+  set_inj_trig<_inj_trig>(cr2);
+  inst->CR2 = cr2;
+}
+
+template<typename _module>
+inj_trig get_inj_trig()
+{
+  const uint32_t cr2 = detail::inst<_module>()->CR2;
+
+  if((cr2 & ADC_CR2_JEXTTRIG) == 0) { return inj_trig::disable; }
+
+  constexpr auto adc_1_2 = []
+  {
+#if defined(ADC1)
+    if constexpr(_module::module_id == module_id::adc1) { return true; }
+#endif
+
+#if defined(ADC2)
+    if constexpr(_module::module_id == module_id::adc2) { return true; }
+#endif
+
+    return false;
+  }();
+
+  if constexpr(adc_1_2) {
+    switch(cr2 & ADC_CR2_JEXTSEL) {
+    case (2 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim2_trgo;
+    case (3 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim2_cc1;
+    case (4 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim3_cc4;
+    case (5 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim4_trgo;
+    case (6 << ADC_CR2_JEXTSEL_Pos): return inj_trig::exti15__tim8_cc4;
+    default: break;
+    }
+  }
+
+#if defined(ADC3)
+  if constexpr(_module::module_id == module_id::adc3) {
+    switch(cr2 & ADC_CR2_JEXTSEL) {
+    case (2 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim4_cc3;
+    case (3 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim8_cc2;
+    case (4 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim8_cc4;
+    case (5 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim5_trgo;
+    case (6 << ADC_CR2_JEXTSEL_Pos): return inj_trig::tim5_cc4;
+    default: break;
+    }
+  }
+#endif
+
+  if((cr2 & (1 << ADC_CR2_JEXTSEL_Pos)) != 0) { return inj_trig::tim1_cc4;  }
+  if((cr2 & (7 << ADC_CR2_JEXTSEL_Pos)) != 0) { return inj_trig::jsw_start; }
+
+  return inj_trig::disable;
+}
+
+template<inj_auto _inj_auto, typename _cr1>
+void set_inj_auto(_cr1&& cr1)
+{
+  if constexpr(_inj_auto == inj_auto::disable) {
+    cr1 &= ~ADC_CR1_JAUTO;
+  }
+  else {
+    cr1 |=  ADC_CR1_JAUTO;
+  }
+}
+
+template<typename _module, inj_auto _inj_auto>
+void set_inj_auto() { set_inj_auto<_inj_auto>(detail::inst<_module>()->CR1); }
+
+template<typename _module>
+inj_auto get_inj_auto()
+{
+  if((detail::inst<_module>()->CR1 & ADC_CR1_JAUTO) == 0) { return inj_auto::disable; }
+  return inj_auto::enable;
+}
+
+template<dma _dma, typename _cr2>
+void set_dma(_cr2&& cr2)
+{
+  if constexpr(_dma == dma::disable) {
+    cr2 &= ~ADC_CR2_DMA;
+  }
+  else {
+    cr2 |=  ADC_CR2_DMA;
+  }
+}
+
+template<typename _module, dma _dma>
+void set_dma() { set_dma<_dma>(detail::inst<_module>()->CR2); }
+
+template<typename _module>
+dma get_dma()
+{
+  if((detail::inst<_module>()->CR2 & ADC_CR2_DMA) == 0) { return dma::disable; }
+  return dma::enable;
+}
+
+template<dual_mode _dual_mode, typename _cr1>
+void set_dual_mode(_cr1&& cr1)
+{
+  cr1 &= ~ADC_CR1_DUALMOD;
+  switch(_dual_mode)
+  {
+  case dual_mode::regular_and_injected:    cr1 |= (1 << ADC_CR1_DUALMOD_Pos); break;
+  case dual_mode::regular_and_trigger:     cr1 |= (2 << ADC_CR1_DUALMOD_Pos); break;
+  case dual_mode::injected_and_fast_inter: cr1 |= (3 << ADC_CR1_DUALMOD_Pos); break;
+  case dual_mode::injected_and_slow_inter: cr1 |= (4 << ADC_CR1_DUALMOD_Pos); break;
+  case dual_mode::injected_only:           cr1 |= (5 << ADC_CR1_DUALMOD_Pos); break;
+  case dual_mode::regular_only:            cr1 |= (6 << ADC_CR1_DUALMOD_Pos); break;
+  case dual_mode::fast_inter_only:         cr1 |= (7 << ADC_CR1_DUALMOD_Pos); break;
+  case dual_mode::slow_inter_only:         cr1 |= (8 << ADC_CR1_DUALMOD_Pos); break;
+  case dual_mode::trigger_only:            cr1 |= (9 << ADC_CR1_DUALMOD_Pos); break;
+  default: break;
+  }
+}
+
+template<typename _module, dual_mode _dual_mode>
+void set_dual_mode()
+{
+  auto inst = detail::inst<_module>();
+  uint32_t cr1 = inst->CR1;
+  set_dual_mode<_dual_mode>(cr1);
+  inst->CR1 = cr1;
+}
+
+template<typename _module>
+dual_mode get_dual_mode()
+{
+  const uint32_t cr1 = detail::inst<_module>()->CR1;
+
+  switch(cr1 & ADC_CR1_DUALMOD) {
+  case (1 << ADC_CR1_DUALMOD_Pos): return dual_mode::regular_and_injected;
+  case (2 << ADC_CR1_DUALMOD_Pos): return dual_mode::regular_and_trigger;
+  case (3 << ADC_CR1_DUALMOD_Pos): return dual_mode::injected_and_fast_inter;
+  case (4 << ADC_CR1_DUALMOD_Pos): return dual_mode::injected_and_slow_inter;
+  case (5 << ADC_CR1_DUALMOD_Pos): return dual_mode::injected_only;
+  case (6 << ADC_CR1_DUALMOD_Pos): return dual_mode::regular_only;
+  case (7 << ADC_CR1_DUALMOD_Pos): return dual_mode::fast_inter_only;
+  case (8 << ADC_CR1_DUALMOD_Pos): return dual_mode::slow_inter_only;
+  case (9 << ADC_CR1_DUALMOD_Pos): return dual_mode::trigger_only;
+  default: break;
+  }
+
+  return dual_mode::independent;
+}
+
+template<temp_refint _temp_refint, typename _cr2>
+void set_temp_refint(_cr2&& cr2)
+{
+  if constexpr(_temp_refint == temp_refint::disable) {
+    cr2 &= ~ADC_CR2_TSVREFE;
+  }
+  else
+  if((cr2 & ADC_CR2_TSVREFE) == 0) {
+    cr2 |=  ADC_CR2_TSVREFE;
+    delay::us(10);
+  }
+}
+
+template<typename _module, temp_refint _temp_refint>
+void set_temp_refint()
+{
+  auto inst = detail::inst<_module>();
+  uint32_t cr2 = inst->CR2;
+  set_temp_refint<_module, _temp_refint>(cr2);
+  inst->CR2 = cr2;
+}
+
+template<typename _module>
+temp_refint get_temp_refint()
+{
+  if((detail::inst<_module>()->CR2 & ADC_CR2_TSVREFE) == 0) { return temp_refint::disable; }
+  return temp_refint::enable;
+}
+
+template<awd_mode _awd_mode, typename _cr1>
+void set_awd_mode(_cr1&& cr1)
+{
+  cr1 &= ~(ADC_CR1_AWDSGL | ADC_CR1_AWDEN | ADC_CR1_JAWDEN);
+  switch(_awd_mode) {
+  case awd_mode::all_injected:
+    cr1 |= ADC_CR1_JAWDEN;
+    break;
+  case awd_mode::all_regular:
+    cr1 |= ADC_CR1_AWDEN;
+    break;
+  case awd_mode::all_injected_and_regular:
+    cr1 |= (ADC_CR1_AWDEN | ADC_CR1_JAWDEN);
+    break;
+  case awd_mode::single_injected:
+    cr1 |= (ADC_CR1_AWDSGL | ADC_CR1_JAWDEN);
+    break;
+  case awd_mode::single_regular:
+    cr1 |= (ADC_CR1_AWDSGL | ADC_CR1_AWDEN);
+    break;
+  case awd_mode::single_regular_or_injected:
+    cr1 |= (ADC_CR1_AWDSGL | ADC_CR1_AWDEN | ADC_CR1_JAWDEN);
+    break;
+  default: break;
+  }
+}
+
+template<typename _module, awd_mode _awd_mode>
+void set_awd_mode() { set_awd_mode<_awd_mode>(detail::inst<_module>()->CR1); }
+
+template<typename _module>
+awd_mode get_awd_mode()
+{
+  const uint32_t cr1 = detail::inst<_module>()->CR1;
+
+  switch(cr1 & (ADC_CR1_AWDSGL | ADC_CR1_AWDEN | ADC_CR1_JAWDEN)) {
+  case ADC_CR1_JAWDEN:
+    return awd_mode::all_injected;
+  case ADC_CR1_AWDEN:
+    return awd_mode::all_regular;
+  case (ADC_CR1_AWDEN | ADC_CR1_JAWDEN):
+    return awd_mode::all_injected_and_regular;
+  case (ADC_CR1_AWDSGL | ADC_CR1_JAWDEN):
+    return awd_mode::single_injected;
+  case (ADC_CR1_AWDSGL | ADC_CR1_AWDEN):
+    return awd_mode::single_regular;
+  case (ADC_CR1_AWDSGL | ADC_CR1_AWDEN | ADC_CR1_JAWDEN):
+    return awd_mode::single_regular_or_injected;
+  default: break;
+  }
+
+  return awd_mode::disable;
+}
+
+template<awd_channel _awd_channel, typename _cr1>
+void set_awd_channel(_cr1&& cr1)
+{
+  cr1 &= ~(ADC_CR1_AWDCH);
+  cr1 |= (uint32_t(_awd_channel) << ADC_CR1_AWDCH_Pos);
+}
+
+template<typename _module, awd_channel _awd_channel>
+void set_awd_channel()
+{
+  auto inst = detail::inst<_module>();
+  uint32_t cr1 = inst->CR1;
+  set_awd_channel<_awd_channel>(cr1);
+  inst->CR1 = cr1;
+}
+
+template<typename _module>
+awd_channel get_awd_channel()
+{
+  const uint32_t cr1 = detail::inst<_module>()->CR1;
+  return awd_channel( (cr1 & ADC_CR1_AWDCH) >> ADC_CR1_AWDCH_Pos );
+}
+
+template<typename _module>
+void set_awd_low(uint16_t val) { detail::inst<_module>()->LTR = val & 0xFFF; }
+
+template<typename _module>
+uint16_t get_awd_low() { return detail::inst<_module>()->LTR & 0xFFF; }
+
+template<typename _module>
+void set_awd_high(uint16_t val) { detail::inst<_module>()->HTR = val & 0xFFF; }
+
+template<typename _module>
+uint16_t get_awd_high() { return detail::inst<_module>()->HTR & 0xFFF; }
+
+template<typename _module, typename ..._modules>
+void adc_configure()
+{
+  if constexpr(_module::dev_class == lmcu::dev_class::adc) {
+    auto inst = detail::inst<_module>();
+
+    detail::disable<_module>();
+
+    reg_trig_check<_module>();
+    inj_trig_check<_module>();
 
     switch(_module::module_id)
     {
@@ -135,152 +674,29 @@ void adc_configure()
 #endif
     }
 
-    {
-      uint32_t r = inst->CR1;
-
-      r &= ~ADC_CR1_DUALMOD;
-      switch(_module::dual_mode)
-      {
-      case dual_mode::regular_and_injected:    r |= (1 << ADC_CR1_DUALMOD_Pos); break;
-      case dual_mode::regular_and_trigger:     r |= (2 << ADC_CR1_DUALMOD_Pos); break;
-      case dual_mode::injected_and_fast_inter: r |= (3 << ADC_CR1_DUALMOD_Pos); break;
-      case dual_mode::injected_and_slow_inter: r |= (4 << ADC_CR1_DUALMOD_Pos); break;
-      case dual_mode::injected_only:           r |= (5 << ADC_CR1_DUALMOD_Pos); break;
-      case dual_mode::regular_only:            r |= (6 << ADC_CR1_DUALMOD_Pos); break;
-      case dual_mode::fast_inter_only:         r |= (7 << ADC_CR1_DUALMOD_Pos); break;
-      case dual_mode::slow_inter_only:         r |= (8 << ADC_CR1_DUALMOD_Pos); break;
-      case dual_mode::trigger_only:            r |= (9 << ADC_CR1_DUALMOD_Pos); break;
-      default : break;
-      }
-
-      if constexpr(_module::disc_mode == disc_mode::regular ||
-                   _module::disc_mode == disc_mode::regular_and_injected) {
-        r |=  ADC_CR1_DISCEN;
-      }
-      else {
-        r &= ~ADC_CR1_DISCEN;
-      }
-
-      if constexpr(_module::disc_mode == disc_mode::injected ||
-                   _module::disc_mode == disc_mode::regular_and_injected) {
-        r |=  ADC_CR1_JDISCEN;
-      }
-      else {
-        r &= ~ADC_CR1_JDISCEN;
-      }
-
-      r &= ~ADC_CR1_DISCNUM;
-      r |=  uint32_t(_module::disc_num) << ADC_CR1_DISCNUM_Pos;
-
-      if constexpr(_module::inj_auto == inj_auto::disable) {
-        r &= ~ADC_CR1_JAUTO;
-      }
-      else {
-        r |=  ADC_CR1_JAUTO;
-      }
-
-      if constexpr(_module::scan == scan::disable) {
-        r &= ~ADC_CR1_SCAN;
-      }
-      else {
-        r |=  ADC_CR1_SCAN;
-      }
-
-      inst->CR1 = r;
+    if constexpr(_module::awd_mode != awd_mode::disable) {
+      set_awd_low<_module>(_module::awd_low);
+      set_awd_high<_module>(_module::awd_high);
     }
 
-    {
-      uint32_t r = inst->CR2;
+    uint32_t cr1 = inst->CR1;
+    uint32_t cr2 = inst->CR2;
 
-      if constexpr(_module::temp_refint == temp_refint::disable) {
-        r &= ~ADC_CR2_TSVREFE;
-      }
-      else {
-        r |=  ADC_CR2_TSVREFE;
-        delay::us(10);
-      }
+    set_dual_mode<_module::dual_mode>(cr1);
+    set_disc_mode<_module::disc_mode>(cr1, cr2);
+    set_reg_discnum<_module::reg_discnum>(cr1);
+    set_inj_auto<_module::inj_auto>(cr1);
+    set_scan<_module::scan>(cr1);
+    set_awd_mode<_module::awd_mode>(cr1);
+    set_awd_channel<_module::awd_channel>(cr1);
+    set_temp_refint<_module::temp_refint>(cr2);
+    set_reg_trig<_module::reg_trig>(cr2);
+    set_inj_trig<_module::inj_trig>(cr2);
+    set_data_align<_module::data_align>(cr2);
+    set_dma<_module::dma>(cr2);
 
-      if constexpr(_module::reg_trig == reg_trig::disable) {
-        r &= ~ADC_CR2_EXTTRIG;
-      }
-      else {
-        r |=  ADC_CR2_EXTTRIG;
-        r &= ~ADC_CR2_EXTSEL;
-        switch(_module::reg_trig) {
-#if defined(ADC1)
-        case reg_trig::tim1_cc2:          r |= (1 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim1_cc3:          r |= (2 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim2_cc2:          r |= (3 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim3_trgo:         r |= (4 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim4_cc4:          r |= (5 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::exti11__tim8_trgo: r |= (6 << ADC_CR2_EXTSEL_Pos); break;
-#endif
-
-#if defined(ADC3)
-        case reg_trig::tim2_cc3:          r |= (1 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim1_cc3:          r |= (2 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim8_cc1:          r |= (3 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim8_trgo:         r |= (4 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim5_cc1:          r |= (5 << ADC_CR2_EXTSEL_Pos); break;
-        case reg_trig::tim5_cc3:          r |= (6 << ADC_CR2_EXTSEL_Pos); break;
-#endif
-        case reg_trig::sw_start:          r |= (7 << ADC_CR2_EXTSEL_Pos); break;
-        default : break;
-        }
-      }
-
-      if constexpr(_module::inj_trig == inj_trig::disable) {
-        r &= ~ADC_CR2_JEXTTRIG;
-      }
-      else {
-        r |=  ADC_CR2_JEXTTRIG;
-        r &= ~ADC_CR2_JEXTSEL;
-        switch(_module::inj_trig) {
-        case inj_trig::tim1_cc4:         r |= (1 << ADC_CR2_JEXTTRIG_Pos); break;
-
-#if defined(ADC1)
-        case inj_trig::tim2_trgo:        r |= (2 << ADC_CR2_JEXTTRIG_Pos); break;
-        case inj_trig::tim2_cc1:         r |= (3 << ADC_CR2_JEXTTRIG_Pos); break;
-        case inj_trig::tim3_cc4:         r |= (4 << ADC_CR2_JEXTTRIG_Pos); break;
-        case inj_trig::tim4_trgo:        r |= (5 << ADC_CR2_JEXTTRIG_Pos); break;
-        case inj_trig::exti15__tim8_cc4: r |= (6 << ADC_CR2_JEXTTRIG_Pos); break;
-#endif
-
-#if defined(ADC3)
-        case inj_trig::tim4_cc3:         r |= (2 << ADC_CR2_JEXTTRIG_Pos); break;
-        case inj_trig::tim8_cc2:         r |= (3 << ADC_CR2_JEXTTRIG_Pos); break;
-        case inj_trig::tim8_cc4:         r |= (4 << ADC_CR2_JEXTTRIG_Pos); break;
-        case inj_trig::tim5_trgo:        r |= (5 << ADC_CR2_JEXTTRIG_Pos); break;
-        case inj_trig::tim5_cc4:         r |= (6 << ADC_CR2_JEXTTRIG_Pos); break;
-#endif
-        case inj_trig::jsw_start:        r |= (7 << ADC_CR2_JEXTTRIG_Pos); break;
-        default : break;
-        }
-      }
-
-      if constexpr(_module::data_align == data_align::right) {
-        r &= ~ADC_CR2_ALIGN;
-      }
-      else {
-        r |=  ADC_CR2_ALIGN;
-      }
-
-      if constexpr(_module::disc_mode == disc_mode::disable) {
-        r |=  ADC_CR2_CONT;
-      }
-      else {
-        r &= ~ADC_CR2_CONT;
-      }
-
-      if constexpr(_module::dma == dma::disable) {
-        r &= ~ADC_CR2_DMA;
-      }
-      else {
-        r |=  ADC_CR2_DMA;
-      }
-
-      inst->CR2 = r;
-    }
+    inst->CR1 = cr1;
+    inst->CR2 = cr2;
 
     if constexpr(_module::irq.irq_type != nvic::irq_type::disable) {
 #ifdef _LMCU_DEVICE_STM32F1_
