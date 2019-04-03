@@ -221,30 +221,12 @@ enum class event : uint32_t
 
 #include "detail/adc.h"
 
-template<typename ..._args>
+template<typename _module, typename ..._chconfs>
 void configure()
 {
-  detail::adc_configure<_args...>();
-
-#if defined(ADC1)
-  detail::reg_chan_configure<module_id::adc1, _args...>();
-  detail::inj_chan_configure<module_id::adc1, _args...>();
-#endif
-
-#if defined(ADC2)
-  detail::reg_chan_configure<module_id::adc2, _args...>();
-  detail::inj_chan_configure<module_id::adc2, _args...>();
-#endif
-
-#if defined(ADC3)
-  detail::reg_chan_configure<module_id::adc3, _args...>();
-  detail::inj_chan_configure<module_id::adc3, _args...>();
-#endif
-
-#if defined(ADC4)
-  detail::reg_chan_configure<module_id::adc4, _args...>();
-  detail::inj_chan_configure<module_id::adc4, _args...>();
-#endif
+  detail::adc_configure<_module>();
+  detail::reg_chan_configure<_module, _chconfs...>();
+  detail::inj_chan_configure<_module, _chconfs...>();
 }
 
 template<typename _module, data_align _data_align>

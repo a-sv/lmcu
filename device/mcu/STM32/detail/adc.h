@@ -2,10 +2,10 @@
 
 namespace detail {
 
-template<module_id _module_id>
+template<typename _module>
 ADC_TypeDef *inst()
 {
-  switch(_module_id)
+  switch(_module::module_id)
   {
 #if defined(ADC1)
   case module_id::adc1: return ADC1;
@@ -25,9 +25,6 @@ ADC_TypeDef *inst()
   }
   return nullptr;
 }
-
-template<typename _module>
-ADC_TypeDef *inst() { return detail::inst<_module::module_id>(); }
 
 template<typename _module>
 void enable()
@@ -628,88 +625,84 @@ void set_awd_high(uint16_t val) { detail::inst<_module>()->HTR = val & 0xFFF; }
 template<typename _module>
 uint16_t get_awd_high() { return detail::inst<_module>()->HTR & 0xFFF; }
 
-template<typename _module, typename ..._modules>
+template<typename _module>
 void adc_configure()
 {
-  if constexpr(_module::dev_class == lmcu::dev_class::adc) {
-    auto inst = detail::inst<_module>();
+  auto inst = detail::inst<_module>();
 
-    detail::disable<_module>();
+  detail::disable<_module>();
 
-    reg_trig_check<_module>();
-    inj_trig_check<_module>();
+  reg_trig_check<_module>();
+  inj_trig_check<_module>();
 
-    switch(_module::module_id)
-    {
+  switch(_module::module_id)
+  {
 #if defined(ADC1)
-    case module_id::adc1:
-      RCC->APB2ENR  |=  RCC_APB2ENR_ADC1EN;
-      RCC->APB2RSTR |=  RCC_APB2RSTR_ADC1RST;
-      RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC1RST;
-      break;
+  case module_id::adc1:
+    RCC->APB2ENR  |=  RCC_APB2ENR_ADC1EN;
+    RCC->APB2RSTR |=  RCC_APB2RSTR_ADC1RST;
+    RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC1RST;
+    break;
 #endif
 
 #if defined(ADC2)
-    case module_id::adc2:
-      RCC->APB2ENR  |=  RCC_APB2ENR_ADC2EN;
-      RCC->APB2RSTR |=  RCC_APB2RSTR_ADC2RST;
-      RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC2RST;
-      break;
+  case module_id::adc2:
+    RCC->APB2ENR  |=  RCC_APB2ENR_ADC2EN;
+    RCC->APB2RSTR |=  RCC_APB2RSTR_ADC2RST;
+    RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC2RST;
+    break;
 #endif
 
 #if defined(ADC3)
-    case module_id::adc3:
-      RCC->APB2ENR  |=  RCC_APB2ENR_ADC3EN;
-      RCC->APB2RSTR |=  RCC_APB2RSTR_ADC3RST;
-      RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC3RST;
-      break;
+  case module_id::adc3:
+    RCC->APB2ENR  |=  RCC_APB2ENR_ADC3EN;
+    RCC->APB2RSTR |=  RCC_APB2RSTR_ADC3RST;
+    RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC3RST;
+    break;
 #endif
 
 #if defined(ADC4)
-    case module_id::adc4:
-      RCC->APB2ENR  |=  RCC_APB2ENR_ADC4EN;
-      RCC->APB2RSTR |=  RCC_APB2RSTR_ADC4RST;
-      RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC4RST;
-      break;
+  case module_id::adc4:
+    RCC->APB2ENR  |=  RCC_APB2ENR_ADC4EN;
+    RCC->APB2RSTR |=  RCC_APB2RSTR_ADC4RST;
+    RCC->APB2RSTR &= ~RCC_APB2RSTR_ADC4RST;
+    break;
 #endif
-    }
+  }
 
-    if constexpr(_module::awd_mode != awd_mode::disable) {
-      set_awd_low<_module>(_module::awd_low);
-      set_awd_high<_module>(_module::awd_high);
-    }
+  if constexpr(_module::awd_mode != awd_mode::disable) {
+    set_awd_low<_module>(_module::awd_low);
+    set_awd_high<_module>(_module::awd_high);
+  }
 
-    uint32_t cr1 = inst->CR1;
-    uint32_t cr2 = inst->CR2;
+  uint32_t cr1 = inst->CR1;
+  uint32_t cr2 = inst->CR2;
 
-    set_dual_mode<_module::dual_mode>(cr1);
-    set_disc_mode<_module::disc_mode>(cr1, cr2);
-    set_reg_discnum<_module::reg_discnum>(cr1);
-    set_inj_auto<_module::inj_auto>(cr1);
-    set_scan<_module::scan>(cr1);
-    set_awd_mode<_module::awd_mode>(cr1);
-    set_awd_channel<_module::awd_channel>(cr1);
-    set_temp_refint<_module::temp_refint>(cr2);
-    set_reg_trig<_module::reg_trig>(cr2);
-    set_inj_trig<_module::inj_trig>(cr2);
-    set_data_align<_module::data_align>(cr2);
-    set_dma<_module::dma>(cr2);
+  set_dual_mode<_module::dual_mode>(cr1);
+  set_disc_mode<_module::disc_mode>(cr1, cr2);
+  set_reg_discnum<_module::reg_discnum>(cr1);
+  set_inj_auto<_module::inj_auto>(cr1);
+  set_scan<_module::scan>(cr1);
+  set_awd_mode<_module::awd_mode>(cr1);
+  set_awd_channel<_module::awd_channel>(cr1);
+  set_temp_refint<_module::temp_refint>(cr2);
+  set_reg_trig<_module::reg_trig>(cr2);
+  set_inj_trig<_module::inj_trig>(cr2);
+  set_data_align<_module::data_align>(cr2);
+  set_dma<_module::dma>(cr2);
 
-    inst->CR1 = cr1;
-    inst->CR2 = cr2;
+  inst->CR1 = cr1;
+  inst->CR2 = cr2;
 
-    if constexpr(_module::irq.irq_type != nvic::irq_type::disable) {
+  if constexpr(_module::irq.irq_type != nvic::irq_type::disable) {
 #ifdef _LMCU_DEVICE_STM32F1_
-      nvic::enable_irq<decltype(_module::irq), ADC1_2_IRQn>();
+    nvic::enable_irq<decltype(_module::irq), ADC1_2_IRQn>();
 #endif
 
 #ifdef _LMCU_DEVICE_STM32F4_
-      nvic::enable_irq<decltype(_module::irq), ADC_IRQn>();
+    nvic::enable_irq<decltype(_module::irq), ADC_IRQn>();
 #endif
-    }
   }
-
-  if constexpr(sizeof...(_modules) > 0) { adc_configure<_modules...>(); }
 }
 
 template<
@@ -719,20 +712,18 @@ template<
   uint32_t _bits_2,
   uint32_t _mask_3,
   uint32_t _bits_3,
-  module_id _module_id,
+  typename _module,
   uint8_t _rank,
   typename _chconf,
   typename ..._chconfs
 >
 constexpr void reg_seqence_configure()
 {
-  constexpr auto match = []
-  {
-    if constexpr(_chconf::dev_class == dev_class::adc_reg_channel) {
-      return _chconf::module.module_id == _module_id;
-    }
-    return false;
-  }();
+  static_assert(_chconf::dev_class == dev_class::adc_reg_channel ||
+                _chconf::dev_class == dev_class::adc_inj_channel, "config is not a channel");
+  static_assert(_chconf::module.module_id == _module::module_id, "invalid channel module id");
+
+  constexpr auto match = _chconf::dev_class == dev_class::adc_reg_channel;
 
   [[maybe_unused]] constexpr auto mask_1 = []() -> uint32_t
   {
@@ -783,12 +774,12 @@ constexpr void reg_seqence_configure()
   }();
 
   if constexpr(sizeof...(_chconfs) > 0) {
-    reg_seqence_configure<mask_1, bits_1, mask_2, bits_2, mask_3, bits_3, _module_id,
+    reg_seqence_configure<mask_1, bits_1, mask_2, bits_2, mask_3, bits_3, _module,
                           match? _rank + 1 : _rank, _chconfs...>();
   }
   else
   if constexpr(match) {
-    [[maybe_unused]] auto inst = detail::inst<_module_id>();
+    [[maybe_unused]] auto inst = detail::inst<_module>();
 
     if constexpr(mask_3) {
       uint32_t r = inst->SQR3;
@@ -826,20 +817,18 @@ template<
   uint32_t _jofr_3,
   uint32_t _jofr_4,
   uint32_t _jsqr,
-  module_id _module_id,
+  typename _module,
   uint8_t _rank,
   typename _chconf,
   typename ..._chconfs
 >
 constexpr void inj_seqence_configure()
 {
-  constexpr auto match = []
-  {
-    if constexpr(_chconf::dev_class == dev_class::adc_inj_channel) {
-      return _chconf::module.module_id == _module_id;
-    }
-    return false;
-  }();
+  static_assert(_chconf::dev_class == dev_class::adc_reg_channel ||
+                _chconf::dev_class == dev_class::adc_inj_channel, "config is not a channel");
+  static_assert(_chconf::module.module_id == _module::module_id, "invalid channel module id");
+
+  constexpr auto match = _chconf::dev_class == dev_class::adc_inj_channel;
 
   [[maybe_unused]] constexpr auto jofr_1 = []() -> uint32_t
   {
@@ -874,11 +863,11 @@ constexpr void inj_seqence_configure()
   if constexpr(sizeof...(_chconfs) > 0) {
     constexpr auto rank = match? _rank + 1 : _rank;
     static_assert(rank <= 3, "injected sequence must not have more than 4 channels");
-    inj_seqence_configure<jofr_1, jofr_2, jofr_3, jofr_4, jsqr, _module_id, rank, _chconfs...>();
+    inj_seqence_configure<jofr_1, jofr_2, jofr_3, jofr_4, jsqr, _module, rank, _chconfs...>();
   }
   else
   if constexpr(match) {
-    [[maybe_unused]] auto inst = detail::inst<_module_id>();
+    auto inst = detail::inst<_module>();
     inst->JSQR = jsqr | (_rank << ADC_JSQR_JL_Pos);
     switch(_rank) {
     case 3: inst->JOFR1 = jofr_1;
@@ -889,93 +878,91 @@ constexpr void inj_seqence_configure()
   }
 }
 
-template<module_id _module_id, uint8_t _low, uint8_t _high, typename _chconf>
+template<typename _module, uint8_t _low, uint8_t _high, typename _chconf>
 constexpr bool channel_in_range()
 {
   if constexpr(
     _chconf::dev_class == dev_class::adc_reg_channel ||
     _chconf::dev_class == dev_class::adc_inj_channel
   ) {
-    return _chconf::module.module_id == _module_id && _chconf::chan_num >= _low &&
+    return _chconf::module.module_id == _module::module_id && _chconf::chan_num >= _low &&
            _chconf::chan_num <= _high;
   }
   return false;
 }
 
-template<module_id _module_id, uint8_t _low, uint8_t _high, typename _chconf,
-         typename ..._chconfs>
+template<typename _module, uint8_t _low, uint8_t _high, typename _chconf, typename ..._chconfs>
 constexpr uint32_t smpr_mask()
 {
   constexpr auto r = []() -> uint32_t
   {
-    if constexpr(channel_in_range<_module_id, _low, _high, _chconf>()) {
+    if constexpr(channel_in_range<_module, _low, _high, _chconf>()) {
       return uint32_t(0x7) << ((_chconf::chan_num - _low) * 3);
     }
     return 0;
   }();
 
   if constexpr(sizeof...(_chconfs) > 0) {
-    return r | smpr_mask<_module_id, _low, _high, _chconfs...>();
+    return r | smpr_mask<_module, _low, _high, _chconfs...>();
   }
   return r;
 }
 
-template<module_id _module_id, uint8_t _low, uint8_t _high, typename _chconf,
-         typename ..._chconfs>
+template<typename _module, uint8_t _low, uint8_t _high, typename _chconf, typename ..._chconfs>
 constexpr uint32_t smpr_bits()
 {
   constexpr auto r = []() -> uint32_t
   {
-    if constexpr(channel_in_range<_module_id, _low, _high, _chconf>()) {
+    if constexpr(channel_in_range<_module, _low, _high, _chconf>()) {
       return uint32_t(_chconf::sample_time) << ((_chconf::chan_num - _low) * 3);
     }
     return 0;
   }();
 
   if constexpr(sizeof...(_chconfs) > 0) {
-    return r | smpr_bits<_module_id, _low, _high, _chconfs...>();
+    return r | smpr_bits<_module, _low, _high, _chconfs...>();
   }
   return r;
 }
 
-template<module_id _module_id, typename ..._chconfs>
+template<typename _module, typename ..._chconfs>
 void sample_rate_conf()
 {
-  [[maybe_unused]] auto inst = detail::inst<_module_id>();
+  [[maybe_unused]] auto inst = detail::inst<_module>();
 
   {
-    constexpr auto mask = smpr_mask<_module_id, 0, 9, _chconfs...>();
+    constexpr auto mask = smpr_mask<_module, 0, 9, _chconfs...>();
     if constexpr(mask != 0) {
       uint32_t r = inst->SMPR2;
       r &= ~mask;
-      r |= smpr_bits<_module_id, 0, 9, _chconfs...>();
+      r |= smpr_bits<_module, 0, 9, _chconfs...>();
       inst->SMPR2 = r;
     }
   }
 
   {
-    constexpr auto mask = smpr_mask<_module_id, 10, 17, _chconfs...>();
+    constexpr auto mask = smpr_mask<_module, 10, 17, _chconfs...>();
     if constexpr(mask != 0) {
       uint32_t r = inst->SMPR1;
       r &= ~mask;
-      r |= smpr_bits<_module_id, 10, 17, _chconfs...>();
+      r |= smpr_bits<_module, 10, 17, _chconfs...>();
       inst->SMPR1 = r;
     }
   }
 }
 
-template<module_id _module_id, typename ..._chconfs>
+template<typename _module, typename ..._chconfs>
 void reg_chan_configure()
 {
-  reg_seqence_configure<0, 0, 0, 0, 0, 0, _module_id, 0, _chconfs...>();
-  sample_rate_conf<_module_id, _chconfs...>();
+  reg_seqence_configure<0, 0, 0, 0, 0, 0, _module, 0, _chconfs...>();
+  sample_rate_conf<_module, _chconfs...>();
 }
 
-template<module_id _module_id, typename ..._chconfs>
+template<typename _module, typename ..._chconfs>
 void inj_chan_configure()
 {
-  inj_seqence_configure<0, 0, 0, 0, 0, _module_id, 0, _chconfs...>();
-  sample_rate_conf<_module_id, _chconfs...>();
+  inj_seqence_configure<0, 0, 0, 0, 0, _module, 0, _chconfs...>();
+  sample_rate_conf<_module, _chconfs...>();
 }
 
 template<typename _module, typename ..._modules>
