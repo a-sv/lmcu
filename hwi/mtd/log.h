@@ -432,7 +432,7 @@ private:
   {
     decltype(_struct().calc_checksum()) crc;
     _struct data;
-  };
+  } __attribute__((packed));
 
   using block_info_t = std::conditional_t<_seekable, seekable_t, nonseekable_t>;
 
