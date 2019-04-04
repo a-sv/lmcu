@@ -49,7 +49,7 @@ public:
       }
 
       if constexpr(_seekable) {
-        if(bh.calc_crc() == bh.crc) {
+        if(bh.calc_checksum() == bh.crc) {
           bi_.rec_count += records_per_block;
 
           if(bh.seq > bi_.end.seq) {
@@ -72,7 +72,7 @@ public:
         bi_.cur.rec = 0;
       }
       else {
-        if(bh.seq > bi_.end.seq && bh.calc_crc() == bh.crc) {
+        if(bh.seq > bi_.end.seq && bh.calc_checksum() == bh.crc) {
           bi_.end.idx = idx;
           bi_.end.seq = bh.seq;
         }
@@ -135,7 +135,7 @@ public:
           continue;
         }
 
-        if(bh.crc == bh.calc_crc()) {
+        if(bh.crc == bh.calc_checksum()) {
           n -= records_per_block;
           if(n < records_per_block) {
             if(++idx >= _end_block) { idx = _start_block; }
@@ -190,7 +190,7 @@ public:
 
           if(idx == bi_.beg.idx) { bi_.cur.rec = bi_.rec_count + 1; return io::result::eof; }
 
-          if(bh.crc == bh.calc_crc()) {
+          if(bh.crc == bh.calc_checksum()) {
             block->idx = idx;
             block->seq = bh.seq;
             block->ofs = sizeof(rec);
@@ -233,7 +233,7 @@ public:
             continue;
           }
 
-          if(bh.crc == bh.calc_crc()) {
+          if(bh.crc == bh.calc_checksum()) {
             bi_.beg.idx = idx;
             bi_.beg.seq = bh.seq;
             bi_.beg.ofs = sizeof(rec);
@@ -287,7 +287,7 @@ public:
       if(auto res = prepare_new_block(false); res != io::result::success) { return res; }
     }
 
-    const uint32_t rec_crc = data.calc_crc();
+    const uint32_t rec_crc = data.calc_checksum();
     rec r = { rec_crc, data };
 
     while(!t.expired()) {
@@ -317,11 +317,11 @@ public:
         continue;
       }
 
-      if((rec_crc == r.crc) && (rec_crc == r.data.calc_crc())) {
+      if((rec_crc == r.crc) && (rec_crc == r.data.calc_checksum())) {
         if(is_new_block) {
           block_head bh;
           bh.seq = bi_.end.seq + 1;
-          bh.crc = bh.calc_crc();
+          bh.crc = bh.calc_checksum();
           const auto bh_crc = bh.crc;
 
           if(auto res = dev_.write(b_ofs, &bh, sizeof(bh), t); res != io::result::success) {
@@ -334,7 +334,7 @@ public:
 
           if(
             auto res = dev_.read(b_ofs, &bh, sizeof(bh), t);
-            (res != io::result::success) || (bh.calc_crc() != bh_crc)
+            (res != io::result::success) || (bh.calc_checksum() != bh_crc)
           ) {
             if(res == io::result::busy) { return res; }
             ofs = block_data_size;
@@ -387,7 +387,7 @@ private:
   {
     uint32_t seq, crc;
 
-    uint32_t calc_crc() const
+    uint32_t calc_checksum() const
     {
 #ifdef _LMCU_DEVICE_STM32_
       using namespace lmcu::hash::hw;
