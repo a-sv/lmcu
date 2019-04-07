@@ -1,7 +1,7 @@
 template<typename _module>
 inline uint32_t one_cycle_delay()
 {
-  return (rcc::system_clock() / (rcc::apb2_clock() / uint32_t(_module::baud_prediv)));
+  return (rcc::hardware_clock() / (rcc::apb2_clock() / uint32_t(_module::baud_prediv)));
 }
 
 template<typename _module, crc _crc>

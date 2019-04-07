@@ -973,7 +973,7 @@ void calibrate()
   detail::disable<_module>();
 
   // wait 2 ADC cycles
-  delay::cyc((rcc::system_clock() / rcc::adc_clock()) * 2);
+  delay::cyc((rcc::hardware_clock() / rcc::adc_clock()) * 2);
 
   detail::enable<_module>();
 

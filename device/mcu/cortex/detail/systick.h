@@ -10,7 +10,7 @@ inline void configure()
   }
 
   if constexpr(_clk_source == clk_source::cpu) {
-    const auto r = rcc::system_clock() / _freq - 1;
+    const auto r = rcc::hardware_clock() / _freq - 1;
     SysTick->LOAD = r;
     SysTick->VAL  = r;
   }

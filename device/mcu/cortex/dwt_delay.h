@@ -165,7 +165,7 @@ public:
   {
     const uint32_t _cyc = DWT->CYCCNT + start_;
     if constexpr(_units == units::cyc) { return _cyc; }
-    const uint32_t _us = _cyc / (rcc::system_clock() / 1_MHz);
+    const uint32_t _us = _cyc / (rcc::hardware_clock() / 1_MHz);
     if constexpr(_units == units::us) { return _us;        }
     if constexpr(_units == units::ms) { return _us / 1000; }
     return _us / 1000000;
@@ -177,7 +177,7 @@ public:
     const uint32_t _cyc = DWT->CYCCNT + start_;
     if(_cyc >= expire_) { return 0; }
     if constexpr(_units == units::cyc) { return expire_ - _cyc; }
-    const uint32_t _us = (expire_ - _cyc) / (rcc::system_clock() / 1_MHz);
+    const uint32_t _us = (expire_ - _cyc) / (rcc::hardware_clock() / 1_MHz);
     if constexpr(_units == units::us) { return _us;        }
     if constexpr(_units == units::ms) { return _us / 1000; }
     return _us / 1000000;

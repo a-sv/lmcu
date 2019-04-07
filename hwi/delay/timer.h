@@ -11,7 +11,7 @@ lmcu_force_inline uint32_t to_cycles(uint32_t val)
 {
   static_assert(_units != units::cyc, "invalid param: units::cyc");
 
-  const uint32_t cyc_per_us = rcc::system_clock() / 1_MHz;
+  const uint32_t cyc_per_us = rcc::hardware_clock() / 1_MHz;
 
   if constexpr(_units == units::ns) {
     const uint32_t ns_per_cycle = ((10000 / cyc_per_us) + 5) / 10;
