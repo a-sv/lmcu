@@ -21,7 +21,8 @@ enum class dev_class
   adc_inj_channel,
   timer,
   timer_oc,
-  mtd
+  mtd,
+  soft_uart
 };
 
 } // namespace lmcu
