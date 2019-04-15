@@ -2,6 +2,7 @@
 #include <lmcu/hwi/common>
 #include <lmcu/rcc>
 #include <lmcu/delay>
+#include <lmcu/lock>
 
 namespace lmcu::i2c {
 
@@ -87,5 +88,13 @@ io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::expi
   auto b = static_cast<const uint8_t*>(data), e = b + sz;
   return write<_module>(addr, t, [&b, e](auto&& r) { r = *b++; return b < e; } );
 }
+
+template<typename _module>
+io::result rx(uint16_t addr, uint8_t data, const delay::expirable &t)
+{ return detail::rx<_module>(addr, data, t); }
+
+template<typename _module>
+io::result read(uint16_t addr, void *data, uint16_t sz, const delay::expirable &t)
+{ return detail::read<_module>(addr, data, sz, t); }
 
 } // namespace lmcu::i2c
