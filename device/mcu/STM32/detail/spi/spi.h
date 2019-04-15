@@ -150,25 +150,20 @@ void set_nss()
   }
 }
 
-template<typename _module, bool _crc_en>
-void crc_init()
+template<typename _module>
+void crc_reset()
 {
   auto inst = detail::inst<_module>();
 
   inst->CR1 &= ~SPI_CR1_CRCEN;
-  if constexpr(_crc_en) { inst->CR1 |= SPI_CR1_CRCEN; }
+  if constexpr(_module::crc == crc::enable) {
+    inst->CR1 |= SPI_CR1_CRCEN;
+    inst->SR  &= ~SPI_SR_CRCERR;
+  }
 }
 
 template<typename _module>
-bool crc_ok()
-{
-  auto inst = detail::inst<_module>();
-
-  auto r = (inst->SR & SPI_SR_CRCERR) == 0;
-  inst->SR &= ~SPI_SR_CRCERR;
-
-  return r;
-}
+bool crc_ok() { return (detail::inst<_module>()->SR & SPI_SR_CRCERR) == 0; }
 
 template<typename _module>
 uint16_t crc_rxval() { return detail::inst<_module>()->RXCRCR; }
