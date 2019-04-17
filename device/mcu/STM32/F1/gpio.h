@@ -27,7 +27,7 @@ enum class remap
   jtag__dp_disabled_and_sw_dp_enabled = 8,
   jtag__dp_and_sw_dp_disabled = 9,
 
-#if defined(STM32F107VC)
+#if defined(STM32F107VC) || defined(STM32F107RC)
   eth__mii_phy = 10,
   eth__rmii_phy = 11,
 
