@@ -9,7 +9,7 @@ enum class remap
   // MAPR
   //
 
-#if defined(STM32F107VC)
+#if defined(STM32F107VC) || defined(STM32F107RC)
   ptp_pps__not_output_on_PB5 = 0,
   ptp_pps__output_on_PB5 = 1,
 
