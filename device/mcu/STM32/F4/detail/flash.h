@@ -12,7 +12,7 @@ static inline io::result wait_op(const delay::expirable &t)
 
   if(flags::any(read_status(), status::operr, status::wrprterr, status::pgaerr, status::pgperr,
                                status::pgserr))
-  ) {
+  {
     return io::result::error;
   }
 
