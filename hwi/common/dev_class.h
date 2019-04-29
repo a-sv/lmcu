@@ -22,7 +22,8 @@ enum class dev_class
   timer,
   timer_oc,
   mtd,
-  soft_uart
+  soft_uart,
+  soft_one_wire
 };
 
 } // namespace lmcu
