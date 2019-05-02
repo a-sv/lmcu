@@ -261,12 +261,13 @@ io::result read_rom(uint8_t rom[8], const delay::expirable &t)
 {
   constexpr uint8_t read_rom_cmd = 0x33;
 
-  return (
-    detail::presence<_module>() &&
-    tx<_module>(read_rom_cmd) == io::result::success &&
-    read<_module>(rom, 8, t) == io::result::success &&
-    detail::check_rom(rom)
-  )? io::result::success : io::result::error;
+  if(!detail::presence<_module>() || tx<_module>(read_rom_cmd) != io::result::success) {
+    return io::result::error;
+  }
+
+  if(auto r = read<_module>(rom, 8, t); r != io::result::success) { return r; }
+
+  return detail::check_rom(rom)? io::result::success : io::result::error;
 }
 
 /**
@@ -396,7 +397,6 @@ io::result select_all()
   return (detail::presence<_module>() && tx<_module>(skip_rom_cmd) == io::result::success)?
           io::result::success : io::result::error;
 }
-
 
 /**
  * @brief Verifies device with match ROM is connected to the bus
