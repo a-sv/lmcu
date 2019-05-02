@@ -143,6 +143,23 @@ bool presence()
   return true;
 }
 
+static inline bool check_rom(const uint8_t rom[8])
+{
+  uint_fast8_t crc = 0, in, mix;
+
+  for(uint_fast8_t n = 0; n < 7; ++n) {
+    in = rom[n];
+    for(uint_fast8_t i = 0; i < 8; ++i) {
+      mix = (crc ^ in) & 1;
+      crc >>= 1U;
+      if(mix) { crc ^= 0x8CU; }
+      in  >>= 1U;
+    }
+  }
+
+  return rom[7] == crc;
+}
+
 } // namespace detail
 
 /**
@@ -247,7 +264,8 @@ io::result read_rom(uint8_t rom[8], const delay::expirable &t)
   return (
     detail::presence<_module>() &&
     tx<_module>(read_rom_cmd) == io::result::success &&
-    read<_module>(rom, 8, t) == io::result::success
+    read<_module>(rom, 8, t) == io::result::success &&
+    detail::check_rom(rom)
   )? io::result::success : io::result::error;
 }
 
@@ -281,24 +299,9 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
       return (bits_[idx] & (1U << shr)) != 0;
     }
 
-    inline bool is_valid() const
-    {
-      uint_fast8_t crc = 0, in, mix;
-
-      for(uint_fast8_t n = 0; n < sizeof(bits_) - 1; ++n) {
-        in = bits_[n];
-        for(uint_fast8_t i = 0; i < 8; ++i) {
-          mix = (crc ^ in) & 1;
-          crc >>= 1U;
-          if(mix) { crc ^= 0x8CU; }
-          in  >>= 1U;
-        }
-      }
-
-      return bits_[sizeof(bits_) - 1] == crc;
-    }
+    inline bool is_valid() const { return detail::check_rom(bits_); }
   private:
-    uint8_t bits_[8] = {};
+    uint8_t bits_[8];
   };
 
   constexpr uint8_t search_rom_cmd = _alarm? 0xEC : 0xF0;
