@@ -93,10 +93,8 @@ static io::result tx_bit(bool b)
   return io::result::success;
 }
 
-} // namespace detail
-
 template<typename _module>
-bool start()
+bool presence()
 {
   using dq_tx = decltype(_module::dq_tx);
   using dq_rx = decltype(_module::dq_rx);
@@ -145,6 +143,16 @@ bool start()
   return true;
 }
 
+} // namespace detail
+
+/**
+ * @brief Receive word from bus
+ *
+ * @tparam _module - 1-wire module struct
+ * @tparam _data   - word data type
+ *
+ * @param  data    - data word
+ */
 template<typename _module, typename _data>
 io::result rx(_data&& data)
 {
@@ -159,6 +167,14 @@ io::result rx(_data&& data)
   return io::result::success;
 }
 
+/**
+ * @brief Transmit word to bus
+ *
+ * @tparam _module - 1-wire module struct
+ * @tparam _data   - word data type
+ *
+ * @param  data    - data word
+ */
 template<typename _module, typename _data>
 io::result tx(_data data)
 {
@@ -170,6 +186,15 @@ io::result tx(_data data)
   return io::result::success;
 }
 
+/**
+ * @brief Read data from bus
+ *
+ * @tparam _module - 1-wire module struct
+ *
+ * @param  data    - data buffer
+ * @param  sz      - data size to read
+ * @param  t       - timeout
+ */
 template<typename _module>
 io::result read(void *data, uint32_t sz, const delay::expirable &t)
 {
@@ -183,6 +208,15 @@ io::result read(void *data, uint32_t sz, const delay::expirable &t)
   return io::result::success;
 }
 
+/**
+ * @brief Write data to bus
+ *
+ * @tparam _module - 1-wire module struct
+ *
+ * @param  data    - data buffer
+ * @param  sz      - data size to write
+ * @param  t       - timeout
+ */
 template<typename _module>
 io::result write(const void *data, uint32_t sz, const delay::expirable &t)
 {
@@ -196,7 +230,37 @@ io::result write(const void *data, uint32_t sz, const delay::expirable &t)
   return io::result::success;
 }
 
-template<typename _module, typename _rom_found, bool _alarm = false>
+/**
+ * @brief Read ROM from device
+ *
+ * @tparam _module - 1-wire module struct
+ *
+ * @param  data    - data buffer
+ * @param  sz      - data size to read
+ * @param  t       - timeout
+ */
+template<typename _module>
+io::result read_rom(uint8_t rom[8], const delay::expirable &t)
+{
+  constexpr uint8_t read_rom_cmd = 0x33;
+
+  return (
+    detail::presence<_module>() &&
+    tx<_module>(read_rom_cmd) == io::result::success &&
+    read<_module>(rom, 8, t) == io::result::success
+  )? io::result::success : io::result::error;
+}
+
+/**
+ * @brief Search all ROM's on bus
+ *
+ * @tparam _module   - 1-wire module struct
+ * @tparam _alarm    - if 'true' search devices in alarm state only, else all devices
+ *
+ * @param  rom_found - callback function (called on every device found)
+ * @param  t         - timeout
+ */
+template<typename _module, bool _alarm, typename _rom_found>
 io::result search(_rom_found&& rom_found, const delay::expirable &t)
 {
   class rom_id
@@ -219,15 +283,15 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
 
     inline bool is_valid() const
     {
-      uint_fast8_t crc = 0;
+      uint_fast8_t crc = 0, in, mix;
 
       for(uint_fast8_t n = 0; n < sizeof(bits_) - 1; ++n) {
-        uint_fast8_t in = bits_[n];
+        in = bits_[n];
         for(uint_fast8_t i = 0; i < 8; ++i) {
-          uint_fast8_t mix = (crc ^ in) & 1;
-          crc >>= 1;
-          if(mix) { crc ^= 0x8C; }
-          in  >>= 1;
+          mix = (crc ^ in) & 1;
+          crc >>= 1U;
+          if(mix) { crc ^= 0x8CU; }
+          in  >>= 1U;
         }
       }
 
@@ -237,7 +301,7 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
     uint8_t bits_[8] = {};
   };
 
-  constexpr uint8_t cmd = _alarm? 0xEC : 0xF0;
+  constexpr uint8_t search_rom_cmd = _alarm? 0xEC : 0xF0;
 
   bool done_flag = false, rom_bit;
   uint_fast8_t last_discrepancy = 0;
@@ -246,7 +310,9 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
   while(!done_flag) {
     uint_fast8_t bit_index = 1, discrepancy_marker = 0;
 
-    if(!start<_module>() || tx<_module>(cmd) != io::result::success) { return io::result::error; }
+    if(!detail::presence<_module>() || tx<_module>(search_rom_cmd) != io::result::success) {
+      return io::result::error;
+    }
 
     do {
       if(t.expired()) { return io::result::busy; }
@@ -256,7 +322,7 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
       if(
         detail::rx_bit<_module>(bit_a) != io::result::success ||
         detail::rx_bit<_module>(bit_b) != io::result::success
-      ) { return io::result::success; }
+      ) { return io::result::error; }
 
       if(bit_a == bit_b) {
         if(bit_a) { return io::result::error; }
@@ -291,6 +357,87 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
       last_discrepancy = 0;
       done_flag = false;
     }
+  }
+
+  return io::result::success;
+}
+
+/**
+ * @brief Select device with match ROM
+ *
+ * @tparam _module - 1-wire module struct
+ *
+ * @param  rom     - device ROM
+ * @param  t       - timeout
+ */
+template<typename _module>
+io::result select(const uint8_t rom[8], const delay::expirable &t)
+{
+  constexpr uint8_t match_rom_cmd = 0x55;
+  return (
+    detail::presence<_module>() &&
+    tx<_module>(match_rom_cmd) == io::result::success &&
+    write<_module>(rom, 8, t) == io::result::success
+  )? io::result::success : io::result::error;
+}
+
+/**
+ * @brief Select all devices
+ *
+ * @tparam _module - 1-wire module struct
+ */
+template<typename _module>
+io::result select_all()
+{
+  constexpr uint8_t skip_rom_cmd = 0xCC;
+  return (detail::presence<_module>() && tx<_module>(skip_rom_cmd) == io::result::success)?
+          io::result::success : io::result::error;
+}
+
+
+/**
+ * @brief Verifies device with match ROM is connected to the bus
+ *
+ * @tparam _module - 1-wire module struct
+ *
+ * @param  rom     - device ROM
+ * @tparam _alarm  - if 'true' search devices in alarm state only, else all devices
+ * @param  t       - timeout
+ */
+template<typename _module, bool _alarm = false>
+io::result present(const uint8_t rom[8], const delay::expirable &t)
+{
+  constexpr uint8_t search_rom_cmd = _alarm? 0xEC : 0xF0;
+
+  auto bit = [&rom](uint_fast8_t n)
+  {
+    const uint_fast8_t idx = n / 8, shr = n % 8;
+    return (rom[idx] & (1U << shr)) != 0;
+  };
+
+  if(!detail::presence<_module>() || tx<_module>(search_rom_cmd) != io::result::success) {
+    return io::result::error;
+  }
+
+  for(uint_fast8_t n = 0; n < 64; n++) {
+    if(t.expired()) { return io::result::busy; }
+
+    bool bit_a, bit_b;
+
+    if(
+      detail::rx_bit<_module>(bit_a) != io::result::success ||
+      detail::rx_bit<_module>(bit_b) != io::result::success
+    ) { return io::result::error; }
+
+    if(bit_a == bit_b) {
+      if(bit_a) { return io::result::error; }
+      bit_a = bit(n);
+    }
+    else {
+      if(bit_a != bit(n)) { return io::result::error; }
+    }
+
+    if(detail::tx_bit<_module>(bit_a) != io::result::success) { return io::result::error; }
   }
 
   return io::result::success;
