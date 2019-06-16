@@ -23,7 +23,8 @@ enum class dev_class
   timer_oc,
   mtd,
   soft_uart,
-  soft_one_wire
+  soft_one_wire,
+  temp_sensor
 };
 
 } // namespace lmcu

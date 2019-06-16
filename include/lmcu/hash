@@ -6,3 +6,4 @@
 #endif
 
 #include "../../hwi/hash/ecc.h"
+#include "../../hwi/hash/dallas/crc8.h"
