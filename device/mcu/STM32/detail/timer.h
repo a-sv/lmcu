@@ -529,7 +529,7 @@ void oc_configure()
     }
 
     if constexpr(tim_type == tim_type::advanced && oc_channel < 3) {
-      if constexpr(_module_oc::oc_polarity == oc_polarity::low) {
+      if constexpr(_module_oc::oc_n_polarity == oc_n_polarity::low) {
         r |=  ccnp[oc_channel];
       }
       else {
