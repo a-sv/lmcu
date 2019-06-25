@@ -175,7 +175,7 @@ void enable(bool afio_on = true) { detail::enable<_ports...>(afio_on); }
 template<port ..._ports>
 void disable(bool afio_off = true) { detail::disable<_ports...>(afio_off); }
 
-template<remap ..._ports>
-void remap() { detail::remap<_ports...>(); }
+template<remap ..._remap>
+void remap() { detail::remap<_remap...>(); }
 
 } // namespace lmcu::gpio
