@@ -66,6 +66,8 @@ TIM_TypeDef *inst()
   case module_id::tim14: return TIM14;
 #endif
   }
+
+  return nullptr;
 }
 
 template<typename _module>
@@ -140,12 +142,12 @@ void set_period(uint16_t val) { detail::inst<_module>()->ARR = val; }
 template<typename _module>
 void emit_update_event() { detail::inst<_module>()->EGR = TIM_EGR_UG; }
 
-template<typename _module_oc>
+template<typename _oc_conf>
 void set_pulse(uint16_t val)
 {
-  auto inst = detail::inst<decltype(_module_oc::module)>();
+  auto inst = detail::inst<decltype(_oc_conf::module)>();
 
-  switch(_module_oc::oc_channel)
+  switch(_oc_conf::oc_channel)
   {
     case oc_channel::oc_1: inst->CCR1 = val; break;
     case oc_channel::oc_2: inst->CCR2 = val; break;
@@ -285,6 +287,21 @@ void tim_configure()
   {
     uint32_t r = inst->CR1;
 
+    r &= ~TIM_CR1_CKD;
+    switch(_module::clock_prediv)
+    {
+    case clock_prediv::_2: r |= (1 << TIM_CR1_CKD_Pos);
+    case clock_prediv::_4: r |= (2 << TIM_CR1_CKD_Pos);
+    default : break;
+    }
+
+    if constexpr(_module::arr_buffer == arr_buffer::enable) {
+      r |= TIM_CR1_ARPE;
+    }
+    else {
+      r &= ~TIM_CR1_ARPE;
+    }
+
     r &= ~(TIM_CR1_DIR | TIM_CR1_CMS);
     switch(_module::counter_mode)
     {
@@ -295,14 +312,6 @@ void tim_configure()
     default : break;
     }
 
-    r &= ~TIM_CR1_CKD;
-    switch(_module::clock_prediv)
-    {
-    case clock_prediv::_2: r |= (1 << TIM_CR1_CKD_Pos);
-    case clock_prediv::_4: r |= (2 << TIM_CR1_CKD_Pos);
-    default : break;
-    }
-
     if constexpr(_module::one_pulse == one_pulse::enable) {
       r |=  TIM_CR1_OPM;
     }
@@ -310,12 +319,127 @@ void tim_configure()
       r &= ~TIM_CR1_OPM;
     }
 
+    if constexpr(_module::update_request_source == update_request_source::any) {
+      r &= ~TIM_CR1_URS;
+    }
+    else {
+      r |=  TIM_CR1_URS;
+    }
+
     inst->CR1 = r;
   }
 
-  inst->SMCR = 0; // disable slave mode
+  {
+    uint32_t r = inst->CR2;
 
-  if constexpr(get_tim_type<_conf>() == tim_type::advanced) { inst->RCR = _module::rep_count; }
+    if constexpr(_module::ti1_selection == ti1_selection::ch_1) {
+      r &= ~TIM_CR2_TI1S;
+    }
+    else {
+      r |=  TIM_CR2_TI1S;
+    }
+
+    r &= ~TIM_CR2_MMS;
+    switch(_module::master_mode) {
+    case master_mode::enable:     r |= (1 << TIM_CR2_MMS_Pos); break;
+    case master_mode::update:     r |= (2 << TIM_CR2_MMS_Pos); break;
+    case master_mode::comp_pulse: r |= (3 << TIM_CR2_MMS_Pos); break;
+    case master_mode::comp_1:     r |= (4 << TIM_CR2_MMS_Pos); break;
+    case master_mode::comp_2:     r |= (5 << TIM_CR2_MMS_Pos); break;
+    case master_mode::comp_3:     r |= (6 << TIM_CR2_MMS_Pos); break;
+    case master_mode::comp_4:     r |= (7 << TIM_CR2_MMS_Pos); break;
+    default : break;
+    }
+
+    if constexpr(_module::dma_triger == dma_triger::capture_compare) {
+      r &= ~TIM_CR2_CCDS;
+    }
+    else {
+      r |=  TIM_CR2_CCDS;
+    }
+
+    if constexpr(_module::cc_ctrl_update != cc_ctrl_update::disable) {
+      r |= TIM_CR2_CCPC;
+      if constexpr(_module::cc_ctrl_update == cc_ctrl_update::comg) {
+        r &= ~TIM_CR2_CCUS;
+      }
+      else {
+        r |=  TIM_CR2_CCUS;
+      }
+    }
+    else {
+      r &= ~TIM_CR2_CCPC;
+    }
+
+    inst->CR2 = r;
+  }
+
+  if constexpr(_module::slave_mode == slave_mode::enable) {
+    uint32_t r = inst->SMCR;
+
+    r |= TIM_SMCR_MSM;
+
+    if constexpr(_module::ex_trig_polarity == ex_trig_polarity::high) {
+      r &= ~TIM_SMCR_ETP;
+    }
+    else {
+      r |=  TIM_SMCR_ETP;
+    }
+
+    if constexpr(_module::ex_clock == ex_clock::disable) {
+      r &= ~TIM_SMCR_ECE;
+    }
+    else {
+      r |=  TIM_SMCR_ECE;
+    }
+
+    r &= ~TIM_SMCR_ETPS;
+    switch(_module::ex_trig_div) {
+    case ex_trig_div::_2: r |= (1 << TIM_SMCR_ETPS_Pos); break;
+    case ex_trig_div::_4: r |= (2 << TIM_SMCR_ETPS_Pos); break;
+    case ex_trig_div::_8: r |= (3 << TIM_SMCR_ETPS_Pos); break;
+    default : break;
+    }
+
+    r &= ~TIM_SMCR_ETF;
+    switch(_module::ex_trig_filter) {
+    case ex_trig_filter::ckint_n2: r |= (1  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::ckint_n4: r |= (2  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::ckint_n8: r |= (3  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts2_n6:  r |= (4  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts2_n8:  r |= (5  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts4_n6:  r |= (6  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts4_n8:  r |= (7  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts8_n6:  r |= (8  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts8_n8:  r |= (9  << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts16_n5: r |= (10 << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts16_n6: r |= (11 << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts16_n8: r |= (12 << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts32_n5: r |= (13 << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts32_n6: r |= (14 << TIM_SMCR_ETF_Pos); break;
+    case ex_trig_filter::dts32_n8: r |= (15 << TIM_SMCR_ETF_Pos); break;
+    default : break;
+    }
+
+    r &= ~TIM_SMCR_TS;
+    switch(_module::trig_selection) {
+    case trig_selection::itr1:    r |= (1 << TIM_SMCR_TS_Pos); break;
+    case trig_selection::itr2:    r |= (2 << TIM_SMCR_TS_Pos); break;
+    case trig_selection::itr3:    r |= (3 << TIM_SMCR_TS_Pos); break;
+    case trig_selection::ti1f_ed: r |= (4 << TIM_SMCR_TS_Pos); break;
+    case trig_selection::ti1f_p1: r |= (5 << TIM_SMCR_TS_Pos); break;
+    case trig_selection::ti2f_p2: r |= (6 << TIM_SMCR_TS_Pos); break;
+    case trig_selection::etrf:    r |= (7 << TIM_SMCR_TS_Pos); break;
+    default : break;
+    }
+
+    inst->SMCR = r;
+  }
+  else {
+    inst->SMCR = 0;
+  }
+
+  if constexpr(get_tim_type<_module>() == tim_type::advanced) { inst->RCR = _module::rep_count; }
 }
 
 template<typename _module_oc>
@@ -424,7 +548,7 @@ void oc_configure()
 
     uint32_t r = inst->CR2;
 
-    if constexpr(_module_oc::oc_idle_state == oc_idle_state::set) {
+    if constexpr(_module_oc::oc_idle_state == oc_idle_state::high) {
       r |=  ois[oc_channel];
     }
     else {
@@ -432,7 +556,7 @@ void oc_configure()
     }
 
     if constexpr(tim_type == tim_type::advanced && oc_channel < 3) {
-      if constexpr(_module_oc::oc_n_idle_state == oc_idle_state::set) {
+      if constexpr(_module_oc::oc_n_idle_state == oc_idle_state::high) {
         r |=  oisn[oc_channel];
       }
       else {
@@ -447,17 +571,17 @@ void oc_configure()
 template<typename _module, typename ..._modules>
 void configure()
 {
-  if constexpr(_module::dev_class == lmcu::dev_class::timer) { tim_configure<_conf>(); }
-  if constexpr(_module::dev_class == lmcu::dev_class::timer_oc) { oc_configure<_conf>();  }
+  if constexpr(_module::dev_class == lmcu::dev_class::timer) { tim_configure<_module>(); }
+  if constexpr(_module::dev_class == lmcu::dev_class::timer_oc) { oc_configure<_module>();  }
 
   if constexpr(sizeof...(_modules) > 0) { configure<_modules...>(); }
 }
 
-template<typename ..._modules>
-void main_output_enable()  { ((detail::inst<_modules::module_id>()->BDTR |=  TIM_BDTR_MOE), ...); }
+template<typename ..._module>
+void main_output_enable()  { ((detail::inst<_module>()->BDTR |=  TIM_BDTR_MOE), ...); }
 
 template<typename ..._modules>
-void main_output_disable() { ((detail::inst<_modules::module_id>()->BDTR &= ~TIM_BDTR_MOE), ...); }
+void main_output_disable() { ((detail::inst<_modules>()->BDTR &= ~TIM_BDTR_MOE), ...); }
 
 template<typename _module_oc, oc_type _oc_type>
 constexpr void timer_type_check()
@@ -467,8 +591,8 @@ constexpr void timer_type_check()
 
     static_assert(tim_type == tim_type::advanced, "complementary outputs support only for advanced "
                                                   "timers");
-    static_assert(_module_oc::oc_channel < 3, "complementary outputs support only for 1 - 3 main "
-                                              "channels");
+    static_assert(_module_oc::oc_channel < oc_channel::oc_4, "complementary outputs support only "
+                                                             "for 1 - 3 main channels");
   }
 }
 
@@ -500,6 +624,18 @@ void channel_disable()
   if constexpr(flags::all(_oc_type, oc_type::main)) { r &= ~cce[oc_channel];  }
   if constexpr(flags::all(_oc_type, oc_type::comp)) { r &= ~ccne[oc_channel]; }
   inst->CCER = r;
+}
+
+template<typename _module, typename ..._modules>
+void set_deadtime(uint8_t val)
+{
+  auto inst = detail::inst<_module>();
+
+  uint32_t r = inst->BDTR;
+  r = (r & ~TIM_BDTR_DTG) | val;
+  inst->BDTR = r;
+
+  if constexpr(sizeof...(_modules) > 0) { configure<_modules...>(); }
 }
 
 } // namespace detail
