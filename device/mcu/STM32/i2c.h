@@ -71,9 +71,9 @@ void enable() { (detail::enable<_modules>(), ...); }
 template<typename ..._modules>
 void disable() { (detail::disable<_modules>(), ...); }
 
-template<typename _module>
+template<typename _module, bool _master = true>
 io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
-{ return detail::tx<_module>(addr, data, t); }
+{ return detail::tx<_module, _master>(addr, data, t); }
 
 template<typename _module, typename _get_fn>
 io::result write(uint16_t addr, const delay::expirable &t, _get_fn&& get)
@@ -89,9 +89,9 @@ io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::expi
   return write<_module>(addr, t, [&b, e](auto&& r) { r = *b++; return b < e; } );
 }
 
-template<typename _module>
-io::result rx(uint16_t addr, uint8_t data, const delay::expirable &t)
-{ return detail::rx<_module>(addr, data, t); }
+template<typename _module, bool _master = true>
+io::result rx(uint16_t addr, uint8_t &data, const delay::expirable &t)
+{ return detail::rx<_module, _master>(addr, data, t); }
 
 template<typename _module>
 io::result read(uint16_t addr, void *data, uint16_t sz, const delay::expirable &t)
