@@ -316,7 +316,7 @@ io::result rx(uint16_t addr, uint8_t &data, const delay::expirable &t)
   });
 
   if constexpr(_master) {
-    lmcu_disable_irq();
+    lmcu_critical_section();
     inst->SR1 &= ~I2C_SR1_AF;
     inst->CR1 |= I2C_CR1_STOP;
   }
@@ -367,7 +367,7 @@ io::result read(uint16_t addr, void *data, uint16_t sz, const delay::expirable &
     // errata!
     inst->CR1 &= ~I2C_CR1_ACK;
 
-    lmcu_disable_irq();
+    lmcu_critical_section();
 
     inst->SR1 &= ~I2C_SR1_AF;
     inst->CR1 |= I2C_CR1_STOP;
@@ -376,7 +376,7 @@ io::result read(uint16_t addr, void *data, uint16_t sz, const delay::expirable &
   if(sz == 2) {
     inst->CR1 |= I2C_CR1_POS;
 
-    lmcu_disable_irq();
+    lmcu_critical_section();
 
     inst->SR1 &= ~I2C_SR1_AF;
     inst->CR1 &= ~I2C_CR1_ACK;
@@ -403,7 +403,7 @@ io::result read(uint16_t addr, void *data, uint16_t sz, const delay::expirable &
         }
 
         {
-          lmcu_disable_irq();
+          lmcu_critical_section();
           inst->CR1 |= I2C_CR1_STOP;
           *p++ = inst->DR;
         }
@@ -418,7 +418,7 @@ io::result read(uint16_t addr, void *data, uint16_t sz, const delay::expirable &
         inst->CR1 &= ~I2C_CR1_ACK;
 
         {
-          lmcu_disable_irq();
+          lmcu_critical_section();
 
           *p++ = inst->DR;
 

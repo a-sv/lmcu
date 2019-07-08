@@ -97,7 +97,7 @@ public:
     if(auto r = sync(t); r != io::result::success) { return r; }
 
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       select();
       spi::tx<_spi>(cmd_reset_enable);
@@ -124,7 +124,7 @@ public:
 
     if(auto r = suspend<true>(t); r != io::result::success) { return r; }
 
-    lmcu_disable_irq();
+    lmcu_critical_section();
 
     select();
     spi::tx<_spi>(cmd_read_id);
@@ -142,7 +142,7 @@ public:
   */
   io::result read_status(status &s, const delay::expirable&)
   {
-    lmcu_disable_irq();
+    lmcu_critical_section();
 
     select();
     spi::tx<_spi>(cmd_read_status);
@@ -172,7 +172,7 @@ public:
     {
       if(t.expired()) { return io::result::busy; }
 
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       const auto a_bytes = get_address_bytes(addr);
 
@@ -239,7 +239,7 @@ public:
 
       const auto a_bytes = get_address_bytes(addr);
 
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       wp_enable(false);
 
@@ -325,7 +325,7 @@ public:
       lmcu_defer([] { deselect(); });
 
       {
-        lmcu_disable_irq();
+        lmcu_critical_section();
 
         if(!ex_addr_ && addr <= 0xFFFFFF) {
           spi::tx<_spi>(cmd_read3);
@@ -343,7 +343,7 @@ public:
       for(; n; n -= sizeof(buf)) {
         if(t.expired()) { return io::result::busy; }
 
-        lmcu_disable_irq();
+        lmcu_critical_section();
 
         spi::read<_spi>(&buf, sizeof(buf));
         if(
@@ -398,7 +398,7 @@ public:
       op_ = op::erase;
 
       {
-        lmcu_disable_irq();
+        lmcu_critical_section();
 
         wp_enable(false);
 
@@ -523,7 +523,7 @@ private:
   {
     if(ex_addr_) { return io::result::success; }
 
-    lmcu_disable_irq();
+    lmcu_critical_section();
 
     while(true) {
       if(t.expired()) { return io::result::busy; }
@@ -598,7 +598,7 @@ private:
     do {
       if(t.expired()) { return io::result::busy; }
 
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       const auto status = read_flags();
 

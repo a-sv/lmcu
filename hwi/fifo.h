@@ -20,7 +20,7 @@ public:
 
     void operator =(push_ref&& rhs)
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       reset();
       f_       = rhs.f_;
@@ -31,7 +31,7 @@ public:
     push_ref(push_ref&& rhs)
     : f_(rhs.f_)
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       reset();
       idx_     = rhs.idx_;
@@ -50,7 +50,7 @@ public:
     */
     void reset()
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
       if(!is_valid()) { return; }
 
       if(is_valid_index(f_.first_busy_)) {
@@ -68,7 +68,7 @@ public:
     explicit push_ref(fifo &f)
     : f_(f)
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       idx_ = f_.empty_;
       if(is_valid()) {
@@ -96,7 +96,7 @@ public:
 
     void operator =(pop_ref&& rhs)
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       reset();
       f_       = rhs.f_;
@@ -107,7 +107,7 @@ public:
     pop_ref(pop_ref&& rhs)
     : f_(rhs.f_)
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       reset();
       idx_     = rhs.idx_;
@@ -126,7 +126,7 @@ public:
     */
     void reset()
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       if(!is_valid()) { return; }
 
@@ -139,7 +139,7 @@ public:
     explicit pop_ref(fifo &f)
     : f_(f)
     {
-      lmcu_disable_irq();
+      lmcu_critical_section();
 
       idx_ = f_.first_busy_;
       if(is_valid()) {
@@ -159,7 +159,7 @@ public:
 
   fifo()
   {
-    lmcu_disable_irq();
+    lmcu_critical_section();
 
     _idx_type n = 0;
     for(auto&& it : items_) { it.next_ = n + 1; ++n; }
@@ -169,7 +169,7 @@ public:
    * Return reference to first element in fifo
    *
    * @return  - reference to _type
-   * @warning - Unsafe function! Interrupt may overwrite data. Protect result by lmcu_disable_irq
+   * @warning - Unsafe function! Interrupt may overwrite data. Protect result by lmcu_critical_section
    *            if you using FIFO with interrupts.
   */
   _type &first() { return items_[first_busy_].data_; }
@@ -178,7 +178,7 @@ public:
    * Return reference to last element in fifo
    *
    * @return  - reference to _type
-   * @warning - Unsafe function! Interrupt may overwrite data. Protect result by lmcu_disable_irq
+   * @warning - Unsafe function! Interrupt may overwrite data. Protect result by lmcu_critical_section
    *            if you using FIFO with interrupts.
   */
   _type &last()  { return items_[last_busy_].data_; }
@@ -234,7 +234,7 @@ public:
   */
   void clear()
   {
-    lmcu_disable_irq();
+    lmcu_critical_section();
 
     while(is_valid_index(first_busy_)) {
       auto next = items_[first_busy_].next_;

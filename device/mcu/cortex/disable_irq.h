@@ -23,4 +23,4 @@ private:
 #define __unique_name_9ec0ab5f_1(line) __lock_9ec0ab5f_obj_##line
 #define __unique_name_9ec0ab5f_2(line) __unique_name_9ec0ab5f_1(line)
 
-#define lmcu_disable_irq() __disable_irq_9ec0ab5f __unique_name_9ec0ab5f_2(__LINE__)
+#define lmcu_critical_section() __disable_irq_9ec0ab5f __unique_name_9ec0ab5f_2(__LINE__)
