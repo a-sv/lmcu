@@ -5,7 +5,7 @@ namespace detail {
 enum class direction { tx, rx };
 
 template<typename _module>
-inline I2C_TypeDef *inst()
+static inline I2C_TypeDef *inst()
 {
   switch(_module::module_id)
   {
@@ -126,10 +126,60 @@ void configure()
                (_module::own_addr_2 << 1);
 }
 
-template<typename _module, bool _start, direction _direction>
-io::result request(uint16_t addr, const delay::expirable &t)
+template<typename _module>
+static inline void clear_addr_flag()
 {
   auto inst = detail::inst<_module>();
+  inst->SR1; inst->SR2;
+}
+
+template<typename _module>
+static inline io::result wait_addr_flag(const delay::expirable &t)
+{
+  auto inst = detail::inst<_module>();
+
+  while((inst->SR1 & I2C_SR1_ADDR) == 0) {
+    if(t.expired()) { return io::result::busy; }
+  }
+
+  clear_addr_flag<_module>();
+
+  return io::result::success;
+}
+
+template<typename _module>
+static inline io::result wait_rxne_flag(const delay::expirable &t)
+{
+  auto inst = detail::inst<_module>();
+
+  while((inst->SR1 & I2C_SR1_RXNE) == 0) {
+    if(t.expired()) { return io::result::busy; }
+    if((inst->SR1 & I2C_SR1_STOPF) != 0) { return io::result::error; }
+  }
+
+  return io::result::success;
+}
+
+template<typename _module>
+static inline io::result wait_bus_ready(const delay::expirable &t)
+{
+  auto inst = detail::inst<_module>();
+
+  while((inst->SR2 & I2C_SR2_BUSY) != 0) {
+    if(t.expired()) { return io::result::busy; }
+  }
+
+  return io::result::success;
+}
+
+template<typename _module, bool _start, direction _direction>
+static io::result request(uint16_t addr, const delay::expirable &t)
+{
+  auto inst = detail::inst<_module>();
+
+  if constexpr(_direction == direction::rx) {
+    inst->CR1 |= I2C_CR1_ACK;
+  }
 
   if constexpr(_start) { inst->CR1 |= I2C_CR1_START; }
 
@@ -167,24 +217,9 @@ io::result request(uint16_t addr, const delay::expirable &t)
 
   auto rc = f_wait(I2C_SR1_ADDR);
 
-  // clear ADDR flag
-  inst->SR1; inst->SR2;
+  clear_addr_flag<_module>();
 
   return rc;
-}
-
-template<typename _module>
-io::result wait_addr(const delay::expirable &t)
-{
-  auto inst = detail::inst<_module>();
-
-  while((inst->SR1 & I2C_SR1_ADDR) == 0) {
-    if(t.expired()) { return io::result::busy; }
-  }
-  // Clear ADDR flag
-  inst->SR1; inst->SR2;
-
-  return io::result::success;
 }
 
 template<typename _module, bool _master>
@@ -193,16 +228,22 @@ io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
   auto inst = detail::inst<_module>();
 
   if constexpr(_master) {
-    while((inst->SR2 & I2C_SR2_BUSY) != 0) {
-      if(t.expired()) { return io::result::busy; }
-    }
+    if(auto r = wait_bus_ready<_module>(t); r != io::result::success) { return r; }
   }
 
   inst->CR1 &= ~I2C_CR1_POS;
 
-  if constexpr(!_master) {
+  if constexpr(_master) {
+    inst->CR1 &= ~I2C_CR1_ACK;
+  }
+  else {
     inst->CR1 |= I2C_CR1_ACK;
-    if(auto r = wait_addr<_module>(t); r != io::result::success) { return r; }
+
+    if(auto r = wait_addr_flag<_module>(t); r != io::result::success) { return r; }
+
+    if constexpr(_module::addr_mode == addr_mode::_10bit) {
+      if(auto r = wait_addr_flag<_module>(t); r != io::result::success) { return r; }
+    }
   }
 
   lmcu_defer([inst]
@@ -224,11 +265,21 @@ io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
     if(t.expired()) { return io::result::busy; }
   }
 
+  if((inst->SR1 & I2C_SR1_AF) != 0) {
+    inst->SR1 &= ~I2C_SR1_AF;
+    return io::result::error;
+  }
+
   inst->DR = data;
 
   if constexpr(_master) {
     while((inst->SR1 & I2C_SR1_BTF) == 0) {
       if(t.expired()) { return io::result::busy; }
+    }
+
+    if((inst->SR1 & I2C_SR1_AF) != 0) {
+      inst->SR1 &= ~I2C_SR1_AF;
+      return io::result::error;
     }
   }
   else {
@@ -246,9 +297,7 @@ io::result write(uint16_t addr, const delay::expirable &t, _get_fn&& get)
 {
   auto inst = detail::inst<_module>();
 
-  while((inst->SR2 & I2C_SR2_BUSY) != 0) {
-    if(t.expired()) { return io::result::busy; }
-  }
+  if(auto r = wait_bus_ready<_module>(t); r != io::result::success) { return r; }
 
   // disable pos
   inst->CR1 &= ~I2C_CR1_POS;
@@ -271,60 +320,36 @@ io::result write(uint16_t addr, const delay::expirable &t, _get_fn&& get)
   return io::result::success;
 }
 
-template<typename _module>
-io::result wait_rxne(const delay::expirable &t)
-{
-  auto inst = detail::inst<_module>();
-
-  while((inst->SR1 & I2C_SR1_RXNE) == 0) {
-    if(t.expired()) { return io::result::busy; }
-    if((inst->SR1 & I2C_SR1_STOPF) != 0) { return io::result::error; }
-  }
-
-  return io::result::success;
-}
-
 template<typename _module, bool _master>
 io::result rx(uint16_t addr, uint8_t &data, const delay::expirable &t)
 {
   auto inst = detail::inst<_module>();
 
   if constexpr(_master) {
-    while((inst->SR2 & I2C_SR2_BUSY) != 0) {
-      if(t.expired()) { return io::result::busy; }
-    }
+    if(auto r = wait_bus_ready<_module>(t); r != io::result::success) { return r; }
   }
 
   inst->CR1 &= ~I2C_CR1_POS;
 
+  lmcu_defer([inst] { inst->CR1 &= ~I2C_CR1_ACK; });
+
   if constexpr(_master) {
-    if(auto rc = request<_module, true, direction::rx>(addr, t); rc != io::result::success) {
-      return rc;
+    if(auto r = request<_module, true, direction::rx>(addr, t); r != io::result::success) {
+      return r;
     }
-  }
 
-  if constexpr(_master) {
-    inst->CR1 &= ~I2C_CR1_ACK;
-  }
-  else {
-    inst->CR1 |= I2C_CR1_ACK;
-  }
-
-  lmcu_defer([inst]
-  {
-    if constexpr(!_master) { inst->CR1 &= ~I2C_CR1_ACK; }
-  });
-
-  if constexpr(_master) {
     lmcu_critical_section();
-    inst->SR1 &= ~I2C_SR1_AF;
+
+    inst->CR1 &= ~I2C_CR1_ACK;
+    clear_addr_flag<_module>();
     inst->CR1 |= I2C_CR1_STOP;
   }
   else {
-    if(auto r = wait_addr<_module>(t); r != io::result::success) { return r; }
+    inst->CR1 |= I2C_CR1_ACK;
+    if(auto r = wait_addr_flag<_module>(t); r != io::result::success) { return r; }
   }
 
-  if(auto r = wait_rxne<_module>(t); r != io::result::success) { return r; }
+  if(auto r = wait_rxne_flag<_module>(t); r != io::result::success) { return r; }
 
   data = inst->DR;
   if(inst->SR1 & I2C_SR1_BTF) { inst->DR; }
@@ -333,8 +358,15 @@ io::result rx(uint16_t addr, uint8_t &data, const delay::expirable &t)
     while((inst->SR1 & I2C_SR1_STOPF) == 0) {
       if(t.expired()) { return io::result::busy; }
     }
+
     // Clear STOP flag
+    inst->SR1;
     inst->CR1 |= I2C_CR1_PE;
+
+    if((inst->SR1 & I2C_SR1_AF) != 0) {
+      inst->SR1 &= ~I2C_SR1_AF;
+      return io::result::error;
+    }
   }
 
   return io::result::success;
@@ -347,9 +379,7 @@ io::result read(uint16_t addr, void *data, uint16_t sz, const delay::expirable &
   auto p         = static_cast<uint8_t*>(data);
   const auto end = p + sz;
 
-  while((inst->SR2 & I2C_SR2_BUSY) != 0) {
-    if(t.expired()) { return io::result::busy; }
-  }
+  if(auto r = wait_bus_ready<_module>(t); r != io::result::success) { return r; }
 
   // disable pos
   inst->CR1 &= ~I2C_CR1_POS;
