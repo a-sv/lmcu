@@ -13,7 +13,7 @@ public:
 class inf : public expirable
 {
 public:
-  bool expired() const final { return false; }
+  bool expired() const final { yield(); return false; }
 };
 
 } // namespace lmcu::delay
