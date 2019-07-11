@@ -33,6 +33,8 @@ enum class general_call { enable, disable };
 
 enum class no_stretch { enable, disable };
 
+enum class io_mode { master, slave };
+
 template<
   module_id _module_id,
   uint32_t _clock = 100_kHz,
@@ -71,30 +73,40 @@ void enable() { (detail::enable<_modules>(), ...); }
 template<typename ..._modules>
 void disable() { (detail::disable<_modules>(), ...); }
 
-template<typename _module, bool _master = true>
-io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
-{ return detail::tx<_module, _master>(addr, data, t); }
-
-template<typename _module, typename _get_fn>
+template<typename _module, io_mode _io_mode, typename _get_fn>
 io::result write(uint16_t addr, const delay::expirable &t, _get_fn&& get)
-{ return detail::write<_module>(addr, t, get); }
+{ return detail::write<_module, _io_mode>(addr, t, get); }
 
-template<typename _module>
+template<typename _module, io_mode _io_mode>
 io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::expirable &t)
 {
   if(sz == 0) {
     return io::result::success;
   }
   auto b = static_cast<const uint8_t*>(data), e = b + sz;
-  return write<_module>(addr, t, [&b, e](auto&& r) { r = *b++; return b < e; } );
+  return write<_module, _io_mode>(addr, t, [&b, e](auto&& r) { r = *b++; return b < e; } );
 }
 
-template<typename _module, bool _master = true>
+template<typename _module, io_mode _io_mode>
+io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
+{
+  return write<_module, _io_mode>(addr, t, [data](auto&& r) { r = data; return false; } );
+}
+
+template<typename _module, io_mode _io_mode>
+io::result read(uint16_t addr, void *data, uint32_t sz, const delay::expirable &t)
+{
+  if(sz == 0) {
+    return io::result::success;
+  }
+  return detail::read<_module, _io_mode>(addr, data, sz, t);
+}
+
+template<typename _module, io_mode _io_mode>
 io::result rx(uint16_t addr, uint8_t &data, const delay::expirable &t)
-{ return detail::rx<_module, _master>(addr, data, t); }
+{ return detail::read<_module, _io_mode>(addr, &data, 1, t); }
 
 template<typename _module>
-io::result read(uint16_t addr, void *data, uint16_t sz, const delay::expirable &t)
-{ return detail::read<_module>(addr, data, sz, t); }
+void reset() { detail::reset<_module>(); }
 
 } // namespace lmcu::i2c
