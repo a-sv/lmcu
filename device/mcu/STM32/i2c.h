@@ -33,7 +33,14 @@ enum class general_call { enable, disable };
 
 enum class no_stretch { enable, disable };
 
-enum class io_mode { master, slave };
+namespace nvic {
+
+enum class irq_type { disable, evi, eri };
+
+constexpr auto default_prio_group = 3;
+
+} // namespace nvic
+#include "../cortex/nvic.h"
 
 template<
   module_id _module_id,
@@ -45,7 +52,9 @@ template<
   uint32_t _own_addr_2 = 0,
   general_call _general_call = general_call::disable,
   no_stretch _no_stretch = no_stretch::disable,
-  mode _mode = mode::i2c
+  mode _mode = mode::i2c,
+  typename _irq0 = nvic::irq<nvic::irq_type::disable>,
+  typename _irq1 = nvic::irq<nvic::irq_type::disable>
 >
 struct module
 {
@@ -60,6 +69,8 @@ struct module
   static constexpr auto general_call = _general_call;
   static constexpr auto no_stretch   = _no_stretch;
   static constexpr auto mode         = _mode;
+  static constexpr auto irq0         = _irq0();
+  static constexpr auto irq1         = _irq1();
 };
 
 #include "detail/i2c.h"
@@ -73,11 +84,11 @@ void enable() { (detail::enable<_modules>(), ...); }
 template<typename ..._modules>
 void disable() { (detail::disable<_modules>(), ...); }
 
-template<typename _module, io_mode _io_mode, typename _get_fn>
+template<typename _module, io::mode _io_mode, typename _get_fn>
 io::result write(uint16_t addr, const delay::expirable &t, _get_fn&& get)
 { return detail::write<_module, _io_mode>(addr, t, get); }
 
-template<typename _module, io_mode _io_mode>
+template<typename _module, io::mode _io_mode>
 io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::expirable &t)
 {
   if(sz == 0) {
@@ -87,13 +98,13 @@ io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::expi
   return write<_module, _io_mode>(addr, t, [&b, e](auto&& r) { r = *b++; return b < e; } );
 }
 
-template<typename _module, io_mode _io_mode>
+template<typename _module, io::mode _io_mode>
 io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
 {
   return write<_module, _io_mode>(addr, t, [data](auto&& r) { r = data; return false; } );
 }
 
-template<typename _module, io_mode _io_mode>
+template<typename _module, io::mode _io_mode>
 io::result read(uint16_t addr, void *data, uint32_t sz, const delay::expirable &t)
 {
   if(sz == 0) {
@@ -102,11 +113,33 @@ io::result read(uint16_t addr, void *data, uint32_t sz, const delay::expirable &
   return detail::read<_module, _io_mode>(addr, data, sz, t);
 }
 
-template<typename _module, io_mode _io_mode>
+template<typename _module, io::mode _io_mode>
 io::result rx(uint16_t addr, uint8_t &data, const delay::expirable &t)
 { return detail::read<_module, _io_mode>(addr, &data, 1, t); }
 
 template<typename _module>
+io::result write_async(const delay::expirable &t)
+{ return detail::async_run<_module, io::mode::slave, io::direction::tx>(0, t); }
+
+template<typename _module>
+io::result read_async(const delay::expirable &t)
+{ return detail::async_run<_module, io::mode::slave, io::direction::rx>(0, t); }
+
+template<typename _module>
+io::result write_async(uint16_t addr, const delay::expirable &t)
+{ return detail::async_run<_module, io::mode::master, io::direction::tx>(addr, t); }
+
+template<typename _module>
+io::result read_async(uint16_t addr, const delay::expirable &t)
+{ return detail::async_run<_module, io::mode::master, io::direction::rx>(addr, t); }
+
+template<typename _module>
 void reset() { detail::reset<_module>(); }
+
+template<typename _module>
+void ev_irq() { detail::ev_irq<_module>(); }
+
+template<typename _module>
+void er_irq() { detail::er_irq<_module>(); }
 
 } // namespace lmcu::i2c
