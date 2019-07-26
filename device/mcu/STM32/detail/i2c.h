@@ -179,23 +179,44 @@ void configure()
 }
 
 template<typename _module>
-inline void clear_addr_flag()
+static inline void clear_addr_flag()
 {
   auto inst = detail::inst<_module>();
   inst->SR1; inst->SR2;
 }
 
 template<typename _module>
-inline void generate_start() { detail::inst<_module>()->CR1 |= I2C_CR1_START; }
+static inline void clear_stop_flag()
+{
+  auto inst = detail::inst<_module>();
+  inst->SR1;
+  inst->CR1 |= I2C_CR1_PE;
+}
+
 
 template<typename _module>
-inline void generate_stop() { detail::inst<_module>()->CR1 |= I2C_CR1_STOP; }
+static inline void generate_start() { detail::inst<_module>()->CR1 |= I2C_CR1_START; }
 
 template<typename _module>
-inline void ack_enable() { detail::inst<_module>()->CR1 |= I2C_CR1_ACK; }
+static inline void generate_stop() { detail::inst<_module>()->CR1 |= I2C_CR1_STOP; }
 
 template<typename _module>
-inline void ack_disable() { detail::inst<_module>()->CR1 &= ~I2C_CR1_ACK; }
+static inline void ack_enable() { detail::inst<_module>()->CR1 |= I2C_CR1_ACK; }
+
+template<typename _module>
+static inline void ack_disable() { detail::inst<_module>()->CR1 &= ~I2C_CR1_ACK; }
+
+template<typename _module>
+static inline void evt_enable()
+{
+  detail::inst<_module>()->CR2 |= I2C_CR2_ITBUFEN | I2C_CR2_ITEVTEN | I2C_CR2_ITERREN;
+}
+
+template<typename _module>
+static inline void evt_disable()
+{
+  detail::inst<_module>()->CR2 &= ~(I2C_CR2_ITBUFEN | I2C_CR2_ITEVTEN | I2C_CR2_ITERREN);
+}
 
 template<typename _module>
 static inline io::result wait_addr_flag(const delay::expirable &t)
@@ -492,9 +513,7 @@ io::result read(uint16_t addr, void *data, uint32_t sz, const delay::expirable &
       if(t.expired()) { return io::result::busy; }
     }
 
-    // Clear STOP flag
-    inst->SR1;
-    inst->CR1 |= I2C_CR1_PE;
+    clear_stop_flag<_module>();
 
     if(ack_failure<_module>()) { return io::result::error; }
   }
@@ -526,6 +545,10 @@ io::result async_run(uint16_t addr, const delay::expirable &t)
   st->mode = _io_mode;
   st->direction = _io_direction;
 
+  uint32_t r = inst->CR1;
+
+  r &= ~I2C_CR1_POS;
+
   if constexpr(_io_mode == io::mode::master) {
     st->addr = addr;
 
@@ -539,8 +562,6 @@ io::result async_run(uint16_t addr, const delay::expirable &t)
       return r;
     }
 
-    uint32_t r = inst->CR1;
-    r &= ~I2C_CR1_POS;
     if constexpr(_io_direction == io::direction::rx) {
       if(buf->tx_n > 1) {
         r |= I2C_CR1_ACK;
@@ -552,12 +573,14 @@ io::result async_run(uint16_t addr, const delay::expirable &t)
     r |= I2C_CR1_START;
     inst->CR1 = r;
 
-    // enable events
-    inst->CR2 |= I2C_CR2_ITBUFEN | I2C_CR2_ITEVTEN | I2C_CR2_ITERREN;
   }
   else {
-    // TODO: slave
+    uint32_t r = inst->CR1;
+    r |= I2C_CR1_ACK;
+    inst->CR1 = r;
   }
+
+  evt_enable<_module>();
 
   return io::result::success;
 }
@@ -591,13 +614,10 @@ void reset()
   inst->CR1   = cr1;
 }
 
-template<typename _module>
-void ev_irq()
+template<typename _module, typename _buf_t, typename _st_t>
+static void ev_irq_master(_buf_t&& buf, _st_t&& st)
 {
   auto inst = detail::inst<_module>();
-
-  auto buf = io::buf<_module::module_id>::get();
-  auto st = state<_module::module_id>::get();
 
   const uint32_t sr1 = inst->SR1, sr2 = inst->SR2;
 
@@ -643,8 +663,7 @@ void ev_irq()
 
   auto master_finish = [inst, buf](io::direction direction)
   {
-    // disable events
-    inst->CR2 &= ~(I2C_CR2_ITBUFEN | I2C_CR2_ITEVTEN | I2C_CR2_ITERREN);
+    evt_disable<_module>();
 
     if(direction == io::direction::tx) {
       buf->tx_state = io::result::success;
@@ -691,9 +710,102 @@ void ev_irq()
   }
 }
 
+template<typename _module, typename _buf_t, typename _st_t>
+static void ev_irq_slave(_buf_t&& buf, _st_t&& st)
+{
+  auto inst = detail::inst<_module>();
+
+  const uint32_t sr1 = inst->SR1, sr2 = inst->SR2;
+
+  if((sr1 & I2C_SR1_STOPF) != 0) {
+    evt_disable<_module>();
+    clear_stop_flag<_module>();
+  }
+
+  if((sr2 & I2C_SR2_TRA) != 0) {
+    if((sr1 & I2C_SR1_TXE) != 0 && (inst->CR2 & I2C_CR2_ITBUFEN) != 0) {
+      if(buf->tx_n) {
+        inst->DR = *buf->txbuf++;
+        if(--buf->tx_n == 0) { inst->CR2 &= ~I2C_CR2_ITBUFEN; }
+      }
+    }
+    else
+    if((sr1 & I2C_SR1_BTF) != 0) {
+      if(buf->tx_n) {
+        inst->DR = *buf->txbuf++;
+        buf->tx_n--;
+      }
+      else {
+        evt_disable<_module>();
+
+        ack_disable<_module>();
+
+        buf->tx_state = io::result::success;
+        if(buf->complete) { buf->complete(io::direction::tx, buf->usrptr); }
+      }
+    }
+  }
+  else {
+    if((sr1 & I2C_SR1_RXNE) != 0 && (inst->CR2 & I2C_CR2_ITBUFEN) != 0) {
+      if(buf->rx_n) {
+        *buf->rxbuf++ = inst->DR;
+        if(--buf->rx_n == 0) {
+          inst->CR2 &= ~I2C_CR2_ITBUFEN;
+          ack_disable<_module>();
+
+          buf->rx_state = io::result::success;
+          if(buf->complete) { buf->complete(io::direction::rx, buf->usrptr); }
+        }
+      }
+    }
+  }
+}
+
+template<typename _module>
+void ev_irq()
+{
+  auto buf = io::buf<_module::module_id>::get();
+  auto st = state<_module::module_id>::get();
+
+  if(st->mode == io::mode::master) {
+    ev_irq_master<_module>(buf, st);
+  }
+  else {
+    ev_irq_slave<_module>(buf, st);
+  }
+}
+
 template<typename _module>
 void er_irq()
 {
+  auto inst = detail::inst<_module>();
+
+  auto buf = io::buf<_module::module_id>::get();
+  auto st = state<_module::module_id>::get();
+
+  const uint32_t sr1 = inst->SR1, sr2 = inst->SR2;
+
+  if((sr1 & I2C_SR1_BERR) != 0) { inst->SR1 &= ~I2C_SR1_BERR; }
+
+  if((sr1 & I2C_SR1_ARLO) != 0) { inst->SR1 &= ~I2C_SR1_ARLO; }
+
+  if((sr1 & I2C_SR1_AF) != 0) {
+    inst->SR1 &= ~I2C_SR1_AF;
+
+    if(st->mode == io::mode::master) {
+      generate_stop<_module>();
+    }
+    else {
+      if((sr2 & I2C_SR2_TRA) != 0) {
+        evt_disable<_module>();
+
+        ack_disable<_module>();
+
+        buf->tx_state = buf->tx_n? io::result::error : io::result::success;
+        if(buf->complete) { buf->complete(io::direction::tx, buf->usrptr); }
+      }
+    }
+  }
 }
 
 } // namespace detail
