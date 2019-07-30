@@ -6,7 +6,7 @@ using namespace i2c;
 #if defined(I2C1)
 
 template<>
-buf<module_id::i2c1> *buf<module_id::i2c1>::get()
+volatile buf<module_id::i2c1> *buf<module_id::i2c1>::get()
 {
   static buf<module_id::i2c1> buf;
   return &buf;
@@ -17,7 +17,7 @@ buf<module_id::i2c1> *buf<module_id::i2c1>::get()
 #if defined(I2C2)
 
 template<>
-buf<module_id::i2c2> *buf<module_id::i2c2>::get()
+volatile buf<module_id::i2c2> *buf<module_id::i2c2>::get()
 {
   static buf<module_id::i2c2> buf;
   return &buf;
@@ -28,7 +28,7 @@ buf<module_id::i2c2> *buf<module_id::i2c2>::get()
 #if defined(I2C3)
 
 template<>
-buf<module_id::i2c3> *buf<module_id::i2c3>::get()
+volatile buf<module_id::i2c3> *buf<module_id::i2c3>::get()
 {
   static buf<module_id::i2c3> buf;
   return &buf;

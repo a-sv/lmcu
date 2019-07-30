@@ -30,7 +30,7 @@ struct buf
 
   void (*complete)(direction, void *usrptr) = nullptr;
 
-  static buf *get();
+  static volatile buf *get();
 };
 
 } // namespace lmcu::io

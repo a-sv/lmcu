@@ -84,38 +84,54 @@ void enable() { (detail::enable<_modules>(), ...); }
 template<typename ..._modules>
 void disable() { (detail::disable<_modules>(), ...); }
 
-template<typename _module, io::mode _io_mode, typename _get_fn>
+template<typename _module, typename _get_fn>
 io::result write(uint16_t addr, const delay::expirable &t, _get_fn&& get)
-{ return detail::write<_module, _io_mode>(addr, t, get); }
+{ return detail::write<_module, io::mode::master>(addr, t, get); }
 
-template<typename _module, io::mode _io_mode>
+template<typename _module, typename _get_fn>
+io::result write(const delay::expirable &t, _get_fn&& get)
+{ return detail::write<_module, io::mode::slave>(0, t, get); }
+
+template<typename _module>
 io::result write(uint16_t addr, const void *data, uint32_t sz, const delay::expirable &t)
-{
-  if(sz == 0) {
-    return io::result::success;
-  }
-  auto b = static_cast<const uint8_t*>(data), e = b + sz;
-  return write<_module, _io_mode>(addr, t, [&b, e](auto&& r) { r = *b++; return b < e; } );
-}
+{ return detail::write<_module, io::mode::master>(addr, data, sz, t); }
 
-template<typename _module, io::mode _io_mode>
+template<typename _module>
+io::result write(const void *data, uint32_t sz, const delay::expirable &t)
+{ return detail::write<_module, io::mode::slave>(0, data, sz, t); }
+
+template<typename _module>
 io::result tx(uint16_t addr, uint8_t data, const delay::expirable &t)
 {
-  return write<_module, _io_mode>(addr, t, [data](auto&& r) { r = data; return false; } );
+  return write<_module, io::mode::master>(addr, t, [data](auto&& r) { r = data; return false; } );
 }
 
-template<typename _module, io::mode _io_mode>
+template<typename _module>
+io::result tx(uint8_t data, const delay::expirable &t)
+{
+  return write<_module, io::mode::slave>(0, t, [data](auto&& r) { r = data; return false; } );
+}
+
+template<typename _module>
 io::result read(uint16_t addr, void *data, uint32_t sz, const delay::expirable &t)
 {
-  if(sz == 0) {
-    return io::result::success;
-  }
-  return detail::read<_module, _io_mode>(addr, data, sz, t);
+  return (sz == 0)? io::result::success :
+                    detail::read<_module, io::mode::master>(addr, data, sz, t);
 }
 
-template<typename _module, io::mode _io_mode>
+template<typename _module>
+io::result read(void *data, uint32_t sz, const delay::expirable &t)
+{
+  return (sz == 0)? io::result::success : detail::read<_module, io::mode::slave>(0, data, sz, t);
+}
+
+template<typename _module>
 io::result rx(uint16_t addr, uint8_t &data, const delay::expirable &t)
-{ return detail::read<_module, _io_mode>(addr, &data, 1, t); }
+{ return detail::read<_module, io::mode::master>(addr, &data, 1, t); }
+
+template<typename _module>
+io::result rx(uint8_t &data, const delay::expirable &t)
+{ return detail::read<_module, io::mode::slave>(0, &data, 1, t); }
 
 template<typename _module>
 io::result write_async(const delay::expirable &t)
