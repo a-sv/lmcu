@@ -740,14 +740,14 @@ static void ev_irq_slave(_buf_t&& buf, _st_t&& st)
     }
   }
   else {
-    if((sr1 & I2C_SR1_TXE) != 0 && (cr2 & I2C_CR2_ITBUFEN) != 0) {
+    if((sr1 & I2C_SR1_TXE) != 0) {
       if(buf->tx_n) {
         inst->DR = *buf->txbuf++;
-        if(--buf->tx_n == 0) { inst->CR2 &= ~I2C_CR2_ITBUFEN; }
+      }
+      else {
+        inst->DR = 0;
       }
     }
-    else
-    if((sr1 & I2C_SR1_BTF) != 0) { inst->DR = 0; }
   }
 
   if((sr1 & I2C_SR1_STOPF) != 0) {
