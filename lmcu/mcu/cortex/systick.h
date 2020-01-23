@@ -1,9 +1,9 @@
 #pragma once
+#include <lmcu/dev/mcu>
+#include <lmcu/dev/nvic>
 #include <lmcu/hwi/common>
 #include <lmcu/rcc>
 #include <lmcu/irq>
-#include <lmcu/dev/mcu>
-#include <lmcu/dev/nvic>
 
 namespace lmcu::systick {
 
@@ -72,10 +72,10 @@ void configure()
   {
     if constexpr(option::is_null<cfg::reload>()) {
       if constexpr(cfg::freq.fp == 0) {
-        return rcc::detail::systick_clock / cfg::freq.ip - 1;
+        return rcc::clock::systick() / cfg::freq.ip - 1;
       }
       else {
-        return (uint64_t(rcc::detail::systick_clock) * 1000) /
+        return (uint64_t(rcc::clock::systick()) * 1000) /
                (uint64_t(cfg::freq.ip) * 1000 + cfg::freq.fp) - 1;
       }
     }
