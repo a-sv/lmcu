@@ -1,1 +1,8 @@
-LibMCU - с++17 library simplifying interaction with the periphery of the microcontrollers with minimal overhead.
+LibMCU - C++20 library simplifying interaction with the periphery of the microcontrollers with minimal overhead.
+
+Directory struct:
+  examples     - Examples of code using library.
+  lmcu/drivers - External device drivers.
+  lmcu/hwi     - Hardware independent code.
+  lmcu/include - Library interface header files.
+  lmcu/mcu     - MCU specific code.
