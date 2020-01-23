@@ -28,7 +28,7 @@ lmcu_static_inline bool is_on()
 /**
  * @brief Return BKP domain write protection status
 */
-lmcu_static_inline bkp_wp bkp_wp_mode()
+lmcu_static_inline bkp_wp get_bkp_write_protect()
 {
   return device::PWR::CR::is_set(device::PWR::CR::DBP)? bkp_wp::enable : bkp_wp::disable;
 }
@@ -37,7 +37,7 @@ lmcu_static_inline bkp_wp bkp_wp_mode()
  * @brief Enable / Disable BKP domain write protection
 */
 template <bkp_wp _bkp_wp>
-void set_bkp_wp_mode()
+void set_bkp_write_protect()
 {
   using namespace device;
 
@@ -66,18 +66,18 @@ void bkp_write(_fn&& fn)
   if(!pwr_en) { on(); }
 
   // Disable BKP write protection
-  const auto bkp_wpm = bkp_wp_mode();
-  set_bkp_wp_mode<bkp_wp::disable>();
+  const auto wp = get_bkp_write_protect();
+  set_bkp_write_protect<bkp_wp::disable>();
 
   fn();
 
   if(pwr_en) {
     // Enable BKP write protection
-    if(bkp_wpm == bkp_wp::enable) { set_bkp_wp_mode<bkp_wp::enable>(); }
+    if(wp == bkp_wp::enable) { set_bkp_write_protect<bkp_wp::enable>(); }
   }
   else {
     // Enable BKP write protection and disable PWR clocks
-    set_bkp_wp_mode<bkp_wp::enable>();
+    set_bkp_write_protect<bkp_wp::enable>();
     off();
   }
 }
