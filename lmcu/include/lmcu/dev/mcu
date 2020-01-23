@@ -1,0 +1,268 @@
+#pragma once
+
+// ------------------------------------------------------------------------------------------------
+// STM32F1xx
+// ------------------------------------------------------------------------------------------------
+
+#if defined(LMCU_STM32F100C4)
+  #include "../../../mcu/device/include/STM32/STM32F100C4.h"
+#elif defined(LMCU_STM32F100C6)
+  #include "../../../mcu/device/include/STM32/STM32F100C6.h"
+#elif defined(LMCU_STM32F100C8)
+  #include "../../../mcu/device/include/STM32/STM32F100C8.h"
+#elif defined(LMCU_STM32F100CB)
+  #include "../../../mcu/device/include/STM32/STM32F100CB.h"
+#elif defined(LMCU_STM32F100R4)
+  #include "../../../mcu/device/include/STM32/STM32F100R4.h"
+#elif defined(LMCU_STM32F100R6)
+  #include "../../../mcu/device/include/STM32/STM32F100R6.h"
+#elif defined(LMCU_STM32F100R8)
+  #include "../../../mcu/device/include/STM32/STM32F100R8.h"
+#elif defined(LMCU_STM32F100RB)
+  #include "../../../mcu/device/include/STM32/STM32F100RB.h"
+#elif defined(LMCU_STM32F100RC)
+  #include "../../../mcu/device/include/STM32/STM32F100RC.h"
+#elif defined(LMCU_STM32F100RD)
+  #include "../../../mcu/device/include/STM32/STM32F100RD.h"
+#elif defined(LMCU_STM32F100RE)
+  #include "../../../mcu/device/include/STM32/STM32F100RE.h"
+#elif defined(LMCU_STM32F100V8)
+  #include "../../../mcu/device/include/STM32/STM32F100V8.h"
+#elif defined(LMCU_STM32F100VB)
+  #include "../../../mcu/device/include/STM32/STM32F100VB.h"
+#elif defined(LMCU_STM32F100VC)
+  #include "../../../mcu/device/include/STM32/STM32F100VC.h"
+#elif defined(LMCU_STM32F100VD)
+  #include "../../../mcu/device/include/STM32/STM32F100VD.h"
+#elif defined(LMCU_STM32F100VE)
+  #include "../../../mcu/device/include/STM32/STM32F100VE.h"
+#elif defined(LMCU_STM32F100ZC)
+  #include "../../../mcu/device/include/STM32/STM32F100ZC.h"
+#elif defined(LMCU_STM32F100ZD)
+  #include "../../../mcu/device/include/STM32/STM32F100ZD.h"
+#elif defined(LMCU_STM32F100ZE)
+  #include "../../../mcu/device/include/STM32/STM32F100ZE.h"
+#elif defined(LMCU_STM32F101C4)
+  #include "../../../mcu/device/include/STM32/STM32F101C4.h"
+#elif defined(LMCU_STM32F101C6)
+  #include "../../../mcu/device/include/STM32/STM32F101C6.h"
+#elif defined(LMCU_STM32F101C8)
+  #include "../../../mcu/device/include/STM32/STM32F101C8.h"
+#elif defined(LMCU_STM32F101CB)
+  #include "../../../mcu/device/include/STM32/STM32F101CB.h"
+#elif defined(LMCU_STM32F101R4)
+  #include "../../../mcu/device/include/STM32/STM32F101R4.h"
+#elif defined(LMCU_STM32F101R6)
+  #include "../../../mcu/device/include/STM32/STM32F101R6.h"
+#elif defined(LMCU_STM32F101R8)
+  #include "../../../mcu/device/include/STM32/STM32F101R8.h"
+#elif defined(LMCU_STM32F101RB)
+  #include "../../../mcu/device/include/STM32/STM32F101RB.h"
+#elif defined(LMCU_STM32F101RC)
+  #include "../../../mcu/device/include/STM32/STM32F101RC.h"
+#elif defined(LMCU_STM32F101RD)
+  #include "../../../mcu/device/include/STM32/STM32F101RD.h"
+#elif defined(LMCU_STM32F101RE)
+  #include "../../../mcu/device/include/STM32/STM32F101RE.h"
+#elif defined(LMCU_STM32F101RF)
+  #include "../../../mcu/device/include/STM32/STM32F101RF.h"
+#elif defined(LMCU_STM32F101RG)
+  #include "../../../mcu/device/include/STM32/STM32F101RG.h"
+#elif defined(LMCU_STM32F101T4)
+  #include "../../../mcu/device/include/STM32/STM32F101T4.h"
+#elif defined(LMCU_STM32F101T6)
+  #include "../../../mcu/device/include/STM32/STM32F101T6.h"
+#elif defined(LMCU_STM32F101T8)
+  #include "../../../mcu/device/include/STM32/STM32F101T8.h"
+#elif defined(LMCU_STM32F101TB)
+  #include "../../../mcu/device/include/STM32/STM32F101TB.h"
+#elif defined(LMCU_STM32F101V8)
+  #include "../../../mcu/device/include/STM32/STM32F101V8.h"
+#elif defined(LMCU_STM32F101VB)
+  #include "../../../mcu/device/include/STM32/STM32F101VB.h"
+#elif defined(LMCU_STM32F101VC)
+  #include "../../../mcu/device/include/STM32/STM32F101VC.h"
+#elif defined(LMCU_STM32F101VD)
+  #include "../../../mcu/device/include/STM32/STM32F101VD.h"
+#elif defined(LMCU_STM32F101VE)
+  #include "../../../mcu/device/include/STM32/STM32F101VE.h"
+#elif defined(LMCU_STM32F101VF)
+  #include "../../../mcu/device/include/STM32/STM32F101VF.h"
+#elif defined(LMCU_STM32F101VG)
+  #include "../../../mcu/device/include/STM32/STM32F101VG.h"
+#elif defined(LMCU_STM32F101ZC)
+  #include "../../../mcu/device/include/STM32/STM32F101ZC.h"
+#elif defined(LMCU_STM32F101ZD)
+  #include "../../../mcu/device/include/STM32/STM32F101ZD.h"
+#elif defined(LMCU_STM32F101ZE)
+  #include "../../../mcu/device/include/STM32/STM32F101ZE.h"
+#elif defined(LMCU_STM32F101ZF)
+  #include "../../../mcu/device/include/STM32/STM32F101ZF.h"
+#elif defined(LMCU_STM32F101ZG)
+  #include "../../../mcu/device/include/STM32/STM32F101ZG.h"
+#elif defined(LMCU_STM32F102C4)
+  #include "../../../mcu/device/include/STM32/STM32F102C4.h"
+#elif defined(LMCU_STM32F102C6)
+  #include "../../../mcu/device/include/STM32/STM32F102C6.h"
+#elif defined(LMCU_STM32F102C8)
+  #include "../../../mcu/device/include/STM32/STM32F102C8.h"
+#elif defined(LMCU_STM32F102CB)
+  #include "../../../mcu/device/include/STM32/STM32F102CB.h"
+#elif defined(LMCU_STM32F102R4)
+  #include "../../../mcu/device/include/STM32/STM32F102R4.h"
+#elif defined(LMCU_STM32F102R6)
+  #include "../../../mcu/device/include/STM32/STM32F102R6.h"
+#elif defined(LMCU_STM32F102R8)
+  #include "../../../mcu/device/include/STM32/STM32F102R8.h"
+#elif defined(LMCU_STM32F102RB)
+  #include "../../../mcu/device/include/STM32/STM32F102RB.h"
+#elif defined(LMCU_STM32F103C4)
+  #include "../../../mcu/device/include/STM32/STM32F103C4.h"
+#elif defined(LMCU_STM32F103C6)
+  #include "../../../mcu/device/include/STM32/STM32F103C6.h"
+#elif defined(LMCU_STM32F103C8)
+  #include "../../../mcu/device/include/STM32/STM32F103C8.h"
+#elif defined(LMCU_STM32F103CB)
+  #include "../../../mcu/device/include/STM32/STM32F103CB.h"
+#elif defined(LMCU_STM32F103R4)
+  #include "../../../mcu/device/include/STM32/STM32F103R4.h"
+#elif defined(LMCU_STM32F103R6)
+  #include "../../../mcu/device/include/STM32/STM32F103R6.h"
+#elif defined(LMCU_STM32F103R8)
+  #include "../../../mcu/device/include/STM32/STM32F103R8.h"
+#elif defined(LMCU_STM32F103RB)
+  #include "../../../mcu/device/include/STM32/STM32F103RB.h"
+#elif defined(LMCU_STM32F103RC)
+  #include "../../../mcu/device/include/STM32/STM32F103RC.h"
+#elif defined(LMCU_STM32F103RD)
+  #include "../../../mcu/device/include/STM32/STM32F103RD.h"
+#elif defined(LMCU_STM32F103RE)
+  #include "../../../mcu/device/include/STM32/STM32F103RE.h"
+#elif defined(LMCU_STM32F103RF)
+  #include "../../../mcu/device/include/STM32/STM32F103RF.h"
+#elif defined(LMCU_STM32F103RG)
+  #include "../../../mcu/device/include/STM32/STM32F103RG.h"
+#elif defined(LMCU_STM32F103T4)
+  #include "../../../mcu/device/include/STM32/STM32F103T4.h"
+#elif defined(LMCU_STM32F103T6)
+  #include "../../../mcu/device/include/STM32/STM32F103T6.h"
+#elif defined(LMCU_STM32F103T8)
+  #include "../../../mcu/device/include/STM32/STM32F103T8.h"
+#elif defined(LMCU_STM32F103TB)
+  #include "../../../mcu/device/include/STM32/STM32F103TB.h"
+#elif defined(LMCU_STM32F103V8)
+  #include "../../../mcu/device/include/STM32/STM32F103V8.h"
+#elif defined(LMCU_STM32F103VB)
+  #include "../../../mcu/device/include/STM32/STM32F103VB.h"
+#elif defined(LMCU_STM32F103VC)
+  #include "../../../mcu/device/include/STM32/STM32F103VC.h"
+#elif defined(LMCU_STM32F103VD)
+  #include "../../../mcu/device/include/STM32/STM32F103VD.h"
+#elif defined(LMCU_STM32F103VE)
+  #include "../../../mcu/device/include/STM32/STM32F103VE.h"
+#elif defined(LMCU_STM32F103VF)
+  #include "../../../mcu/device/include/STM32/STM32F103VF.h"
+#elif defined(LMCU_STM32F103VG)
+  #include "../../../mcu/device/include/STM32/STM32F103VG.h"
+#elif defined(LMCU_STM32F103ZC)
+  #include "../../../mcu/device/include/STM32/STM32F103ZC.h"
+#elif defined(LMCU_STM32F103ZD)
+  #include "../../../mcu/device/include/STM32/STM32F103ZD.h"
+#elif defined(LMCU_STM32F103ZE)
+  #include "../../../mcu/device/include/STM32/STM32F103ZE.h"
+#elif defined(LMCU_STM32F103ZF)
+  #include "../../../mcu/device/include/STM32/STM32F103ZF.h"
+#elif defined(LMCU_STM32F103ZG)
+  #include "../../../mcu/device/include/STM32/STM32F103ZG.h"
+#elif defined(LMCU_STM32F105R8)
+  #include "../../../mcu/device/include/STM32/STM32F105R8.h"
+#elif defined(LMCU_STM32F105RB)
+  #include "../../../mcu/device/include/STM32/STM32F105RB.h"
+#elif defined(LMCU_STM32F105RC)
+  #include "../../../mcu/device/include/STM32/STM32F105RC.h"
+#elif defined(LMCU_STM32F105V8)
+  #include "../../../mcu/device/include/STM32/STM32F105V8.h"
+#elif defined(LMCU_STM32F105VB)
+  #include "../../../mcu/device/include/STM32/STM32F105VB.h"
+#elif defined(LMCU_STM32F105VC)
+  #include "../../../mcu/device/include/STM32/STM32F105VC.h"
+#elif defined(LMCU_STM32F107RB)
+  #include "../../../mcu/device/include/STM32/STM32F107RB.h"
+#elif defined(LMCU_STM32F107RC)
+  #include "../../../mcu/device/include/STM32/STM32F107RC.h"
+#elif defined(LMCU_STM32F107VB)
+  #include "../../../mcu/device/include/STM32/STM32F107VB.h"
+#elif defined(LMCU_STM32F107VC)
+  #include "../../../mcu/device/include/STM32/STM32F107VC.h"
+#endif
+
+// Low-density value line devices are STM32F100xx microcontrollers where the Flash memory density
+// ranges between 16 and 32 Kbytes.
+#if defined(LMCU_STM32F100C4) || defined(LMCU_STM32F100R4) || defined(LMCU_STM32F100C6) || \
+    defined(LMCU_STM32F100R6)
+  #define LMCU_STM32F1_LOW_DENSITY_VALUE_LINE
+#endif
+
+// Medium-density value line devices are STM32F100xx microcontrollers where the Flash memory density
+// ranges between 64 and 128 Kbytes.
+#if defined(LMCU_STM32F100C8) || defined(LMCU_STM32F100R8) || defined(LMCU_STM32F100V8) || \
+    defined(LMCU_STM32F100CB) || defined(LMCU_STM32F100RB) || defined(LMCU_STM32F100VB)
+  #define LMCU_STM32F1_MEDIUM_DENSITY_VALUE_LINE
+#endif
+
+// High-density value line devices are STM32F100xx microcontrollers where the Flash memory density
+// ranges between 256 and 512 Kbytes.
+#if defined(LMCU_STM32F100RC) || defined(LMCU_STM32F100VC) || defined(LMCU_STM32F100ZC) || \
+    defined(LMCU_STM32F100RD) || defined(LMCU_STM32F100VD) || defined(LMCU_STM32F100ZD) || \
+    defined(LMCU_STM32F100RE) || defined(LMCU_STM32F100VE) || defined(LMCU_STM32F100ZE)
+  #define LMCU_STM32F1_HIGH_DENSITY_VALUE_LINE
+#endif
+
+// Low-density devices are STM32F101xx, STM32F102xx and STM32F103xx microcontrollers where the
+// Flash memory density ranges between 16 and 32 Kbytes.
+#if defined(LMCU_STM32F101R4) || defined(LMCU_STM32F101T4) || defined(LMCU_STM32F101C6) || \
+    defined(LMCU_STM32F101R6) || defined(LMCU_STM32F101T6) || defined(LMCU_STM32F102C4) || \
+    defined(LMCU_STM32F102R4) || defined(LMCU_STM32F102C6) || defined(LMCU_STM32F102R6) || \
+    defined(LMCU_STM32F103C4) || defined(LMCU_STM32F103R4) || defined(LMCU_STM32F103T4) || \
+    defined(LMCU_STM32F103C6) || defined(LMCU_STM32F103R6) || defined(LMCU_STM32F103T6)
+  #define LMCU_STM32F1_LOW_DENSITY
+#endif
+
+// Medium-density devices are STM32F101xx, STM32F102xx and STM32F103xx microcontrollers where the
+// Flash memory density ranges between 64 and 128 Kbytes.
+#if defined(LMCU_STM32F101C8) || defined(LMCU_STM32F101R8) || defined(LMCU_STM32F101T8) || \
+    defined(LMCU_STM32F101V8) || defined(LMCU_STM32F101CB) || defined(LMCU_STM32F101RB) || \
+    defined(LMCU_STM32F101TB) || defined(LMCU_STM32F101VB) || defined(LMCU_STM32F102C8) || \
+    defined(LMCU_STM32F102R8) || defined(LMCU_STM32F102CB) || defined(LMCU_STM32F102RB) || \
+    defined(LMCU_STM32F103C8) || defined(LMCU_STM32F103R8) || defined(LMCU_STM32F103T8) || \
+    defined(LMCU_STM32F103V8) || defined(LMCU_STM32F103CB) || defined(LMCU_STM32F103RB) || \
+    defined(LMCU_STM32F103TB) || defined(LMCU_STM32F103VB)
+  #define LMCU_STM32F1_MEDIUM_DENSITY
+#endif
+
+// High-density devices are STM32F101xx and STM32F103xx microcontrollers where the Flash memory
+// density ranges between 256 and 512 Kbytes.
+#if defined(LMCU_STM32F101RC) || defined(LMCU_STM32F101VC) || defined(LMCU_STM32F101ZC) || \
+    defined(LMCU_STM32F101RD) || defined(LMCU_STM32F101VD) || defined(LMCU_STM32F101ZD) || \
+    defined(LMCU_STM32F101RE) || defined(LMCU_STM32F101VE) || defined(LMCU_STM32F101ZE) || \
+    defined(LMCU_STM32F103RC) || defined(LMCU_STM32F103VC) || defined(LMCU_STM32F103ZC) || \
+    defined(LMCU_STM32F103RD) || defined(LMCU_STM32F103VD) || defined(LMCU_STM32F103ZD) || \
+    defined(LMCU_STM32F103RE) || defined(LMCU_STM32F103VE) || defined(LMCU_STM32F103ZE)
+  #define LMCU_STM32F1_HIGH_DENSITY
+#endif
+
+// XL-density devices are STM32F101xx and STM32F103xx microcontrollers where the Flash memory
+// density ranges between 768 Kbytes and 1 Mbyte.
+#if defined(LMCU_STM32F101RF) || defined(LMCU_STM32F101VF) || defined(LMCU_STM32F101ZF) || \
+    defined(LMCU_STM32F101RG) || defined(LMCU_STM32F101VG) || defined(LMCU_STM32F101ZG) || \
+    defined(LMCU_STM32F103RF) || defined(LMCU_STM32F103VF) || defined(LMCU_STM32F103ZF) || \
+    defined(LMCU_STM32F103RG) || defined(LMCU_STM32F103VG) || defined(LMCU_STM32F103ZG)
+  #define LMCU_STM32F1_XL_DENSITY
+#endif
+
+// Connectivity line devices are STM32F105xx and STM32F107xx microcontrollers.
+#if defined(LMCU_STM32F105) || defined(LMCU_STM32F107)
+  #define LMCU_STM32F1_CONNECTIVITY
+#endif
+
+// ------------------------------------------------------------------------------------------------

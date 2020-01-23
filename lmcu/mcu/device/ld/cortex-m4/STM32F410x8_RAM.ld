@@ -1,0 +1,7 @@
+MEMORY
+{
+  IROM(rx):  ORIGIN = 0x20000000, LENGTH = 20k
+  IRAM(rwx): ORIGIN = 0x20005000, LENGTH = 12k
+}
+
+INCLUDE cortex-m4.ld

@@ -1,0 +1,11 @@
+#pragma once
+
+#if defined(LMCU_CORTEX)
+  #include "../../mcu/cortex/irq.h"
+#endif
+
+#if defined(LMCU_STM32F1)
+  #include "../../mcu/STM32/F1/isr.h"
+#else
+  #error "device not supported"
+#endif

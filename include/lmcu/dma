@@ -1,8 +1,0 @@
-#pragma once
-#include <lmcu/device>
-
-#if defined(_LMCU_DEVICE_STM32F1_)
-  #include "../../device/mcu/STM32/F1/dma.h"
-#else
-  #error "device not supported"
-#endif

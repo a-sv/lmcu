@@ -1,0 +1,4 @@
+peripheral:
+  $extends: GPIOA.yml | peripheral
+  name: GPIOB
+  base: 0x40010C00

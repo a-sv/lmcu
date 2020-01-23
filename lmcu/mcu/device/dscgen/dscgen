@@ -1,0 +1,156 @@
+#!/usr/bin/python
+#coding: utf-8
+
+import sys, os, yaml, shutil
+from mako.template import Template
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(BASE_DIR, 'lib'))
+
+DATA_DIR = BASE_DIR + '/data'
+TPL_DIR  = BASE_DIR + '/tpl'
+OUT_DIR  = BASE_DIR + '/../include'
+
+OUTPUT_HEADER = \
+"""\
+/**************************************************************************************************/
+/**                             AUTO-GENERATED FILE. DO NOT MODIFY!                              **/
+/**************************************************************************************************/
+"""
+
+DATA_CACHE = {}
+
+class Object:
+  def __getattr__(self, name):
+    return Object()
+
+  def __bool__(self):
+    return bool(self.__dict__)
+
+  def __len__(self):
+    return len(self.__dict__)
+
+  def __iter__(self):
+    return iter(self.__dict__.items())
+
+  def __str__(self):
+    return ''
+
+def dir_walk(path):
+  lst = os.listdir(path)
+  for name in lst:
+    fp = os.path.join(path, name)
+    is_dir = not os.path.islink(fp) and os.path.isdir(fp)
+    yield fp, is_dir
+    if is_dir:
+      yield from dir_walk(fp)
+
+def tpl_render(tpl, **kwargs):
+  return Template(
+    filename = tpl,
+    default_filters = ["unicode"],
+    imports = ['from tpl_filters import bool, addr16, addr32, lower, upper, typesz, comment, toint']
+  ).render(**kwargs)
+
+def to_object_tree(d):
+  if type(d) == list:
+    lst = []
+    for o in d:
+      lst.append(to_object_tree(o))
+    return lst
+  if type(d) == dict:
+    o = Object()
+    for key in d:
+      obj = d[key]
+      if type(obj) == dict:
+        setattr(o, key, to_object_tree(obj))
+        obj = None
+      elif type(obj) == list:
+        obj = to_object_tree(obj)
+      if obj != None:
+        setattr(o, key, obj)
+    return o
+  return d
+
+def load_yaml(fname):
+  data = DATA_CACHE.get(fname)
+  if data:
+    return data.copy()
+  with open(fname, 'r') as f:
+    data = yaml.load(f.read(), Loader = yaml.FullLoader)
+  if data:
+    DATA_CACHE[fname] = data
+    return data.copy()
+  return None
+
+def extends(obj, cd):
+  if obj == None:
+    return
+
+  parents = []
+
+  for key in obj:
+    if key == '$extends':
+      if type(obj[key]) == list:
+        paths = obj[key]
+      else:
+        paths = [obj[key]]
+      for p in paths:
+        path, obj_id = p.split('|')
+        path   = os.path.realpath(cd + '/' + path.strip())
+        obj_id = [p.strip() for p in obj_id.split('.')]
+        data = load_yaml(path)
+        for part in obj_id:
+          data = data.get(part)
+          if data == None: break
+        if data != None:
+          extends(data, os.path.dirname(path))
+          parents.append(data)
+    else:
+      if type(obj[key]) == dict:
+        extends(obj[key], cd)
+
+  if parents:
+    def extend(key, dst, src):
+      if not '$override' in dst:
+        if key in dst:
+          if type(dst[key]) == dict and type(src[key]) == dict:
+            for k in src[key]: extend(k, dst[key], src[key])
+        else:
+          dst[key] = src[key]
+      else:
+        dst['$override'] = None
+
+    del obj['$extends']
+    for parent in parents:
+      for key in parent: extend(key, obj, parent)
+
+def main():
+  if os.path.exists(OUT_DIR):
+    shutil.rmtree(OUT_DIR)
+  os.makedirs(OUT_DIR, mode = 0o755, exist_ok = True)
+
+  for path, is_dir in dir_walk(DATA_DIR):
+    relpath = path[len(DATA_DIR):]
+    dstpath = OUT_DIR + relpath
+    if is_dir:
+      os.makedirs(dstpath, mode = 0o755, exist_ok = True)
+    else:
+      ext   = dstpath[dstpath.rfind('.'):]
+      outfn = dstpath[:-len(ext)] + '.h'
+      if ext != '.yml':
+        continue
+      with open(outfn, 'w') as out_f:
+        out_f.write(OUTPUT_HEADER)
+        data = load_yaml(path)
+        if data == None:
+          continue
+        for objname in data:
+          tplfn = TPL_DIR + '/' + objname + '.tpl'
+          obj   = data[objname]
+          extends(obj, os.path.dirname(path))
+          out_f.write(tpl_render(tplfn, D = to_object_tree(obj)))
+          out_f.write('\n')
+        out_f.flush()
+
+if __name__ == "__main__": main()

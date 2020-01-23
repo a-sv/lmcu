@@ -1,0 +1,308 @@
+peripheral:
+  $extends: periph.inc | peripheral
+  name: AFIO
+  desc: Alternate function I/Os
+  base: 0x40010000
+  registers:
+    EVCR:
+      desc: Event control register
+      offset: 0x0
+      size: 32
+      fields:
+        PIN:
+          desc: Select the pin used to output the Cortex® EVENTOUT signal.
+          bits: 3-0
+          enum:
+            '0':
+              desc: Px0 selected
+              val: 0
+            '1':
+              desc: Px1 selected
+              val: 1
+            '2':
+              desc: Px2 selected
+              val: 2
+            '3':
+              desc: Px3 selected
+              val: 3
+            '4':
+              desc: Px4 selected
+              val: 4
+            '5':
+              desc: Px5 selected
+              val: 5
+            '6':
+              desc: Px6 selected
+              val: 6
+            '7':
+              desc: Px7 selected
+              val: 7
+            '8':
+              desc: Px8 selected
+              val: 8
+            '9':
+              desc: Px9 selected
+              val: 9
+            '10':
+              desc: Px10 selected
+              val: 10
+            '11':
+              desc: Px11 selected
+              val: 11
+            '12':
+              desc: Px12 selected
+              val: 12
+            '13':
+              desc: Px13 selected
+              val: 13
+            '14':
+              desc: Px14 selected
+              val: 14
+            '15':
+              desc: Px15 selected
+              val: 15
+        PORT:
+          desc: Port selection
+          bits: 6-4
+          enum:
+            A:
+              desc: PA selected
+              val: 0
+            B:
+              desc: PB selected
+              val: 1
+            C:
+              desc: PC selected
+              val: 2
+            D:
+              desc: PD selected
+              val: 3
+            E:
+              desc: PE selected
+              val: 4
+        EVOE:
+          desc: Event output enable
+          bits: 7
+    MAPR:
+      desc: AF remap and debug I/O configuration register
+      offset: 0x4
+      size: 32
+      fields:
+        SPI1_REMAP:
+          desc: SPI1 remapping
+          bits: 0
+        I2C1_REMAP:
+          desc: I2C1 remapping
+          bits: 1
+        USART1_REMAP:
+          desc: USART1 remapping
+          bits: 2
+        USART2_REMAP:
+          desc: USART2 remapping
+          bits: 3
+        USART3_REMAP:
+          desc: USART3 remapping
+          bits: 5-4
+          enum:
+            NO_REMAP:
+              desc: No remap (TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14)
+              val: 0
+            PARTIAL_REMAP:
+              desc: Partial remap (TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14)
+              val: 1
+            FULL_REMAP:
+              desc: Full remap (TX/PD8, RX/PD9, CK/PD10, CTS/PD11, RTS/PD12)
+              val: 3
+        TIM1_REMAP:
+          desc: TIM1 remapping
+          bits: 7-6
+          enum:
+            NO_REMAP:
+              desc: No remap (ETR/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BKIN/PB12, CH1N/PB13, CH2N/PB14, CH3N/PB15)
+              val: 0
+            PARTIAL_REMAP:
+              desc: Partial remap (ETR/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BKIN/PA6, CH1N/PA7, CH2N/PB0, CH3N/PB1)
+              val: 1
+            FULL_REMAP:
+              desc: Full remap (ETR/PE7, CH1/PE9, CH2/PE11, CH3/PE13, CH4/PE14, BKIN/PE15, CH1N/PE8, CH2N/PE10, CH3N/PE12)
+              val: 3
+        TIM2_REMAP:
+          desc: TIM2 remapping
+          bits: 9-8
+          enum:
+            NO_REMAP:
+              desc: No remap (CH1/ETR/PA0, CH2/PA1, CH3/PA2, CH4/PA3)
+              val: 0
+            PARTIAL_REMAP1:
+              desc: Partial remap (CH1/ETR/PA15, CH2/PB3, CH3/PA2, CH4/PA3)
+              val: 1
+            PARTIAL_REMAP2:
+              desc: Partial remap (CH1/ETR/PA0, CH2/PA1, CH3/PB10, CH4/PB11)
+              val: 2
+            FULL_REMAP:
+              desc: Full remap (CH1/ETR/PA15, CH2/PB3, CH3/PB10, CH4/PB11)
+              val: 3
+        TIM3_REMAP:
+          desc: TIM3 remapping
+          bits: 11-10
+          enum:
+            NO_REMAP:
+              desc: No remap (CH1/PA6, CH2/PA7, CH3/PB0, CH4/PB1)
+              val: 0
+            PARTIAL_REMAP:
+              desc: Partial remap (CH1/PB4, CH2/PB5, CH3/PB0, CH4/PB1)
+              val: 2
+            FULL_REMAP:
+              desc: Full remap (CH1/PC6, CH2/PC7, CH3/PC8, CH4/PC9)
+              val: 3
+        TIM4_REMAP:
+          desc: TIM4 remapping
+          bits: 12
+        CAN1_REMAP:
+          desc: CAN alternate function remapping
+          bits: 14-13
+          enum:
+            NO_REMAP:
+              desc: CAN_RX mapped to PA11, CAN_TX mapped to PA12
+              val: 0
+            FULL_REMAP1:
+              desc: CAN_RX mapped to PB8, CAN_TX mapped to PB9 (not available on 36-pin package)
+              val: 2
+            FULL_REMAP2:
+              desc: CAN_RX mapped to PD0, CAN_TX mapped to PD1
+              val: 3
+        PD01_REMAP:
+          desc: Port D0/Port D1 mapping on OSC_IN/OSC_OUT
+          bits: 15
+        TIM5CH4_IREMAP:
+          desc: TIM5 channel4 internal remap
+          bits: 16
+        ADC1_ETRGINJ_REMAP:
+          desc: ADC1 External trigger injected conversion remapping
+          bits: 17
+        ADC1_ETRGREG_REMAP:
+          desc: ADC1 external trigger regular conversion remapping
+          bits: 18
+        ADC2_ETRGINJ_REMAP:
+          desc: ADC2 external trigger injected conversion remapping
+          bits: 19
+        ADC2_ETRGREG_REMAP:
+          desc: ADC2 external trigger regular conversion remapping
+          bits: 20
+        SWJ_CFG:
+          desc: Serial wire JTAG configuration
+          bits: 26-24
+          enum:
+            FULL_SWJ:
+              desc: Full SWJ (JTAG-DP + SW-DP)
+              val: 0
+            FULL_SWJ_WITHOUT_NJTRST:
+              desc: Full SWJ (JTAG-DP + SW-DP) but without NJTRST
+              val: 1
+            JTAG_DP_DISABLED_SW_DP_ENABLED:
+              desc: JTAG-DP Disabled and SW-DP Enabled
+              val: 2
+            JTAG_DP_DISABLED_SW_DP_DISABLED:
+              desc: JTAG-DP Disabled and SW-DP Disabled
+              val: 4
+    EXTICR1:
+      desc: External interrupt configuration register 1
+      offset: 0x8
+      size: 32
+      fields:
+        EXTI0: &EXTI0
+          desc: EXTI x configuration
+          bits: 3-0
+          enum:
+            PA:
+              desc: PA[x] pin
+              val: 0
+            PB:
+              desc: PB[x] pin
+              val: 1
+            PC:
+              desc: PC[x] pin
+              val: 2
+            PD:
+              desc: PD[x] pin
+              val: 3
+            PE:
+              desc: PE[x] pin
+              val: 4
+            PF:
+              desc: PF[x] pin
+              val: 5
+            PG:
+              desc: PG[x] pin
+              val: 6
+        EXTI1: &EXTI1
+          <<: *EXTI0
+          bits: 7-4
+        EXTI2: &EXTI2
+          <<: *EXTI0
+          bits: 11-8
+        EXTI3: &EXTI3
+          <<: *EXTI0
+          bits: 15-12
+    EXTICR2:
+      desc: External interrupt configuration register 2
+      offset: 0xC
+      size: 32
+      fields:
+        EXTI4:
+          <<: *EXTI0
+        EXTI5:
+          <<: *EXTI1
+        EXTI6:
+          <<: *EXTI2
+        EXTI7:
+          <<: *EXTI3
+    EXTICR3:
+      desc: External interrupt configuration register 3
+      offset: 0x10
+      size: 32
+      fields:
+        EXTI4:
+          <<: *EXTI0
+        EXTI5:
+          <<: *EXTI1
+        EXTI6:
+          <<: *EXTI2
+        EXTI7:
+          <<: *EXTI3
+    EXTICR4:
+      desc: External interrupt configuration register 4
+      offset: 0x14
+      size: 32
+      fields:
+        EXTI12:
+          <<: *EXTI0
+        EXTI13:
+          <<: *EXTI1
+        EXTI14:
+          <<: *EXTI2
+        EXTI15:
+          <<: *EXTI3
+    MAPR2:
+      desc: AF remap and debug I/O configuration register 2
+      offset: 0x1C
+      size: 32
+      fields:
+        TIM9_REMAP:
+          desc: TIM9 remapping
+          bits: 5
+        TIM10_REMAP:
+          desc: TIM10 remapping
+          bits: 6
+        TIM11_REMAP:
+          desc: TIM11 remapping
+          bits: 7
+        TIM13_REMAP:
+          desc: TIM13 remapping
+          bits: 8
+        TIM14_REMAP:
+          desc: TIM14 remapping
+          bits: 9
+        FSMC_NADV:
+          desc: NADV connect/disconnect
+          bits: 10

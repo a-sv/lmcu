@@ -1,3 +1,0 @@
-#pragma once
-#include <lmcu/device>
-#include "../../../../hwi/emu/one_wire.h"

@@ -1,0 +1,9 @@
+device:
+  $extends: F1/device.inc | device
+  name: STM32F101RE
+  rom_size: 524288
+  ram_size: 49152
+  pins: 64
+
+nvic_irq:
+  $extends: F1/nvic_irqn_other.inc | nvic_irqn

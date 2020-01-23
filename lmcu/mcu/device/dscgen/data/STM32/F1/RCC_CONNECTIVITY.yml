@@ -1,0 +1,256 @@
+peripheral:
+  $extends: RCC.yml | peripheral
+  registers:
+    CR:
+      fields:
+        PLLRDY:
+          desc: PLL clock ready flag
+          bits: 25
+        PLL2ON:
+          desc: PLL2 enable
+          bits: 26
+        PLL2RDY:
+          desc: PLL2 clock ready flag
+          bits: 27
+        PLL3ON:
+          desc: PLL3 enable
+          bits: 28
+        PLL3RDY:
+          desc: PLL3 clock ready flag
+          bits: 29
+    CFGR:
+      fields:
+        PLLXTPRE:
+          desc: LSB of division factor PREDIV1
+        PLLMUL:
+          enum:
+            $override:
+            MUL4:
+              desc: PLL input clock x 4
+              val: 2
+            MUL5:
+              desc: PLL input clock x 5
+              val: 3
+            MUL6:
+              desc: PLL input clock x 6
+              val: 4
+            MUL7:
+              desc: PLL input clock x 7
+              val: 5
+            MUL8:
+              desc: PLL input clock x 8
+              val: 6
+            MUL9:
+              desc: PLL input clock x 9
+              val: 7
+            MUL6_5:
+              desc: PLL input clock x 6.5
+              val: 13
+        USBPRE: null
+        OTGFSPRE:
+          desc: USB OTG FS prescaler
+          bits: 22
+        MCO:
+          desc: Microcontroller clock output
+          bits: 27-24
+          enum:
+            PLL2:
+              desc: PLL2 clock
+              val: 8
+            PLL3_DIV2:
+              desc: PLL3 clock divided by 2
+              val: 9
+            XT1:
+              desc: XT1 external 3-25 MHz oscillator clock (for Ethernet)
+              val: 10
+            PLL3:
+              desc: PLL3 clock (for Ethernet)
+              val: 11
+    CIR:
+      fields:
+        PLL2RDYF:
+          desc: PLL2 Ready Interrupt flag
+          bits: 5
+        PLL3RDYF:
+          desc: PLL3 Ready Interrupt flag
+          bits: 6
+        PLL2RDYIE:
+          desc: PLL2 Ready Interrupt Enable
+          bits: 13
+        PLL3RDYIE:
+          desc: PLL3 Ready Interrupt Enable
+          bits: 14
+        PLL2RDYC:
+          desc: PLL2 Ready Interrupt Clear
+          bits: 21
+        PLL3RDYC:
+          desc: PLL3 Ready Interrupt Clear
+          bits: 22
+    APB2RSTR:
+      fields:
+        IOPFRST: null
+        IOPGRST: null
+        TIM8RST: null
+        ADC3RST: null
+        TIM9RST: null
+        TIM10RST: null
+        TIM11RST: null
+    APB1RSTR:
+      fields:
+        TIM12RST: null
+        TIM13RST: null
+        TIM14RST: null
+        USBRST: null
+        CAN2RST:
+          desc: CAN2 reset
+          bits: 26
+    AHBENR:
+      fields:
+        FSMCEN: null
+        SDIOEN: null
+        OTGFSEN:
+          desc: USB OTG FS clock enable
+          bits: 12
+        ETHMACEN:
+          desc: Ethernet MAC clock enable
+          bits: 14
+        ETHMACTXEN:
+          desc: Ethernet MAC TX clock enable
+          bits: 15
+        ETHMACRXEN:
+          desc: Ethernet MAC RX clock enable
+          bits: 16
+    APB2ENR:
+      fields:
+        IOPFEN: null
+        IOPGEN: null
+        TIM8EN: null
+        ADC3EN: null
+        TIM9EN: null
+        TIM10EN: null
+        TIM11EN: null
+    APB1ENR:
+      fields:
+        TIM12EN: null
+        TIM13EN: null
+        TIM14EN: null
+        USBEN: null
+        CAN2EN:
+          desc: CAN2 clock enable
+          bits: 26
+    AHBRSTR:
+      desc: AHB peripheral clock reset register
+      offset: 0x28
+      size: 32
+      fields:
+        OTGFSRST:
+          desc: USB OTG FS reset
+          bits: 12
+        ETHMACRST:
+          desc: Ethernet MAC reset
+          bits: 14
+    CFGR2:
+      desc: Clock configuration register2
+      offset: 0x2C
+      size: 32
+      fields:
+        PREDIV1:
+          desc: PREDIV1 division factor
+          bits: 3-0
+          enum: &PREDIV1_enum
+            DIV1:
+              desc: Input clock not divided
+              val: 0
+            DIV2:
+              desc: Input clock divided by 2
+              val: 1
+            DIV3:
+              desc: Input clock divided by 3
+              val: 2
+            DIV4:
+              desc: Input clock divided by 4
+              val: 3
+            DIV5:
+              desc: Input clock divided by 5
+              val: 4
+            DIV6:
+              desc: Input clock divided by 6
+              val: 5
+            DIV7:
+              desc: Input clock divided by 7
+              val: 6
+            DIV8:
+              desc: Input clock divided by 8
+              val: 7
+            DIV9:
+              desc: Input clock divided by 9
+              val: 8
+            DIV10:
+              desc: Input clock divided by 10
+              val: 9
+            DIV11:
+              desc: Input clock divided by 11
+              val: 10
+            DIV12:
+              desc: Input clock divided by 12
+              val: 11
+            DIV13:
+              desc: Input clock divided by 13
+              val: 12
+            DIV14:
+              desc: Input clock divided by 14
+              val: 13
+            DIV15:
+              desc: Input clock divided by 15
+              val: 14
+            DIV16:
+              desc: Input clock divided by 16
+              val: 15
+        PREDIV2:
+          desc: PREDIV2 division factor
+          bits: 7-4
+          enum: *PREDIV1_enum
+        PLL2MUL:
+          desc: PLL2 Multiplication Factor
+          bits: 11-8
+          enum: &PLL2MUL_enum
+            MUL8:
+              desc: PLL clock entry x 8
+              val: 6
+            MUL9:
+              desc: PLL clock entry x 9
+              val: 7
+            MUL10:
+              desc: PLL clock entry x 10
+              val: 8
+            MUL11:
+              desc: PLL clock entry x 11
+              val: 9
+            MUL12:
+              desc: PLL clock entry x 12
+              val: 10
+            MUL13:
+              desc: PLL clock entry x 13
+              val: 11
+            MUL14:
+              desc: PLL clock entry x 14
+              val: 12
+            MUL16:
+              desc: PLL clock entry x 16
+              val: 14
+            MUL20:
+              desc: PLL clock entry x 20
+              val: 15
+        PLL3MUL:
+          desc: PLL3 Multiplication Factor
+          bits: 15-12
+          enum: *PLL2MUL_enum
+        PREDIV1SRC:
+          desc: PREDIV1 entry clock source
+          bits: 16
+        I2S2SRC:
+          desc: I2S2 clock source
+          bits: 17
+        I2S3SRC:
+          desc: I2S3 clock source
+          bits: 18

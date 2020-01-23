@@ -1,0 +1,10 @@
+#pragma once
+#include <lmcu/dev/mcu>
+
+#if defined(LMCU_STM32F1_CONNECTIVITY)
+  #include "../../mcu/STM32/F1/rcc_connectivity.h"
+#elif defined(LMCU_STM32F1)
+  #include "../../mcu/STM32/F1/rcc.h"
+#else
+  #error "device not supported"
+#endif

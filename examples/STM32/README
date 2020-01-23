@@ -1,0 +1,20 @@
+All examples configured for run from RAM. Make sure that BOOT0 and BOOT1 flags on your MCU set
+properly.
+
+If you want to run example from FLASH memory, change:
+set(LMCU_BOOT_FROM_RAM TRUE)
+to
+set(LMCU_BOOT_FROM_RAM FALSE)
+in CMakeLists.txt file.
+
+Building 'blink' example:
+
+blink $ ls
+CMakeLists.txt  src
+
+blink $ mkdir build
+blink $ cd build
+build $ cmake ..
+build $ make
+
+In 'build' directory you will see 'blink-example.bin' and 'blink-example.hex' firmware files.

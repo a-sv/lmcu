@@ -1,0 +1,5 @@
+#pragma once
+
+#if defined(LMCU_CORTEX_M3)
+  #include "../../../mcu/device/include/CORTEX-M3/DWT.h"
+#endif

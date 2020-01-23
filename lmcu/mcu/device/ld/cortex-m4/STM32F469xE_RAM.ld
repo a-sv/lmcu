@@ -1,0 +1,8 @@
+MEMORY
+{
+  IROM(rx):  ORIGIN = 0x20000000, LENGTH = 200k
+  CCM(rw):   ORIGIN = 0x10000000, LENGTH = 64k
+  IRAM(rwx): ORIGIN = 0x20032000, LENGTH = 120k
+}
+
+INCLUDE cortex-m4-ccm.ld

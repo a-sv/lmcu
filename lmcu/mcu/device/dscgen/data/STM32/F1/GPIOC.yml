@@ -1,0 +1,4 @@
+peripheral:
+  $extends: GPIOA.yml | peripheral
+  name: GPIOC
+  base: 0x40011000

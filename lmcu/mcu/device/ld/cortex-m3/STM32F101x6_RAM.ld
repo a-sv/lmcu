@@ -1,0 +1,7 @@
+MEMORY
+{
+  IROM(rx):  ORIGIN = 0x20000000, LENGTH = 3K
+  IRAM(xrw): ORIGIN = 0x20000c00, LENGTH = 3K
+}
+
+INCLUDE cortex-m3.ld

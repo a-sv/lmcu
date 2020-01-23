@@ -1,0 +1,553 @@
+peripheral:
+  header: |
+    #pragma once
+    #include "../common.h"
+  name: NVIC
+  desc: Nested Vectored Interrupt Controller
+  base: 0xE000E000
+  registers:
+    ICTR:
+      desc: Interrupt Controller Type Register
+      size: 32
+      offset: 0x4
+      fields:
+        INTLINESNUM:
+          desc: Number of interrupt lines that the NVIC supports
+          bits: 4-0
+    STCSR:
+      desc: SysTick Control and Status Register
+      size: 32
+      offset: 0x10
+      fields:
+        ENABLE:
+          desc: 1 = counter operates in a multi-shot way. 0 = counter disabled.
+          bits: 0
+        TICKINT:
+          desc: 1 = counting down to 0 pends the SysTick handler.
+          bits: 1
+        CLKSOURCE:
+          desc: 1 = core clock. 0 = external reference clock.
+          bits: 2
+        COUNTFLAG:
+          desc: |
+            Returns 1 if timer counted to 0 since last time this was read. Clears on read by
+            application of any part of the SysTick Control and Status Register.
+          bits: 16
+    STRVR:
+      desc: SysTick Reload Value Register
+      size: 32
+      offset: 0x14
+      fields:
+        RELOAD:
+          desc: Value to load into the SysTick Current Value Register when the counter reaches 0.
+          bits: 23-0
+    STCVR:
+      desc: SysTick Current Value Register
+      size: 32
+      offset: 0x18
+      fields:
+        CURRENT:
+          desc: Current value at the time the register is accessed.
+          bits: 23-0
+    STCALIBR:
+      desc: SysTick Calibration Value Register
+      size: 32
+      offset: 0x1C
+      fields:
+        TENMS:
+          desc: This value is the Reload value to use for 10ms timing.
+          bits: 23-0
+        SKEW:
+          desc: 1 = the calibration value is not exactly 10ms because of clock frequency.
+          bits: 30
+        NOREF:
+          desc: 1 = the reference clock is not provided.
+          bits: 31
+    ISER0: &ISER0
+      desc: Interrupt Set-Enable Register
+      size: 32
+      offset: 0x100
+      fields:
+        SETENA:
+          desc: Interrupt set enable bits
+          bits: 31-0
+    ISER1:
+      <<: *ISER0
+      offset: 0x104
+    ISER2:
+      <<: *ISER0
+      offset: 0x108
+    ISER3:
+      <<: *ISER0
+      offset: 0x10C
+    ISER4:
+      <<: *ISER0
+      offset: 0x110
+    ISER5:
+      <<: *ISER0
+      offset: 0x114
+    ISER6:
+      <<: *ISER0
+      offset: 0x118
+    ISER7:
+      <<: *ISER0
+      offset: 0x11C
+    ICER0: &ICER0
+      desc: Interrupt Clear-Enable Register
+      size: 32
+      offset: 0x180
+      fields:
+        CLRENA:
+          desc: Interrupt clear-enable bits
+          bits: 31-0
+    ICER1:
+      <<: *ICER0
+      offset: 0x184
+    ICER2:
+      <<: *ICER0
+      offset: 0x188
+    ICER3:
+      <<: *ICER0
+      offset: 0x18C
+    ICER4:
+      <<: *ICER0
+      offset: 0x190
+    ICER5:
+      <<: *ICER0
+      offset: 0x194
+    ICER6:
+      <<: *ICER0
+      offset: 0x198
+    ICER7:
+      <<: *ICER0
+      offset: 0x19C
+    ISPR0: &ISPR0
+      desc: Interrupt Set-Pending Register
+      size: 32
+      offset: 0x200
+      fields:
+        SETPEND:
+          desc: Interrupt set-pending bits
+          bits: 31-0
+    ISPR1:
+      <<: *ISPR0
+      offset: 0x204
+    ISPR2:
+      <<: *ISPR0
+      offset: 0x208
+    ISPR3:
+      <<: *ISPR0
+      offset: 0x20C
+    ISPR4:
+      <<: *ISPR0
+      offset: 0x210
+    ISPR5:
+      <<: *ISPR0
+      offset: 0x214
+    ISPR6:
+      <<: *ISPR0
+      offset: 0x218
+    ISPR7:
+      <<: *ISPR0
+      offset: 0x21C
+    ICPR0: &ICPR0
+      desc: Interrupt Clear-Pending Register
+      size: 32
+      offset: 0x280
+      fields:
+        CLRPEND:
+          desc: Interrupt set-pending bits
+          bits: 31-0
+    ICPR1:
+      <<: *ICPR0
+      offset: 0x284
+    ICPR2:
+      <<: *ICPR0
+      offset: 0x288
+    ICPR3:
+      <<: *ICPR0
+      offset: 0x28C
+    ICPR4:
+      <<: *ICPR0
+      offset: 0x290
+    ICPR5:
+      <<: *ICPR0
+      offset: 0x294
+    ICPR6:
+      <<: *ICPR0
+      offset: 0x298
+    ICPR7:
+      <<: *ICPR0
+      offset: 0x29C
+    IABR0: &IABR0
+      desc: Interrupt Active Bit Register
+      size: 32
+      offset: 0x300
+      fields:
+        ACTIVE:
+          desc: Interrupt active flags
+          bits: 31-0
+    IABR1:
+      <<: *IABR0
+      offset: 0x304
+    IABR2:
+      <<: *IABR0
+      offset: 0x308
+    IABR3:
+      <<: *IABR0
+      offset: 0x30C
+    IABR4:
+      <<: *IABR0
+      offset: 0x310
+    IABR5:
+      <<: *IABR0
+      offset: 0x314
+    IABR6:
+      <<: *IABR0
+      offset: 0x318
+    IABR7:
+      <<: *IABR0
+      offset: 0x31C
+    IPR0: &IPR0
+      desc: Interrupt Priority Register
+      size: 32
+      offset: 0x400
+      fields:
+        PRI_0:
+          desc: Priority of interrupt 0
+          bits: 7-0
+        PRI_1:
+          desc: Priority of interrupt 1
+          bits: 15-8
+        PRI_2:
+          desc: Priority of interrupt 2
+          bits: 23-16
+        PRI_3:
+          desc: Priority of interrupt 3
+          bits: 31-24
+    IPR1:
+      <<: *IPR0
+      offset: 0x404
+    IPR2:
+      <<: *IPR0
+      offset: 0x408
+    IPR3:
+      <<: *IPR0
+      offset: 0x40C
+    IPR4:
+      <<: *IPR0
+      offset: 0x410
+    IPR5:
+      <<: *IPR0
+      offset: 0x414
+    IPR6:
+      <<: *IPR0
+      offset: 0x418
+    IPR7:
+      <<: *IPR0
+      offset: 0x41C
+    CPUIDBR:
+      desc: CPU ID Base Register
+      size: 32
+      offset: 0xD00
+      reset_val: 0x411FC231
+      fields:
+        REVISION:
+          desc: Implementation defined revision number.
+          bits: 3-0
+        PARTNO:
+          desc: Number of processor within family
+          bits: 15-4
+        CONSTANT:
+          desc: Reads as 0xF
+          bits: 19-16
+        VARIANT:
+          desc: Implementation defined variant number.
+          bits: 23-20
+        IMPLEMENTER:
+          desc: Implementer code. ARM is 0x41.
+          bits: 31-24
+    ICSR:
+      desc: Interrupt Control State Register
+      size: 32
+      offset: 0xD04
+      fields:
+        VECTACTIVE:
+          desc: Active ISR number field.
+          bits: 8-0
+        RETTOBASE:
+          desc: |
+            This bit is 1 when the set of all active exceptions minus the IPSR_current_exception
+            yields the empty set.
+          bits: 11
+        VECTPENDING:
+          desc: Pending ISR number field.
+          bits: 21-12
+        ISRPENDING:
+          desc: Interrupt pending flag. Excludes NMI and Faults.
+          bits: 22
+        ISRPREEMPT:
+          desc: |
+            You must only use this at debug time. It indicates that a pending interrupt becomes
+            active in the next running cycle.
+          bits: 23
+        PENDSTCLR:
+          desc: Clear pending SysTick bit
+          bits: 25
+        PENDSTSET:
+          desc: Set a pending SysTick bit
+          bits: 26
+        PENDSVCLR:
+          desc: Clear pending pendSV bit
+          bits: 27
+        PENDSVSET:
+          desc: Set pending pendSV bit
+          bits: 28
+        NMIPENDSET:
+          desc: Set pending NMI bit
+          bits: 31
+    VTOR:
+      desc: Vector Table Offset Register
+      size: 32
+      offset: 0xD08
+      fields:
+        TBLOFF:
+          desc: |
+            Vector table base offset field. Contains the offset of the table base from the bottom
+            of the SRAM or CODE space.
+          bits: 28-7
+        TBLBASE:
+          desc: Table base is in Code (0) or RAM (1)
+          bits: 29
+    SCR:
+      desc: System Control Register
+      size: 32
+      offset: 0xD10
+      fields:
+        SLEEPONEXIT:
+          desc: Sleep on exit when returning from Handler mode to Thread mode.
+          bits: 1
+        SLEEPDEEP:
+          desc: Sleep deep bit
+          bits: 2
+        SEVONPEND:
+          desc: |
+            When enabled, this causes WFE to wake up when an interrupt moves from inactive to
+            pended.
+          bits: 4
+    CCR:
+      desc: Configuration Control Register
+      size: 32
+      offset: 0xD14
+      fields:
+        NONEBASETHRDENA:
+          desc: |
+            When 0, default, It is only possible to enter Thread mode when returning from the last
+            exception. When set to 1, Thread mode can be entered from any level in Handler mode by
+            controlled return value.
+          bits: 0
+        USERSETMPEND:
+          desc: |
+            If written as 1, enables user code to write the Software Trigger Interrupt register to
+            trigger (pend) a Main exception, which is one associated with the Main stack pointer.
+          bits: 1
+        UNALIGN_TRP:
+          desc: |
+            Trap for unaligned access. This enables faulting/halting on any unaligned half or full
+            word access. Unaligned load-store multiples always fault. The relevant Usage Fault
+            Status Register bit is UNALIGNED.
+          bits: 3
+        DIV_0_TRP:
+          desc: |
+            Trap on Divide by 0. This enables faulting/halting when an attempt is made to divide by
+            0. The relevant Usage Fault Status Register bit is DIVBYZERO.
+          bits: 4
+        BFHFNMIGN:
+          desc: |
+            When enabled, this causes handlers running at priority -1 and -2 (Hard Fault, NMI, and
+            FAULTMASK escalated handlers) to ignore Data Bus faults caused by load and store
+            instructions. When disabled, these bus faults cause a lock-up.
+          bits: 8
+        STKALIGN:
+          desc: |
+            1 = on exception entry, the SP used prior to the exception is adjusted to be 8-byte
+            aligned and the context to restore it is saved. The SP is restored on the associated
+            exception return.
+            0 = only 4-byte alignment is guaranteed for the SP used prior to the exception on
+            exception entry.
+          bits: 9
+    SHPR0:
+      desc: System Handler Priority Register 0
+      size: 32
+      offset: 0xD18
+      fields:
+        PRI_4: &PRI_4
+          desc: Priority of system handler 4, 8, and 12. Mem Manage, reserved, and Debug Monitor.
+          bits: 7-0
+        PRI_5: &PRI_5
+          desc: Priority of system handler 5, 9, and 13, Bus Fault, reserved, and reserved.
+          bits: 15-8
+        PRI_6: &PRI_6
+          desc: Priority of system handler 6, 10, and 14. Usage Fault, reserved, and PendSV.
+          bits: 23-16
+        PRI_7: &PRI_7
+          desc: Priority of system handler 7, 11, and 15. Reserved, SVCall, and SysTick.
+          bits: 31-24
+    SHPR1:
+      desc: System Handler Priority Register 1
+      size: 32
+      offset: 0xD1C
+      fields:
+        PRI_8:
+          <<: *PRI_4
+        PRI_9:
+          <<: *PRI_5
+        PRI_10:
+          <<: *PRI_6
+        PRI_11:
+          <<: *PRI_7
+    SHPR2:
+      desc: System Handler Priority Register 2
+      size: 32
+      offset: 0xD20
+      fields:
+        PRI_12:
+          <<: *PRI_4
+        PRI_13:
+          <<: *PRI_5
+        PRI_14:
+          <<: *PRI_6
+        PRI_15:
+          <<: *PRI_7
+    MMFSR:
+      desc: Memory Manage Fault Status Register
+      size: 8
+      offset: 0xD28
+      fields:
+        IACCVIOL:
+          desc: Instruction access violation flag.
+          bits: 0
+        DACCVIOL:
+          desc: Data access violation flag.
+          bits: 1
+        MUNSTKERR:
+          desc: Unstack from exception return has caused one or more access violations.
+          bits: 3
+        MSTKERR:
+          desc: Stacking from exception has caused one or more access violations.
+          bits: 4
+        MMARVALID:
+          desc: Memory Manage Address Register (MMAR) address valid flag
+          bits: 7
+    BFSR:
+      desc: Bus Fault Status Register
+      size: 8
+      offset: 0xD29
+      fields:
+        IBUSERR:
+          desc: Instruction bus error flag.
+          bits: 0
+        PRECISERR:
+          desc: Precise data bus error return.
+          bits: 1
+        IMPRECISERR:
+          desc: Imprecise data bus error.
+          bits: 2
+        UNSTKERR:
+          desc: Unstack from exception return has caused one or more bus faults.
+          bits: 3
+        STKERR:
+          desc: Stacking from exception has caused one or more bus faults.
+          bits: 4
+        BFARVALID:
+          desc: This bit is set if the Bus Fault Address Register (BFAR) contains a valid address.
+          bits: 7
+    UFSR:
+      desc: Usage Fault Status Register
+      size: 16
+      offset: 0xD2B
+      fields:
+        UNDEFINSTR:
+          desc: |
+            The UNDEFINSTR flag is set when the processor attempts to execute an undefined
+            instruction.
+          bits: 0
+        INVSTATE:
+          desc: |
+            Invalid combination of EPSR and instruction, for reasons other than UNDEFINED
+            instruction.
+          bits: 1
+        INVPC:
+          desc: Attempt to load EXC_RETURN into PC illegally.
+          bits: 2
+        NOCP:
+          desc: Attempt to use a coprocessor instruction.
+          bits: 3
+        UNALIGNED:
+          desc: |
+            When UNALIGN_TRP is enabled, and there is an attempt to make an unaligned memory access,
+            then this fault occurs.
+          bits: 8
+        DIVBYZERO:
+          desc: |
+            When DIV_0_TRP (see Configuration Control Register on page 8-25) is enabled and an SDIV
+            or UDIV instruction is used with a divisor of 0, this fault occurs.
+          bits: 9
+    HFSR:
+      desc: Hard Fault Status Register
+      size: 32
+      offset: 0xD2C
+      fields:
+        VECTTBL:
+          desc: |
+            This bit is set if there is a fault because of vector table read on exception processing
+            (Bus Fault).
+          bits: 1
+        FORCED:
+          desc: |
+            Hard Fault activated because a Configurable Fault was received and cannot activate
+            because of priority or because the Configurable Fault is disabled.
+          bits: 30
+        DEBUGEVT:
+          desc: This bit is set if there is a fault related to debug.
+          bits: 31
+    DFSR:
+      desc: Debug Fault Status Register
+      size: 32
+      offset: 0xD30
+      fields:
+        HALTED:
+          desc: Halt request flag
+          bits: 0
+        BKPT:
+          desc: BKPT flag
+          bits: 1
+        DWTTRAP:
+          desc: Data Watchpoint and Trace (DWT) flag
+          bits: 2
+        VCATCH:
+          desc: Vector catch flag
+          bits: 3
+        EXTERNAL:
+          desc: External debug request flag
+          bits: 4
+    MMFAR:
+      desc: Memory Manage Fault Address Register
+      size: 32
+      offset: 0xD34
+    BFAR:
+      desc: Bus Fault Address Register
+      size: 32
+      offset: 0xD38
+    AFSR:
+      desc: Auxiliary Fault Status Register
+      size: 32
+      offset: 0xD3C
+    STIR:
+      desc: Software Trigger Interrupt Register
+      size: 32
+      offset: 0xF00
+      fields:
+        INTID:
+          desc: Interrupt ID field.
+          bits: 8-0
