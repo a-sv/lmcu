@@ -42,13 +42,13 @@ void set_bkp_wp_mode()
   using namespace device;
 
   if constexpr(_bkp_wp == bkp_wp::enable) {
-    PWR::CR::set_b(PWR::CR::DBP);
-  }
-  else {
     PWR::CR::clr_b(PWR::CR::DBP);
   }
+  else {
+    PWR::CR::set_b(PWR::CR::DBP);
+  }
 
-  while(PWR::CR::is_set(PWR::CR::DBP) == (_bkp_wp == bkp_wp::disable))
+  while(PWR::CR::is_set(PWR::CR::DBP) == (_bkp_wp == bkp_wp::enable))
     ;
 }
 
