@@ -13,6 +13,7 @@ set(LMCU_C_FLAGS
 -Wall \
 -Wextra \
 -pedantic \
+-fstack-usage \
 ${LMCU_C_FLAGS} \
 ")
 
