@@ -1,0 +1,6 @@
+#pragma once
+
+#if defined(LMCU_STM32F1)
+  #include "../../../mcu/device/include/STM32/F1/TIM1.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM8.h"
+#endif
