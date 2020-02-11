@@ -1,5 +1,5 @@
 #pragma once
-#include <lmcu/hwi/math>
+#include <lmcu/math>
 #include "rcc_common.h"
 
 namespace lmcu::rcc {

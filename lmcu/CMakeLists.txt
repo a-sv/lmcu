@@ -109,11 +109,7 @@ set(LMCU_LIBRARY lmcu CACHE INTERNAL "")
 
 include_directories(${LMCU_INCLUDE_DIR})
 
-file(GLOB_RECURSE SOURCES
-  "${LMCU_DIR}/hwi/*.*"
-  "${LMCU_DIR}/mcu/*.*"
-  "${LMCU_DIR}/drivers/*.*"
-)
+file(GLOB_RECURSE SOURCES "${LMCU_DIR}/*.cc" "${LMCU_DIR}/*.h")
 
 set(CMAKE_MODULE_LINKER_FLAGS "" PARENT_SCOPE)
 set(CMAKE_SHARED_LINKER_FLAGS "" PARENT_SCOPE)

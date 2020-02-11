@@ -2,7 +2,7 @@
 #include <lmcu/dev/timer>
 #include <lmcu/dev/rcc>
 #include <lmcu/irq>
-#include <lmcu/hwi/common>
+#include <lmcu/common>
 
 namespace lmcu::timer {
 

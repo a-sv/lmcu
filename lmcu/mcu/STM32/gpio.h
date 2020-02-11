@@ -1,7 +1,7 @@
 #pragma once
 #include <lmcu/dev/rcc>
 #include <lmcu/dev/gpio>
-#include <lmcu/hwi/common>
+#include <lmcu/common>
 
 namespace lmcu::gpio {
 

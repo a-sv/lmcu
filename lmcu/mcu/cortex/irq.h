@@ -1,7 +1,7 @@
 #pragma once
-#include <lmcu/hwi/common>
 #include <lmcu/dev/mcu>
 #include <lmcu/dev/nvic>
+#include <lmcu/common>
 
 namespace lmcu::irq {
 

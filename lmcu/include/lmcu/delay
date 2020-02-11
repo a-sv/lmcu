@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../hwi/delay/timer.h"
+#include "../../delay/timer.h"
 
 #if defined(LMCU_CORTEX)
   #include "../../mcu/cortex/dwt_delay.h"

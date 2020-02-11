@@ -1,7 +1,7 @@
 #pragma once
-#include <lmcu/hwi/common>
 #include <lmcu/dev/pwr>
 #include <lmcu/dev/rcc>
+#include <lmcu/common>
 
 namespace lmcu::pwr {
 

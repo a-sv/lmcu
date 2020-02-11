@@ -2,7 +2,7 @@
 
 #if defined(LMCU_STM32F1)
 
-#include <lmcu/hwi/common>
+#include <lmcu/common>
 
 namespace lmcu::rcc::detail {
 

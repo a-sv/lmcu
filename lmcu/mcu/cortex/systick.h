@@ -1,7 +1,7 @@
 #pragma once
 #include <lmcu/dev/mcu>
 #include <lmcu/dev/nvic>
-#include <lmcu/hwi/common>
+#include <lmcu/common>
 #include <lmcu/rcc>
 #include <lmcu/irq>
 
