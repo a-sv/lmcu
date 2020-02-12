@@ -227,6 +227,50 @@ enum class off_state_idle { low, high };
 
 enum class lock { off, level_1, level_2, level_3 };
 
+enum class dma_burst_length
+{
+  _1,
+  _2,
+  _3,
+  _4,
+  _5,
+  _6,
+  _7,
+  _8,
+  _9,
+  _10,
+  _11,
+  _12,
+  _13,
+  _14,
+  _15,
+  _16,
+  _17,
+  _18
+};
+
+enum class dma_base_address
+{
+  cr1,
+  cr2,
+  smcr,
+  dier,
+  sr,
+  egr,
+  ccmr1,
+  ccmr2,
+  ccer,
+  cnt,
+  psc,
+  arr,
+  rcr,
+  ccr1,
+  ccr2,
+  ccr3,
+  ccr4,
+  bdtr
+};
+
 enum class channel { _1, _2, _3, _4 };
 
 enum class channel_en { disable, enable };
@@ -364,6 +408,12 @@ struct dev
                                              timer::off_state_idle::low);
     // Lock config
     static constexpr auto lock = option::get<timer::lock, _args...>(timer::lock::off);
+    // DMA burst length
+    static constexpr auto dma_burst_length = option::get<timer::dma_burst_length, _args...>(
+                                               timer::dma_burst_length::_1);
+    // Initial register for DMA burst
+    static constexpr auto dma_base_address = option::get<timer::dma_base_address, _args...>(
+                                               timer::dma_base_address::cr1);
 
     static_assert(!option::is_null<id>());
 
@@ -479,6 +529,11 @@ struct dev
    * @param val - duration value
   */
   lmcu_static_inline void set_deadtime(uint8_t val);
+
+  /**
+   * @brief Returns DMA destination address
+  */
+  lmcu_static_inline uint32_t dma_address();
 };
 
 template<auto ..._args>
@@ -831,6 +886,16 @@ void configure_timer()
     inst::BDTR::set(r);
   }
 
+  {
+    auto r = inst::DCR::get();
+
+    r &= inst::DCR::DBL_MASK | inst::DCR::DBA_MASK;
+    r |= uint32_t(cfg::dma_burst_length) << inst::DCR::DBL_POS;
+    r |= uint32_t(cfg::dma_base_address) << inst::DCR::DBA_POS;
+
+    inst::DCR::set(r);
+  }
+
   if constexpr(cfg::counter == counter::enable) {
     inst::CR1::set_b(inst::CR1::CEN);
   }
@@ -1118,6 +1183,13 @@ void dev<_args...>::set_deadtime(uint8_t val)
   using inst = detail::inst_t<config::id>;
   inst::BDTR::clr_b(inst::BDTR::DTG_MASK);
   inst::BDTR::set_b(val);
+}
+
+template<auto ..._args>
+uint32_t dev<_args...>::dma_address()
+{
+  using inst = detail::inst_t<config::id>;
+  return inst::DMAR::base;
 }
 
 // ------------------------------------------------------------------------------------------------

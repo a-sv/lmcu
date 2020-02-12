@@ -695,8 +695,20 @@ struct TIM8
     ,MOE = 0x00008000
     ;
   };
+  // DMA control register
+  struct DCR : reg<16, base + 0x48, 0x00000000, 0x00000000>
+  {
+    static constexpr type
+    // DMA base address (bits: 4-0)
+     DBA_MASK = 0x0000001F
+    ,DBA_POS = 0
+    // DMA burst length (bits: 12-8)
+    ,DBL_MASK = 0x00001F00
+    ,DBL_POS = 8
+    ;
+  };
   // DMA address for full transfer
-  using DCR = reg<32, base + 0x4C, 0x00000000, 0x00000000>;
+  using DMAR = reg<32, base + 0x4C, 0x00000000, 0x00000000>;
 }; // struct TIM8
 
 } // namespace lmcu::device

@@ -690,7 +690,7 @@ peripheral:
         DBL:
           desc: DMA burst length
           bits: 12-8
-    DCR:
+    DMAR:
       desc: DMA address for full transfer
       offset: 0x4C
       size: 32
