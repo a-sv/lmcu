@@ -308,6 +308,14 @@ enum class out_mode
 
 enum class out_clear { disable, enable };
 
+struct brk_irq : nvic::irq_config {};
+
+struct up_irq : nvic::irq_config {};
+
+struct trg_com_irq : nvic::irq_config {};
+
+struct cc_irq : nvic::irq_config {};
+
 template<auto ..._args>
 struct dev
 {
@@ -402,6 +410,14 @@ struct dev
     // Initial register for DMA burst
     static constexpr auto dma_base_address = option::get<adv_timer::dma_base_address, _args...>(
                                                adv_timer::dma_base_address::cr1);
+    // Enable BRK irq
+    static constexpr auto brk_irq = option::get<adv_timer::brk_irq, _args...>();
+    // Enable UP irq
+    static constexpr auto up_irq = option::get<adv_timer::up_irq, _args...>();
+    // Enable TRG_COM irq
+    static constexpr auto trg_com_irq = option::get<adv_timer::trg_com_irq, _args...>();
+    // Enable CC irq
+    static constexpr auto cc_irq = option::get<adv_timer::cc_irq, _args...>();
 
     static_assert(!option::is_null<id>());
 
@@ -432,7 +448,11 @@ struct dev
         adv_timer::break_polarity,
         adv_timer::break_input,
         adv_timer::off_state_run,
-        adv_timer::off_state_idle
+        adv_timer::off_state_idle,
+        adv_timer::brk_irq,
+        adv_timer::up_irq,
+        adv_timer::trg_com_irq,
+        adv_timer::cc_irq
       >,
       _args...
     >());
@@ -883,6 +903,43 @@ void configure_timer()
     r |= uint32_t(cfg::dma_base_address) << inst::DCR::DBA_POS;
 
     inst::DCR::set(r);
+  }
+
+  constexpr auto brk_irqn = (cfg::id == id::tim1)? device::irqn::tim1_brk : device::irqn::tim8_brk;
+  if constexpr(!option::is_null<cfg::brk_irq>()) {
+    nvic::set_priority<brk_irqn, cfg::brk_irq>();
+    nvic::enable_irq<brk_irqn>();
+  }
+  else {
+    nvic::disable_irq<brk_irqn>();
+  }
+
+  constexpr auto up_irqn = (cfg::id == id::tim1)? device::irqn::tim1_up : device::irqn::tim8_up;
+  if constexpr(!option::is_null<cfg::up_irq>()) {
+    nvic::set_priority<up_irqn, cfg::up_irq>();
+    nvic::enable_irq<up_irqn>();
+  }
+  else {
+    nvic::disable_irq<up_irqn>();
+  }
+
+  constexpr auto trg_com_irqn = (cfg::id == id::tim1)? device::irqn::tim1_trg_com :
+                                                       device::irqn::tim8_trg_com;
+  if constexpr(!option::is_null<cfg::trg_com_irq>()) {
+    nvic::set_priority<trg_com_irqn, cfg::trg_com_irq>();
+    nvic::enable_irq<trg_com_irqn>();
+  }
+  else {
+    nvic::disable_irq<trg_com_irqn>();
+  }
+
+  constexpr auto cc_irqn = (cfg::id == id::tim1)? device::irqn::tim1_cc : device::irqn::tim8_cc;
+  if constexpr(!option::is_null<cfg::cc_irq>()) {
+    nvic::set_priority<cc_irqn, cfg::cc_irq>();
+    nvic::enable_irq<cc_irqn>();
+  }
+  else {
+    nvic::disable_irq<cc_irqn>();
   }
 
   if constexpr(cfg::counter == counter::enable) {
