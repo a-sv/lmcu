@@ -4,25 +4,9 @@
 #include <lmcu/irq>
 #include <lmcu/common>
 
-namespace lmcu::timer {
+namespace lmcu::adv_timer {
 
-enum class id
-{
-  tim1,
-  tim2,
-  tim3,
-  tim4,
-  tim5,
-  tim6,
-  tim7,
-  tim8,
-  tim9,
-  tim10,
-  tim11,
-  tim12,
-  tim13,
-  tim14
-};
+enum class id { tim1, tim8 };
 
 enum class counter { disable, enable };
 
@@ -331,120 +315,124 @@ struct dev
   {
     static constexpr auto dev_class = lmcu::dev_class::timer;
 
-    static constexpr auto id = option::get<timer::id, _args...>();
+    static constexpr auto id = option::get<adv_timer::id, _args...>();
 
     // Timer counter enable/disable.
-    static constexpr auto counter = option::get<timer::counter, _args...>(timer::counter::disable);
+    static constexpr auto counter = option::get<adv_timer::counter, _args...>(adv_timer::
+                                                                              counter::disable);
     // Enable/disable UEV event generation.
-    static constexpr auto update = option::get<timer::update, _args...>(timer::update::enable);
+    static constexpr auto update = option::get<adv_timer::update, _args...>(adv_timer::update::
+                                                                            enable);
     // Update request source.
-    static constexpr auto update_request_src = option::get<timer::update_request_src, _args...>(
-                                                           timer::update_request_src::any);
+    static constexpr auto update_request_src = option::get<adv_timer::update_request_src, _args...>(
+                                                 adv_timer::update_request_src::any);
     // One pulse mode.
-    static constexpr auto one_pulse = option::get<timer::one_pulse, _args...>(timer::one_pulse::
-                                                                              disable);
+    static constexpr auto one_pulse = option::get<adv_timer::one_pulse, _args...>(
+                                        adv_timer::one_pulse::disable);
     // Count direction.
-    static constexpr auto direction = option::get<timer::direction, _args...>(timer::direction::up);
+    static constexpr auto direction = option::get<adv_timer::direction, _args...>(adv_timer::
+                                                                                  direction::up);
     //  Center-aligned mode selection.
-    static constexpr auto center_align = option::get<timer::center_align, _args...>(
-                                                     timer::center_align::disable);
+    static constexpr auto center_align = option::get<adv_timer::center_align, _args...>(
+                                           adv_timer::center_align::disable);
     // Center-aligned mode selection.
-    static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(
-                                                    timer::auto_reload::disable);
+    static constexpr auto auto_reload = option::get<adv_timer::auto_reload, _args...>(
+                                          adv_timer::auto_reload::disable);
     // Dead time generator and digital filter clock division.
-    static constexpr auto dtg_df_div = option::get<timer::dtg_df_div, _args...>(timer::dtg_df_div::
-                                                                                _1);
+    static constexpr auto dtg_df_div = option::get<adv_timer::dtg_df_div, _args...>(
+                                         adv_timer::dtg_df_div::_1);
     // Capture/compare control update selection.
-    static constexpr auto cc_update = option::get<timer::cc_update, _args...>(timer::cc_update::
-                                                                              disable);
+    static constexpr auto cc_update = option::get<adv_timer::cc_update, _args...>(
+                                        adv_timer::cc_update::disable);
     // Capture/compare DMA selection.
-    static constexpr auto dma_trig = option::get<timer::dma_trig, _args...>(timer::dma_trig::
-                                                                            cc_evt);
+    static constexpr auto dma_trig = option::get<adv_timer::dma_trig, _args...>(
+                                       adv_timer::dma_trig::cc_evt);
     // Master mode selection.
-    static constexpr auto master_mode = option::get<timer::master_mode, _args...>(
-                                                    timer::master_mode::reset);
+    static constexpr auto master_mode = option::get<adv_timer::master_mode, _args...>(
+                                          adv_timer::master_mode::reset);
     // TI1 selection.
-    static constexpr auto ti1_mux = option::get<timer::ti1_mux, _args...>(timer::ti1_mux::ch1);
+    static constexpr auto ti1_mux = option::get<adv_timer::ti1_mux, _args...>(
+                                      adv_timer::ti1_mux::ch1);
     // Slave mode selection.
-    static constexpr auto slave_mode = option::get<timer::slave_mode, _args...>(timer::slave_mode::
-                                                                                disable);
+    static constexpr auto slave_mode = option::get<adv_timer::slave_mode, _args...>(
+                                         adv_timer::slave_mode::disable);
     // Slave trigger selection.
-    static constexpr auto slave_trig_sel = option::get<timer::slave_trig_sel, _args...>(
-                                                       timer::slave_trig_sel::itr0);
+    static constexpr auto slave_trig_sel = option::get<adv_timer::slave_trig_sel, _args...>(
+                                             adv_timer::slave_trig_sel::itr0);
     // Master/slave mode.
-    static constexpr auto master_slave_mode = option::get<timer::master_slave_mode, _args...>(
-                                                          timer::master_slave_mode::disable);
+    static constexpr auto master_slave_mode = option::get<adv_timer::master_slave_mode, _args...>(
+                                                adv_timer::master_slave_mode::disable);
     // External trigger filter.
-    static constexpr auto ext_trig_filter = option::get<timer::ext_trig_filter, _args...>(
-                                                        timer::ext_trig_filter::disable);
+    static constexpr auto ext_trig_filter = option::get<adv_timer::ext_trig_filter, _args...>(
+                                              adv_timer::ext_trig_filter::disable);
     // External trigger prescaler.
-    static constexpr auto ext_trig_div = option::get<timer::ext_trig_div, _args...>(
-                                                     timer::ext_trig_div::_1);
+    static constexpr auto ext_trig_div = option::get<adv_timer::ext_trig_div, _args...>(
+                                           adv_timer::ext_trig_div::_1);
     // External clock enable.
-    static constexpr auto ext_clock = option::get<timer::ext_clock, _args...>(timer::ext_clock::
-                                                                              disable);
+    static constexpr auto ext_clock = option::get<adv_timer::ext_clock, _args...>(
+                                        adv_timer::ext_clock::disable);
     // External trigger polarity.
-    static constexpr auto ext_trig_polarity = option::get<timer::ext_trig_polarity, _args...>(
-                                                          timer::ext_trig_polarity::high);
+    static constexpr auto ext_trig_polarity = option::get<adv_timer::ext_trig_polarity, _args...>(
+                                                adv_timer::ext_trig_polarity::high);
     // Enabled events.
-    static constexpr auto events = option::get<timer::events, _args...>(timer::events(0));
+    static constexpr auto events = option::get<adv_timer::events, _args...>(adv_timer::events(0));
     // Channels main output control.
-    static constexpr auto main_output = option::get<timer::main_output, _args...>(
-                                          timer::main_output::disable);
+    static constexpr auto main_output = option::get<adv_timer::main_output, _args...>(
+                                          adv_timer::main_output::disable);
     // Automatic output control (activate main output if break input is not be active).
-    static constexpr auto main_auto_output = option::get<timer::main_auto_output, _args...>(
-                                               timer::main_auto_output::disable);
+    static constexpr auto main_auto_output = option::get<adv_timer::main_auto_output, _args...>(
+                                               adv_timer::main_auto_output::disable);
     // Break input polarity control.
-    static constexpr auto break_polarity = option::get<timer::break_polarity, _args...>(
-                                             timer::break_polarity::low);
+    static constexpr auto break_polarity = option::get<adv_timer::break_polarity, _args...>(
+                                             adv_timer::break_polarity::low);
     // Break input enable control.
-    static constexpr auto break_input = option::get<timer::break_input, _args...>(
-                                          timer::break_input::disable);
+    static constexpr auto break_input = option::get<adv_timer::break_input, _args...>(
+                                          adv_timer::break_input::disable);
     // Off-state for Run mode.
-    static constexpr auto off_state_run = option::get<timer::off_state_run, _args...>(
-                                            timer::off_state_run::low);
+    static constexpr auto off_state_run = option::get<adv_timer::off_state_run, _args...>(
+                                            adv_timer::off_state_run::low);
     // Off-state for Idle mode.
-    static constexpr auto off_state_idle = option::get<timer::off_state_idle, _args...>(
-                                             timer::off_state_idle::low);
+    static constexpr auto off_state_idle = option::get<adv_timer::off_state_idle, _args...>(
+                                             adv_timer::off_state_idle::low);
     // Lock config
-    static constexpr auto lock = option::get<timer::lock, _args...>(timer::lock::off);
+    static constexpr auto lock = option::get<adv_timer::lock, _args...>(adv_timer::lock::off);
     // DMA burst length
-    static constexpr auto dma_burst_length = option::get<timer::dma_burst_length, _args...>(
-                                               timer::dma_burst_length::_1);
+    static constexpr auto dma_burst_length = option::get<adv_timer::dma_burst_length, _args...>(
+                                               adv_timer::dma_burst_length::_1);
     // Initial register for DMA burst
-    static constexpr auto dma_base_address = option::get<timer::dma_base_address, _args...>(
-                                               timer::dma_base_address::cr1);
+    static constexpr auto dma_base_address = option::get<adv_timer::dma_base_address, _args...>(
+                                               adv_timer::dma_base_address::cr1);
 
     static_assert(!option::is_null<id>());
 
     static_assert(option::check<
       std::tuple<
-        timer::id,
-        timer::counter,
-        timer::update,
-        timer::update_request_src,
-        timer::one_pulse,
-        timer::direction,
-        timer::center_align,
-        timer::auto_reload,
-        timer::dtg_df_div,
-        timer::cc_update,
-        timer::dma_trig,
-        timer::master_mode,
-        timer::ti1_mux,
-        timer::slave_trig_sel,
-        timer::master_slave_mode,
-        timer::ext_trig_filter,
-        timer::ext_trig_div,
-        timer::ext_clock,
-        timer::ext_trig_polarity,
-        timer::events,
-        timer::main_output,
-        timer::main_auto_output,
-        timer::break_polarity,
-        timer::break_input,
-        timer::off_state_run,
-        timer::off_state_idle
+        adv_timer::id,
+        adv_timer::counter,
+        adv_timer::update,
+        adv_timer::update_request_src,
+        adv_timer::one_pulse,
+        adv_timer::direction,
+        adv_timer::center_align,
+        adv_timer::auto_reload,
+        adv_timer::dtg_df_div,
+        adv_timer::cc_update,
+        adv_timer::dma_trig,
+        adv_timer::master_mode,
+        adv_timer::ti1_mux,
+        adv_timer::slave_trig_sel,
+        adv_timer::master_slave_mode,
+        adv_timer::ext_trig_filter,
+        adv_timer::ext_trig_div,
+        adv_timer::ext_clock,
+        adv_timer::ext_trig_polarity,
+        adv_timer::events,
+        adv_timer::main_output,
+        adv_timer::main_auto_output,
+        adv_timer::break_polarity,
+        adv_timer::break_input,
+        adv_timer::off_state_run,
+        adv_timer::off_state_idle
       >,
       _args...
     >());
@@ -541,17 +529,17 @@ struct input
 {
   struct config
   {
-    static constexpr auto dev_class = lmcu::dev_class::timer_input_channel;
+    static constexpr auto dev_class = lmcu::dev_class::timer_in_channel;
 
-    static constexpr auto id = option::get<timer::id, _args...>();
+    static constexpr auto id = option::get<adv_timer::id, _args...>();
 
     // Channel number
-    static constexpr auto channel = option::get<timer::channel, _args...>();
+    static constexpr auto channel = option::get<adv_timer::channel, _args...>();
 
     static_assert(option::check<
       std::tuple<
-        timer::id,
-        timer::channel
+        adv_timer::id,
+        adv_timer::channel
       >,
       _args...
     >());
@@ -563,57 +551,58 @@ struct output
 {
   struct config
   {
-    static constexpr auto dev_class = lmcu::dev_class::timer_output_channel;
+    static constexpr auto dev_class = lmcu::dev_class::timer_out_channel;
 
-    static constexpr auto id = option::get<timer::id, _args...>();
+    static constexpr auto id = option::get<adv_timer::id, _args...>();
 
     // Channel number
-    static constexpr auto channel = option::get<timer::channel, _args...>();
+    static constexpr auto channel = option::get<adv_timer::channel, _args...>();
     // Channel output enable
-    static constexpr auto channel_en = option::get<timer::channel_en, _args...>(
-                                           timer::channel_en::disable);
+    static constexpr auto channel_en = option::get<adv_timer::channel_en, _args...>(
+                                         adv_timer::channel_en::disable);
     // N channel output enable
-    static constexpr auto channel_n_en = option::get<timer::channel_n_en, _args...>(
-                                           timer::channel_n_en::disable);
+    static constexpr auto channel_n_en = option::get<adv_timer::channel_n_en, _args...>(
+                                           adv_timer::channel_n_en::disable);
     // Output Compare polarity
-    static constexpr auto channel_polarity = option::get<timer::channel_polarity, _args...>(
-                                               timer::channel_polarity::high);
+    static constexpr auto channel_polarity = option::get<adv_timer::channel_polarity, _args...>(
+                                               adv_timer::channel_polarity::high);
     // N channel Output Compare polarity
-    static constexpr auto channel_n_polarity = option::get<timer::channel_n_polarity, _args...>(
-                                                 timer::channel_n_polarity::high);
+    static constexpr auto channel_n_polarity = option::get<adv_timer::channel_n_polarity, _args...>(
+                                                 adv_timer::channel_n_polarity::high);
     // Output idle state
-    static constexpr auto out_idle = option::get<timer::out_idle, _args...>(timer::out_idle::low);
+    static constexpr auto out_idle = option::get<adv_timer::out_idle, _args...>(
+                                       adv_timer::out_idle::low);
     // Output idle state (on inverted channel)
-    static constexpr auto out_n_idle = option::get<timer::out_n_idle, _args...>(timer::out_n_idle::
-                                                                                low);
+    static constexpr auto out_n_idle = option::get<adv_timer::out_n_idle, _args...>(
+                                         adv_timer::out_n_idle::low);
     // Output Compare fast enable
-    static constexpr auto out_fast = option::get<timer::out_fast, _args...>(timer::out_fast::
-                                                                            disable);
+    static constexpr auto out_fast = option::get<adv_timer::out_fast, _args...>(
+                                       adv_timer::out_fast::disable);
     // Output Compare preload enable
-    static constexpr auto out_preload = option::get<timer::out_preload, _args...>(
-                                          timer::out_preload::disable);
+    static constexpr auto out_preload = option::get<adv_timer::out_preload, _args...>(
+                                          adv_timer::out_preload::disable);
     // Output Compare mode
-    static constexpr auto out_mode = option::get<timer::out_mode, _args...>(timer::out_mode::
-                                                                            frozen);
+    static constexpr auto out_mode = option::get<adv_timer::out_mode, _args...>(
+                                       adv_timer::out_mode::frozen);
     // Output Compare clear (OCRef cleared as soon as a High level is detected on ETRF input)
-    static constexpr auto out_clear = option::get<timer::out_clear, _args...>(timer::out_clear::
-                                                                              disable);
+    static constexpr auto out_clear = option::get<adv_timer::out_clear, _args...>(
+                                        adv_timer::out_clear::disable);
 
     static_assert(!option::is_null<id>() || !option::is_null<channel>());
 
     static_assert(option::check<
       std::tuple<
-        timer::id,
-        timer::channel,
-        timer::channel_en,
-        timer::channel_n_en,
-        timer::channel_polarity,
-        timer::out_idle,
-        timer::out_n_idle,
-        timer::out_fast,
-        timer::out_preload,
-        timer::out_mode,
-        timer::out_clear
+        adv_timer::id,
+        adv_timer::channel,
+        adv_timer::channel_en,
+        adv_timer::channel_n_en,
+        adv_timer::channel_polarity,
+        adv_timer::out_idle,
+        adv_timer::out_n_idle,
+        adv_timer::out_fast,
+        adv_timer::out_preload,
+        adv_timer::out_mode,
+        adv_timer::out_clear
       >,
       _args...
     >());
@@ -1241,19 +1230,7 @@ lmcu_inline void on()
     switch(dev_id)
     {
     case id::tim1:  RCC::APB2ENR::set_b(RCC::APB2ENR::TIM1EN);  break;
-    case id::tim2:  RCC::APB1ENR::set_b(RCC::APB1ENR::TIM2EN);  break;
-    case id::tim3:  RCC::APB1ENR::set_b(RCC::APB1ENR::TIM3EN);  break;
-    case id::tim4:  RCC::APB1ENR::set_b(RCC::APB1ENR::TIM4EN);  break;
-    case id::tim5:  RCC::APB1ENR::set_b(RCC::APB1ENR::TIM5EN);  break;
-    case id::tim6:  RCC::APB1ENR::set_b(RCC::APB1ENR::TIM6EN);  break;
-    case id::tim7:  RCC::APB1ENR::set_b(RCC::APB1ENR::TIM7EN);  break;
     case id::tim8:  RCC::APB2ENR::set_b(RCC::APB2ENR::TIM8EN);  break;
-    case id::tim9:  RCC::APB2ENR::set_b(RCC::APB2ENR::TIM9EN);  break;
-    case id::tim10: RCC::APB2ENR::set_b(RCC::APB2ENR::TIM10EN); break;
-    case id::tim11: RCC::APB2ENR::set_b(RCC::APB2ENR::TIM11EN); break;
-    case id::tim12: RCC::APB1ENR::set_b(RCC::APB1ENR::TIM12EN); break;
-    case id::tim13: RCC::APB1ENR::set_b(RCC::APB1ENR::TIM13EN); break;
-    case id::tim14: RCC::APB1ENR::set_b(RCC::APB1ENR::TIM14EN); break;
     default: break;
     }
   };
@@ -1276,19 +1253,7 @@ lmcu_inline void off()
     switch(dev_id)
     {
     case id::tim1:  RCC::APB2ENR::clr_b(RCC::APB2ENR::TIM1EN);  break;
-    case id::tim2:  RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM2EN);  break;
-    case id::tim3:  RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM3EN);  break;
-    case id::tim4:  RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM4EN);  break;
-    case id::tim5:  RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM5EN);  break;
-    case id::tim6:  RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM6EN);  break;
-    case id::tim7:  RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM7EN);  break;
     case id::tim8:  RCC::APB2ENR::clr_b(RCC::APB2ENR::TIM8EN);  break;
-    case id::tim9:  RCC::APB2ENR::clr_b(RCC::APB2ENR::TIM9EN);  break;
-    case id::tim10: RCC::APB2ENR::clr_b(RCC::APB2ENR::TIM10EN); break;
-    case id::tim11: RCC::APB2ENR::clr_b(RCC::APB2ENR::TIM11EN); break;
-    case id::tim12: RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM12EN); break;
-    case id::tim13: RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM13EN); break;
-    case id::tim14: RCC::APB1ENR::clr_b(RCC::APB1ENR::TIM14EN); break;
     default: break;
     }
   };
@@ -1314,57 +1279,9 @@ lmcu_inline void reset()
       RCC::APB2RSTR::set_b(RCC::APB2RSTR::TIM1RST);
       RCC::APB2RSTR::clr_b(RCC::APB2RSTR::TIM1RST);
       break;
-    case id::tim2:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM2RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM2RST);
-      break;
-    case id::tim3:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM3RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM3RST);
-      break;
-    case id::tim4:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM4RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM4RST);
-      break;
-    case id::tim5:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM5RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM5RST);
-      break;
-    case id::tim6:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM6RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM6RST);
-      break;
-    case id::tim7:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM7RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM7RST);
-      break;
     case id::tim8:
       RCC::APB2RSTR::set_b(RCC::APB2RSTR::TIM8RST);
       RCC::APB2RSTR::clr_b(RCC::APB2RSTR::TIM8RST);
-      break;
-    case id::tim9:
-      RCC::APB2RSTR::set_b(RCC::APB2RSTR::TIM9RST);
-      RCC::APB2RSTR::clr_b(RCC::APB2RSTR::TIM9RST);
-      break;
-    case id::tim10:
-      RCC::APB2RSTR::set_b(RCC::APB2RSTR::TIM10RST);
-      RCC::APB2RSTR::clr_b(RCC::APB2RSTR::TIM10RST);
-      break;
-    case id::tim11:
-      RCC::APB2RSTR::set_b(RCC::APB2RSTR::TIM11RST);
-      RCC::APB2RSTR::clr_b(RCC::APB2RSTR::TIM11RST);
-      break;
-    case id::tim12:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM12RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM12RST);
-      break;
-    case id::tim13:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM13RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM13RST);
-      break;
-    case id::tim14:
-      RCC::APB1RSTR::set_b(RCC::APB1RSTR::TIM14RST);
-      RCC::APB1RSTR::clr_b(RCC::APB1RSTR::TIM14RST);
       break;
     default: break;
     }
@@ -1382,19 +1299,19 @@ void configure()
 
     static_assert(
       cfg::dev_class == dev_class::timer ||
-      cfg::dev_class == dev_class::timer_input_channel ||
-      cfg::dev_class == dev_class::timer_output_channel
+      cfg::dev_class == dev_class::timer_in_channel ||
+      cfg::dev_class == dev_class::timer_out_channel
     );
 
     if constexpr(cfg::dev_class == dev_class::timer) {
       detail::configure_timer<decltype(dev)>();
     }
     else
-    if constexpr(cfg::dev_class == dev_class::timer_input_channel) {
+    if constexpr(cfg::dev_class == dev_class::timer_in_channel) {
       detail::configure_input_channel<decltype(dev)>();
     }
     else
-    if constexpr(cfg::dev_class == dev_class::timer_output_channel) {
+    if constexpr(cfg::dev_class == dev_class::timer_out_channel) {
       detail::configure_output_channel<decltype(dev)>();
     }
   };

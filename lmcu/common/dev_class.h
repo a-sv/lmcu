@@ -6,8 +6,8 @@ enum class dev_class
 {
   gpio_pin,
   timer,
-  timer_input_channel,
-  timer_output_channel
+  timer_in_channel,
+  timer_out_channel
 };
 
 } // namespace lmcu
