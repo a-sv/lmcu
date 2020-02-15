@@ -308,6 +308,42 @@ enum class out_mode
 
 enum class out_clear { disable, enable };
 
+enum class in_mode
+{
+  ti1, // TI1
+  ti2, // TI2
+  ti3, // TI3
+  ti4, // TI4
+  trc  // Internal trigger input
+};
+
+enum class in_div { _1, _2, _4, _8 };
+
+enum class in_filter
+{
+  // Defines the frequency used to sample TI1 input and the length of the digital filter applied
+  // to TI1. The digital filter is made of an event counter in which N consecutive events are needed
+  // to validate a transition on the output.
+  disable,
+  ckint_n2, // fSAMPLING = fCK_INT,   N=2
+  ckint_n4, // fSAMPLING = fCK_INT,   N=4
+  ckint_n8, // fSAMPLING = fCK_INT,   N=8
+  dts2_n6,  // fSAMPLING = fDTS / 2,  N=6
+  dts2_n8,  // fSAMPLING = fDTS / 2,  N=8
+  dts4_n6,  // fSAMPLING = fDTS / 4,  N=6
+  dts4_n8,  // fSAMPLING = fDTS / 4,  N=8
+  dts8_n6,  // fSAMPLING = fDTS / 8,  N=6
+  dts8_n8,  // fSAMPLING = fDTS / 8,  N=8
+  dts16_n5, // fSAMPLING = fDTS / 16, N=5
+  dts16_n6, // fSAMPLING = fDTS / 16, N=6
+  dts16_n8, // fSAMPLING = fDTS / 16, N=8
+  dts32_n5, // fSAMPLING = fDTS / 32, N=5
+  dts32_n6, // fSAMPLING = fDTS / 32, N=6
+  dts32_n8  // fSAMPLING = fDTS / 32, N=8
+};
+
+enum class in_polarity { direct, inverted };
+
 struct brk_irq : nvic::irq_config {};
 
 struct up_irq : nvic::irq_config {};
@@ -436,6 +472,7 @@ struct dev
         adv_timer::dma_trig,
         adv_timer::master_mode,
         adv_timer::ti1_mux,
+        adv_timer::slave_mode,
         adv_timer::slave_trig_sel,
         adv_timer::master_slave_mode,
         adv_timer::ext_trig_filter,
@@ -555,15 +592,53 @@ struct input
 
     // Channel number
     static constexpr auto channel = option::get<adv_timer::channel, _args...>();
+    // Input channel enable
+    static constexpr auto channel_en = option::get<adv_timer::channel_en, _args...>(
+                                         adv_timer::channel_en::disable);
+    // Input channel mode
+    static constexpr auto in_mode = option::get<adv_timer::in_mode, _args...>
+    (
+      []
+      {
+        switch(channel)
+        {
+        case channel::_1: return adv_timer::in_mode::ti1;
+        case channel::_2: return adv_timer::in_mode::ti2;
+        case channel::_3: return adv_timer::in_mode::ti3;
+        default:          return adv_timer::in_mode::ti4;
+        };
+      }()
+    );
+    // Input capture prescaler
+    static constexpr auto in_div = option::get<adv_timer::in_div, _args...>(
+                                     adv_timer::in_div::_1);
+    //  Input capture filter
+    static constexpr auto in_filter = option::get<adv_timer::in_filter, _args...>(
+                                        adv_timer::in_filter::disable);
+
+    static constexpr auto in_polarity = option::get<adv_timer::in_polarity, _args...>(
+                                          adv_timer::in_polarity::direct);
+
+    static_assert(!option::is_null<id>() || !option::is_null<channel>());
 
     static_assert(option::check<
       std::tuple<
         adv_timer::id,
-        adv_timer::channel
+        adv_timer::channel,
+        adv_timer::channel_en,
+        adv_timer::in_mode,
+        adv_timer::in_div,
+        adv_timer::in_filter,
+        adv_timer::in_polarity
       >,
       _args...
     >());
   };
+
+  /**
+   * @brief Returns counter value transferred by the last input capture event
+  */
+  lmcu_static_inline uint16_t value();
 };
 
 template<auto ..._args>
@@ -950,6 +1025,105 @@ void configure_timer()
 template<typename _dev>
 void configure_input_channel()
 {
+  using cfg  = typename _dev::config;
+  using inst = detail::inst_t<cfg::id>;
+
+  constexpr auto ch_n = uint32_t(cfg::channel);
+
+  {
+    constexpr uint32_t ccmr_mask[] = {
+      inst::CCMR1::CC1S_MASK | inst::CCMR1::IC1PSC_MASK | inst::CCMR1::IC1F_MASK,
+      inst::CCMR1::CC2S_MASK | inst::CCMR1::IC2PSC_MASK | inst::CCMR1::IC2F_MASK,
+      inst::CCMR2::CC3S_MASK | inst::CCMR2::IC3PSC_MASK | inst::CCMR2::IC3F_MASK,
+      inst::CCMR2::CC4S_MASK | inst::CCMR2::IC4PSC_MASK | inst::CCMR2::IC4F_MASK
+    };
+
+    uint32_t r;
+
+    if constexpr(ch_n <= 1) {
+      r = inst::CCMR1::get();
+    }
+    else {
+      r = inst::CCMR2::get();
+    }
+
+    r &= ~ccmr_mask[ch_n];
+
+    constexpr bool _1 = ch_n % 2 == 0;
+
+    if constexpr(cfg::in_mode == in_mode::trc) {
+      r |= _1? inst::CCMR1::CC1S_INPUT_TRC : inst::CCMR1::CC2S_INPUT_TRC;
+    }
+    else {
+      switch(cfg::channel)
+      {
+      case channel::_1:
+        r |= cfg::in_mode == in_mode::ti1? inst::CCMR1::CC1S_INPUT_TI1 :
+                                           inst::CCMR1::CC1S_INPUT_TI2;
+        break;
+      case channel::_2:
+        r |= cfg::in_mode == in_mode::ti1? inst::CCMR1::CC2S_INPUT_TI1 :
+                                           inst::CCMR1::CC2S_INPUT_TI2;
+        break;
+      case channel::_3:
+        r |= cfg::in_mode == in_mode::ti3? inst::CCMR2::CC3S_INPUT_TI3 :
+                                           inst::CCMR2::CC3S_INPUT_TI4;
+        break;
+      default:
+        r |= cfg::in_mode == in_mode::ti3? inst::CCMR2::CC4S_INPUT_TI3 :
+                                           inst::CCMR2::CC4S_INPUT_TI4;
+        break;
+      }
+    }
+
+    r |= uint32_t(cfg::in_div) << (_1? inst::CCMR1::IC1PSC_POS : inst::CCMR1::IC2PSC_POS);
+
+    r |= uint32_t(cfg::in_filter) << (_1? inst::CCMR1::IC1F_POS : inst::CCMR1::IC2F_POS);
+
+    if constexpr(ch_n <= 1) {
+      inst::CCMR1::set(r);
+    }
+    else {
+      inst::CCMR2::set(r);
+    }
+  }
+
+  {
+    constexpr uint32_t ccer_mask[] = {
+      inst::CCER::CC1E_MASK | inst::CCER::CC1P_MASK,
+      inst::CCER::CC2E_MASK | inst::CCER::CC2P_MASK,
+      inst::CCER::CC3E_MASK | inst::CCER::CC3P_MASK,
+      inst::CCER::CC4E_MASK | inst::CCER::CC4P_MASK
+    };
+
+    constexpr uint32_t ccp[] = {
+      inst::CCER::CC1P, inst::CCER::CC2P, inst::CCER::CC3P, inst::CCER::CC4P
+    };
+
+    constexpr uint32_t cce[] = {
+      inst::CCER::CC1E, inst::CCER::CC2E, inst::CCER::CC3E, inst::CCER::CC4E
+    };
+
+    auto r = inst::CCER::get();
+
+    r &= ~ccer_mask[ch_n];
+
+    if constexpr(cfg::in_polarity == in_polarity::direct) {
+      r &= ~ccp[ch_n];
+    }
+    else {
+      r |= ccp[ch_n];
+    }
+
+    if constexpr(cfg::channel_en == channel_en::disable) {
+      r &= ~cce[ch_n];
+    }
+    else {
+      r |= cce[ch_n];
+    }
+
+    inst::CCER::set(r);
+  }
 }
 
 template<typename _dev>
@@ -1236,6 +1410,26 @@ uint32_t dev<_args...>::dma_address()
 {
   using inst = detail::inst_t<config::id>;
   return inst::DMAR::base;
+}
+
+// ------------------------------------------------------------------------------------------------
+// intput class implementation
+// ------------------------------------------------------------------------------------------------
+
+template<auto ..._args>
+uint16_t input<_args...>::value()
+{
+  using inst = detail::inst_t<config::id>;
+
+  switch(config::channel)
+  {
+  case channel::_1: return inst::CCR1::get();
+  case channel::_2: return inst::CCR2::get();
+  case channel::_3: return inst::CCR3::get();
+  default: break;
+  }
+
+  return inst::CCR4::get();
 }
 
 // ------------------------------------------------------------------------------------------------

@@ -348,10 +348,10 @@ struct TIM8
     // Capture/Compare 1 selection (bits: 1-0)
      CC1S_MASK = 0x00000003
     ,CC1S_POS = 0
-    ,CC1S_OUTPUT = 0x00000000 // CCy channel is configured as output
-    ,CC1S_INPUT_TI1 = 0x00000001 // CCy channel is configured as input, IC1 is mapped on TI1
-    ,CC1S_INPUT_TI2 = 0x00000002 // CCy channel is configured as input, IC1 is mapped on TI2
-    ,CC1S_INPUT_TRC = 0x00000003 // CCy channel is configured as input, IC1 is mapped on TRC
+    ,CC1S_OUTPUT = 0x00000000 // CC1 channel is configured as output
+    ,CC1S_INPUT_TI1 = 0x00000001 // CC1 channel is configured as input, IC1 is mapped on TI1
+    ,CC1S_INPUT_TI2 = 0x00000002 // CC1 channel is configured as input, IC1 is mapped on TI2
+    ,CC1S_INPUT_TRC = 0x00000003 // CC1 channel is configured as input, IC1 is mapped on TRC
     // Output Compare y fast enable (bits: 2)
     ,OC1FE_MASK = 0x00000004
     ,OC1FE_POS = 2
@@ -375,13 +375,13 @@ struct TIM8
     ,OC1CE_MASK = 0x00000080
     ,OC1CE_POS = 7
     ,OC1CE = 0x00000080
-    // Capture/Compare y selection (bits: 9-8)
+    // Capture/Compare 2 selection (bits: 9-8)
     ,CC2S_MASK = 0x00000300
     ,CC2S_POS = 8
-    ,CC2S_OUTPUT = 0x00000000 // CCy channel is configured as output
-    ,CC2S_INPUT_TI1 = 0x00000100 // CCy channel is configured as input, IC1 is mapped on TI1
-    ,CC2S_INPUT_TI2 = 0x00000200 // CCy channel is configured as input, IC1 is mapped on TI2
-    ,CC2S_INPUT_TRC = 0x00000300 // CCy channel is configured as input, IC1 is mapped on TRC
+    ,CC2S_OUTPUT = 0x00000000 // CC2 channel is configured as output
+    ,CC2S_INPUT_TI2 = 0x00000100 // CC2 channel is configured as input, IC2 is mapped on TI2
+    ,CC2S_INPUT_TI1 = 0x00000200 // CC2 channel is configured as input, IC2 is mapped on TI1
+    ,CC2S_INPUT_TRC = 0x00000300 // CC2 channel is configured as input, IC2 is mapped on TRC
     // Output Compare y fast enable (bits: 10)
     ,OC2FE_MASK = 0x00000400
     ,OC2FE_POS = 10
@@ -463,13 +463,13 @@ struct TIM8
   struct CCMR2 : reg<16, base + 0x1C, 0x00000000, 0x00000000>
   {
     static constexpr type
-    // Capture/Compare 1 selection (bits: 1-0)
+    // Capture/Compare 3 selection (bits: 1-0)
      CC3S_MASK = 0x00000003
     ,CC3S_POS = 0
-    ,CC3S_OUTPUT = 0x00000000 // CCy channel is configured as output
-    ,CC3S_INPUT_TI1 = 0x00000001 // CCy channel is configured as input, IC1 is mapped on TI1
-    ,CC3S_INPUT_TI2 = 0x00000002 // CCy channel is configured as input, IC1 is mapped on TI2
-    ,CC3S_INPUT_TRC = 0x00000003 // CCy channel is configured as input, IC1 is mapped on TRC
+    ,CC3S_OUTPUT = 0x00000000 // CC3 channel is configured as output
+    ,CC3S_INPUT_TI3 = 0x00000001 // CC3 channel is configured as input, IC3 is mapped on TI3
+    ,CC3S_INPUT_TI4 = 0x00000002 // CC3 channel is configured as input, IC3 is mapped on TI4
+    ,CC3S_INPUT_TRC = 0x00000003 // CC3 channel is configured as input, IC3 is mapped on TRC
     // Output Compare y fast enable (bits: 2)
     ,OC3FE_MASK = 0x00000004
     ,OC3FE_POS = 2
@@ -493,13 +493,13 @@ struct TIM8
     ,OC3CE_MASK = 0x00000080
     ,OC3CE_POS = 7
     ,OC3CE = 0x00000080
-    // Capture/Compare y selection (bits: 9-8)
+    // Capture/Compare 4 selection (bits: 9-8)
     ,CC4S_MASK = 0x00000300
     ,CC4S_POS = 8
-    ,CC4S_OUTPUT = 0x00000000 // CCy channel is configured as output
-    ,CC4S_INPUT_TI1 = 0x00000100 // CCy channel is configured as input, IC1 is mapped on TI1
-    ,CC4S_INPUT_TI2 = 0x00000200 // CCy channel is configured as input, IC1 is mapped on TI2
-    ,CC4S_INPUT_TRC = 0x00000300 // CCy channel is configured as input, IC1 is mapped on TRC
+    ,CC4S_OUTPUT = 0x00000000 // CC4 channel is configured as output
+    ,CC4S_INPUT_TI4 = 0x00000100 // CC4 channel is configured as input, IC4 is mapped on TI4
+    ,CC4S_INPUT_TI3 = 0x00000200 // CC4 channel is configured as input, IC4 is mapped on TI3
+    ,CC4S_INPUT_TRC = 0x00000300 // CC4 channel is configured as input, IC4 is mapped on TRC
     // Output Compare y fast enable (bits: 10)
     ,OC4FE_MASK = 0x00000400
     ,OC4FE_POS = 10

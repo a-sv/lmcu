@@ -412,21 +412,21 @@ peripheral:
       offset: 0x18
       size: 16
       fields:
-        CC1S: &CC1S
+        CC1S:
           desc: Capture/Compare 1 selection
           bits: 1-0
           enum:
             OUTPUT:
-              desc: CCy channel is configured as output
+              desc: CC1 channel is configured as output
               val: 0
             INPUT_TI1:
-              desc: CCy channel is configured as input, IC1 is mapped on TI1
+              desc: CC1 channel is configured as input, IC1 is mapped on TI1
               val: 1
             INPUT_TI2:
-              desc: CCy channel is configured as input, IC1 is mapped on TI2
+              desc: CC1 channel is configured as input, IC1 is mapped on TI2
               val: 2
             INPUT_TRC:
-              desc: CCy channel is configured as input, IC1 is mapped on TRC
+              desc: CC1 channel is configured as input, IC1 is mapped on TRC
               val: 3
         OC1FE: &OC1FE
           desc: Output Compare y fast enable
@@ -473,10 +473,22 @@ peripheral:
         OC1CE: &OC1CE
           desc: Output Compare y clear enable
           bits: 7
-        CC2S: &CC2S
-          <<: *CC1S
-          desc: Capture/Compare y selection
+        CC2S:
+          desc: Capture/Compare 2 selection
           bits: 9-8
+          enum:
+            OUTPUT:
+              desc: CC2 channel is configured as output
+              val: 0
+            INPUT_TI2:
+              desc: CC2 channel is configured as input, IC2 is mapped on TI2
+              val: 1
+            INPUT_TI1:
+              desc: CC2 channel is configured as input, IC2 is mapped on TI1
+              val: 2
+            INPUT_TRC:
+              desc: CC2 channel is configured as input, IC2 is mapped on TRC
+              val: 3
         OC2FE: &OC2FE
           desc: Output Compare y fast enable
           bits: 10
@@ -522,7 +534,21 @@ peripheral:
       size: 16
       fields:
         CC3S:
-          <<: *CC1S
+          desc: Capture/Compare 3 selection
+          bits: 1-0
+          enum:
+            OUTPUT:
+              desc: CC3 channel is configured as output
+              val: 0
+            INPUT_TI3:
+              desc: CC3 channel is configured as input, IC3 is mapped on TI3
+              val: 1
+            INPUT_TI4:
+              desc: CC3 channel is configured as input, IC3 is mapped on TI4
+              val: 2
+            INPUT_TRC:
+              desc: CC3 channel is configured as input, IC3 is mapped on TRC
+              val: 3
         OC3FE:
           <<: *OC1FE
         OC3PE:
@@ -532,7 +558,21 @@ peripheral:
         OC3CE:
           <<: *OC1CE
         CC4S:
-          <<: *CC2S
+          desc: Capture/Compare 4 selection
+          bits: 9-8
+          enum:
+            OUTPUT:
+              desc: CC4 channel is configured as output
+              val: 0
+            INPUT_TI4:
+              desc: CC4 channel is configured as input, IC4 is mapped on TI4
+              val: 1
+            INPUT_TI3:
+              desc: CC4 channel is configured as input, IC4 is mapped on TI3
+              val: 2
+            INPUT_TRC:
+              desc: CC4 channel is configured as input, IC4 is mapped on TRC
+              val: 3
         OC4FE:
           <<: *OC2FE
         OC4PE:
