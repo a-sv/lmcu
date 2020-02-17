@@ -1,0 +1,4 @@
+peripheral:
+  $extends: TIM2.yml | peripheral
+  name: TIM4
+  base: 0x40000800

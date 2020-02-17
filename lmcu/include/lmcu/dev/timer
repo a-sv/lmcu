@@ -2,5 +2,17 @@
 
 #if defined(LMCU_STM32F1)
   #include "../../../mcu/device/include/STM32/F1/TIM1.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM2.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM3.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM4.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM5.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM6.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM7.h"
   #include "../../../mcu/device/include/STM32/F1/TIM8.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM9.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM10.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM11.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM12.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM13.h"
+  #include "../../../mcu/device/include/STM32/F1/TIM14.h"
 #endif

@@ -1,0 +1,77 @@
+peripheral:
+  $extends: TIM1.yml | peripheral
+  name: TIM10
+  desc: General-purpose timer
+  base: 0x40015000
+  registers:
+    CR1:
+      fields:
+        CMS: null
+        DIR: null
+    CR2: null
+    SMCR: null
+    DIER:
+      fields:
+        TDE: null
+        COMDE: null
+        CC4DE: null
+        CC3DE: null
+        CC2DE: null
+        CC1DE: null
+        UDE: null
+        BIE: null
+        TIE: null
+        COMIE: null
+        CC4IE: null
+        CC3IE: null
+        CC2IE: null
+    SR:
+      fields:
+        BIF: null
+        TIF: null
+        COMIF: null
+        CC4IF: null
+        CC3IF: null
+        CC2IF: null
+        CC4OF : null
+        CC3OF : null
+        CC2OF: null
+    EGR:
+      fields:
+        BG: null
+        TG: null
+        COMG: null
+        CC4G: null
+        CC3G: null
+        CC2G: null
+    CCMR1:
+      fields:
+        OC1CE: null
+        CC2S: null
+        OC2FE: null
+        OC2PE: null
+        IC2PSC: null
+        OC2M: null
+        OC2CE: null
+        IC2F: null
+    CCMR2: null
+    CCER:
+      fields:
+        CC1NE: null
+        CC4P: null
+        CC4E: null
+        CC3NP: null
+        CC3NE: null
+        CC3P: null
+        CC3E: null
+        CC2NP: null
+        CC2NE: null
+        CC2P: null
+        CC2E: null
+    RCR: null
+    CCR2: null
+    CCR3: null
+    CCR4: null
+    BDTR: null
+    DCR: null
+    DMAR: null

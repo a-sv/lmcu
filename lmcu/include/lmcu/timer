@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(LMCU_STM32)
-  #include "../../mcu/STM32/adv_timer.h"
+  #include "../../mcu/STM32/timer.h"
 #else
   #error "device not supported"
 #endif

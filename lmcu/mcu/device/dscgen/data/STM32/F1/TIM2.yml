@@ -1,0 +1,42 @@
+peripheral:
+  $extends: TIM1.yml | peripheral
+  name: TIM2
+  desc: General-purpose timer
+  base: 0x40000000
+  registers:
+    CR2:
+      fields:
+        CCPC: null
+        CCUS: null
+        OIS4: null
+        OIS3N: null
+        OIS3: null
+        OIS2N: null
+        OIS2: null
+        OIS1N: null
+        OIS1: null
+    DIER:
+      fields:
+        COMIE: null
+        BIE: null
+        COMDE: null
+    SR:
+      fields:
+        COMIF: null
+        BIF: null
+    EGR:
+      fields:
+        COMG: null
+        BG: null
+    CCER:
+      fields:
+        CC1NE: null
+        CC1NP: null
+        CC2NE: null
+        CC2NP: null
+        CC3NE: null
+        CC3NP: null
+    RCR: null
+    BDTR: null
+    DMAR:
+      size: 16
