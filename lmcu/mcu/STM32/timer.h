@@ -394,6 +394,15 @@ struct cc_irq : nvic::irq_config {};
 template<id _id, auto ..._args>
 struct _dev;
 
+template<id _id, auto ..._args>
+struct _input;
+
+template<id _id, auto ..._args>
+struct _output;
+
+/**
+ * Timers 1, 8 config
+*/
 template<auto ..._args>
 struct _dev<id::tim1, _args...>
 {
@@ -474,33 +483,34 @@ struct _dev<id::tim1, _args...>
   // Off-state for Idle mode.
   static constexpr auto off_state_idle = option::get<timer::off_state_idle, _args...>(
                                            timer::off_state_idle::low);
-  // Lock config
+  // Lock config.
   static constexpr auto lock = option::get<timer::lock, _args...>(timer::lock::off);
-  // DMA burst length
+  // DMA burst length.
   static constexpr auto dma_burst_length = option::get<timer::dma_burst_length, _args...>(
                                              timer::dma_burst_length::_1);
-  // Initial register for DMA burst
+  // Initial register for DMA burst.
   static constexpr auto dma_base_address = option::get<timer::dma_base_address_adv, _args...>(
                                              timer::dma_base_address_adv::cr1);
-  // Enable BRK irq
+  // Enable BRK irq.
   static constexpr auto brk_irq = option::get<timer::brk_irq, _args...>();
-  // Enable UP irq
+  // Enable UP irq.
   static constexpr auto up_irq = option::get<timer::up_irq, _args...>();
-  // Enable TRG_COM irq
+  // Enable TRG_COM irq.
   static constexpr auto trg_com_irq = option::get<timer::trg_com_irq, _args...>();
-  // Enable CC irq
+  // Enable CC irq.
   static constexpr auto cc_irq = option::get<timer::cc_irq, _args...>();
 
   static_assert(option::check<
     std::tuple<
       timer::id,
-      timer::update,
       timer::update_request_src,
+      timer::update,
       timer::one_pulse,
       timer::direction,
       timer::center_align,
       timer::auto_reload,
       timer::dtg_df_div,
+      timer::counter,
       timer::cc_update,
       timer::dma_trig,
       timer::master_mode,
@@ -512,6 +522,7 @@ struct _dev<id::tim1, _args...>
       timer::ext_trig_div,
       timer::ext_clock,
       timer::ext_trig_polarity,
+      timer::events,
       timer::main_output,
       timer::main_auto_output,
       timer::break_polarity,
@@ -521,8 +532,6 @@ struct _dev<id::tim1, _args...>
       timer::lock,
       timer::dma_burst_length,
       timer::dma_base_address_adv,
-      timer::counter,
-      timer::events,
       timer::brk_irq,
       timer::up_irq,
       timer::trg_com_irq,
@@ -532,6 +541,9 @@ struct _dev<id::tim1, _args...>
   >());
 };
 
+/**
+ * Timers 2, 3, 4, 5 config
+*/
 template<auto ..._args>
 struct _dev<id::tim2, _args...>
 {
@@ -558,6 +570,8 @@ struct _dev<id::tim2, _args...>
   // Digital filter clock division.
   static constexpr auto dtg_df_div = option::get<timer::dtg_df_div, _args...>(timer::dtg_df_div::
                                                                               _1);
+  // Timer counter enable/disable.
+  static constexpr auto counter = option::get<timer::counter, _args...>(timer::counter::disable);
   // Capture/compare DMA selection.
   static constexpr auto dma_trig = option::get<timer::dma_trig, _args...>(timer::dma_trig::
                                                                           cc_evt);
@@ -566,12 +580,12 @@ struct _dev<id::tim2, _args...>
                                                                                 reset);
   // TI1 selection.
   static constexpr auto ti1_mux = option::get<timer::ti1_mux, _args...>(timer::ti1_mux::ch1);
-  // Slave trigger selection.
-  static constexpr auto slave_trig_sel = option::get<timer::slave_trig_sel, _args...>(
-                                           timer::slave_trig_sel::itr0);
   // Slave mode selection.
   static constexpr auto slave_mode = option::get<timer::slave_mode, _args...>(timer::slave_mode::
                                                                               disable);
+  // Slave trigger selection.
+  static constexpr auto slave_trig_sel = option::get<timer::slave_trig_sel, _args...>(
+                                           timer::slave_trig_sel::itr0);
   // Master/slave mode.
   static constexpr auto master_slave_mode = option::get<timer::master_slave_mode, _args...>(
                                               timer::master_slave_mode::disable);
@@ -587,70 +601,77 @@ struct _dev<id::tim2, _args...>
   // External trigger polarity.
   static constexpr auto ext_trig_polarity = option::get<timer::ext_trig_polarity, _args...>(
                                               timer::ext_trig_polarity::high);
-  // Enable global irq
+  // Enabled events.
+  static constexpr auto events = option::get<timer::events, _args...>(timer::events(0));
+  // DMA burst length.
+  static constexpr auto dma_burst_length = option::get<timer::dma_burst_length, _args...>(
+                                             timer::dma_burst_length::_1);
+  // Initial register for DMA burst.
+  static constexpr auto dma_base_address = option::get<timer::dma_base_address_gp, _args...>(
+                                             timer::dma_base_address_gp::cr1);
+  // Enable global irq.
   static constexpr auto irq = option::get<timer::irq, _args...>();
+
+  static_assert(option::check<
+    std::tuple<
+      timer::id,
+      timer::update_request_src,
+      timer::update,
+      timer::one_pulse,
+      timer::direction,
+      timer::center_align,
+      timer::auto_reload,
+      timer::dtg_df_div,
+      timer::counter,
+      timer::dma_trig,
+      timer::master_mode,
+      timer::ti1_mux,
+      timer::slave_mode,
+      timer::slave_trig_sel,
+      timer::master_slave_mode,
+      timer::ext_trig_filter,
+      timer::ext_trig_div,
+      timer::ext_clock,
+      timer::ext_trig_polarity,
+      timer::events,
+      timer::dma_burst_length,
+      timer::dma_base_address_gp,
+      timer::irq
+    >,
+    _args...
+  >());
 };
 
+/**
+ * Timers 6, 7 config
+*/
 template<auto ..._args>
 struct _dev<id::tim6, _args...>
 {
   static constexpr auto id = timer::id::tim6;
 };
 
+/**
+ * Timers 9, 12 config
+*/
 template<auto ..._args>
 struct _dev<id::tim9, _args...>
 {
   static constexpr auto id = timer::id::tim9;
 };
 
+/**
+ * Timers 10, 11, 13, 14 config
+*/
 template<auto ..._args>
 struct _dev<id::tim10, _args...>
 {
   static constexpr auto id = timer::id::tim10;
 };
 
-template<auto ..._args>
-struct _dev<id::tim8, _args...> : _dev<id::tim1, _args...>
-{ static constexpr auto id = timer::id::tim8; };
-
-template<auto ..._args>
-struct _dev<id::tim3, _args...> : _dev<id::tim2, _args...>
-{ static constexpr auto id = timer::id::tim3; };
-
-template<auto ..._args>
-struct _dev<id::tim4, _args...> : _dev<id::tim2, _args...>
-{ static constexpr auto id = timer::id::tim4; };
-
-template<auto ..._args>
-struct _dev<id::tim5, _args...> : _dev<id::tim2, _args...>
-{ static constexpr auto id = timer::id::tim5; };
-
-template<auto ..._args>
-struct _dev<id::tim7, _args...> : _dev<id::tim6, _args...>
-{ static constexpr auto id = timer::id::tim7; };
-
-template<auto ..._args>
-struct _dev<id::tim12, _args...> : _dev<id::tim9, _args...>
-{ static constexpr auto id = timer::id::tim12; };
-
-template<auto ..._args>
-struct _dev<id::tim11, _args...> : _dev<id::tim10, _args...>
-{ static constexpr auto id = timer::id::tim11; };
-
-template<auto ..._args>
-struct _dev<id::tim13, _args...> : _dev<id::tim10, _args...>
-{ static constexpr auto id = timer::id::tim13; };
-
-template<auto ..._args>
-struct _dev<id::tim14, _args...> : _dev<id::tim10, _args...>
-{ static constexpr auto id = timer::id::tim14; };
-
-template<auto ..._args>
-using dev = _dev<option::get<timer::id, _args...>(), _args...>;
-
-template<id _id, auto ..._args>
-struct _input;
-
+/**
+ * Timers 1, 8, 2, 3, 4, 5 input channel config
+*/
 template<auto ..._args>
 struct _input<id::tim1, _args...>
 {
@@ -702,32 +723,9 @@ struct _input<id::tim1, _args...>
   >());
 };
 
-template<auto ..._args>
-struct _input<id::tim8, _args...> : _input<id::tim1, _args...>
-{ static constexpr auto id = timer::id::tim8; };
-
-template<auto ..._args>
-struct _input<id::tim2, _args...> : _input<id::tim1, _args...>
-{ static constexpr auto id = timer::id::tim2; };
-
-template<auto ..._args>
-struct _input<id::tim3, _args...> : _input<id::tim1, _args...>
-{ static constexpr auto id = timer::id::tim3; };
-
-template<auto ..._args>
-struct _input<id::tim4, _args...> : _input<id::tim1, _args...>
-{ static constexpr auto id = timer::id::tim4; };
-
-template<auto ..._args>
-struct _input<id::tim5, _args...> : _input<id::tim1, _args...>
-{ static constexpr auto id = timer::id::tim5; };
-
-template<auto ..._args>
-using input = _input<option::get<timer::id, _args...>(), _args...>;
-
-template<id _id, auto ..._args>
-struct _output;
-
+/**
+ * Timers 1, 8 output channel config
+*/
 template<auto ..._args>
 struct _output<id::tim1, _args...>
 {
@@ -774,8 +772,9 @@ struct _output<id::tim1, _args...>
       timer::id,
       timer::channel,
       timer::channel_en,
-      timer::channel_n_en,
       timer::channel_polarity,
+      timer::channel_n_en,
+      timer::channel_n_polarity,
       timer::out_idle,
       timer::out_n_idle,
       timer::out_fast,
@@ -787,6 +786,9 @@ struct _output<id::tim1, _args...>
   >());
 };
 
+/**
+ * Timers 2, 3, 4, 5 output channel config
+*/
 template<auto ..._args>
 struct _output<id::tim2, _args...>
 {
@@ -814,7 +816,79 @@ struct _output<id::tim2, _args...>
   // Output Compare clear (OCRef cleared as soon as a High level is detected on ETRF input).
   static constexpr auto out_clear = option::get<timer::out_clear, _args...>(timer::out_clear::
                                                                             disable);
+
+  static_assert(!option::is_null<channel>());
+
+  static_assert(option::check<
+    std::tuple<
+      timer::id,
+      timer::channel,
+      timer::channel_en,
+      timer::channel_polarity,
+      timer::out_fast,
+      timer::out_preload,
+      timer::out_mode,
+      timer::out_clear
+    >,
+    _args...
+  >());
 };
+
+template<auto ..._args>
+struct _dev<id::tim8, _args...> : _dev<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim8; };
+
+template<auto ..._args>
+struct _dev<id::tim3, _args...> : _dev<id::tim2, _args...>
+{ static constexpr auto id = timer::id::tim3; };
+
+template<auto ..._args>
+struct _dev<id::tim4, _args...> : _dev<id::tim2, _args...>
+{ static constexpr auto id = timer::id::tim4; };
+
+template<auto ..._args>
+struct _dev<id::tim5, _args...> : _dev<id::tim2, _args...>
+{ static constexpr auto id = timer::id::tim5; };
+
+template<auto ..._args>
+struct _dev<id::tim7, _args...> : _dev<id::tim6, _args...>
+{ static constexpr auto id = timer::id::tim7; };
+
+template<auto ..._args>
+struct _dev<id::tim12, _args...> : _dev<id::tim9, _args...>
+{ static constexpr auto id = timer::id::tim12; };
+
+template<auto ..._args>
+struct _dev<id::tim11, _args...> : _dev<id::tim10, _args...>
+{ static constexpr auto id = timer::id::tim11; };
+
+template<auto ..._args>
+struct _dev<id::tim13, _args...> : _dev<id::tim10, _args...>
+{ static constexpr auto id = timer::id::tim13; };
+
+template<auto ..._args>
+struct _dev<id::tim14, _args...> : _dev<id::tim10, _args...>
+{ static constexpr auto id = timer::id::tim14; };
+
+template<auto ..._args>
+struct _input<id::tim8, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim8; };
+
+template<auto ..._args>
+struct _input<id::tim2, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim2; };
+
+template<auto ..._args>
+struct _input<id::tim3, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim3; };
+
+template<auto ..._args>
+struct _input<id::tim4, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim4; };
+
+template<auto ..._args>
+struct _input<id::tim5, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim5; };
 
 template<auto ..._args>
 struct _output<id::tim8, _args...> : _output<id::tim1, _args...>
@@ -832,9 +906,75 @@ template<auto ..._args>
 struct _output<id::tim5, _args...> : _output<id::tim2, _args...>
 { static constexpr auto id = timer::id::tim5; };
 
+template<auto ..._args>
+using dev = _dev<option::get<timer::id, _args...>(), _args...>;
+
+template<auto ..._args>
+using input = _input<option::get<timer::id, _args...>(), _args...>;
+
+template<auto ..._args>
+using output = _output<option::get<timer::id, _args...>(), _args...>;
+
 // ------------------------------------------------------------------------------------------------
 
 namespace detail {
+
+enum class tim_irqn
+{
+  tim1_brk,
+  tim1_up,
+  tim1_trg_com,
+  tim1_cc,
+
+  tim2_global,
+  tim3_global,
+  tim4_global,
+  tim5_global,
+  tim6_global,
+  tim7_global,
+
+  tim8_brk,
+  tim8_up,
+  tim8_trg_com,
+  tim8_cc,
+
+  tim9_global,
+  tim10_global,
+  tim11_global,
+  tim12_global,
+  tim13_global,
+  tim14_global
+};
+
+template<tim_irqn>
+struct irqn_wrap { using type = device::irqn; };
+
+template<tim_irqn _irqn>
+constexpr device::irqn irqn_v() noexcept
+{
+  using irqn = typename irqn_wrap<_irqn>::type;
+
+  if constexpr(_irqn == tim_irqn::tim1_brk)     { return irqn::tim1_brk;     } else
+  if constexpr(_irqn == tim_irqn::tim1_up)      { return irqn::tim1_up;      } else
+  if constexpr(_irqn == tim_irqn::tim1_trg_com) { return irqn::tim1_trg_com; } else
+  if constexpr(_irqn == tim_irqn::tim1_cc)      { return irqn::tim1_cc;      } else
+  if constexpr(_irqn == tim_irqn::tim2_global)  { return irqn::tim2;         } else
+  if constexpr(_irqn == tim_irqn::tim3_global)  { return irqn::tim3;         } else
+  if constexpr(_irqn == tim_irqn::tim4_global)  { return irqn::tim4;         } else
+  if constexpr(_irqn == tim_irqn::tim5_global)  { return irqn::tim5;         } else
+  if constexpr(_irqn == tim_irqn::tim6_global)  { return irqn::tim6;         } else
+  if constexpr(_irqn == tim_irqn::tim7_global)  { return irqn::tim7;         } else
+  if constexpr(_irqn == tim_irqn::tim8_brk)     { return irqn::tim8_brk;     } else
+  if constexpr(_irqn == tim_irqn::tim8_up)      { return irqn::tim8_up;      } else
+  if constexpr(_irqn == tim_irqn::tim8_trg_com) { return irqn::tim8_trg_com; } else
+  if constexpr(_irqn == tim_irqn::tim8_cc)      { return irqn::tim8_cc;      } else
+  if constexpr(_irqn == tim_irqn::tim9_global)  { return irqn::tim9;         } else
+  if constexpr(_irqn == tim_irqn::tim10_global) { return irqn::tim10;        } else
+  if constexpr(_irqn == tim_irqn::tim11_global) { return irqn::tim11;        } else
+  if constexpr(_irqn == tim_irqn::tim12_global) { return irqn::tim12;        } else
+  if constexpr(_irqn == tim_irqn::tim13_global) { return irqn::tim13;        } else
+  if constexpr(_irqn == tim_irqn::tim14_global) { return irqn::tim14;        }
+}
 
 template<id _id>
 struct inst;
@@ -1293,7 +1433,7 @@ void channel_n_polarity_conf(_reg&& r)
 
   r &= ~ccnp_mask[ch_n];
 
-  if constexpr(ch_n < 3 & _cfg::channel_n_polarity == channel_n_polarity::inverted) {
+  if constexpr(ch_n < 3 && _cfg::channel_n_polarity == channel_n_polarity::inverted) {
     r |= ccnp[ch_n];
   }
 }
@@ -1302,7 +1442,7 @@ template<typename _inst, typename _cfg, typename _reg>
 void out_idle_conf(_reg&& r)
 {
   constexpr uint32_t ois[] = {_inst::CR2::OIS1, _inst::CR2::OIS2, _inst::CR2::OIS3,
-                              _inst::CR2::OIS4};
+                              _inst::CR2::OIS4 };
 
   constexpr auto ch_n = uint32_t(_cfg::channel);
 
@@ -1317,7 +1457,7 @@ void out_idle_conf(_reg&& r)
 template<typename _inst, typename _cfg, typename _reg>
 void out_n_idle_conf(_reg&& r)
 {
-  constexpr uint32_t ois_n[] = {_inst::CR2::OIS1N, _inst::CR2::OIS2N, _inst::CR2::OIS3N};
+  constexpr uint32_t ois_n[] = { _inst::CR2::OIS1N, _inst::CR2::OIS2N, _inst::CR2::OIS3N };
 
   constexpr auto ch_n = uint32_t(_cfg::channel);
 
@@ -1446,10 +1586,7 @@ void configure_tim_1_8()
   if constexpr(_cfg::slave_mode != timer::slave_mode::disable) {
     r = 0;
 
-    // Apply TS
     slave_trig_sel_conf<inst, _cfg>(r);
-    inst::SMCR::set(r);
-
     slave_mode_conf<inst, _cfg>(r);
     master_slave_mode_conf<inst, _cfg>(r);
     ext_trig_filter_conf<inst, _cfg>(r);
@@ -1475,8 +1612,8 @@ void configure_tim_1_8()
 
   dma_conf<inst, _cfg>();
 
-  constexpr auto brk_irqn = (_cfg::id == timer::id::tim1)? device::irqn::tim1_brk :
-                                                           device::irqn::tim8_brk;
+  constexpr auto brk_irqn = (_cfg::id == timer::id::tim1)? irqn_v<tim_irqn::tim1_brk>() :
+                                                           irqn_v<tim_irqn::tim8_brk>();
   if constexpr(!option::is_null<_cfg::brk_irq>()) {
     nvic::set_priority<brk_irqn, _cfg::brk_irq>();
     nvic::enable_irq<brk_irqn>();
@@ -1485,8 +1622,8 @@ void configure_tim_1_8()
     nvic::disable_irq<brk_irqn>();
   }
 
-  constexpr auto up_irqn = (_cfg::id == timer::id::tim1)? device::irqn::tim1_up :
-                                                          device::irqn::tim8_up;
+  constexpr auto up_irqn = (_cfg::id == timer::id::tim1)? irqn_v<tim_irqn::tim1_up>() :
+                                                          irqn_v<tim_irqn::tim8_up>();
   if constexpr(!option::is_null<_cfg::up_irq>()) {
     nvic::set_priority<up_irqn, _cfg::up_irq>();
     nvic::enable_irq<up_irqn>();
@@ -1495,8 +1632,8 @@ void configure_tim_1_8()
     nvic::disable_irq<up_irqn>();
   }
 
-  constexpr auto trg_com_irqn = (_cfg::id == timer::id::tim1)? device::irqn::tim1_trg_com :
-                                                               device::irqn::tim8_trg_com;
+  constexpr auto trg_com_irqn = (_cfg::id == timer::id::tim1)? irqn_v<tim_irqn::tim1_trg_com>() :
+                                                               irqn_v<tim_irqn::tim8_trg_com>();
   if constexpr(!option::is_null<_cfg::trg_com_irq>()) {
     nvic::set_priority<trg_com_irqn, _cfg::trg_com_irq>();
     nvic::enable_irq<trg_com_irqn>();
@@ -1505,8 +1642,8 @@ void configure_tim_1_8()
     nvic::disable_irq<trg_com_irqn>();
   }
 
-  constexpr auto cc_irqn = (_cfg::id == timer::id::tim1)? device::irqn::tim1_cc :
-                                                          device::irqn::tim8_cc;
+  constexpr auto cc_irqn = (_cfg::id == timer::id::tim1)? irqn_v<tim_irqn::tim1_cc>() :
+                                                          irqn_v<tim_irqn::tim8_cc>();
   if constexpr(!option::is_null<_cfg::cc_irq>()) {
     nvic::set_priority<cc_irqn, _cfg::cc_irq>();
     nvic::enable_irq<cc_irqn>();
@@ -1554,10 +1691,7 @@ void configure_tim_2_3_4_5()
   if constexpr(_cfg::slave_mode != timer::slave_mode::disable) {
     r = 0;
 
-    // Apply TS
     slave_trig_sel_conf<inst, _cfg>(r);
-    inst::SMCR::set(r);
-
     slave_mode_conf<inst, _cfg>(r);
     master_slave_mode_conf<inst, _cfg>(r);
     ext_trig_filter_conf<inst, _cfg>(r);
@@ -1579,10 +1713,10 @@ void configure_tim_2_3_4_5()
   {
     switch(_cfg::id)
     {
-    case id::tim2: return device::irqn::tim2;
-    case id::tim3: return device::irqn::tim3;
-    case id::tim4: return device::irqn::tim4;
-    default:       return device::irqn::tim5;
+    case id::tim2: return irqn_v<tim_irqn::tim2_global>();
+    case id::tim3: return irqn_v<tim_irqn::tim3_global>();
+    case id::tim4: return irqn_v<tim_irqn::tim4_global>();
+    default:       return irqn_v<tim_irqn::tim5_global>();
     }
   }();
 
@@ -1605,6 +1739,55 @@ void configure_tim_6_7()
 template<typename _cfg>
 void configure_tim_9_12()
 {
+  using namespace detail;
+
+  using inst = inst_t<_cfg::id>;
+
+  uint32_t r;
+
+  // Disable counter
+  inst::CR1::clr_b(inst::CR1::CEN);
+
+  r = inst::CR1::get();
+
+  update_request_src_conf<inst, _cfg>(r);
+  update_conf<inst, _cfg>(r);
+  one_pulse_conf<inst, _cfg>(r);
+  auto_reload_conf<inst, _cfg>(r);
+  dtg_df_div_conf<inst, _cfg>(r);
+
+  inst::CR1::set(r);
+
+  inst::SMCR::set(0);
+  if constexpr(_cfg::slave_mode != timer::slave_mode::disable) {
+    r = 0;
+
+    slave_trig_sel_conf<inst, _cfg>(r);
+    slave_mode_conf<inst, _cfg>(r);
+
+    inst::SMCR::set(r);
+  }
+
+  static_assert(
+    flags::none(_cfg::events, events::cc3i, events::cc4i, events::comi, events::bi, events::ud,
+                              events::cc1d, events::cc2d, events::cc3d, events::cc4d, events::comd,
+                              events::comd),
+    "This events does not supported by timer"
+  );
+  inst::DIER::set(flags::value(_cfg::events));
+
+  constexpr auto irqn = irqn_v<_cfg::id == id::tim9? tim_irqn::tim9_global :
+                                                     tim_irqn::tim12_global>();
+
+  if constexpr(!option::is_null<_cfg::irq>()) {
+    nvic::set_priority<irqn, _cfg::irq>();
+    nvic::enable_irq<irqn>();
+  }
+  else {
+    nvic::disable_irq<irqn>();
+  }
+
+  counter_conf<inst, _cfg>();
 }
 
 template<typename _cfg>
@@ -2030,18 +2213,37 @@ lmcu_static_inline void gen_events(timer::events evt)
 
     uint32_t r = 0;
 
-    if(flags::all(evt, events::ui))   { r |= inst::EGR::UG;   }
-    if(flags::all(evt, events::cc1i)) { r |= inst::EGR::CC1G; }
-    if(flags::all(evt, events::cc2i)) { r |= inst::EGR::CC2G; }
-    if(flags::all(evt, events::cc3i)) { r |= inst::EGR::CC3G; }
-    if(flags::all(evt, events::cc4i)) { r |= inst::EGR::CC4G; }
+    if(flags::all(evt, events::ui)) { r |= inst::EGR::UG;   }
 
     if constexpr(cfg::id == id::tim1 || cfg::id == id::tim8) {
+      if(flags::all(evt, events::cc1i)) { r |= inst::EGR::CC1G; }
+      if(flags::all(evt, events::cc2i)) { r |= inst::EGR::CC2G; }
+      if(flags::all(evt, events::cc3i)) { r |= inst::EGR::CC3G; }
+      if(flags::all(evt, events::cc4i)) { r |= inst::EGR::CC4G; }
       if(flags::all(evt, events::comi)) { r |= inst::EGR::COMG; }
+      if(flags::all(evt, events::ti))   { r |= inst::EGR::TG;   }
+      if(flags::all(evt, events::bi))   { r |= inst::EGR::BG;   }
     }
-
-    if(flags::all(evt, events::ti))   { r |= inst::EGR::TG;   }
-    if(flags::all(evt, events::bi))   { r |= inst::EGR::BG;   }
+    else
+    if constexpr(cfg::id == id::tim2 || cfg::id == id::tim3 || cfg::id == id::tim4 ||
+                 cfg::id == id::tim5) {
+      if(flags::all(evt, events::cc1i)) { r |= inst::EGR::CC1G; }
+      if(flags::all(evt, events::cc2i)) { r |= inst::EGR::CC2G; }
+      if(flags::all(evt, events::cc3i)) { r |= inst::EGR::CC3G; }
+      if(flags::all(evt, events::cc4i)) { r |= inst::EGR::CC4G; }
+      if(flags::all(evt, events::ti))   { r |= inst::EGR::TG;   }
+    }
+    else
+    if constexpr(cfg::id == id::tim9 || cfg::id == id::tim12) {
+      if(flags::all(evt, events::cc1i)) { r |= inst::EGR::CC1G; }
+      if(flags::all(evt, events::cc2i)) { r |= inst::EGR::CC2G; }
+      if(flags::all(evt, events::ti))   { r |= inst::EGR::TG;   }
+    }
+    else
+    if constexpr(cfg::id == id::tim10 || cfg::id == id::tim11 || cfg::id == id::tim13 ||
+                 cfg::id == id::tim14) {
+      if(flags::all(evt, events::cc1i)) { r |= inst::EGR::CC1G; }
+    }
 
     inst::EGR::set(r);
   };
