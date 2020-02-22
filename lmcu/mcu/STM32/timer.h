@@ -401,7 +401,7 @@ template<id _id, auto ..._args>
 struct _output;
 
 /**
- * Timers 1, 8 config
+ * Timers 1, 8 config.
 */
 template<auto ..._args>
 struct _dev<id::tim1, _args...>
@@ -542,7 +542,7 @@ struct _dev<id::tim1, _args...>
 };
 
 /**
- * Timers 2, 3, 4, 5 config
+ * Timers 2, 3, 4, 5 config.
 */
 template<auto ..._args>
 struct _dev<id::tim2, _args...>
@@ -643,34 +643,144 @@ struct _dev<id::tim2, _args...>
 };
 
 /**
- * Timers 6, 7 config
+ * Timers 6, 7 config.
 */
 template<auto ..._args>
 struct _dev<id::tim6, _args...>
 {
+  static constexpr auto dev_class = lmcu::dev_class::timer;
+
   static constexpr auto id = timer::id::tim6;
+
+  // Update request source.
+  static constexpr auto update_request_src = option::get<timer::update_request_src, _args...>(
+                                               timer::update_request_src::any);
+  // Enable/disable UEV event generation.
+  static constexpr auto update = option::get<timer::update, _args...>(timer::update::enable);
+  // One pulse mode.
+  static constexpr auto one_pulse = option::get<timer::one_pulse, _args...>(timer::one_pulse::
+                                                                            disable);
+  // Center-aligned mode selection.
+  static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(timer::auto_reload::
+                                                                                disable);
+  // Master mode selection.
+  static constexpr auto master_mode = option::get<timer::master_mode, _args...>(timer::master_mode::
+                                                                                reset);
+  // Enable global irq.
+  static constexpr auto irq = option::get<timer::irq, _args...>();
+
+  static_assert(option::check<
+    std::tuple<
+      timer::id,
+      timer::update_request_src,
+      timer::update,
+      timer::one_pulse,
+      timer::auto_reload,
+      timer::master_mode,
+      timer::irq
+    >,
+    _args...
+  >());
 };
 
 /**
- * Timers 9, 12 config
+ * Timers 9, 12 config.
 */
 template<auto ..._args>
 struct _dev<id::tim9, _args...>
 {
+  static constexpr auto dev_class = lmcu::dev_class::timer;
+
   static constexpr auto id = timer::id::tim9;
+
+  // Update request source.
+  static constexpr auto update_request_src = option::get<timer::update_request_src, _args...>(
+                                               timer::update_request_src::any);
+  // Enable/disable UEV event generation.
+  static constexpr auto update = option::get<timer::update, _args...>(timer::update::enable);
+  // One pulse mode.
+  static constexpr auto one_pulse = option::get<timer::one_pulse, _args...>(timer::one_pulse::
+                                                                            disable);
+  // Center-aligned mode selection.
+  static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(timer::auto_reload::
+                                                                                disable);
+  // Dead time generator and digital filter clock division.
+  static constexpr auto dtg_df_div = option::get<timer::dtg_df_div, _args...>(timer::dtg_df_div::
+                                                                              _1);
+  // Slave mode selection.
+  static constexpr auto slave_mode = option::get<timer::slave_mode, _args...>(timer::slave_mode::
+                                                                              disable);
+  // Slave trigger selection.
+  static constexpr auto slave_trig_sel = option::get<timer::slave_trig_sel, _args...>(
+                                           timer::slave_trig_sel::itr0);
+  // Timer counter enable/disable.
+  static constexpr auto counter = option::get<timer::counter, _args...>(timer::counter::disable);
+  // Enable global irq.
+  static constexpr auto irq = option::get<timer::irq, _args...>();
+
+  static_assert(option::check<
+    std::tuple<
+      timer::id,
+      timer::update_request_src,
+      timer::update,
+      timer::one_pulse,
+      timer::auto_reload,
+      timer::dtg_df_div,
+      timer::slave_mode,
+      timer::slave_trig_sel,
+      timer::counter,
+      timer::irq
+    >,
+    _args...
+  >());
 };
 
 /**
- * Timers 10, 11, 13, 14 config
+ * Timers 10, 11, 13, 14 config.
 */
 template<auto ..._args>
 struct _dev<id::tim10, _args...>
 {
+  static constexpr auto dev_class = lmcu::dev_class::timer;
+
   static constexpr auto id = timer::id::tim10;
+
+  // Update request source.
+  static constexpr auto update_request_src = option::get<timer::update_request_src, _args...>(
+                                               timer::update_request_src::any);
+  // Enable/disable UEV event generation.
+  static constexpr auto update = option::get<timer::update, _args...>(timer::update::enable);
+  // One pulse mode.
+  static constexpr auto one_pulse = option::get<timer::one_pulse, _args...>(timer::one_pulse::
+                                                                            disable);
+  // Center-aligned mode selection.
+  static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(timer::auto_reload::
+                                                                                disable);
+  // Dead time generator and digital filter clock division.
+  static constexpr auto dtg_df_div = option::get<timer::dtg_df_div, _args...>(timer::dtg_df_div::
+                                                                              _1);
+  // Timer counter enable/disable.
+  static constexpr auto counter = option::get<timer::counter, _args...>(timer::counter::disable);
+  // Enable global irq.
+  static constexpr auto irq = option::get<timer::irq, _args...>();
+
+  static_assert(option::check<
+    std::tuple<
+      timer::id,
+      timer::update_request_src,
+      timer::update,
+      timer::one_pulse,
+      timer::auto_reload,
+      timer::dtg_df_div,
+      timer::counter,
+      timer::irq
+    >,
+    _args...
+  >());
 };
 
 /**
- * Timers 1, 8, 2, 3, 4, 5 input channel config
+ * Timers 1, 8, 2, 3, 4, 5 input channel config.
 */
 template<auto ..._args>
 struct _input<id::tim1, _args...>
@@ -724,7 +834,7 @@ struct _input<id::tim1, _args...>
 };
 
 /**
- * Timers 1, 8 output channel config
+ * Timers 1, 8 output channel config.
 */
 template<auto ..._args>
 struct _output<id::tim1, _args...>
@@ -787,7 +897,7 @@ struct _output<id::tim1, _args...>
 };
 
 /**
- * Timers 2, 3, 4, 5 output channel config
+ * Timers 2, 3, 4, 5 output channel config.
 */
 template<auto ..._args>
 struct _output<id::tim2, _args...>
@@ -833,6 +943,62 @@ struct _output<id::tim2, _args...>
     _args...
   >());
 };
+
+/**
+ * Timers 9, 12, 10, 11, 13, 14 output channel config.
+ *
+ * @note For timers 10, 11, 13, 14 options 'channel' and 'out_clear' is not available.
+*/
+template<auto ..._args>
+struct _output<id::tim9, _args...>
+{
+  static constexpr auto dev_class = lmcu::dev_class::timer_out_channel;
+
+  static constexpr auto id = timer::id::tim9;
+
+  // Channel number.
+  static constexpr auto channel = option::get<timer::channel, _args...>();
+  // Channel enable.
+  static constexpr auto channel_en = option::get<timer::channel_en, _args...>(timer::channel_en::
+                                                                              disable);
+  // Output Compare polarity.
+  static constexpr auto channel_polarity = option::get<timer::channel_polarity, _args...>(
+                                             timer::channel_polarity::direct);
+  // Output Compare fast enable.
+  static constexpr auto out_fast = option::get<timer::out_fast, _args...>(timer::out_fast::
+                                                                          disable);
+  // Output Compare preload enable.
+  static constexpr auto out_preload = option::get<timer::out_preload, _args...>(timer::out_preload::
+                                                                                disable);
+  // Output Compare mode.
+  static constexpr auto out_mode = option::get<timer::out_mode, _args...>(timer::out_mode::
+                                                                          frozen);
+  // Output Compare clear (OCRef cleared as soon as a High level is detected on ETRF input).
+  static constexpr auto out_clear = option::get<timer::out_clear, _args...>(timer::out_clear::
+                                                                            disable);
+  static_assert(!option::is_null<channel>() && channel <= channel::_2);
+
+  static_assert(option::check<
+    std::tuple<
+      timer::id,
+      timer::channel,
+      timer::channel_en,
+      timer::channel_polarity,
+      timer::out_fast,
+      timer::out_preload,
+      timer::out_mode,
+      timer::out_clear
+    >,
+    _args...
+  >());
+};
+
+/**
+ * Timers 10, 11, 13, 14 output channel config
+*/
+template<auto ..._args>
+struct _output<id::tim10, _args...> : _output<id::tim9, channel::_1, out_clear::disable, _args...>
+{ static constexpr auto id = timer::id::tim10; };
 
 template<auto ..._args>
 struct _dev<id::tim8, _args...> : _dev<id::tim1, _args...>
@@ -907,6 +1073,22 @@ struct _output<id::tim5, _args...> : _output<id::tim2, _args...>
 { static constexpr auto id = timer::id::tim5; };
 
 template<auto ..._args>
+struct _output<id::tim12, _args...> : _output<id::tim9, _args...>
+{ static constexpr auto id = timer::id::tim12; };
+
+template<auto ..._args>
+struct _output<id::tim11, _args...> : _output<id::tim10, _args...>
+{ static constexpr auto id = timer::id::tim11; };
+
+template<auto ..._args>
+struct _output<id::tim13, _args...> : _output<id::tim10, _args...>
+{ static constexpr auto id = timer::id::tim13; };
+
+template<auto ..._args>
+struct _output<id::tim14, _args...> : _output<id::tim10, _args...>
+{ static constexpr auto id = timer::id::tim14; };
+
+template<auto ..._args>
 using dev = _dev<option::get<timer::id, _args...>(), _args...>;
 
 template<auto ..._args>
@@ -918,63 +1100,6 @@ using output = _output<option::get<timer::id, _args...>(), _args...>;
 // ------------------------------------------------------------------------------------------------
 
 namespace detail {
-
-enum class tim_irqn
-{
-  tim1_brk,
-  tim1_up,
-  tim1_trg_com,
-  tim1_cc,
-
-  tim2_global,
-  tim3_global,
-  tim4_global,
-  tim5_global,
-  tim6_global,
-  tim7_global,
-
-  tim8_brk,
-  tim8_up,
-  tim8_trg_com,
-  tim8_cc,
-
-  tim9_global,
-  tim10_global,
-  tim11_global,
-  tim12_global,
-  tim13_global,
-  tim14_global
-};
-
-template<tim_irqn>
-struct irqn_wrap { using type = device::irqn; };
-
-template<tim_irqn _irqn>
-constexpr device::irqn irqn_v() noexcept
-{
-  using irqn = typename irqn_wrap<_irqn>::type;
-
-  if constexpr(_irqn == tim_irqn::tim1_brk)     { return irqn::tim1_brk;     } else
-  if constexpr(_irqn == tim_irqn::tim1_up)      { return irqn::tim1_up;      } else
-  if constexpr(_irqn == tim_irqn::tim1_trg_com) { return irqn::tim1_trg_com; } else
-  if constexpr(_irqn == tim_irqn::tim1_cc)      { return irqn::tim1_cc;      } else
-  if constexpr(_irqn == tim_irqn::tim2_global)  { return irqn::tim2;         } else
-  if constexpr(_irqn == tim_irqn::tim3_global)  { return irqn::tim3;         } else
-  if constexpr(_irqn == tim_irqn::tim4_global)  { return irqn::tim4;         } else
-  if constexpr(_irqn == tim_irqn::tim5_global)  { return irqn::tim5;         } else
-  if constexpr(_irqn == tim_irqn::tim6_global)  { return irqn::tim6;         } else
-  if constexpr(_irqn == tim_irqn::tim7_global)  { return irqn::tim7;         } else
-  if constexpr(_irqn == tim_irqn::tim8_brk)     { return irqn::tim8_brk;     } else
-  if constexpr(_irqn == tim_irqn::tim8_up)      { return irqn::tim8_up;      } else
-  if constexpr(_irqn == tim_irqn::tim8_trg_com) { return irqn::tim8_trg_com; } else
-  if constexpr(_irqn == tim_irqn::tim8_cc)      { return irqn::tim8_cc;      } else
-  if constexpr(_irqn == tim_irqn::tim9_global)  { return irqn::tim9;         } else
-  if constexpr(_irqn == tim_irqn::tim10_global) { return irqn::tim10;        } else
-  if constexpr(_irqn == tim_irqn::tim11_global) { return irqn::tim11;        } else
-  if constexpr(_irqn == tim_irqn::tim12_global) { return irqn::tim12;        } else
-  if constexpr(_irqn == tim_irqn::tim13_global) { return irqn::tim13;        } else
-  if constexpr(_irqn == tim_irqn::tim14_global) { return irqn::tim14;        }
-}
 
 template<id _id>
 struct inst;
@@ -1612,8 +1737,7 @@ void configure_tim_1_8()
 
   dma_conf<inst, _cfg>();
 
-  constexpr auto brk_irqn = (_cfg::id == timer::id::tim1)? irqn_v<tim_irqn::tim1_brk>() :
-                                                           irqn_v<tim_irqn::tim8_brk>();
+  constexpr auto brk_irqn = device::find_irqn(_cfg::id == timer::id::tim1? "tim1_brk" : "tim8_brk");
   if constexpr(!option::is_null<_cfg::brk_irq>()) {
     nvic::set_priority<brk_irqn, _cfg::brk_irq>();
     nvic::enable_irq<brk_irqn>();
@@ -1622,8 +1746,7 @@ void configure_tim_1_8()
     nvic::disable_irq<brk_irqn>();
   }
 
-  constexpr auto up_irqn = (_cfg::id == timer::id::tim1)? irqn_v<tim_irqn::tim1_up>() :
-                                                          irqn_v<tim_irqn::tim8_up>();
+  constexpr auto up_irqn = device::find_irqn(_cfg::id == timer::id::tim1? "tim1_up" : "tim8_up");
   if constexpr(!option::is_null<_cfg::up_irq>()) {
     nvic::set_priority<up_irqn, _cfg::up_irq>();
     nvic::enable_irq<up_irqn>();
@@ -1632,8 +1755,8 @@ void configure_tim_1_8()
     nvic::disable_irq<up_irqn>();
   }
 
-  constexpr auto trg_com_irqn = (_cfg::id == timer::id::tim1)? irqn_v<tim_irqn::tim1_trg_com>() :
-                                                               irqn_v<tim_irqn::tim8_trg_com>();
+  constexpr auto trg_com_irqn = device::find_irqn(_cfg::id == timer::id::tim1? "tim1_trg_com" :
+                                                                               "tim8_trg_com");
   if constexpr(!option::is_null<_cfg::trg_com_irq>()) {
     nvic::set_priority<trg_com_irqn, _cfg::trg_com_irq>();
     nvic::enable_irq<trg_com_irqn>();
@@ -1642,8 +1765,7 @@ void configure_tim_1_8()
     nvic::disable_irq<trg_com_irqn>();
   }
 
-  constexpr auto cc_irqn = (_cfg::id == timer::id::tim1)? irqn_v<tim_irqn::tim1_cc>() :
-                                                          irqn_v<tim_irqn::tim8_cc>();
+  constexpr auto cc_irqn = device::find_irqn(_cfg::id == timer::id::tim1? "tim1_cc" : "tim8_cc");
   if constexpr(!option::is_null<_cfg::cc_irq>()) {
     nvic::set_priority<cc_irqn, _cfg::cc_irq>();
     nvic::enable_irq<cc_irqn>();
@@ -1703,9 +1825,8 @@ void configure_tim_2_3_4_5()
   }
 
   static_assert(flags::none(_cfg::events, events::comi, events::bi, events::comd),
-                "This events does not supported by timer");
-
-  inst::DIER::set(flags::value(_cfg::events));
+                "Selected events are not supported by timer");
+  inst::DIER::set(flags::value(_cfg::events) & inst::DIER::DIER_MASK);
 
   dma_conf<inst, _cfg>();
 
@@ -1713,10 +1834,10 @@ void configure_tim_2_3_4_5()
   {
     switch(_cfg::id)
     {
-    case id::tim2: return irqn_v<tim_irqn::tim2_global>();
-    case id::tim3: return irqn_v<tim_irqn::tim3_global>();
-    case id::tim4: return irqn_v<tim_irqn::tim4_global>();
-    default:       return irqn_v<tim_irqn::tim5_global>();
+    case id::tim2: return device::find_irqn("tim2");
+    case id::tim3: return device::find_irqn("tim3");
+    case id::tim4: return device::find_irqn("tim4");
+    default:       return device::find_irqn("tim5");
     }
   }();
 
@@ -1734,6 +1855,45 @@ void configure_tim_2_3_4_5()
 template<typename _cfg>
 void configure_tim_6_7()
 {
+  using namespace detail;
+
+  using inst = inst_t<_cfg::id>;
+
+  uint32_t r;
+
+  // Disable counter
+  inst::CR1::clr_b(inst::CR1::CEN);
+
+  r = inst::CR1::get();
+
+  update_request_src_conf<inst, _cfg>(r);
+  update_conf<inst, _cfg>(r);
+  one_pulse_conf<inst, _cfg>(r);
+  auto_reload_conf<inst, _cfg>(r);
+
+  inst::CR1::set(r);
+
+  r = inst::CR2::get();
+
+  master_mode_conf<inst, _cfg>(r);
+
+  inst::CR2::set(r);
+
+  static_assert(!flags::none(_cfg::events, events::ud, events::ui),
+                "Selected events are not supported by timer");
+  inst::DIER::set(flags::value(_cfg::events) & inst::DIER::DIER_MASK);
+
+  constexpr auto irqn = device::find_irqn(_cfg::id == id::tim6? "tim6" : "tim7");
+
+  if constexpr(!option::is_null<_cfg::irq>()) {
+    nvic::set_priority<irqn, _cfg::irq>();
+    nvic::enable_irq<irqn>();
+  }
+  else {
+    nvic::disable_irq<irqn>();
+  }
+
+  counter_conf<inst, _cfg>();
 }
 
 template<typename _cfg>
@@ -1769,15 +1929,12 @@ void configure_tim_9_12()
   }
 
   static_assert(
-    flags::none(_cfg::events, events::cc3i, events::cc4i, events::comi, events::bi, events::ud,
-                              events::cc1d, events::cc2d, events::cc3d, events::cc4d, events::comd,
-                              events::comd),
-    "This events does not supported by timer"
+    !flags::none(_cfg::events, events::ui, events::cc1i, events::cc2i, events::ti),
+    "Selected events are not supported by timer"
   );
-  inst::DIER::set(flags::value(_cfg::events));
+  inst::DIER::set(flags::value(_cfg::events) & inst::DIER::DIER_MASK);
 
-  constexpr auto irqn = irqn_v<_cfg::id == id::tim9? tim_irqn::tim9_global :
-                                                     tim_irqn::tim12_global>();
+  constexpr auto irqn = device::find_irqn(_cfg::id == id::tim9? "tim9" : "tim12");
 
   if constexpr(!option::is_null<_cfg::irq>()) {
     nvic::set_priority<irqn, _cfg::irq>();
@@ -1793,6 +1950,51 @@ void configure_tim_9_12()
 template<typename _cfg>
 void configure_tim_10_11_13_14()
 {
+  using namespace detail;
+
+  using inst = inst_t<_cfg::id>;
+
+  uint32_t r;
+
+  // Disable counter
+  inst::CR1::clr_b(inst::CR1::CEN);
+
+  r = inst::CR1::get();
+
+  update_request_src_conf<inst, _cfg>(r);
+  update_conf<inst, _cfg>(r);
+  one_pulse_conf<inst, _cfg>(r);
+  auto_reload_conf<inst, _cfg>(r);
+  dtg_df_div_conf<inst, _cfg>(r);
+
+  inst::CR1::set(r);
+
+  static_assert(
+    !flags::none(_cfg::events, events::ui, events::cc1i),
+    "Selected events are not supported by timer"
+  );
+  inst::DIER::set(flags::value(_cfg::events) & inst::DIER::DIER_MASK);
+
+  constexpr auto irqn = []
+  {
+    switch(_cfg::id)
+    {
+    case id::tim10: return device::find_irqn("tim10");
+    case id::tim11: return device::find_irqn("tim11");
+    case id::tim13: return device::find_irqn("tim13");
+    default:        return device::find_irqn("tim14");
+    }
+  }();
+
+  if constexpr(!option::is_null<_cfg::irq>()) {
+    nvic::set_priority<irqn, _cfg::irq>();
+    nvic::enable_irq<irqn>();
+  }
+  else {
+    nvic::disable_irq<irqn>();
+  }
+
+  counter_conf<inst, _cfg>();
 }
 
 template<typename _cfg>
@@ -1910,6 +2112,24 @@ void configure_tim_2_3_4_5_out_channel()
 
   inst::CCER::set(r);
 }
+
+template<typename _cfg>
+void configure_tim_9_12_10_11_13_14_out_channel()
+{
+  using inst = inst_t<_cfg::id>;
+
+  uint32_t r;
+
+  out_mode_conf<inst, _cfg>();
+
+  r = inst::CCER::get();
+
+  channel_en_conf<inst, _cfg>(r);
+  channel_polarity_conf<inst, _cfg>(r);
+
+  inst::CCER::set(r);
+}
+
 
 } // namespace detail
 
@@ -2129,11 +2349,9 @@ void configure()
         detail::configure_tim_2_3_4_5_out_channel<cfg>();
       }
       else
-      if constexpr(cfg::id == id::tim9 || cfg::id == id::tim12) {
-      }
-      else
-      if constexpr(cfg::id == id::tim10 || cfg::id == id::tim11 || cfg::id == id::tim13 ||
-                   cfg::id == id::tim14) {
+      if constexpr(cfg::id == id::tim9 || cfg::id == id::tim12 || cfg::id == id::tim10 ||
+                   cfg::id == id::tim11 || cfg::id == id::tim13 || cfg::id == id::tim14) {
+        detail::configure_tim_9_12_10_11_13_14_out_channel<cfg>();
       }
     }
   };
@@ -2192,7 +2410,7 @@ lmcu_static_inline void clr_events(timer::events evt)
 
     static_assert(cfg::dev_class == dev_class::timer);
 
-    inst::SR::set((~flags::value(evt)) & 0x1fff);
+    inst::SR::set(~(flags::value(evt) & inst::SR::SR_MASK));
   };
 
   (_do(_devices{}), ...);
@@ -2474,4 +2692,4 @@ lmcu_static_inline void oc_set_pulse(uint16_t val)
   (_do(_chs{}), ...);
 }
 
-} // namespace lmcu::adv_timer
+} // namespace lmcu::timer
