@@ -4,6 +4,7 @@ namespace lmcu::device {
 
 enum class irqn : int32_t
 {
+  invalid_irqn = -15,
 % for irq, n in D:
   ${irq} = ${n},
 % endfor

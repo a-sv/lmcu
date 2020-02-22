@@ -27,6 +27,7 @@ namespace lmcu::device {
 
 enum class irqn : int32_t
 {
+  invalid_irqn = -15,
   wwdg = 0,
   pvd = 1,
   tamper = 2,
@@ -88,7 +89,6 @@ enum class irqn : int32_t
   can2_rx1 = 65,
   can2_sce = 66,
   otg_fs = 67,
-  invalid_irqn = -15,
   nmi = -14,
   hard_fault = -13,
   mem_manage = -12,
@@ -165,7 +165,6 @@ constexpr irqn find_irqn(const char *name) noexcept
     {"can2_rx1", irqn::can2_rx1},
     {"can2_sce", irqn::can2_sce},
     {"otg_fs", irqn::otg_fs},
-    {"invalid_irqn", irqn::invalid_irqn},
     {"nmi", irqn::nmi},
     {"hard_fault", irqn::hard_fault},
     {"mem_manage", irqn::mem_manage},
