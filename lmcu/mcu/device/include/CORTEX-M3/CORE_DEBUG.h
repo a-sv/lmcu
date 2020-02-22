@@ -64,6 +64,7 @@ struct CORE_DEBUG
     // Debug Key. 0xA05F must be written whenever this register is written. (bits: 31-16)
     ,DBGKEY_MASK = 0xFFFF0000
     ,DBGKEY_POS = 16
+    ,DHCSR_MASK = 0xFFFF002F
     ;
   };
   // Debug Halting Control and Status Register
@@ -92,6 +93,7 @@ struct CORE_DEBUG
     ,REGSEL_XPSR = 0x00000010 // xPSR/Flags, Execution Number, and state information
     ,REGSEL_MSP = 0x00000011 // MSP (Main SP)
     ,REGSEL_RAZ_WI = 0x00000012 // RAZ/WI
+    ,DCRSR_MASK = 0x0000001F
     ;
   };
   // Debug Core Register Data Register
@@ -152,6 +154,7 @@ struct CORE_DEBUG
     ,TRCENA_MASK = 0x01000000
     ,TRCENA_POS = 24
     ,TRCENA = 0x01000000
+    ,DEMCR_MASK = 0x010F07F1
     ;
   };
 }; // struct CORE_DEBUG

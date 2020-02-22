@@ -20,6 +20,7 @@ struct NVIC
     // Number of interrupt lines that the NVIC supports (bits: 4-0)
      INTLINESNUM_MASK = 0x0000001F
     ,INTLINESNUM_POS = 0
+    ,ICTR_MASK = 0x0000001F
     ;
   };
   // SysTick Control and Status Register
@@ -42,6 +43,7 @@ struct NVIC
     ,COUNTFLAG_MASK = 0x00010000
     ,COUNTFLAG_POS = 16
     ,COUNTFLAG = 0x00010000
+    ,STCSR_MASK = 0x00010007
     ;
   };
   // SysTick Reload Value Register
@@ -51,6 +53,7 @@ struct NVIC
     // Value to load into the SysTick Current Value Register when the counter reaches 0. (bits: 23-0)
      RELOAD_MASK = 0x00FFFFFF
     ,RELOAD_POS = 0
+    ,STRVR_MASK = 0x00FFFFFF
     ;
   };
   // SysTick Current Value Register
@@ -60,6 +63,7 @@ struct NVIC
     // Current value at the time the register is accessed. (bits: 23-0)
      CURRENT_MASK = 0x00FFFFFF
     ,CURRENT_POS = 0
+    ,STCVR_MASK = 0x00FFFFFF
     ;
   };
   // SysTick Calibration Value Register
@@ -77,6 +81,7 @@ struct NVIC
     ,NOREF_MASK = 0x80000000
     ,NOREF_POS = 31
     ,NOREF = 0x80000000
+    ,STCALIBR_MASK = 0xC0FFFFFF
     ;
   };
   // Interrupt Set-Enable Register
@@ -86,6 +91,7 @@ struct NVIC
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
+    ,ISER0_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Enable Register
@@ -95,6 +101,7 @@ struct NVIC
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
+    ,ISER1_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Enable Register
@@ -104,6 +111,7 @@ struct NVIC
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
+    ,ISER2_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Enable Register
@@ -113,6 +121,7 @@ struct NVIC
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
+    ,ISER3_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Enable Register
@@ -122,6 +131,7 @@ struct NVIC
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
+    ,ISER4_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Enable Register
@@ -131,6 +141,7 @@ struct NVIC
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
+    ,ISER5_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Enable Register
@@ -140,6 +151,7 @@ struct NVIC
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
+    ,ISER6_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Enable Register
@@ -149,6 +161,7 @@ struct NVIC
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
+    ,ISER7_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
@@ -158,6 +171,7 @@ struct NVIC
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
+    ,ICER0_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
@@ -167,6 +181,7 @@ struct NVIC
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
+    ,ICER1_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
@@ -176,6 +191,7 @@ struct NVIC
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
+    ,ICER2_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
@@ -185,6 +201,7 @@ struct NVIC
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
+    ,ICER3_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
@@ -194,6 +211,7 @@ struct NVIC
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
+    ,ICER4_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
@@ -203,6 +221,7 @@ struct NVIC
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
+    ,ICER5_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
@@ -212,6 +231,7 @@ struct NVIC
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
+    ,ICER6_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
@@ -221,6 +241,7 @@ struct NVIC
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
+    ,ICER7_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
@@ -230,6 +251,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
+    ,ISPR0_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
@@ -239,6 +261,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
+    ,ISPR1_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
@@ -248,6 +271,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
+    ,ISPR2_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
@@ -257,6 +281,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
+    ,ISPR3_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
@@ -266,6 +291,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
+    ,ISPR4_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
@@ -275,6 +301,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
+    ,ISPR5_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
@@ -284,6 +311,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
+    ,ISPR6_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
@@ -293,6 +321,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
+    ,ISPR7_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
@@ -302,6 +331,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
+    ,ICPR0_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
@@ -311,6 +341,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
+    ,ICPR1_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
@@ -320,6 +351,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
+    ,ICPR2_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
@@ -329,6 +361,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
+    ,ICPR3_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
@@ -338,6 +371,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
+    ,ICPR4_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
@@ -347,6 +381,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
+    ,ICPR5_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
@@ -356,6 +391,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
+    ,ICPR6_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
@@ -365,6 +401,7 @@ struct NVIC
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
+    ,ICPR7_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
@@ -374,6 +411,7 @@ struct NVIC
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
+    ,IABR0_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
@@ -383,6 +421,7 @@ struct NVIC
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
+    ,IABR1_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
@@ -392,6 +431,7 @@ struct NVIC
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
+    ,IABR2_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
@@ -401,6 +441,7 @@ struct NVIC
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
+    ,IABR3_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
@@ -410,6 +451,7 @@ struct NVIC
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
+    ,IABR4_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
@@ -419,6 +461,7 @@ struct NVIC
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
+    ,IABR5_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
@@ -428,6 +471,7 @@ struct NVIC
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
+    ,IABR6_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
@@ -437,6 +481,7 @@ struct NVIC
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
+    ,IABR7_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
@@ -455,6 +500,7 @@ struct NVIC
     // Priority of interrupt 3 (bits: 31-24)
     ,PRI_3_MASK = 0xFF000000
     ,PRI_3_POS = 24
+    ,IPR0_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
@@ -473,6 +519,7 @@ struct NVIC
     // Priority of interrupt 3 (bits: 31-24)
     ,PRI_3_MASK = 0xFF000000
     ,PRI_3_POS = 24
+    ,IPR1_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
@@ -491,6 +538,7 @@ struct NVIC
     // Priority of interrupt 3 (bits: 31-24)
     ,PRI_3_MASK = 0xFF000000
     ,PRI_3_POS = 24
+    ,IPR2_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
@@ -509,6 +557,7 @@ struct NVIC
     // Priority of interrupt 3 (bits: 31-24)
     ,PRI_3_MASK = 0xFF000000
     ,PRI_3_POS = 24
+    ,IPR3_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
@@ -527,6 +576,7 @@ struct NVIC
     // Priority of interrupt 3 (bits: 31-24)
     ,PRI_3_MASK = 0xFF000000
     ,PRI_3_POS = 24
+    ,IPR4_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
@@ -545,6 +595,7 @@ struct NVIC
     // Priority of interrupt 3 (bits: 31-24)
     ,PRI_3_MASK = 0xFF000000
     ,PRI_3_POS = 24
+    ,IPR5_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
@@ -563,6 +614,7 @@ struct NVIC
     // Priority of interrupt 3 (bits: 31-24)
     ,PRI_3_MASK = 0xFF000000
     ,PRI_3_POS = 24
+    ,IPR6_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
@@ -581,6 +633,7 @@ struct NVIC
     // Priority of interrupt 3 (bits: 31-24)
     ,PRI_3_MASK = 0xFF000000
     ,PRI_3_POS = 24
+    ,IPR7_MASK = 0xFFFFFFFF
     ;
   };
   // CPU ID Base Register
@@ -602,6 +655,7 @@ struct NVIC
     // Implementer code. ARM is 0x41. (bits: 31-24)
     ,IMPLEMENTER_MASK = 0xFF000000
     ,IMPLEMENTER_POS = 24
+    ,CPUIDBR_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Control State Register
@@ -646,6 +700,7 @@ struct NVIC
     ,NMIPENDSET_MASK = 0x80000000
     ,NMIPENDSET_POS = 31
     ,NMIPENDSET = 0x80000000
+    ,ICSR_MASK = 0x9EFFF9FF
     ;
   };
   // Vector Table Offset Register
@@ -659,6 +714,7 @@ struct NVIC
     ,TBLBASE_MASK = 0x20000000
     ,TBLBASE_POS = 29
     ,TBLBASE = 0x20000000
+    ,VTOR_MASK = 0x3FFFFF80
     ;
   };
   // System Control Register
@@ -677,6 +733,7 @@ struct NVIC
     ,SEVONPEND_MASK = 0x00000010
     ,SEVONPEND_POS = 4
     ,SEVONPEND = 0x00000010
+    ,SCR_MASK = 0x00000016
     ;
   };
   // Configuration Control Register
@@ -707,6 +764,7 @@ struct NVIC
     ,STKALIGN_MASK = 0x00000200
     ,STKALIGN_POS = 9
     ,STKALIGN = 0x00000200
+    ,CCR_MASK = 0x0000031B
     ;
   };
   // System Handler Priority Register 0
@@ -725,6 +783,7 @@ struct NVIC
     // Priority of system handler 7, 11, and 15. Reserved, SVCall, and SysTick. (bits: 31-24)
     ,PRI_7_MASK = 0xFF000000
     ,PRI_7_POS = 24
+    ,SHPR0_MASK = 0xFFFFFFFF
     ;
   };
   // System Handler Priority Register 1
@@ -743,6 +802,7 @@ struct NVIC
     // Priority of system handler 7, 11, and 15. Reserved, SVCall, and SysTick. (bits: 31-24)
     ,PRI_11_MASK = 0xFF000000
     ,PRI_11_POS = 24
+    ,SHPR1_MASK = 0xFFFFFFFF
     ;
   };
   // System Handler Priority Register 2
@@ -761,6 +821,7 @@ struct NVIC
     // Priority of system handler 7, 11, and 15. Reserved, SVCall, and SysTick. (bits: 31-24)
     ,PRI_15_MASK = 0xFF000000
     ,PRI_15_POS = 24
+    ,SHPR2_MASK = 0xFFFFFFFF
     ;
   };
   // Memory Manage Fault Status Register
@@ -787,6 +848,7 @@ struct NVIC
     ,MMARVALID_MASK = 0x00000080
     ,MMARVALID_POS = 7
     ,MMARVALID = 0x00000080
+    ,MMFSR_MASK = 0x0000009B
     ;
   };
   // Bus Fault Status Register
@@ -817,6 +879,7 @@ struct NVIC
     ,BFARVALID_MASK = 0x00000080
     ,BFARVALID_POS = 7
     ,BFARVALID = 0x00000080
+    ,BFSR_MASK = 0x0000009F
     ;
   };
   // Usage Fault Status Register
@@ -847,6 +910,7 @@ struct NVIC
     ,DIVBYZERO_MASK = 0x00000200
     ,DIVBYZERO_POS = 9
     ,DIVBYZERO = 0x00000200
+    ,UFSR_MASK = 0x0000030F
     ;
   };
   // Hard Fault Status Register
@@ -865,6 +929,7 @@ struct NVIC
     ,DEBUGEVT_MASK = 0x80000000
     ,DEBUGEVT_POS = 31
     ,DEBUGEVT = 0x80000000
+    ,HFSR_MASK = 0xC0000002
     ;
   };
   // Debug Fault Status Register
@@ -891,6 +956,7 @@ struct NVIC
     ,EXTERNAL_MASK = 0x00000010
     ,EXTERNAL_POS = 4
     ,EXTERNAL = 0x00000010
+    ,DFSR_MASK = 0x0000001F
     ;
   };
   // Memory Manage Fault Address Register
@@ -906,6 +972,7 @@ struct NVIC
     // Interrupt ID field. (bits: 8-0)
      INTID_MASK = 0x000001FF
     ,INTID_POS = 0
+    ,STIR_MASK = 0x000001FF
     ;
   };
 }; // struct NVIC

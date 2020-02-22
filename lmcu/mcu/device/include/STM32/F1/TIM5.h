@@ -36,6 +36,7 @@ struct TIM5
     ,TI1S_MASK = 0x00000080
     ,TI1S_POS = 7
     ,TI1S = 0x00000080
+    ,CR2_MASK = 0x000000F8
     ;
   };
   // DMA/interrupt enable register
@@ -90,6 +91,7 @@ struct TIM5
     ,TDE_MASK = 0x00004000
     ,TDE_POS = 14
     ,TDE = 0x00004000
+    ,DIER_MASK = 0x00005F5F
     ;
   };
   // Status register
@@ -136,6 +138,7 @@ struct TIM5
     ,CC4OF_MASK = 0x00001000
     ,CC4OF_POS = 12
     ,CC4OF = 0x00001000
+    ,SR_MASK = 0x00001E5F
     ;
   };
   // Event generation register
@@ -166,6 +169,7 @@ struct TIM5
     ,TG_MASK = 0x00000040
     ,TG_POS = 6
     ,TG = 0x00000040
+    ,EGR_MASK = 0x0000005F
     ;
   };
   // Capture/compare mode register 2
@@ -204,6 +208,7 @@ struct TIM5
     ,CC4P_MASK = 0x00002000
     ,CC4P_POS = 13
     ,CC4P = 0x00002000
+    ,CCER_MASK = 0x00003333
     ;
   };
   // DMA address for full transfer
@@ -249,6 +254,7 @@ struct TIM5
     ,CKD_1 = 0x00000000 // tDTS = tCK_INT
     ,CKD_2 = 0x00000100 // tDTS = 2 * tCK_INT
     ,CKD_4 = 0x00000200 // tDTS = 4 * tCK_INT
+    ,CR1_MASK = 0x000003FF
     ;
   };
   // Slave mode control register
@@ -315,6 +321,7 @@ struct TIM5
     ,ETP_MASK = 0x00008000
     ,ETP_POS = 15
     ,ETP = 0x00008000
+    ,SMCR_MASK = 0x0000FFF7
     ;
   };
   // Capture/compare mode register 1
@@ -433,6 +440,7 @@ struct TIM5
     ,IC2F_DTS_DIV32_N5 = 0x0000D000 // fSAMPLING = fDTS / 32, N = 5
     ,IC2F_DTS_DIV32_N6 = 0x0000E000 // fSAMPLING = fDTS / 32, N = 6
     ,IC2F_DTS_DIV32_N8 = 0x0000F000 // fSAMPLING = fDTS / 32, N = 8
+    ,CCMR1_MASK = 0x0000FFFF
     ;
   };
   // Capture/compare mode register 2
@@ -551,6 +559,7 @@ struct TIM5
     ,IC4F_DTS_DIV32_N5 = 0x0000D000 // fSAMPLING = fDTS / 32, N = 5
     ,IC4F_DTS_DIV32_N6 = 0x0000E000 // fSAMPLING = fDTS / 32, N = 6
     ,IC4F_DTS_DIV32_N8 = 0x0000F000 // fSAMPLING = fDTS / 32, N = 8
+    ,CCMR2_MASK = 0x0000FFFF
     ;
   };
   // Counter
@@ -577,6 +586,7 @@ struct TIM5
     // DMA burst length (bits: 12-8)
     ,DBL_MASK = 0x00001F00
     ,DBL_POS = 8
+    ,DCR_MASK = 0x00001F1F
     ;
   };
 }; // struct TIM5

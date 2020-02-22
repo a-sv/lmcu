@@ -43,6 +43,7 @@ struct TIM13
     ,CKD_1 = 0x00000000 // tDTS = tCK_INT
     ,CKD_2 = 0x00000100 // tDTS = 2 * tCK_INT
     ,CKD_4 = 0x00000200 // tDTS = 4 * tCK_INT
+    ,CR1_MASK = 0x0000038F
     ;
   };
   // DMA/interrupt enable register
@@ -57,6 +58,7 @@ struct TIM13
     ,CC1IE_MASK = 0x00000002
     ,CC1IE_POS = 1
     ,CC1IE = 0x00000002
+    ,DIER_MASK = 0x00000003
     ;
   };
   // Status register
@@ -75,6 +77,7 @@ struct TIM13
     ,CC1OF_MASK = 0x00000200
     ,CC1OF_POS = 9
     ,CC1OF = 0x00000200
+    ,SR_MASK = 0x00000203
     ;
   };
   // Event generation register
@@ -89,6 +92,7 @@ struct TIM13
     ,CC1G_MASK = 0x00000002
     ,CC1G_POS = 1
     ,CC1G = 0x00000002
+    ,EGR_MASK = 0x00000003
     ;
   };
   // Capture/compare mode register 1
@@ -147,6 +151,7 @@ struct TIM13
     ,IC1F_DTS_DIV32_N5 = 0x000000D0 // fSAMPLING = fDTS / 32, N = 5
     ,IC1F_DTS_DIV32_N6 = 0x000000E0 // fSAMPLING = fDTS / 32, N = 6
     ,IC1F_DTS_DIV32_N8 = 0x000000F0 // fSAMPLING = fDTS / 32, N = 8
+    ,CCMR1_MASK = 0x000000FF
     ;
   };
   // Capture/compare mode register 2
@@ -165,6 +170,7 @@ struct TIM13
     ,CC1NP_MASK = 0x00000008
     ,CC1NP_POS = 3
     ,CC1NP = 0x00000008
+    ,CCER_MASK = 0x0000000B
     ;
   };
   // Counter

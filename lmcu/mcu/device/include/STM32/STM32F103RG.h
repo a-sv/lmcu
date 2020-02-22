@@ -96,6 +96,7 @@ enum class irqn : int32_t
   dma2_channel2 = 57,
   dma2_channel3 = 58,
   dma2_channel4_5 = 59,
+  invalid_irqn = -15,
   nmi = -14,
   hard_fault = -13,
   mem_manage = -12,
@@ -106,6 +107,106 @@ enum class irqn : int32_t
   pend_sv = -2,
   sys_tick = -1,
 };
+
+constexpr irqn find_irqn(const char *name) noexcept
+{
+  constexpr std::pair<const char*, irqn> irqlst[] =
+  {
+    {"wwdg", irqn::wwdg},
+    {"pvd", irqn::pvd},
+    {"tamper", irqn::tamper},
+    {"rtc", irqn::rtc},
+    {"flash", irqn::flash},
+    {"rcc", irqn::rcc},
+    {"exti0", irqn::exti0},
+    {"exti1", irqn::exti1},
+    {"exti2", irqn::exti2},
+    {"exti3", irqn::exti3},
+    {"exti4", irqn::exti4},
+    {"dma1_channel1", irqn::dma1_channel1},
+    {"dma1_channel2", irqn::dma1_channel2},
+    {"dma1_channel3", irqn::dma1_channel3},
+    {"dma1_channel4", irqn::dma1_channel4},
+    {"dma1_channel5", irqn::dma1_channel5},
+    {"dma1_channel6", irqn::dma1_channel6},
+    {"dma1_channel7", irqn::dma1_channel7},
+    {"adc1", irqn::adc1},
+    {"adc2", irqn::adc2},
+    {"usb_hp", irqn::usb_hp},
+    {"can1_tx", irqn::can1_tx},
+    {"usb_lp", irqn::usb_lp},
+    {"can1_rx0", irqn::can1_rx0},
+    {"can1_rx1", irqn::can1_rx1},
+    {"can1_sce", irqn::can1_sce},
+    {"exti9_5", irqn::exti9_5},
+    {"tim1_brk", irqn::tim1_brk},
+    {"tim9", irqn::tim9},
+    {"tim1_up", irqn::tim1_up},
+    {"tim10", irqn::tim10},
+    {"tim1_trg_com", irqn::tim1_trg_com},
+    {"tim11", irqn::tim11},
+    {"tim1_cc", irqn::tim1_cc},
+    {"tim2", irqn::tim2},
+    {"tim3", irqn::tim3},
+    {"tim4", irqn::tim4},
+    {"i2c1_ev", irqn::i2c1_ev},
+    {"i2c1_er", irqn::i2c1_er},
+    {"i2c2_ev", irqn::i2c2_ev},
+    {"i2c2_er", irqn::i2c2_er},
+    {"spi1", irqn::spi1},
+    {"spi2", irqn::spi2},
+    {"usart1", irqn::usart1},
+    {"usart2", irqn::usart2},
+    {"usart3", irqn::usart3},
+    {"exti15_10", irqn::exti15_10},
+    {"rtc_alarm", irqn::rtc_alarm},
+    {"usb_wkup", irqn::usb_wkup},
+    {"tim8_brk", irqn::tim8_brk},
+    {"tim12", irqn::tim12},
+    {"tim8_up", irqn::tim8_up},
+    {"tim13", irqn::tim13},
+    {"tim8_trg_com", irqn::tim8_trg_com},
+    {"tim14", irqn::tim14},
+    {"tim8_cc", irqn::tim8_cc},
+    {"adc3", irqn::adc3},
+    {"fsmc", irqn::fsmc},
+    {"sdio", irqn::sdio},
+    {"tim5", irqn::tim5},
+    {"spi3", irqn::spi3},
+    {"uart4", irqn::uart4},
+    {"uart5", irqn::uart5},
+    {"tim6", irqn::tim6},
+    {"tim7", irqn::tim7},
+    {"dma2_channel1", irqn::dma2_channel1},
+    {"dma2_channel2", irqn::dma2_channel2},
+    {"dma2_channel3", irqn::dma2_channel3},
+    {"dma2_channel4_5", irqn::dma2_channel4_5},
+    {"invalid_irqn", irqn::invalid_irqn},
+    {"nmi", irqn::nmi},
+    {"hard_fault", irqn::hard_fault},
+    {"mem_manage", irqn::mem_manage},
+    {"bus_fault", irqn::bus_fault},
+    {"usage_fault", irqn::usage_fault},
+    {"sv_call", irqn::sv_call},
+    {"debug_mon", irqn::debug_mon},
+    {"pend_sv", irqn::pend_sv},
+    {"sys_tick", irqn::sys_tick},
+  };
+
+  auto cmp = [](const char *a, const char *b)
+  {
+    while(*a && *b) {
+      if(*a++ != *b++) { return false; }
+    }
+    return *a == *b;
+  };
+
+  for(auto irq : irqlst) {
+    if(cmp(name, irq.first)) { return irq.second; }
+  }
+
+  return irqn::invalid_irqn;
+}
 
 } // namespace lmcu::device
 

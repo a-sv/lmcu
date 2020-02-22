@@ -97,6 +97,7 @@ struct GPIOG
     // Port x configuration bits (bits: 31-30)
     ,CNF7_MASK = 0xC0000000
     ,CNF7_POS = 30
+    ,CRL_MASK = 0xFFFFFFFF
     ;
   };
   // Port configuration register high
@@ -183,6 +184,7 @@ struct GPIOG
     // Port x configuration bits (bits: 31-30)
     ,CNF15_MASK = 0xC0000000
     ,CNF15_POS = 30
+    ,CRH_MASK = 0xFFFFFFFF
     ;
   };
   // Port input data register
@@ -253,6 +255,7 @@ struct GPIOG
     ,IDR15_MASK = 0x00008000
     ,IDR15_POS = 15
     ,IDR15 = 0x00008000
+    ,IDR_MASK = 0x0000FFFF
     ;
   };
   // Port output data register
@@ -323,6 +326,7 @@ struct GPIOG
     ,ODR15_MASK = 0x00008000
     ,ODR15_POS = 15
     ,ODR15 = 0x00008000
+    ,ODR_MASK = 0x0000FFFF
     ;
   };
   // Port bit set/reset register
@@ -457,6 +461,7 @@ struct GPIOG
     ,BR15_MASK = 0x80000000
     ,BR15_POS = 31
     ,BR15 = 0x80000000
+    ,BSRR_MASK = 0xFFFFFFFF
     ;
   };
   // Port bit reset register
@@ -527,6 +532,7 @@ struct GPIOG
     ,BR15_MASK = 0x00008000
     ,BR15_POS = 15
     ,BR15 = 0x00008000
+    ,BRR_MASK = 0x0000FFFF
     ;
   };
   // Port configuration lock register
@@ -601,6 +607,7 @@ struct GPIOG
     ,LCKK_MASK = 0x00010000
     ,LCKK_POS = 16
     ,LCKK = 0x00010000
+    ,LCKR_MASK = 0x0001FFFF
     ;
   };
 }; // struct GPIOG

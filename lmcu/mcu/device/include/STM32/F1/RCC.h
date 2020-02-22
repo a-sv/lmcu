@@ -55,6 +55,7 @@ struct RCC
     ,PLLRDY_MASK = 0x02000000
     ,PLLRDY_POS = 25
     ,PLLRDY = 0x02000000
+    ,CR_MASK = 0x030FFFFB
     ;
   };
   // Clock configuration register
@@ -146,6 +147,7 @@ struct RCC
     ,MCO_HSI = 0x05000000 // HSI clock
     ,MCO_HSE = 0x06000000 // HSE clock
     ,MCO_PLL_DIV2 = 0x07000000 // PLL clock divided by 2
+    ,CFGR_MASK = 0x077FFFFF
     ;
   };
   // Clock interrupt register
@@ -220,6 +222,7 @@ struct RCC
     ,CSSC_MASK = 0x00800000
     ,CSSC_POS = 23
     ,CSSC = 0x00800000
+    ,CIR_MASK = 0x009F1F9F
     ;
   };
   // APB2 peripheral reset register
@@ -298,6 +301,7 @@ struct RCC
     ,TIM11RST_MASK = 0x00200000
     ,TIM11RST_POS = 21
     ,TIM11RST = 0x00200000
+    ,APB2RSTR_MASK = 0x0038FFFD
     ;
   };
   // APB1 peripheral reset register
@@ -396,6 +400,7 @@ struct RCC
     ,DACRST_MASK = 0x20000000
     ,DACRST_POS = 29
     ,DACRST = 0x20000000
+    ,APB1RSTR_MASK = 0x3AFEC9FF
     ;
   };
   // AHB peripheral clock enable register
@@ -430,6 +435,7 @@ struct RCC
     ,SDIOEN_MASK = 0x00000400
     ,SDIOEN_POS = 10
     ,SDIOEN = 0x00000400
+    ,AHBENR_MASK = 0x00000557
     ;
   };
   // APB2 peripheral clock enable register
@@ -508,6 +514,7 @@ struct RCC
     ,TIM11EN_MASK = 0x00200000
     ,TIM11EN_POS = 21
     ,TIM11EN = 0x00200000
+    ,APB2ENR_MASK = 0x0038FFFD
     ;
   };
   // APB1 peripheral clock enable register
@@ -606,6 +613,7 @@ struct RCC
     ,DACEN_MASK = 0x20000000
     ,DACEN_POS = 29
     ,DACEN = 0x20000000
+    ,APB1ENR_MASK = 0x3AFEC9FF
     ;
   };
   // Backup domain control register
@@ -639,6 +647,7 @@ struct RCC
     ,BDRST_MASK = 0x00010000
     ,BDRST_POS = 16
     ,BDRST = 0x00010000
+    ,BDCR_MASK = 0x00018307
     ;
   };
   // Control/status register
@@ -681,6 +690,7 @@ struct RCC
     ,LPWRRSTF_MASK = 0x80000000
     ,LPWRRSTF_POS = 31
     ,LPWRRSTF = 0x80000000
+    ,CSR_MASK = 0xFD000003
     ;
   };
 }; // struct RCC

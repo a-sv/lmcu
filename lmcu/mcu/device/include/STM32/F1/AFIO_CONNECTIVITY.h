@@ -107,6 +107,7 @@ struct AFIO
     ,SWJ_CFG_FULL_SWJ_WITHOUT_NJTRST = 0x01000000 // Full SWJ (JTAG-DP + SW-DP) but without NJTRST
     ,SWJ_CFG_JTAG_DP_DISABLED_SW_DP_ENABLED = 0x02000000 // JTAG-DP Disabled and SW-DP Enabled
     ,SWJ_CFG_JTAG_DP_DISABLED_SW_DP_DISABLED = 0x04000000 // JTAG-DP Disabled and SW-DP Disabled
+    ,MAPR_MASK = 0x77E1FFFF
     ;
   };
   // Event control register
@@ -144,6 +145,7 @@ struct AFIO
     ,EVOE_MASK = 0x00000080
     ,EVOE_POS = 7
     ,EVOE = 0x00000080
+    ,EVCR_MASK = 0x000000FF
     ;
   };
   // External interrupt configuration register 1
@@ -190,6 +192,7 @@ struct AFIO
     ,EXTI3_PE = 0x00004000 // PE[x] pin
     ,EXTI3_PF = 0x00005000 // PF[x] pin
     ,EXTI3_PG = 0x00006000 // PG[x] pin
+    ,EXTICR1_MASK = 0x0000FFFF
     ;
   };
   // External interrupt configuration register 2
@@ -236,6 +239,7 @@ struct AFIO
     ,EXTI7_PE = 0x00004000 // PE[x] pin
     ,EXTI7_PF = 0x00005000 // PF[x] pin
     ,EXTI7_PG = 0x00006000 // PG[x] pin
+    ,EXTICR2_MASK = 0x0000FFFF
     ;
   };
   // External interrupt configuration register 3
@@ -282,6 +286,7 @@ struct AFIO
     ,EXTI7_PE = 0x00004000 // PE[x] pin
     ,EXTI7_PF = 0x00005000 // PF[x] pin
     ,EXTI7_PG = 0x00006000 // PG[x] pin
+    ,EXTICR3_MASK = 0x0000FFFF
     ;
   };
   // External interrupt configuration register 4
@@ -328,6 +333,7 @@ struct AFIO
     ,EXTI15_PE = 0x00004000 // PE[x] pin
     ,EXTI15_PF = 0x00005000 // PF[x] pin
     ,EXTI15_PG = 0x00006000 // PG[x] pin
+    ,EXTICR4_MASK = 0x0000FFFF
     ;
   };
   // AF remap and debug I/O configuration register 2
@@ -358,6 +364,7 @@ struct AFIO
     ,FSMC_NADV_MASK = 0x00000400
     ,FSMC_NADV_POS = 10
     ,FSMC_NADV = 0x00000400
+    ,MAPR2_MASK = 0x000007E0
     ;
   };
 }; // struct AFIO

@@ -43,6 +43,7 @@ struct TIM12
     ,CKD_1 = 0x00000000 // tDTS = tCK_INT
     ,CKD_2 = 0x00000100 // tDTS = 2 * tCK_INT
     ,CKD_4 = 0x00000200 // tDTS = 4 * tCK_INT
+    ,CR1_MASK = 0x0000038F
     ;
   };
   // Slave mode control register
@@ -71,6 +72,7 @@ struct TIM12
     ,TS_TI1FP1 = 0x00000050 // Filtered Timer Input 1 (TI1FP1)
     ,TS_TI2FP2 = 0x00000060 // Filtered Timer Input 2 (TI2FP2)
     ,TS_ETRF = 0x00000070 // External Trigger input (ETRF)
+    ,SMCR_MASK = 0x00000077
     ;
   };
   // DMA/interrupt enable register
@@ -93,6 +95,7 @@ struct TIM12
     ,TIE_MASK = 0x00000040
     ,TIE_POS = 6
     ,TIE = 0x00000040
+    ,DIER_MASK = 0x00000047
     ;
   };
   // Status register
@@ -123,6 +126,7 @@ struct TIM12
     ,CC2OF_MASK = 0x00000400
     ,CC2OF_POS = 10
     ,CC2OF = 0x00000400
+    ,SR_MASK = 0x00000647
     ;
   };
   // Event generation register
@@ -145,6 +149,7 @@ struct TIM12
     ,TG_MASK = 0x00000040
     ,TG_POS = 6
     ,TG = 0x00000040
+    ,EGR_MASK = 0x00000047
     ;
   };
   // Capture/compare mode register 2
@@ -175,6 +180,7 @@ struct TIM12
     ,CC2NP_MASK = 0x00000080
     ,CC2NP_POS = 7
     ,CC2NP = 0x00000080
+    ,CCER_MASK = 0x000000BB
     ;
   };
   // Capture/compare mode register 1
@@ -293,6 +299,7 @@ struct TIM12
     ,IC2F_DTS_DIV32_N5 = 0x0000D000 // fSAMPLING = fDTS / 32, N = 5
     ,IC2F_DTS_DIV32_N6 = 0x0000E000 // fSAMPLING = fDTS / 32, N = 6
     ,IC2F_DTS_DIV32_N8 = 0x0000F000 // fSAMPLING = fDTS / 32, N = 8
+    ,CCMR1_MASK = 0x0000FFFF
     ;
   };
   // Counter

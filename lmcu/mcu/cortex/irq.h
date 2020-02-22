@@ -97,7 +97,7 @@ void enable_irq()
 
   auto irq_e = [ISER](auto irq)
   {
-    ISER[irq >> 5UL] = (1UL << (irq & 0x1fUL));
+    if(irq >= 0) { ISER[irq >> 5UL] = (1UL << (irq & 0x1fUL)); }
   };
 
   (irq_e(uint32_t(_irq_n)), ...);
@@ -117,7 +117,7 @@ void disable_irq()
 
   auto irq_d = [ICER](auto irq)
   {
-    ICER[irq >> 5UL] = (1UL << (irq & 0x1fUL));
+    if(irq >= 0) { ICER[irq >> 5UL] = (1UL << (irq & 0x1fUL)); }
   };
 
   (irq_d(uint32_t(_irq_n)), ...);
@@ -134,28 +134,30 @@ void set_priority()
 {
   using namespace device;
 
-  constexpr uint32_t priority_group = uint32_t(_irq_config.group) & 0x7UL;
+  if constexpr(_irq_n != irqn::invalid_irqn) {
+    constexpr uint32_t priority_group = uint32_t(_irq_config.group) & 0x7UL;
 
-  constexpr uint32_t preempt_prio_bits =
-    ((7 - priority_group) > nvic_prio_bits)? nvic_prio_bits : 7 - priority_group
-  ;
+    constexpr uint32_t preempt_prio_bits =
+      ((7 - priority_group) > nvic_prio_bits)? nvic_prio_bits : 7 - priority_group
+    ;
 
-  constexpr uint32_t sub_prio_bits =
-    ((priority_group + nvic_prio_bits) < 7)? 0 : (priority_group - 7) + nvic_prio_bits
-  ;
+    constexpr uint32_t sub_prio_bits =
+      ((priority_group + nvic_prio_bits) < 7)? 0 : (priority_group - 7) + nvic_prio_bits
+    ;
 
-  constexpr auto priority =
-    ((uint32_t(_irq_config.preempt) & ((1UL << preempt_prio_bits) - 1UL)) <<  sub_prio_bits) |
-    (uint32_t(_irq_config.sub) & ((1UL << sub_prio_bits) - 1UL))
-  ;
+    constexpr auto priority =
+      ((uint32_t(_irq_config.preempt) & ((1UL << preempt_prio_bits) - 1UL)) <<  sub_prio_bits) |
+      (uint32_t(_irq_config.sub) & ((1UL << sub_prio_bits) - 1UL))
+    ;
 
-  if constexpr(int32_t(_irq_n) < 0) {
-    auto SHP = reinterpret_cast<volatile uint8_t*>(NVIC::SHPR0::base);
-    SHP[(uint32_t(_irq_n) & 0xfUL) - 4UL] = (priority << (8UL - nvic_prio_bits)) & 0xffUL;
-  }
-  else {
-    auto IP = reinterpret_cast<volatile uint8_t*>(NVIC::IPR0::base);
-    IP[uint32_t(_irq_n)] = (priority << (8UL - nvic_prio_bits)) & 0xffUL;
+    if constexpr(int32_t(_irq_n) < 0) {
+      auto SHP = reinterpret_cast<volatile uint8_t*>(NVIC::SHPR0::base);
+      SHP[(uint32_t(_irq_n) & 0xfUL) - 4UL] = (priority << (8UL - nvic_prio_bits)) & 0xffUL;
+    }
+    else {
+      auto IP = reinterpret_cast<volatile uint8_t*>(NVIC::IPR0::base);
+      IP[uint32_t(_irq_n)] = (priority << (8UL - nvic_prio_bits)) & 0xffUL;
+    }
   }
 }
 

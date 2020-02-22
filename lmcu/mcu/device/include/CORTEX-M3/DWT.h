@@ -69,6 +69,7 @@ struct DWT
     // Number of comparators field. (bits: 31-28)
     ,NUMCOMP_MASK = 0xF0000000
     ,NUMCOMP_POS = 28
+    ,CTRL_MASK = 0xF07F1FFF
     ;
   };
   // Current PC Sampler Cycle Count Register
@@ -80,6 +81,7 @@ struct DWT
     // Current CPI counter value. (bits: 7-0)
      CPICNT_MASK = 0x000000FF
     ,CPICNT_POS = 0
+    ,CPICR_MASK = 0x000000FF
     ;
   };
   // Exception Overhead Count Register
@@ -89,6 +91,7 @@ struct DWT
     // Current interrupt overhead counter value. (bits: 7-0)
      INTCNT_MASK = 0x000000FF
     ,INTCNT_POS = 0
+    ,EOCR_MASK = 0x000000FF
     ;
   };
   // Sleep Count Register
@@ -98,6 +101,7 @@ struct DWT
     // Sleep counter. Counts the number of cycles during which the processor is sleeping. (bits: 7-0)
      SLEEPCNT_MASK = 0x000000FF
     ,SLEEPCNT_POS = 0
+    ,SCR_MASK = 0x000000FF
     ;
   };
   // LSU Count Register
@@ -107,6 +111,7 @@ struct DWT
     // LSU counter. This counts the total number of cycles that the processor is processing an LSU operation.  (bits: 7-0)
      LSUCNT_MASK = 0x000000FF
     ,LSUCNT_POS = 0
+    ,LSUCR_MASK = 0x000000FF
     ;
   };
   // Fold Count Register
@@ -116,6 +121,7 @@ struct DWT
     // This counts the total number folded instructions. (bits: 7-0)
      FOLDCNT_MASK = 0x000000FF
     ,FOLDCNT_POS = 0
+    ,FCR_MASK = 0x000000FF
     ;
   };
   // Program Counter Sample Register
@@ -155,6 +161,7 @@ struct DWT
     ,FUNCTION_FN9 = 0x00000009 // ETM trigger on read
     ,FUNCTION_FN10 = 0x0000000A // ETM trigger on write
     ,FUNCTION_FN11 = 0x0000000B // ETM trigger on read or write
+    ,FR0_MASK = 0x0000000F
     ;
   };
 }; // struct DWT

@@ -2,6 +2,7 @@
 #pragma once
 #include <cstdint>
 #include <cstddef>
+#include <utility>
 
 namespace lmcu::device {
 

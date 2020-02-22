@@ -52,6 +52,7 @@ struct PWR
     ,DBP_MASK = 0x00000100
     ,DBP_POS = 8
     ,DBP = 0x00000100
+    ,CR_MASK = 0x000001FF
     ;
   };
   // Power control/status register
@@ -74,6 +75,7 @@ struct PWR
     ,EWUP_MASK = 0x00000100
     ,EWUP_POS = 8
     ,EWUP = 0x00000100
+    ,CSR_MASK = 0x00000107
     ;
   };
 }; // struct PWR

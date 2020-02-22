@@ -37,6 +37,7 @@ struct TIM6
     ,ARPE_MASK = 0x00000080
     ,ARPE_POS = 7
     ,ARPE = 0x00000080
+    ,CR1_MASK = 0x0000008F
     ;
   };
   // Control register 2
@@ -54,6 +55,7 @@ struct TIM6
     ,MMS_CMP_OC2REF = 0x00000050 // Compare - OC2REF signal is used as trigger output (TRGO)
     ,MMS_CMP_OC3REF = 0x00000060 // Compare - OC3REF signal is used as trigger output (TRGO)
     ,MMS_CMP_OC4REF = 0x00000070 // Compare - OC4REF signal is used as trigger output (TRGO)
+    ,CR2_MASK = 0x00000070
     ;
   };
   // DMA/interrupt enable register
@@ -68,6 +70,7 @@ struct TIM6
     ,UDE_MASK = 0x00000100
     ,UDE_POS = 8
     ,UDE = 0x00000100
+    ,DIER_MASK = 0x00000101
     ;
   };
   // Status register
@@ -78,6 +81,7 @@ struct TIM6
      UIF_MASK = 0x00000001
     ,UIF_POS = 0
     ,UIF = 0x00000001
+    ,SR_MASK = 0x00000001
     ;
   };
   // Event generation register
@@ -88,6 +92,7 @@ struct TIM6
      UG_MASK = 0x00000001
     ,UG_POS = 0
     ,UG = 0x00000001
+    ,EGR_MASK = 0x00000001
     ;
   };
   // Counter

@@ -1,4 +1,5 @@
 nvic_irqn:
+  invalid_irqn: -15
   nmi: -14
   hard_fault: -13
   mem_manage: -12

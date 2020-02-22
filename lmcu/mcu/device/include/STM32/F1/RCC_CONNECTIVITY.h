@@ -71,6 +71,7 @@ struct RCC
     ,PLLON_MASK = 0x01000000
     ,PLLON_POS = 24
     ,PLLON = 0x01000000
+    ,CR_MASK = 0x3F0FFFFB
     ;
   };
   // Clock configuration register
@@ -158,6 +159,7 @@ struct RCC
     ,PLLSRC_MASK = 0x00010000
     ,PLLSRC_POS = 16
     ,PLLSRC = 0x00010000
+    ,CFGR_MASK = 0x0F7FFFFF
     ;
   };
   // Clock interrupt register
@@ -256,6 +258,7 @@ struct RCC
     ,CSSC_MASK = 0x00800000
     ,CSSC_POS = 23
     ,CSSC = 0x00800000
+    ,CIR_MASK = 0x00FF7FFF
     ;
   };
   // APB2 peripheral reset register
@@ -306,6 +309,7 @@ struct RCC
     ,USART1RST_MASK = 0x00004000
     ,USART1RST_POS = 14
     ,USART1RST = 0x00004000
+    ,APB2RSTR_MASK = 0x00005E7D
     ;
   };
   // APB1 peripheral reset register
@@ -392,6 +396,7 @@ struct RCC
     ,DACRST_MASK = 0x20000000
     ,DACRST_POS = 29
     ,DACRST = 0x20000000
+    ,APB1RSTR_MASK = 0x3E7EC83F
     ;
   };
   // AHB peripheral clock enable register
@@ -434,6 +439,7 @@ struct RCC
     ,CRCEN_MASK = 0x00000040
     ,CRCEN_POS = 6
     ,CRCEN = 0x00000040
+    ,AHBENR_MASK = 0x0001D057
     ;
   };
   // APB2 peripheral clock enable register
@@ -484,6 +490,7 @@ struct RCC
     ,USART1EN_MASK = 0x00004000
     ,USART1EN_POS = 14
     ,USART1EN = 0x00004000
+    ,APB2ENR_MASK = 0x00005E7D
     ;
   };
   // APB1 peripheral clock enable register
@@ -570,6 +577,7 @@ struct RCC
     ,DACEN_MASK = 0x20000000
     ,DACEN_POS = 29
     ,DACEN = 0x20000000
+    ,APB1ENR_MASK = 0x3E7EC83F
     ;
   };
   // AHB peripheral clock reset register
@@ -584,6 +592,7 @@ struct RCC
     ,ETHMACRST_MASK = 0x00004000
     ,ETHMACRST_POS = 14
     ,ETHMACRST = 0x00004000
+    ,AHBRSTR_MASK = 0x00005000
     ;
   };
   // Clock configuration register2
@@ -664,6 +673,7 @@ struct RCC
     ,I2S3SRC_MASK = 0x00040000
     ,I2S3SRC_POS = 18
     ,I2S3SRC = 0x00040000
+    ,CFGR2_MASK = 0x0007FFFF
     ;
   };
   // Backup domain control register
@@ -697,6 +707,7 @@ struct RCC
     ,BDRST_MASK = 0x00010000
     ,BDRST_POS = 16
     ,BDRST = 0x00010000
+    ,BDCR_MASK = 0x00018307
     ;
   };
   // Control/status register
@@ -739,6 +750,7 @@ struct RCC
     ,LPWRRSTF_MASK = 0x80000000
     ,LPWRRSTF_POS = 31
     ,LPWRRSTF = 0x80000000
+    ,CSR_MASK = 0xFD000003
     ;
   };
 }; // struct RCC
