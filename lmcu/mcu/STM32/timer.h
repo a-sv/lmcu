@@ -780,7 +780,7 @@ struct _dev<id::tim10, _args...>
 };
 
 /**
- * Timers 1, 8, 2, 3, 4, 5 input channel config.
+ * Timers input channel config.
 */
 template<auto ..._args>
 struct _input<id::tim1, _args...>
@@ -1055,6 +1055,30 @@ struct _input<id::tim4, _args...> : _input<id::tim1, _args...>
 template<auto ..._args>
 struct _input<id::tim5, _args...> : _input<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim5; };
+
+template<auto ..._args>
+struct _input<id::tim9, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim9; };
+
+template<auto ..._args>
+struct _input<id::tim12, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim12; };
+
+template<auto ..._args>
+struct _input<id::tim10, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim10; };
+
+template<auto ..._args>
+struct _input<id::tim11, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim11; };
+
+template<auto ..._args>
+struct _input<id::tim13, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim13; };
+
+template<auto ..._args>
+struct _input<id::tim14, _args...> : _input<id::tim1, _args...>
+{ static constexpr auto id = timer::id::tim14; };
 
 template<auto ..._args>
 struct _output<id::tim8, _args...> : _output<id::tim1, _args...>
@@ -1998,7 +2022,7 @@ void configure_tim_10_11_13_14()
 }
 
 template<typename _cfg>
-void configure_tim_1_8_2_3_4_5_in_channel()
+void configure_tim_input_channel()
 {
   using inst = inst_t<_cfg::id>;
 
@@ -2322,18 +2346,7 @@ void configure()
     if constexpr(cfg::dev_class == dev_class::timer_in_channel) {
       static_assert(cfg::id != id::tim6 && cfg::id != id::tim7, "Basic timers does not have input "
                                                                 "channels");
-
-      if constexpr(cfg::id == id::tim1 || cfg::id == id::tim8 || cfg::id == id::tim2 ||
-                   cfg::id == id::tim3 || cfg::id == id::tim4 || cfg::id == id::tim5) {
-        detail::configure_tim_1_8_2_3_4_5_in_channel<cfg>();
-      }
-      else
-      if constexpr(cfg::id == id::tim9 || cfg::id == id::tim12) {
-      }
-      else
-      if constexpr(cfg::id == id::tim10 || cfg::id == id::tim11 || cfg::id == id::tim13 ||
-                   cfg::id == id::tim14) {
-      }
+      detail::configure_tim_input_channel<cfg>();
     }
     else
     if constexpr(cfg::dev_class == dev_class::timer_out_channel) {
