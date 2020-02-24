@@ -58,5 +58,5 @@ int main()
 
 void isr::sys_tick_irq()
 {
-  led::toggle();
+  gpio::toggle<led>();
 }

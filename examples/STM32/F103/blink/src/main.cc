@@ -30,7 +30,7 @@ int main()
   gpio::configure<led>();
 
   while(true) {
-    led::toggle();
+    gpio::toggle<led>();
     delay::ms(500);
   }
 

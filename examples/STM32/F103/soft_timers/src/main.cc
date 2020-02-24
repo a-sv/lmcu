@@ -59,7 +59,7 @@ int main()
   while(true) {
     if(tim.expired()) {
       tim.start(500);
-      led::toggle();
+      gpio::toggle<led>();
     }
 
     //
@@ -67,7 +67,7 @@ int main()
     //
     //if(dwttim.expired()) {
     //  dwttim.start<delay::units::ms>(500);
-    //  led::toggle();
+    //  gpio::toggle<led>();
     //}
   }
 

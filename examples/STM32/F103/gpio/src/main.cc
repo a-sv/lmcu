@@ -37,7 +37,7 @@ int main()
   uint32_t low_cnt = 0;
 
   while(true) {
-    if(key::get()) {
+    if(gpio::read<key>()) {
       // High level on 'key' pin.
       low_cnt = 0;
     }
@@ -50,10 +50,10 @@ int main()
 
     if(low_cnt >= filter_val) {
       // Key pressed!
-      led::set(false); // Set low level on 'led' pin. (led on)
+      gpio::set<led>(false); // Set low level on 'led' pin. (led on)
     }
     else {
-      led::set(true); // Set high level on 'led' pin. (led off)
+      gpio::set<led>(true); // Set high level on 'led' pin. (led off)
     }
 
     delay::ms(20);

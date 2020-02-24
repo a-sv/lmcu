@@ -51,24 +51,6 @@ struct pin
     std::tuple<gpio::port, gpio::pin_n, gpio::mode, gpio::pull, gpio::speed, _af>,
     _args...
   >());
-
-  /**
-   * @brief Set pin output state
-   *
-   * @param val - pin state (true == 1, false == 0)
-  */
-  lmcu_static_inline void set(bool val);
-
-  /**
-   * @brief Toggle pin output state
-  */
-  lmcu_static_inline void toggle();
-
-  /**
-   * @brief In output mode returns current pin output state (ODR), in input / analog mode reads
-   *        input signal on the pin (IDR).
-  */
-  lmcu_static_inline bool get();
 };
 
 /**
@@ -182,37 +164,34 @@ template<port _port>
 lmcu_inline void toggle() { detail::inst_t<_port>::ODR::ref() ^= 0xffff; }
 
 /**
- * @brief Returns current port output state (ODR).
+ * @brief Returns current port or pin output state (ODR).
  *
- * @tparam _port - gpio port
+ * @tparam _p - gpio port or pin
 */
-template<port _port>
-lmcu_inline uint32_t get() { return detail::inst_t<_port>::ODR::get(); }
-
-/**
- * @brief Reads input signal on the port (IDR).
- *
- * @tparam _port - gpio port
-*/
-template<port _port>
-lmcu_inline uint32_t read() { return detail::inst_t<_port>::IDR::get(); }
-
-template<typename _af, auto ..._args>
-void pin<_af, _args...>::set(bool val) { gpio::set<pin>(val); }
-
-template<typename _af, auto ..._args>
-void pin<_af, _args...>::toggle() { gpio::toggle<pin>(); }
-
-template<typename _af, auto ..._args>
-bool pin<_af, _args...>::get()
+template<typename _p>
+lmcu_inline auto get()
 {
-  using inst = detail::inst_t<port>;
-
-  if constexpr(mode == gpio::mode::input || mode == gpio::mode::analog) {
-    return (inst::IDR::get() & mask) != 0;
+  if constexpr(std::is_same_v<_p, port>) {
+    return detail::inst_t<_p{}>::ODR::get();
   }
   else {
-    return (inst::ODR::get() & mask) != 0;
+    return (detail::inst_t<_p::port>::ODR::get() & _p::mask) != 0;
+  }
+}
+
+/**
+ * @brief Reads input signal on the port or pin (IDR).
+ *
+ * @tparam _p - gpio port or pin
+*/
+template<typename _p>
+lmcu_inline auto read()
+{
+  if constexpr(std::is_same_v<_p, port>) {
+    return detail::inst_t<_p{}>::IDR::get();
+  }
+  else {
+    return (detail::inst_t<_p::port>::IDR::get() & _p::mask) != 0;
   }
 }
 
