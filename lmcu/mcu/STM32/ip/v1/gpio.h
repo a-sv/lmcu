@@ -1,9 +1,58 @@
 #pragma once
-#include <lmcu/dev/mcu>
+#include <lmcu/dev/rcc>
+#include <lmcu/dev/gpio>
 #include <lmcu/dev/afio>
-#include "../gpio.h"
+#include <lmcu/common>
 
 namespace lmcu::gpio {
+
+enum class port { A, B, C, D, E, F, G, H, I, J, K };
+
+enum class mode
+{
+  input,
+  output_open_drain,
+  output_push_pull,
+  analog,
+  af_input,
+  af_open_drain,
+  af_push_pull
+};
+
+enum class pull { no_pull, up, down };
+
+enum class speed { low, medium, high, very_high };
+
+enum class pin_n : uint32_t { };
+
+// not connected pin
+struct not_connected
+{
+  static constexpr auto dev_class = lmcu::dev_class::gpio_pin;
+  static constexpr auto nc        = true;
+};
+
+template<typename _af, auto ..._args>
+struct pin
+{
+  static constexpr auto dev_class = lmcu::dev_class::gpio_pin;
+  static constexpr auto port      = option::get<gpio::port, _args...>();
+  static constexpr auto n         = option::get_u<gpio::pin_n, _args...>();
+  static constexpr auto mask      = 1UL << n;
+  static constexpr auto mode      = option::get<gpio::mode, _args...>(gpio::mode::analog);
+  static constexpr auto pull      = option::get<gpio::pull, _args...>(gpio::pull::no_pull);
+  static constexpr auto speed     = option::get<gpio::speed, _args...>(gpio::speed::low);
+  static constexpr auto af        = option::get<_af, _args...>();
+  static constexpr auto nc        = false;
+
+  static_assert(!option::is_null<port>() && !option::is_null<n>(), "options 'port' and 'pin_n' is "
+                                                                   "required!");
+
+  static_assert(option::check<
+    std::tuple<gpio::port, gpio::pin_n, gpio::mode, gpio::pull, gpio::speed, _af>,
+    _args...
+  >());
+};
 
 enum class remap
 {
@@ -146,6 +195,188 @@ enum class remap
 };
 
 /**
+ * @brief Returns 'true' if ports exists on current device
+ *
+ * @tparam _ports - port list
+*/
+template <port ..._ports>
+constexpr bool port_exists() noexcept;
+
+// ------------------------------------------------------------------------------------------------
+namespace detail {
+// ------------------------------------------------------------------------------------------------
+
+template<port _port>
+struct inst;
+
+template<>
+struct inst<port::A> { using type = device::GPIOA; };
+
+template<>
+struct inst<port::B> { using type = device::GPIOB; };
+
+template<>
+struct inst<port::C> { using type = device::GPIOC; };
+
+template<>
+struct inst<port::D> { using type = device::GPIOD; };
+
+template<>
+struct inst<port::E> { using type = device::GPIOE; };
+
+template<>
+struct inst<port::F> { using type = device::GPIOF; };
+
+template<>
+struct inst<port::G> { using type = device::GPIOG; };
+
+template<port _port>
+using inst_t = typename inst<_port>::type;
+
+template<port _port, typename ..._pins>
+constexpr uint32_t pin_mask()
+{
+  auto bits = [](auto pin) -> uint32_t
+  {
+    return pin.port == _port? pin.mask : 0;
+  };
+  return (bits(_pins{}) | ...);
+}
+
+template<port _port, typename ..._pins>
+lmcu_inline void set([[maybe_unused]] bool val)
+{
+  constexpr auto msk = pin_mask<_port, _pins...>();
+  if constexpr(msk != 0) {
+    inst_t<_port>::BSRR::set(val? msk : msk << 16);
+  }
+}
+
+template<port _port, typename ..._pins>
+lmcu_inline void toggle()
+{
+  constexpr auto msk = pin_mask<_port, _pins...>();
+  if constexpr(msk != 0) {
+    inst_t<_port>::ODR::ref() ^= msk;
+  }
+}
+
+template<typename _pin>
+constexpr bool is_input(_pin&& pin) noexcept
+{
+  return pin.mode == mode::input || pin.mode == mode::analog || pin.mode == mode::af_input;
+}
+
+template<bool _low, port _port, typename ..._pins>
+constexpr uint32_t cr_bits()
+{
+  auto bits = [](auto&& p) -> uint32_t
+  {
+    if(p.port == _port && ((_low && p.n <= 7) || (!_low && p.n >= 8))) {
+      const uint32_t
+      m_ofs = (_low? p.n : p.n - 8) * 4,
+      c_ofs = m_ofs + 2
+      ;
+
+      if(is_input(p)) {
+        if(p.mode != mode::analog) {
+          if(p.pull == pull::no_pull) {
+            return 1UL << c_ofs; // floating input
+          }
+          return 2UL << c_ofs; // input with pull-up / pull-down
+        }
+      }
+      else {
+        uint32_t m = 0, c = 0;
+
+        switch(p.speed)
+        {
+        case speed::low: m = 2; break; // 2 MHz
+        case speed::medium: m = 1; break; // 10 MHz
+        default: m = 3; break; // 50 Mhz
+        }
+
+        switch(p.mode)
+        {
+        case mode::output_open_drain: c = 1; break; // general purpose output open-drain
+        case mode::af_push_pull: c = 2; break; // alternate function output push-pull
+        case mode::af_open_drain: c = 3; break; // alternate function output open-drain
+        default: break;
+        }
+
+        return (c << c_ofs) | (m << m_ofs);
+      }
+    }
+
+    return 0;
+  };
+
+  return (bits(_pins{}) | ...);
+}
+
+template<bool _low, port _port, typename ..._pins>
+constexpr uint32_t cr_mask()
+{
+  auto bits = [](auto&& p) -> uint32_t
+  {
+    if(p.port == _port && ((_low && p.n <= 7) || (!_low && p.n >= 8))) {
+      const uint32_t m_ofs = (_low? p.n : p.n - 8) * 4;
+      return 0xfUL << m_ofs;
+    }
+    return 0;
+  };
+
+  return (bits(_pins{}) | ...);
+}
+
+template<port _port, typename ..._pins>
+constexpr uint32_t bsrr_bits()
+{
+  auto bits = [](auto&& p) -> uint32_t
+  {
+    if(_port == p.port && is_input(p)) {
+      if(p.pull == pull::up) {
+        return 1UL << p.n;
+      }
+      else
+      if(p.pull == pull::down) {
+        return 1UL << (p.n + 16);
+      }
+    }
+    return 0;
+  };
+
+  return (bits(_pins{}) | ...);
+}
+
+template<port _port, typename ..._pins>
+void configure_port()
+{
+  using namespace device;
+
+  constexpr auto crl_msk = detail::cr_mask<true, _port, _pins...>();
+  if constexpr(crl_msk != 0) {
+    inst_t<_port>::CRL::clr_b(crl_msk);
+    inst_t<_port>::CRL::set_b(detail::cr_bits<true, _port, _pins...>());
+  }
+
+  constexpr auto crh_msk = detail::cr_mask<false, _port, _pins...>();
+  if constexpr(crh_msk != 0) {
+    inst_t<_port>::CRH::clr_b(crh_msk);
+    inst_t<_port>::CRH::set_b(detail::cr_bits<false, _port, _pins...>());
+  }
+
+  constexpr auto bsrr = bsrr_bits<_port, _pins...>();
+  if constexpr(bsrr != 0) {
+    inst_t<_port>::BSRR::set(bsrr);
+  }
+}
+
+// ------------------------------------------------------------------------------------------------
+} // namespace detail
+// ------------------------------------------------------------------------------------------------
+
+/**
  * @brief I/O ports clock enable
 */
 template<port ..._ports>
@@ -254,6 +485,20 @@ void reset()
   };
 
   (port_rst(_ports), ...);
+}
+
+template<typename ..._pins>
+void configure()
+{
+  static_assert(port_exists<_pins::port...>(), "port does not exists in this device");
+
+  detail::configure_port<port::A, _pins...>();
+  detail::configure_port<port::B, _pins...>();
+  detail::configure_port<port::C, _pins...>();
+  detail::configure_port<port::D, _pins...>();
+  detail::configure_port<port::E, _pins...>();
+  detail::configure_port<port::F, _pins...>();
+  detail::configure_port<port::G, _pins...>();
 }
 
 /**
@@ -493,158 +738,96 @@ lmcu_inline void remap()
   }
 }
 
-// ------------------------------------------------------------------------------------------------
-namespace detail {
-// ------------------------------------------------------------------------------------------------
-
-template<>
-struct inst<port::A> { using type = device::GPIOA; };
-
-template<>
-struct inst<port::B> { using type = device::GPIOB; };
-
-template<>
-struct inst<port::C> { using type = device::GPIOC; };
-
-template<>
-struct inst<port::D> { using type = device::GPIOD; };
-
-template<>
-struct inst<port::E> { using type = device::GPIOE; };
-
-template<>
-struct inst<port::F> { using type = device::GPIOF; };
-
-template<>
-struct inst<port::G> { using type = device::GPIOG; };
-
-template<typename _pin>
-constexpr bool is_input(_pin&& pin) noexcept
-{
-  return pin.mode == mode::input || pin.mode == mode::analog || pin.mode == mode::af_input;
-}
-
-template<bool _low, port _port, typename ..._pins>
-constexpr uint32_t cr_bits()
-{
-  auto bits = [](auto&& p) -> uint32_t
-  {
-    if(p.port == _port && ((_low && p.n <= 7) || (!_low && p.n >= 8))) {
-      const uint32_t
-      m_ofs = (_low? p.n : p.n - 8) * 4,
-      c_ofs = m_ofs + 2
-      ;
-
-      if(is_input(p)) {
-        if(p.mode != mode::analog) {
-          if(p.pull == pull::no_pull) {
-            return 1UL << c_ofs; // floating input
-          }
-          return 2UL << c_ofs; // input with pull-up / pull-down
-        }
-      }
-      else {
-        uint32_t m = 0, c = 0;
-
-        switch(p.speed)
-        {
-        case speed::low: m = 2; break; // 2 MHz
-        case speed::medium: m = 1; break; // 10 MHz
-        default: m = 3; break; // 50 Mhz
-        }
-
-        switch(p.mode)
-        {
-        case mode::output_open_drain: c = 1; break; // general purpose output open-drain
-        case mode::af_push_pull: c = 2; break; // alternate function output push-pull
-        case mode::af_open_drain: c = 3; break; // alternate function output open-drain
-        default: break;
-        }
-
-        return (c << c_ofs) | (m << m_ofs);
-      }
-    }
-
-    return 0;
-  };
-
-  return (bits(_pins{}) | ...);
-}
-
-template<bool _low, port _port, typename ..._pins>
-constexpr uint32_t cr_mask()
-{
-  auto bits = [](auto&& p) -> uint32_t
-  {
-    if(p.port == _port && ((_low && p.n <= 7) || (!_low && p.n >= 8))) {
-      const uint32_t m_ofs = (_low? p.n : p.n - 8) * 4;
-      return 0xfUL << m_ofs;
-    }
-    return 0;
-  };
-
-  return (bits(_pins{}) | ...);
-}
-
-template<port _port, typename ..._pins>
-constexpr uint32_t bsrr_bits()
-{
-  auto bits = [](auto&& p) -> uint32_t
-  {
-    if(_port == p.port && is_input(p)) {
-      if(p.pull == pull::up) {
-        return 1UL << p.n;
-      }
-      else
-      if(p.pull == pull::down) {
-        return 1UL << (p.n + 16);
-      }
-    }
-    return 0;
-  };
-
-  return (bits(_pins{}) | ...);
-}
-
-template<port _port, typename ..._pins>
-void configure_port()
-{
-  using namespace device;
-
-  constexpr auto crl_msk = detail::cr_mask<true, _port, _pins...>();
-  if constexpr(crl_msk != 0) {
-    inst_t<_port>::CRL::clr_b(crl_msk);
-    inst_t<_port>::CRL::set_b(detail::cr_bits<true, _port, _pins...>());
-  }
-
-  constexpr auto crh_msk = detail::cr_mask<false, _port, _pins...>();
-  if constexpr(crh_msk != 0) {
-    inst_t<_port>::CRH::clr_b(crh_msk);
-    inst_t<_port>::CRH::set_b(detail::cr_bits<false, _port, _pins...>());
-  }
-
-  constexpr auto bsrr = bsrr_bits<_port, _pins...>();
-  if constexpr(bsrr != 0) {
-    inst_t<_port>::BSRR::set(bsrr);
-  }
-}
-
-// ------------------------------------------------------------------------------------------------
-} // namespace detail
-// ------------------------------------------------------------------------------------------------
-
+/**
+ * @brief Set pin's output state
+ *
+ * @tparam _pins - list of pins
+ * @param  val   - pin state (true == 1, false == 0)
+*/
 template<typename ..._pins>
-void configure()
+lmcu_inline void set(bool val)
 {
-  static_assert(port_exists<_pins::port...>(), "port does not exists in this device");
+  detail::set<port::A, _pins...>(val);
+  detail::set<port::B, _pins...>(val);
+  detail::set<port::C, _pins...>(val);
+  detail::set<port::D, _pins...>(val);
+  detail::set<port::E, _pins...>(val);
+  detail::set<port::F, _pins...>(val);
+  detail::set<port::G, _pins...>(val);
+  detail::set<port::H, _pins...>(val);
+  detail::set<port::I, _pins...>(val);
+  detail::set<port::J, _pins...>(val);
+  detail::set<port::K, _pins...>(val);
+}
 
-  detail::configure_port<port::A, _pins...>();
-  detail::configure_port<port::B, _pins...>();
-  detail::configure_port<port::C, _pins...>();
-  detail::configure_port<port::D, _pins...>();
-  detail::configure_port<port::E, _pins...>();
-  detail::configure_port<port::F, _pins...>();
-  detail::configure_port<port::G, _pins...>();
+/**
+ * @brief Toggle pin's output state
+ *
+ * @tparam _pins - list of pins
+*/
+template<typename ..._pins>
+lmcu_inline void toggle()
+{
+  detail::toggle<port::A, _pins...>();
+  detail::toggle<port::B, _pins...>();
+  detail::toggle<port::C, _pins...>();
+  detail::toggle<port::D, _pins...>();
+  detail::toggle<port::E, _pins...>();
+  detail::toggle<port::F, _pins...>();
+  detail::toggle<port::G, _pins...>();
+  detail::toggle<port::H, _pins...>();
+  detail::toggle<port::I, _pins...>();
+  detail::toggle<port::J, _pins...>();
+  detail::toggle<port::K, _pins...>();
+}
+
+/**
+ * @brief Set port output state
+ *
+ * @tparam _port - GPIO port
+ * @param  val   - bits to set on port
+*/
+template<port _port>
+lmcu_inline void set(uint32_t val) { detail::inst_t<_port>::ODR::set(val); }
+
+/**
+ * @brief Toggle port output state
+ *
+ * @tparam _port - GPIO port
+*/
+template<port _port>
+lmcu_inline void toggle() { detail::inst_t<_port>::ODR::ref() ^= 0xffff; }
+
+/**
+ * @brief Returns current port or pin output state (ODR).
+ *
+ * @tparam _p - gpio port or pin
+*/
+template<typename _p>
+lmcu_inline auto get()
+{
+  if constexpr(std::is_same_v<_p, port>) {
+    return detail::inst_t<_p{}>::ODR::get();
+  }
+  else {
+    return (detail::inst_t<_p::port>::ODR::get() & _p::mask) != 0;
+  }
+}
+
+/**
+ * @brief Reads input signal on the port or pin (IDR).
+ *
+ * @tparam _p - gpio port or pin
+*/
+template<typename _p>
+lmcu_inline auto read()
+{
+  if constexpr(std::is_same_v<_p, port>) {
+    return detail::inst_t<_p{}>::IDR::get();
+  }
+  else {
+    return (detail::inst_t<_p::port>::IDR::get() & _p::mask) != 0;
+  }
 }
 
 } // namespace lmcu::gpio

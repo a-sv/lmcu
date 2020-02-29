@@ -1,5 +1,5 @@
 #pragma once
-#include "gpio.h"
+#include "../ip/v1/gpio.h"
 
 namespace lmcu::gpio {
 

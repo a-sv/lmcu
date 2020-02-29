@@ -20,29 +20,21 @@ struct freq
 enum class reload : uint32_t {};
 
 template<auto ..._args>
-struct module
+struct config
 {
-  struct config
-  {
-    // Counting frequency
-    // NOTICE:
-    //   (systick_clock * 1000) / (freq.ip * 1000 + freq.fp) - 1 must be <= 0xffffff
-    static constexpr auto freq = option::get<systick::freq, _args...>(systick::freq{});
-    // SysTick reload value (if given will be used instead 'freq')
-    static constexpr auto reload = option::get_u<systick::reload, _args...>();
-    // Enable SysTick interrupt
-    static constexpr auto irq = option::get<systick::irq, _args...>();
+  // Counting frequency
+  // NOTICE:
+  //   (systick_clock * 1000) / (freq.ip * 1000 + freq.fp) - 1 must be <= 0xffffff
+  static constexpr auto freq = option::get<systick::freq, _args...>(systick::freq{});
+  // SysTick reload value (if given will be used instead 'freq')
+  static constexpr auto reload = option::get_u<systick::reload, _args...>();
+  // Enable SysTick interrupt
+  static constexpr auto irq = option::get<systick::irq, _args...>();
 
-    static_assert(option::check<
-      std::tuple<systick::freq, systick::reload, systick::irq>,
-      _args...
-    >());
-  };
-
-  /**
-   * @brief Return current counter value
-  */
-  static inline uint32_t value();
+  static_assert(option::check<
+    std::tuple<systick::freq, systick::reload, systick::irq>,
+    _args...
+  >());
 };
 
 /**
@@ -58,38 +50,36 @@ void off() { device::NVIC::STCSR::clr_b(device::NVIC::STCSR::ENABLE); }
 /**
  * @brief Apply module config
 */
-template<typename _module>
+template<typename _cfg>
 void configure()
 {
   using namespace device;
-  using cfg = typename _module::config;
 
-  if constexpr(!option::is_null<cfg::irq>()) {
-    nvic::set_priority<device::irqn::sys_tick, cfg::irq>();
+  if constexpr(!option::is_null<_cfg::irq>()) {
+    nvic::set_priority<device::irqn::sys_tick, _cfg::irq>();
   }
 
   const uint32_t r = []
   {
-    if constexpr(option::is_null<cfg::reload>()) {
-      if constexpr(cfg::freq.fp == 0) {
-        return rcc::clock::systick() / cfg::freq.ip - 1;
+    if constexpr(option::is_null<_cfg::reload>()) {
+      if constexpr(_cfg::freq.fp == 0) {
+        return rcc::clock::systick() / _cfg::freq.ip - 1;
       }
       else {
         return (uint64_t(rcc::clock::systick()) * 1000) /
-               (uint64_t(cfg::freq.ip) * 1000 + cfg::freq.fp) - 1;
+               (uint64_t(_cfg::freq.ip) * 1000 + _cfg::freq.fp) - 1;
       }
     }
     else {
-      return cfg::reload;
+      return _cfg::reload;
     }
   }();
 
   NVIC::STRVR::set(r & NVIC::STRVR::RELOAD_MASK);
   NVIC::STCVR::set(r & NVIC::STCVR::CURRENT_MASK);
-  NVIC::STCSR::set_b(option::is_null<cfg::irq>()? 0 : NVIC::STCSR::TICKINT);
+  NVIC::STCSR::set_b(option::is_null<_cfg::irq>()? 0 : NVIC::STCSR::TICKINT);
 }
 
-template<auto ..._args>
-uint32_t module<_args...>::value() { return device::NVIC::STCVR::get(); }
+lmcu_static_inline uint32_t value() { return device::NVIC::STCVR::get(); }
 
 } // namespace lmcu::systick

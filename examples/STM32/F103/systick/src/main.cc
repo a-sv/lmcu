@@ -18,7 +18,7 @@ using clk_conf = rcc::config<
   // ,rcc::systick_div::_8
 >;
 
-using stk = systick::module<
+using stk = systick::config<
   // frequency: 10.000Hz (if this parameter is not set, SysTick will be
   //                      configured at 1000.000Hz)
   // NOTICE:

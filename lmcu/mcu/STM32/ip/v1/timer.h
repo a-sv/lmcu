@@ -392,19 +392,19 @@ struct trg_com_irq : nvic::irq_config {};
 struct cc_irq : nvic::irq_config {};
 
 template<id _id, auto ..._args>
-struct _dev;
+struct _config;
 
 template<id _id, auto ..._args>
-struct _input;
+struct _ic_config;
 
 template<id _id, auto ..._args>
-struct _output;
+struct _oc_config;
 
 /**
  * Timers 1, 8 config.
 */
 template<auto ..._args>
-struct _dev<id::tim1, _args...>
+struct _config<id::tim1, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
@@ -545,7 +545,7 @@ struct _dev<id::tim1, _args...>
  * Timers 2, 3, 4, 5 config.
 */
 template<auto ..._args>
-struct _dev<id::tim2, _args...>
+struct _config<id::tim2, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
@@ -646,7 +646,7 @@ struct _dev<id::tim2, _args...>
  * Timers 6, 7 config.
 */
 template<auto ..._args>
-struct _dev<id::tim6, _args...>
+struct _config<id::tim6, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
@@ -687,7 +687,7 @@ struct _dev<id::tim6, _args...>
  * Timers 9, 12 config.
 */
 template<auto ..._args>
-struct _dev<id::tim9, _args...>
+struct _config<id::tim9, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
@@ -739,7 +739,7 @@ struct _dev<id::tim9, _args...>
  * Timers 10, 11, 13, 14 config.
 */
 template<auto ..._args>
-struct _dev<id::tim10, _args...>
+struct _config<id::tim10, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
@@ -783,7 +783,7 @@ struct _dev<id::tim10, _args...>
  * Timers input channel config.
 */
 template<auto ..._args>
-struct _input<id::tim1, _args...>
+struct _ic_config<id::tim1, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer_in_channel;
 
@@ -837,7 +837,7 @@ struct _input<id::tim1, _args...>
  * Timers 1, 8 output channel config.
 */
 template<auto ..._args>
-struct _output<id::tim1, _args...>
+struct _oc_config<id::tim1, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer_out_channel;
 
@@ -900,7 +900,7 @@ struct _output<id::tim1, _args...>
  * Timers 2, 3, 4, 5 output channel config.
 */
 template<auto ..._args>
-struct _output<id::tim2, _args...>
+struct _oc_config<id::tim2, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer_out_channel;
 
@@ -950,7 +950,7 @@ struct _output<id::tim2, _args...>
  * @note For timers 10, 11, 13, 14 options 'channel' and 'out_clear' is not available.
 */
 template<auto ..._args>
-struct _output<id::tim9, _args...>
+struct _oc_config<id::tim9, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer_out_channel;
 
@@ -994,136 +994,137 @@ struct _output<id::tim9, _args...>
 };
 
 /**
- * Timers 10, 11, 13, 14 output channel config
+ * Timers 10, 11, 13, 14 output channel config.
 */
 template<auto ..._args>
-struct _output<id::tim10, _args...> : _output<id::tim9, channel::_1, out_clear::disable, _args...>
+struct _oc_config<id::tim10, _args...> : _oc_config<id::tim9, channel::_1, out_clear::disable,
+                                                    _args...>
 { static constexpr auto id = timer::id::tim10; };
 
 template<auto ..._args>
-struct _dev<id::tim8, _args...> : _dev<id::tim1, _args...>
+struct _config<id::tim8, _args...> : _config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim8; };
 
 template<auto ..._args>
-struct _dev<id::tim3, _args...> : _dev<id::tim2, _args...>
+struct _config<id::tim3, _args...> : _config<id::tim2, _args...>
 { static constexpr auto id = timer::id::tim3; };
 
 template<auto ..._args>
-struct _dev<id::tim4, _args...> : _dev<id::tim2, _args...>
+struct _config<id::tim4, _args...> : _config<id::tim2, _args...>
 { static constexpr auto id = timer::id::tim4; };
 
 template<auto ..._args>
-struct _dev<id::tim5, _args...> : _dev<id::tim2, _args...>
+struct _config<id::tim5, _args...> : _config<id::tim2, _args...>
 { static constexpr auto id = timer::id::tim5; };
 
 template<auto ..._args>
-struct _dev<id::tim7, _args...> : _dev<id::tim6, _args...>
+struct _config<id::tim7, _args...> : _config<id::tim6, _args...>
 { static constexpr auto id = timer::id::tim7; };
 
 template<auto ..._args>
-struct _dev<id::tim12, _args...> : _dev<id::tim9, _args...>
+struct _config<id::tim12, _args...> : _config<id::tim9, _args...>
 { static constexpr auto id = timer::id::tim12; };
 
 template<auto ..._args>
-struct _dev<id::tim11, _args...> : _dev<id::tim10, _args...>
+struct _config<id::tim11, _args...> : _config<id::tim10, _args...>
 { static constexpr auto id = timer::id::tim11; };
 
 template<auto ..._args>
-struct _dev<id::tim13, _args...> : _dev<id::tim10, _args...>
+struct _config<id::tim13, _args...> : _config<id::tim10, _args...>
 { static constexpr auto id = timer::id::tim13; };
 
 template<auto ..._args>
-struct _dev<id::tim14, _args...> : _dev<id::tim10, _args...>
+struct _config<id::tim14, _args...> : _config<id::tim10, _args...>
 { static constexpr auto id = timer::id::tim14; };
 
 template<auto ..._args>
-struct _input<id::tim8, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim8, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim8; };
 
 template<auto ..._args>
-struct _input<id::tim2, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim2, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim2; };
 
 template<auto ..._args>
-struct _input<id::tim3, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim3, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim3; };
 
 template<auto ..._args>
-struct _input<id::tim4, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim4, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim4; };
 
 template<auto ..._args>
-struct _input<id::tim5, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim5, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim5; };
 
 template<auto ..._args>
-struct _input<id::tim9, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim9, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim9; };
 
 template<auto ..._args>
-struct _input<id::tim12, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim12, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim12; };
 
 template<auto ..._args>
-struct _input<id::tim10, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim10, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim10; };
 
 template<auto ..._args>
-struct _input<id::tim11, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim11, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim11; };
 
 template<auto ..._args>
-struct _input<id::tim13, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim13, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim13; };
 
 template<auto ..._args>
-struct _input<id::tim14, _args...> : _input<id::tim1, _args...>
+struct _ic_config<id::tim14, _args...> : _ic_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim14; };
 
 template<auto ..._args>
-struct _output<id::tim8, _args...> : _output<id::tim1, _args...>
+struct _oc_config<id::tim8, _args...> : _oc_config<id::tim1, _args...>
 { static constexpr auto id = timer::id::tim8; };
 
 template<auto ..._args>
-struct _output<id::tim3, _args...> : _output<id::tim2, _args...>
+struct _oc_config<id::tim3, _args...> : _oc_config<id::tim2, _args...>
 { static constexpr auto id = timer::id::tim3; };
 
 template<auto ..._args>
-struct _output<id::tim4, _args...> : _output<id::tim2, _args...>
+struct _oc_config<id::tim4, _args...> : _oc_config<id::tim2, _args...>
 { static constexpr auto id = timer::id::tim4; };
 
 template<auto ..._args>
-struct _output<id::tim5, _args...> : _output<id::tim2, _args...>
+struct _oc_config<id::tim5, _args...> : _oc_config<id::tim2, _args...>
 { static constexpr auto id = timer::id::tim5; };
 
 template<auto ..._args>
-struct _output<id::tim12, _args...> : _output<id::tim9, _args...>
+struct _oc_config<id::tim12, _args...> : _oc_config<id::tim9, _args...>
 { static constexpr auto id = timer::id::tim12; };
 
 template<auto ..._args>
-struct _output<id::tim11, _args...> : _output<id::tim10, _args...>
+struct _oc_config<id::tim11, _args...> : _oc_config<id::tim10, _args...>
 { static constexpr auto id = timer::id::tim11; };
 
 template<auto ..._args>
-struct _output<id::tim13, _args...> : _output<id::tim10, _args...>
+struct _oc_config<id::tim13, _args...> : _oc_config<id::tim10, _args...>
 { static constexpr auto id = timer::id::tim13; };
 
 template<auto ..._args>
-struct _output<id::tim14, _args...> : _output<id::tim10, _args...>
+struct _oc_config<id::tim14, _args...> : _oc_config<id::tim10, _args...>
 { static constexpr auto id = timer::id::tim14; };
 
 template<auto ..._args>
-using dev = _dev<option::get<timer::id, _args...>(), _args...>;
+using config = _config<option::get<timer::id, _args...>(), _args...>;
 
 template<auto ..._args>
-using input = _input<option::get<timer::id, _args...>(), _args...>;
+using ic_config = _ic_config<option::get<timer::id, _args...>(), _args...>;
 
 template<auto ..._args>
-using output = _output<option::get<timer::id, _args...>(), _args...>;
+using oc_config = _oc_config<option::get<timer::id, _args...>(), _args...>;
 
 // ------------------------------------------------------------------------------------------------
-
 namespace detail {
+// ------------------------------------------------------------------------------------------------
 
 template<id _id>
 struct inst;
@@ -2154,17 +2155,16 @@ void configure_tim_9_12_10_11_13_14_out_channel()
   inst::CCER::set(r);
 }
 
-
+// ------------------------------------------------------------------------------------------------
 } // namespace detail
-
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @brief Enable clock on timer periph
+ * @brief Enable clock on timer periph.
  *
- * @tparam _ids - timer id list
+ * @tparam _id - timer id list.
 */
-template<id ..._ids>
+template<id ..._id>
 lmcu_inline void on()
 {
   using namespace device;
@@ -2191,15 +2191,15 @@ lmcu_inline void on()
     }
   };
 
-  (_on(_ids), ...);
+  (_on(_id), ...);
 }
 
 /**
- * @brief Disable clock on timer periph
+ * @brief Disable clock on timer periph.
  *
- * @tparam _ids - timer id list
+ * @tparam _id - timer id list.
 */
-template<id ..._ids>
+template<id ..._id>
 lmcu_inline void off()
 {
   using namespace device;
@@ -2226,15 +2226,15 @@ lmcu_inline void off()
     }
   };
 
-  (_off(_ids), ...);
+  (_off(_id), ...);
 }
 
 /**
- * @brief Reset timer periph
+ * @brief Reset timer periph.
  *
- * @tparam _ids - timer id list
+ * @tparam _id - timer id list.
 */
-template<id ..._ids>
+template<id ..._id>
 lmcu_inline void reset()
 {
   using namespace device;
@@ -2303,15 +2303,20 @@ lmcu_inline void reset()
     }
   };
 
-  (_rst(_ids), ...);
+  (_rst(_id), ...);
 }
 
-template<typename ..._devices>
+/**
+ * @brief Configure timers and input / output channels.
+ *
+ * @tparam _cfg - list of timer and channel configs.
+*/
+template<typename ..._cfg>
 void configure()
 {
-  static auto _do = [](auto dev)
+  static auto _do = [](auto config)
   {
-    using cfg = decltype(dev);
+    using cfg = decltype(config);
 
     static_assert(
       cfg::dev_class == dev_class::timer ||
@@ -2369,20 +2374,21 @@ void configure()
     }
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
- * @brief Enable/disable counter
+ * @brief Enable/disable counter.
  *
- * @param en - true = enable, false = disable
+ * @tparam _cfg - timer config.
+ * @param  en   - true = enable, false = disable.
 */
-template<typename ..._devices>
+template<typename ..._cfg>
 lmcu_static_inline void counter_enable(bool en)
 {
-  auto _do = [&en](auto dev)
+  auto _do = [&en](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer);
@@ -2395,30 +2401,34 @@ lmcu_static_inline void counter_enable(bool en)
     }
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
- * @brief Read event flags
+ * @brief Read event flags.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename _device>
+template<typename _cfg>
 lmcu_static_inline events get_events()
 {
-  static_assert(_device::dev_class == dev_class::timer);
+  static_assert(_cfg::dev_class == dev_class::timer);
 
-  using inst = detail::inst_t<_device::id>;
+  using inst = detail::inst_t<_cfg::id>;
   return flags::from_value<timer::events>(inst::SR);
 }
 
 /**
- * @brief Clear event flags
+ * @brief Clear event flags.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename ..._devices>
+template<typename ..._cfg>
 lmcu_static_inline void clr_events(timer::events evt)
 {
-  auto _do = [&evt](auto dev)
+  auto _do = [&evt](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer);
@@ -2426,18 +2436,20 @@ lmcu_static_inline void clr_events(timer::events evt)
     inst::SR::set(~(flags::value(evt) & inst::SR::SR_MASK));
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
- * @brief Generate events
+ * @brief Generate events.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename ..._devices>
+template<typename ..._cfg>
 lmcu_static_inline void gen_events(timer::events evt)
 {
-  auto _do = [&evt](auto dev)
+  auto _do = [&evt](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer);
@@ -2479,32 +2491,35 @@ lmcu_static_inline void gen_events(timer::events evt)
     inst::EGR::set(r);
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
  * @brief Returns the current counter value.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename _device>
+template<typename _cfg>
 lmcu_static_inline uint16_t get_counter()
 {
-  static_assert(_device::dev_class == dev_class::timer);
+  static_assert(_cfg::dev_class == dev_class::timer);
 
-  using inst = detail::inst_t<_device::id>;
+  using inst = detail::inst_t<_cfg::id>;
   return inst::CNT::get();
 }
 
 /**
  * @brief Set counter value.
  *
- * @param val - counter value.
+ * @tparam _cfg - timer config.
+ * @param  val  - counter value.
 */
-template<typename ..._devices>
+template<typename ..._cfg>
 lmcu_static_inline void set_counter(uint16_t val)
 {
-  auto _do = [&val](auto dev)
+  auto _do = [&val](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer);
@@ -2512,32 +2527,35 @@ lmcu_static_inline void set_counter(uint16_t val)
     inst::CNT::set(val);
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
  * @brief Returns current prescaler value.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename _device>
+template<typename _cfg>
 lmcu_static_inline uint16_t get_prescaler()
 {
-  static_assert(_device::dev_class == dev_class::timer);
+  static_assert(_cfg::dev_class == dev_class::timer);
 
-  using inst = detail::inst_t<_device::id>;
+  using inst = detail::inst_t<_cfg::id>;
   return inst::PSC::get();
 }
 
 /**
  * @brief Set prescaler value.
  *
- * @param val - prescaler value.
+ * @tparam _cfg - timer config.
+ * @param  val - prescaler value.
 */
-template<typename ..._devices>
+template<typename ..._cfg>
 lmcu_static_inline void set_prescaler(uint16_t val)
 {
-  auto _do = [&val](auto dev)
+  auto _do = [&val](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer);
@@ -2545,32 +2563,35 @@ lmcu_static_inline void set_prescaler(uint16_t val)
     inst::PSC::set(val);
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
- * @brief Returns auto-reload register value
+ * @brief Returns auto-reload register value.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename _device>
+template<typename _cfg>
 lmcu_static_inline uint16_t get_period()
 {
-  static_assert(_device::dev_class == dev_class::timer);
+  static_assert(_cfg::dev_class == dev_class::timer);
 
-  using inst = detail::inst_t<_device::id>;
+  using inst = detail::inst_t<_cfg::id>;
   return inst::ARR::get();
 }
 
 /**
- * @brief Set auto-reload register value
+ * @brief Set auto-reload register value.
  *
- * @param val - value
+ * @tparam _cfg - timer config.
+ * @param  val  - value.
 */
-template<typename ..._devices>
+template<typename ..._cfg>
 lmcu_static_inline void set_period(uint16_t val)
 {
-  auto _do = [&val](auto dev)
+  auto _do = [&val](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer);
@@ -2578,31 +2599,35 @@ lmcu_static_inline void set_period(uint16_t val)
     inst::ARR::set(val);
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
- * @brief Returns repetition counter value
+ * @brief Returns repetition counter value.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename _device>
+template<typename _cfg>
 lmcu_static_inline uint8_t get_repetition()
 {
-  static_assert(_device::dev_class == dev_class::timer);
+  static_assert(_cfg::dev_class == dev_class::timer);
 
-  using inst = detail::inst_t<_device::id>;
+  using inst = detail::inst_t<_cfg::id>;
   return inst::RCR::get();
 }
 
 /**
- * @brief Set repetition counter value
- * @param val - value
+ * @brief Set repetition counter value.
+ *
+ * @tparam _cfg - timer config.
+ * @param  val  - value.
 */
-template<typename ..._devices>
+template<typename ..._cfg>
 lmcu_static_inline void set_repetition(uint8_t val)
 {
-  auto _do = [&val](auto dev)
+  auto _do = [&val](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer);
@@ -2610,31 +2635,35 @@ lmcu_static_inline void set_repetition(uint8_t val)
     inst::RCR::set(val);
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
- * @brief Returns dead-time generator duration
+ * @brief Returns dead-time generator duration.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename _device>
+template<typename _cfg>
 lmcu_static_inline uint8_t get_deadtime()
 {
-  static_assert(_device::dev_class == dev_class::timer);
+  static_assert(_cfg::dev_class == dev_class::timer);
 
-  using inst = detail::inst_t<_device::id>;
+  using inst = detail::inst_t<_cfg::id>;
   return inst::BDTR::get() & inst::BDTR::DTG_MASK;
 }
 
 /**
- * @brief Set dead-time generator duration
- * @param val - duration value
+ * @brief Set dead-time generator duration.
+ *
+ * @tparam _cfg - timer config.
+ * @param  val  - duration value.
 */
-template<typename ..._devices>
+template<typename ..._cfg>
 lmcu_static_inline void set_deadtime(uint8_t val)
 {
-  auto _do = [&val](auto dev)
+  auto _do = [&val](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer);
@@ -2643,24 +2672,28 @@ lmcu_static_inline void set_deadtime(uint8_t val)
     inst::BDTR::set_b(val);
   };
 
-  (_do(_devices{}), ...);
+  (_do(_cfg{}), ...);
 }
 
 /**
- * @brief Returns DMA destination address
+ * @brief Returns DMA destination address.
+ *
+ * @tparam _cfg - timer config.
 */
-template<typename _device>
+template<typename _cfg>
 lmcu_static_inline uint32_t dma_address()
 {
-  static_assert(_device::dev_class == dev_class::timer);
+  static_assert(_cfg::dev_class == dev_class::timer);
 
-  using inst = detail::inst_t<_device::id>;
+  using inst = detail::inst_t<_cfg::id>;
   return inst::DMAR::base;
 }
 
 /**
  * @brief For input channel returns counter value transferred by the last input capture event,
- *        for output channel returns compare register value
+ *        for output channel returns compare register value.
+ *
+ * @tparam _ch - channel config.
 */
 template<typename _ch>
 lmcu_static_inline uint16_t ch_value()
@@ -2680,15 +2713,17 @@ lmcu_static_inline uint16_t ch_value()
 }
 
 /**
- * @brief Set output channel compare register value
- * @param val - value
+ * @brief Set output channel compare register value.
+ *
+ * @tparam _ch - channel config.
+ * @param  val - value.
 */
-template<typename ..._chs>
+template<typename ..._ch>
 lmcu_static_inline void oc_set_pulse(uint16_t val)
 {
-  auto _do = [&val](auto dev)
+  auto _do = [&val](auto config)
   {
-    using cfg  = decltype(dev);
+    using cfg  = decltype(config);
     using inst = detail::inst_t<cfg::id>;
 
     static_assert(cfg::dev_class == dev_class::timer_out_channel);
@@ -2702,7 +2737,7 @@ lmcu_static_inline void oc_set_pulse(uint16_t val)
     }
   };
 
-  (_do(_chs{}), ...);
+  (_do(_ch{}), ...);
 }
 
 } // namespace lmcu::timer

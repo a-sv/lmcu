@@ -16,7 +16,7 @@ using clk_conf = rcc::config<
   rcc::apb2_div::_1
 >;
 
-using stk = systick::module<
+using stk = systick::config<
   // Enable SysTick IRQ
   systick::irq{}
 >;
