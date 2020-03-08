@@ -687,6 +687,8 @@ lmcu_inline void remap()
     case remap::adc1__etrginj_tim8_channel4:
       return mask? AFIO::MAPR::ADC1_ETRGINJ_REMAP_MASK : AFIO::MAPR::ADC1_ETRGINJ_REMAP;
 #endif
+
+    default: break;
     }
     return 0;
   };
@@ -719,6 +721,7 @@ lmcu_inline void remap()
       return mask? AFIO::MAPR2::TIM9_REMAP_MASK : 0;
     case remap::tim9__remap:
       return mask? AFIO::MAPR2::TIM9_REMAP_MASK : AFIO::MAPR2::TIM9_REMAP;
+    default: break;
     }
     return 0;
   };
