@@ -2048,7 +2048,7 @@ void configure_tim_input_channel()
 
     r &= ~ccmr_mask[ch_n];
 
-    constexpr bool _1 = ch_n % 2 == 0;
+    constexpr bool _1 = (ch_n % 2) == 0;
 
     if constexpr(_cfg::in_mode == in_mode::trc) {
       r |= _1? inst::CCMR1::CC1S_INPUT_TRC : inst::CCMR1::CC2S_INPUT_TRC;
@@ -2167,6 +2167,7 @@ void configure_tim_9_12_10_11_13_14_out_channel()
 template<id ..._id>
 lmcu_inline void on()
 {
+  static_assert(sizeof...(_id) > 0);
   using namespace device;
 
   auto _on = [](id dev_id)
@@ -2202,6 +2203,7 @@ lmcu_inline void on()
 template<id ..._id>
 lmcu_inline void off()
 {
+  static_assert(sizeof...(_id) > 0);
   using namespace device;
 
   auto _off = [](id dev_id)
@@ -2237,6 +2239,7 @@ lmcu_inline void off()
 template<id ..._id>
 lmcu_inline void reset()
 {
+  static_assert(sizeof...(_id) > 0);
   using namespace device;
 
   auto _rst = [](id dev_id)
@@ -2314,6 +2317,7 @@ lmcu_inline void reset()
 template<typename ..._cfg>
 void configure()
 {
+  static_assert(sizeof...(_cfg) > 0);
   static auto _do = [](auto config)
   {
     using cfg = decltype(config);
@@ -2386,6 +2390,8 @@ void configure()
 template<typename ..._cfg>
 lmcu_static_inline void counter_enable(bool en)
 {
+  static_assert(sizeof...(_cfg) > 0);
+
   auto _do = [&en](auto config)
   {
     using cfg  = decltype(config);
@@ -2426,6 +2432,8 @@ lmcu_static_inline events get_events()
 template<typename ..._cfg>
 lmcu_static_inline void clr_events(timer::events evt)
 {
+  static_assert(sizeof...(_cfg) > 0);
+
   auto _do = [&evt](auto config)
   {
     using cfg  = decltype(config);
@@ -2447,6 +2455,8 @@ lmcu_static_inline void clr_events(timer::events evt)
 template<typename ..._cfg>
 lmcu_static_inline void gen_events(timer::events evt)
 {
+  static_assert(sizeof...(_cfg) > 0);
+
   auto _do = [&evt](auto config)
   {
     using cfg  = decltype(config);
@@ -2517,6 +2527,8 @@ lmcu_static_inline uint16_t get_counter()
 template<typename ..._cfg>
 lmcu_static_inline void set_counter(uint16_t val)
 {
+  static_assert(sizeof...(_cfg) > 0);
+
   auto _do = [&val](auto config)
   {
     using cfg  = decltype(config);
@@ -2553,6 +2565,8 @@ lmcu_static_inline uint16_t get_prescaler()
 template<typename ..._cfg>
 lmcu_static_inline void set_prescaler(uint16_t val)
 {
+  static_assert(sizeof...(_cfg) > 0);
+
   auto _do = [&val](auto config)
   {
     using cfg  = decltype(config);
@@ -2589,6 +2603,8 @@ lmcu_static_inline uint16_t get_period()
 template<typename ..._cfg>
 lmcu_static_inline void set_period(uint16_t val)
 {
+  static_assert(sizeof...(_cfg) > 0);
+
   auto _do = [&val](auto config)
   {
     using cfg  = decltype(config);
@@ -2625,6 +2641,8 @@ lmcu_static_inline uint8_t get_repetition()
 template<typename ..._cfg>
 lmcu_static_inline void set_repetition(uint8_t val)
 {
+  static_assert(sizeof...(_cfg) > 0);
+
   auto _do = [&val](auto config)
   {
     using cfg  = decltype(config);
@@ -2661,6 +2679,8 @@ lmcu_static_inline uint8_t get_deadtime()
 template<typename ..._cfg>
 lmcu_static_inline void set_deadtime(uint8_t val)
 {
+  static_assert(sizeof...(_cfg) > 0);
+
   auto _do = [&val](auto config)
   {
     using cfg  = decltype(config);
@@ -2721,6 +2741,8 @@ lmcu_static_inline uint16_t ch_value()
 template<typename ..._ch>
 lmcu_static_inline void oc_set_pulse(uint16_t val)
 {
+  static_assert(sizeof...(_ch) > 0);
+
   auto _do = [&val](auto config)
   {
     using cfg  = decltype(config);
