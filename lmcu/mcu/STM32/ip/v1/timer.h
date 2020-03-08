@@ -5,6 +5,7 @@
 #include <lmcu/common>
 
 namespace lmcu::timer {
+#include <common/irq_id.h>
 
 enum class id {
   tim1,
@@ -381,15 +382,20 @@ enum class out_mode
 
 enum class out_clear { disable, enable };
 
-struct irq : nvic::irq_config {};
+template <auto ..._args>
+constexpr auto irq = nvic::encode_irq_conf<irq_id::_0, _args...>();
 
-struct brk_irq : nvic::irq_config {};
+template <auto ..._args>
+constexpr auto brk_irq = nvic::encode_irq_conf<irq_id::_1, _args...>();
 
-struct up_irq : nvic::irq_config {};
+template <auto ..._args>
+constexpr auto up_irq = nvic::encode_irq_conf<irq_id::_2, _args...>();
 
-struct trg_com_irq : nvic::irq_config {};
+template <auto ..._args>
+constexpr auto trg_com_irq = nvic::encode_irq_conf<irq_id::_3, _args...>();
 
-struct cc_irq : nvic::irq_config {};
+template <auto ..._args>
+constexpr auto cc_irq = nvic::encode_irq_conf<irq_id::_4, _args...>();
 
 template<id _id, auto ..._args>
 struct _config;
@@ -492,13 +498,13 @@ struct _config<id::tim1, _args...>
   static constexpr auto dma_base_address = option::get<timer::dma_base_address_adv, _args...>(
                                              timer::dma_base_address_adv::cr1);
   // Enable BRK irq.
-  static constexpr auto brk_irq = option::get<timer::brk_irq, _args...>();
+  static constexpr auto brk_irq = option::get<irq_id::_1, _args...>();
   // Enable UP irq.
-  static constexpr auto up_irq = option::get<timer::up_irq, _args...>();
+  static constexpr auto up_irq = option::get<irq_id::_2, _args...>();
   // Enable TRG_COM irq.
-  static constexpr auto trg_com_irq = option::get<timer::trg_com_irq, _args...>();
+  static constexpr auto trg_com_irq = option::get<irq_id::_3, _args...>();
   // Enable CC irq.
-  static constexpr auto cc_irq = option::get<timer::cc_irq, _args...>();
+  static constexpr auto cc_irq = option::get<irq_id::_4, _args...>();
 
   static_assert(option::check<
     std::tuple<
@@ -532,10 +538,10 @@ struct _config<id::tim1, _args...>
       timer::lock,
       timer::dma_burst_length,
       timer::dma_base_address_adv,
-      timer::brk_irq,
-      timer::up_irq,
-      timer::trg_com_irq,
-      timer::cc_irq
+      irq_id::_1,
+      irq_id::_2,
+      irq_id::_3,
+      irq_id::_4
     >,
     _args...
   >());
@@ -610,7 +616,7 @@ struct _config<id::tim2, _args...>
   static constexpr auto dma_base_address = option::get<timer::dma_base_address_gp, _args...>(
                                              timer::dma_base_address_gp::cr1);
   // Enable global irq.
-  static constexpr auto irq = option::get<timer::irq, _args...>();
+  static constexpr auto irq = option::get<irq_id::_0, _args...>();
 
   static_assert(option::check<
     std::tuple<
@@ -636,7 +642,7 @@ struct _config<id::tim2, _args...>
       timer::events,
       timer::dma_burst_length,
       timer::dma_base_address_gp,
-      timer::irq
+      irq_id::_0
     >,
     _args...
   >());
@@ -667,7 +673,7 @@ struct _config<id::tim6, _args...>
   static constexpr auto master_mode = option::get<timer::master_mode, _args...>(timer::master_mode::
                                                                                 reset);
   // Enable global irq.
-  static constexpr auto irq = option::get<timer::irq, _args...>();
+  static constexpr auto irq = option::get<irq_id::_0, _args...>();
 
   static_assert(option::check<
     std::tuple<
@@ -677,7 +683,7 @@ struct _config<id::tim6, _args...>
       timer::one_pulse,
       timer::auto_reload,
       timer::master_mode,
-      timer::irq
+      irq_id::_0
     >,
     _args...
   >());
@@ -716,7 +722,7 @@ struct _config<id::tim9, _args...>
   // Timer counter enable/disable.
   static constexpr auto counter = option::get<timer::counter, _args...>(timer::counter::disable);
   // Enable global irq.
-  static constexpr auto irq = option::get<timer::irq, _args...>();
+  static constexpr auto irq = option::get<irq_id::_0, _args...>();
 
   static_assert(option::check<
     std::tuple<
@@ -729,7 +735,7 @@ struct _config<id::tim9, _args...>
       timer::slave_mode,
       timer::slave_trig_sel,
       timer::counter,
-      timer::irq
+      irq_id::_0
     >,
     _args...
   >());
@@ -762,7 +768,7 @@ struct _config<id::tim10, _args...>
   // Timer counter enable/disable.
   static constexpr auto counter = option::get<timer::counter, _args...>(timer::counter::disable);
   // Enable global irq.
-  static constexpr auto irq = option::get<timer::irq, _args...>();
+  static constexpr auto irq = option::get<irq_id::_0, _args...>();
 
   static_assert(option::check<
     std::tuple<
@@ -773,7 +779,7 @@ struct _config<id::tim10, _args...>
       timer::auto_reload,
       timer::dtg_df_div,
       timer::counter,
-      timer::irq
+      irq_id::_0
     >,
     _args...
   >());

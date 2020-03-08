@@ -104,7 +104,7 @@ if(NOT ${SUPPORTED_DEVICE})
   message(FATAL_ERROR "Unsupported device!")
 endif()
 
-set(LMCU_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include" CACHE INTERNAL "")
+set(LMCU_INCLUDE_DIR "${LMCU_DIR}" "${CMAKE_CURRENT_LIST_DIR}/include" CACHE INTERNAL "")
 set(LMCU_LIBRARY lmcu CACHE INTERNAL "")
 
 include_directories(${LMCU_INCLUDE_DIR})

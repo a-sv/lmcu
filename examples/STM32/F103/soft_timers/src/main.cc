@@ -18,7 +18,7 @@ using clk_conf = rcc::config<
 
 using stk = systick::config<
   // Enable SysTick IRQ
-  systick::irq{}
+  systick::irq<>
 >;
 
 // Led on 'blue pill' board.

@@ -69,19 +69,41 @@ private:
 
 namespace lmcu::nvic {
 
-enum class preempt_prio : uint32_t { defval = 14 };
-enum class sub_prio : uint32_t { defval = 0 };
-enum class group_prio : uint32_t { defval = 0 };
+enum class preempt_prio : uint8_t { defval = 14 };
+enum class sub_prio : uint8_t { defval = 0 };
+enum class group_prio : uint8_t { defval = 0 };
 
-struct irq_config
+struct irq_conf
 {
-  // Preempt priority
-  preempt_prio preempt = preempt_prio::defval;
-  // Sub priority
-  sub_prio sub = sub_prio::defval;
-  // Priority group
-  group_prio group = group_prio::defval;
+  preempt_prio preempt;
+  sub_prio sub;
+  group_prio group;
 };
+
+template<typename _irq_id, auto ..._args>
+constexpr inline _irq_id encode_irq_conf() noexcept
+{
+  constexpr auto pp = option::get_u<preempt_prio, _args...>(preempt_prio::defval);
+  constexpr auto sp = option::get_u<sub_prio, _args...>(sub_prio::defval);
+  constexpr auto gp = option::get_u<group_prio, _args...>(group_prio::defval);
+
+  static_assert(option::check<
+    std::tuple<preempt_prio, sub_prio, group_prio>,
+    _args...
+  >());
+
+  return _irq_id((uint32_t(pp) << 16) | (uint32_t(sp) << 8) | uint32_t(gp));
+}
+
+template<typename _irq_id>
+constexpr inline auto decode_irq_conf(_irq_id irq_id) noexcept
+{
+  auto r = uint32_t(irq_id);
+
+  return irq_conf {
+    preempt_prio((r >> 16) & 0xff), sub_prio((r >> 8) & 0xff), group_prio(r & 0xff)
+  };
+}
 
 /**
  * @brief Enable IRQ vectors
@@ -129,13 +151,15 @@ void disable_irq()
  * @tparam _irq_n      - IRQ number
  * @tparam _irq_config - IRQ priority config
 */
-template<device::irqn _irq_n, auto _irq_config>
+template<device::irqn _irq_n, auto _irq_id>
 void set_priority()
 {
   using namespace device;
 
   if constexpr(_irq_n != irqn::invalid_irqn) {
-    constexpr uint32_t priority_group = uint32_t(_irq_config.group) & 0x7UL;
+    constexpr auto cfg = decode_irq_conf(_irq_id);
+
+    constexpr uint32_t priority_group = uint32_t(cfg.group) & 0x7UL;
 
     constexpr uint32_t preempt_prio_bits =
       ((7 - priority_group) > nvic_prio_bits)? nvic_prio_bits : 7 - priority_group
@@ -146,8 +170,8 @@ void set_priority()
     ;
 
     constexpr auto priority =
-      ((uint32_t(_irq_config.preempt) & ((1UL << preempt_prio_bits) - 1UL)) <<  sub_prio_bits) |
-      (uint32_t(_irq_config.sub) & ((1UL << sub_prio_bits) - 1UL))
+      ((uint32_t(cfg.preempt) & ((1UL << preempt_prio_bits) - 1UL)) <<  sub_prio_bits) |
+      (uint32_t(cfg.sub) & ((1UL << sub_prio_bits) - 1UL))
     ;
 
     if constexpr(int32_t(_irq_n) < 0) {

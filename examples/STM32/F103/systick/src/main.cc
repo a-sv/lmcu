@@ -26,7 +26,7 @@ using stk = systick::config<
   systick::freq{10,000},
 
   // Enable SysTick IRQ
-  systick::irq{}
+  systick::irq<>
 >;
 
 // Led on 'blue pill' board.

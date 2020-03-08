@@ -6,8 +6,10 @@
 #include <lmcu/irq>
 
 namespace lmcu::systick {
+#include <common/irq_id.h>
 
-struct irq : nvic::irq_config {};
+template<auto ..._args>
+constexpr auto irq = nvic::encode_irq_conf<irq_id::_0, _args...>();
 
 struct freq
 {
@@ -29,10 +31,14 @@ struct config
   // SysTick reload value (if given will be used instead 'freq')
   static constexpr auto reload = option::get_u<systick::reload, _args...>();
   // Enable SysTick interrupt
-  static constexpr auto irq = option::get<systick::irq, _args...>();
+  static constexpr auto irq = option::get<irq_id::_0, _args...>();
 
   static_assert(option::check<
-    std::tuple<systick::freq, systick::reload, systick::irq>,
+    std::tuple<
+      systick::freq,
+      systick::reload,
+      irq_id::_0
+    >,
     _args...
   >());
 };
