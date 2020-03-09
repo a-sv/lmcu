@@ -1,0 +1,4 @@
+peripheral:
+  $extends: ADC2.yml | peripheral
+  name: ADC3
+  base: 0x40013C00
