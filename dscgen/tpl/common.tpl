@@ -70,6 +70,12 @@ struct reg
     *reinterpret_cast<volatile type*>(_base) = val;
   }
 
+  __attribute__((always_inline)) static inline void set(type mask, type val) noexcept
+  {
+    *reinterpret_cast<volatile type*>(_base) &= ~mask;
+    *reinterpret_cast<volatile type*>(_base) |= val;
+  }
+
   __attribute__((always_inline)) static inline type get() noexcept
   {
     return *reinterpret_cast<volatile type*>(_base);
