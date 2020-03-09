@@ -72,11 +72,11 @@ if("${DEVICE_SIG}" STREQUAL "STM32")
   if("${DEVICE_SERIES}" STREQUAL "STM32F1")
     set(CORTEX "M3")
     set(LMCU_C_FLAGS "${CORTEX_M3_C_FLAGS}")
-    set(LD_DIR "${LMCU_DIR}/mcu/device/ld/cortex-m3")
+    set(LD_DIR "${LMCU_DIR}/lib/mcu/device/ld/cortex-m3")
   elseif("${DEVICE_SERIES}" STREQUAL "STM32F4")
     set(CORTEX "M4")
     set(LMCU_C_FLAGS "${CORTEX_M4_C_FLAGS}")
-    set(LD_DIR "${LMCU_DIR}/mcu/device/ld/cortex-m4")
+    set(LD_DIR "${LMCU_DIR}/lib/mcu/device/ld/cortex-m4")
   endif()
 
   set(LMCU_DEFINITIONS
@@ -104,7 +104,11 @@ if(NOT ${SUPPORTED_DEVICE})
   message(FATAL_ERROR "Unsupported device!")
 endif()
 
-set(LMCU_INCLUDE_DIR "${LMCU_DIR}" "${CMAKE_CURRENT_LIST_DIR}/include" CACHE INTERNAL "")
+set(LMCU_INCLUDE_DIR
+  "${CMAKE_CURRENT_LIST_DIR}/include"
+  "${CMAKE_CURRENT_LIST_DIR}/lib/include"
+CACHE INTERNAL "")
+
 set(LMCU_LIBRARY lmcu CACHE INTERNAL "")
 
 include_directories(${LMCU_INCLUDE_DIR})

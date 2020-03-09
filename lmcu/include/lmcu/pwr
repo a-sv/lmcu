@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(LMCU_STM32)
-  #include "../../mcu/STM32/ip/v1/pwr.h"
+  #include "../../lib/mcu/STM32/ip/v1/pwr.h"
 #else
   #error "device not supported"
 #endif

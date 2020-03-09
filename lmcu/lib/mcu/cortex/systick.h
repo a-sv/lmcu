@@ -6,7 +6,7 @@
 #include <lmcu/irq>
 
 namespace lmcu::systick {
-#include <common/irq_id.h>
+#include <lmcu/private/irq_id.h>
 
 template<auto ..._args>
 constexpr auto irq = nvic::encode_irq_conf<irq_id::_0, _args...>();

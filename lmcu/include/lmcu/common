@@ -5,8 +5,8 @@
 #define lmcu_inline __attribute__((always_inline)) inline
 #define lmcu_static_inline __attribute__((always_inline)) static inline
 
-#include "../../common/defer.h"
-#include "../../common/flags.h"
-#include "../../common/option.h"
-#include "../../common/units.h"
-#include "../../common/dev_class.h"
+#include "../../lib/defer.h"
+#include "../../lib/flags.h"
+#include "../../lib/option.h"
+#include "../../lib/units.h"
+#include "../../lib/dev_class.h"

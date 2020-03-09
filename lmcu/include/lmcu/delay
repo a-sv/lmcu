@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../delay/timer.h"
+#include "../../lib/delay/timer.h"
 
 #if defined(LMCU_CORTEX)
-  #include "../../mcu/cortex/dwt_delay.h"
+  #include "../../lib/mcu/cortex/dwt_delay.h"
 #endif

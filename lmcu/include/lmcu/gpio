@@ -2,16 +2,16 @@
 
 #if defined(LMCU_STM32F100C) || defined(LMCU_STM32F101C) || defined(LMCU_STM32F102C) || \
     defined(LMCU_STM32F103C)
-  #include "../../mcu/STM32/F1/gpio_c.h"
+  #include "../../lib/mcu/STM32/F1/gpio_c.h"
 #elif defined(LMCU_STM32F100R) || defined(LMCU_STM32F101R) || defined(LMCU_STM32F102R) || \
       defined(LMCU_STM32F103R) || defined(LMCU_STM32F105R) || defined(LMCU_STM32F107R)
-  #include "../../mcu/STM32/F1/gpio_r.h"
+  #include "../../lib/mcu/STM32/F1/gpio_r.h"
 #elif defined(LMCU_STM32F100V) || defined(LMCU_STM32F101V) || defined(LMCU_STM32F102V) || \
       defined(LMCU_STM32F103V) || defined(LMCU_STM32F105V) || defined(LMCU_STM32F107V)
-  #include "../../mcu/STM32/F1/gpio_v.h"
+  #include "../../lib/mcu/STM32/F1/gpio_v.h"
 #elif defined(LMCU_STM32F100Z) || defined(LMCU_STM32F101Z) || defined(LMCU_STM32F102Z) || \
       defined(LMCU_STM32F103Z)
-  #include "../../mcu/STM32/F1/gpio_z.h"
+  #include "../../lib/mcu/STM32/F1/gpio_z.h"
 #else
   #error "device not supported"
 #endif

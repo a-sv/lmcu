@@ -1,5 +1,5 @@
 #pragma once
 
 #if defined(LMCU_CORTEX_M3)
-  #include "../../../mcu/device/include/CORTEX-M3/CORE_DEBUG.h"
+  #include "../../../lib/mcu/device/include/CORTEX-M3/CORE_DEBUG.h"
 #endif

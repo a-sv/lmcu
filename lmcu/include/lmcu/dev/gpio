@@ -1,11 +1,11 @@
 #pragma once
 
 #if defined(LMCU_STM32F1)
-  #include "../../../mcu/device/include/STM32/F1/GPIOA.h"
-  #include "../../../mcu/device/include/STM32/F1/GPIOB.h"
-  #include "../../../mcu/device/include/STM32/F1/GPIOC.h"
-  #include "../../../mcu/device/include/STM32/F1/GPIOD.h"
-  #include "../../../mcu/device/include/STM32/F1/GPIOE.h"
-  #include "../../../mcu/device/include/STM32/F1/GPIOF.h"
-  #include "../../../mcu/device/include/STM32/F1/GPIOG.h"
+  #include "../../../lib/mcu/device/include/STM32/F1/GPIOA.h"
+  #include "../../../lib/mcu/device/include/STM32/F1/GPIOB.h"
+  #include "../../../lib/mcu/device/include/STM32/F1/GPIOC.h"
+  #include "../../../lib/mcu/device/include/STM32/F1/GPIOD.h"
+  #include "../../../lib/mcu/device/include/STM32/F1/GPIOE.h"
+  #include "../../../lib/mcu/device/include/STM32/F1/GPIOF.h"
+  #include "../../../lib/mcu/device/include/STM32/F1/GPIOG.h"
 #endif

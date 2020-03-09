@@ -5,7 +5,7 @@
 #include <lmcu/common>
 
 namespace lmcu::timer {
-#include <common/irq_id.h>
+#include <lmcu/private/irq_id.h>
 
 enum class id {
   tim1,
