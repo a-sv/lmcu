@@ -124,6 +124,8 @@ struct config
 {
   static constexpr auto dev_class = lmcu::dev_class::adc;
 
+  static constexpr auto ip_version = lmcu::ip_version::_1;
+
   static constexpr auto id = option::get<adc::id, _args...>();
 
   // Analog wachdog config
@@ -255,6 +257,8 @@ struct rchanel_config
 {
   static constexpr auto dev_class = lmcu::dev_class::adc_regular_channel;
 
+  static constexpr auto ip_version = lmcu::ip_version::_1;
+
   static constexpr auto id = option::get<adc::id, _args...>();
   // Channel number
   static constexpr auto channel = option::get<adc::channel, _args...>();
@@ -268,6 +272,8 @@ template<auto ..._args>
 struct jchanel_config
 {
   static constexpr auto dev_class = lmcu::dev_class::adc_injected_channel;
+
+  static constexpr auto ip_version = lmcu::ip_version::_1;
 
   static constexpr auto id = option::get<adc::id, _args...>();
   // Channel number

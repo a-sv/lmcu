@@ -414,6 +414,8 @@ struct _config<id::tim1, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
+  static constexpr auto ip_version = lmcu::ip_version::_1;
+
   static constexpr auto id = timer::id::tim1;
 
   // Update request source.
@@ -555,6 +557,8 @@ struct _config<id::tim2, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
+  static constexpr auto ip_version = lmcu::ip_version::_1;
+
   static constexpr auto id = timer::id::tim2;
 
   // Update request source.
@@ -656,6 +660,8 @@ struct _config<id::tim6, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
+  static constexpr auto ip_version = lmcu::ip_version::_1;
+
   static constexpr auto id = timer::id::tim6;
 
   // Update request source.
@@ -696,6 +702,8 @@ template<auto ..._args>
 struct _config<id::tim9, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
+
+  static constexpr auto ip_version = lmcu::ip_version::_1;
 
   static constexpr auto id = timer::id::tim9;
 
@@ -749,6 +757,8 @@ struct _config<id::tim10, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer;
 
+  static constexpr auto ip_version = lmcu::ip_version::_1;
+
   static constexpr auto id = timer::id::tim10;
 
   // Update request source.
@@ -792,6 +802,8 @@ template<auto ..._args>
 struct _ic_config<id::tim1, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer_in_channel;
+
+  static constexpr auto ip_version = lmcu::ip_version::_1;
 
   static constexpr auto id = timer::id::tim1;
 
@@ -846,6 +858,8 @@ template<auto ..._args>
 struct _oc_config<id::tim1, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer_out_channel;
+
+  static constexpr auto ip_version = lmcu::ip_version::_1;
 
   static constexpr auto id = timer::id::tim1;
 
@@ -910,6 +924,8 @@ struct _oc_config<id::tim2, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer_out_channel;
 
+  static constexpr auto ip_version = lmcu::ip_version::_1;
+
   static constexpr auto id = timer::id::tim2;
 
   // Channel number.
@@ -959,6 +975,8 @@ template<auto ..._args>
 struct _oc_config<id::tim9, _args...>
 {
   static constexpr auto dev_class = lmcu::dev_class::timer_out_channel;
+
+  static constexpr auto ip_version = lmcu::ip_version::_1;
 
   static constexpr auto id = timer::id::tim9;
 

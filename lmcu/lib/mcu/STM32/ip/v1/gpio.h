@@ -36,14 +36,24 @@ template<typename _af, auto ..._args>
 struct pin
 {
   static constexpr auto dev_class = lmcu::dev_class::gpio_pin;
-  static constexpr auto port      = option::get<gpio::port, _args...>();
-  static constexpr auto n         = option::get_u<gpio::pin_n, _args...>();
-  static constexpr auto mask      = 1UL << n;
-  static constexpr auto mode      = option::get<gpio::mode, _args...>(gpio::mode::analog);
-  static constexpr auto pull      = option::get<gpio::pull, _args...>(gpio::pull::no_pull);
-  static constexpr auto speed     = option::get<gpio::speed, _args...>(gpio::speed::low);
-  static constexpr auto af        = option::get<_af, _args...>();
-  static constexpr auto nc        = false;
+
+  static constexpr auto ip_version = lmcu::ip_version::_1;
+
+  static constexpr auto port = option::get<gpio::port, _args...>();
+
+  static constexpr auto n = option::get_u<gpio::pin_n, _args...>();
+
+  static constexpr auto mask = 1UL << n;
+
+  static constexpr auto mode = option::get<gpio::mode, _args...>(gpio::mode::analog);
+
+  static constexpr auto pull = option::get<gpio::pull, _args...>(gpio::pull::no_pull);
+
+  static constexpr auto speed = option::get<gpio::speed, _args...>(gpio::speed::low);
+
+  static constexpr auto af = option::get<_af, _args...>();
+
+  static constexpr auto nc = false;
 
   static_assert(!option::is_null<port>() && !option::is_null<n>(), "options 'port' and 'pin_n' is "
                                                                    "required!");
