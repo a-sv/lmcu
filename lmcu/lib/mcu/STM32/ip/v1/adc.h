@@ -83,10 +83,10 @@ enum class inj_trig
   tim8_cc4 = 4, // Timer 8 CC4 event
   tim5_trgo = 5, // Timer 5 TRGO event
   tim5_cc4 = 6, // Timer 5 CC4 event
-  jsw_start = 7 // JSWSTART
+  sw_start = 7 // JSWSTART
 };
 
-enum class inj_data_offset : uint32_t { defval = 0 };
+enum class data_offset : uint32_t { defval = 0 };
 
 enum class data_align { left, right };
 
@@ -112,9 +112,9 @@ enum class events : uint32_t
 {
   lmcu_flags,
 
-  jeoc   = 1 << 0, // injected channels end of conversion
-  awd    = 1 << 1, // analog watchdog
-  eoc    = 1 << 2, // regular end of conversion
+  awd    = 1 << 0, // analog watchdog
+  eoc    = 1 << 1, // regular end of conversion
+  jeoc   = 1 << 2, // injected channels end of conversion
   jstart = 1 << 3, // injected channel start flag
   start  = 1 << 4  // regular channel start flag
 };
@@ -210,7 +210,7 @@ struct config
         inj_trig == adc::inj_trig::tim8_cc4 ||
         inj_trig == adc::inj_trig::tim5_trgo ||
         inj_trig == adc::inj_trig::tim5_cc4 ||
-        inj_trig == adc::inj_trig::jsw_start
+        inj_trig == adc::inj_trig::sw_start
       ;
     }
     else {
@@ -224,7 +224,7 @@ struct config
         inj_trig == adc::inj_trig::tim3_cc4 ||
         inj_trig == adc::inj_trig::tim4_trgo ||
         inj_trig == adc::inj_trig::exti15__tim8_cc4 ||
-        inj_trig == adc::inj_trig::jsw_start
+        inj_trig == adc::inj_trig::sw_start
       ;
     }
   }());
@@ -266,6 +266,15 @@ struct rchanel_config
   static constexpr auto sample_time = option::get<adc::sample_time, _args...>(adc::sample_time::
                                                                               _239_5cyc);
   static_assert(!option::is_null<id>() && !option::is_null<channel>());
+
+  static_assert(option::check<
+    std::tuple<
+      adc::id,
+      adc::channel,
+      adc::sample_time
+    >,
+  _args...
+  >());
 };
 
 template<auto ..._args>
@@ -282,9 +291,19 @@ struct jchanel_config
   static constexpr auto sample_time = option::get<adc::sample_time, _args...>(adc::sample_time::
                                                                               _239_5cyc);
   // Data offset
-  static constexpr auto inj_data_offset = option::get_u<adc::inj_data_offset, _args...>(
-                                            adc::inj_data_offset::defval);
+  static constexpr auto data_offset = option::get_u<adc::data_offset, _args...>(adc::data_offset::
+                                                                                defval);
   static_assert(!option::is_null<id>() && !option::is_null<channel>());
+
+  static_assert(option::check<
+    std::tuple<
+      adc::id,
+      adc::channel,
+      adc::sample_time,
+      adc::data_offset
+    >,
+  _args...
+  >());
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -307,7 +326,7 @@ template<>
 struct inst<id::adc3> { using type = device::ADC3; };
 
 template<id _id>
-lmcu_inline void on()
+inline void on()
 {
   using namespace device;
 
@@ -322,7 +341,7 @@ lmcu_inline void on()
 }
 
 template<id _id>
-lmcu_inline void off()
+inline void off()
 {
   using namespace device;
 
@@ -337,7 +356,7 @@ lmcu_inline void off()
 }
 
 template<id _id>
-lmcu_inline void reset()
+inline void reset()
 {
   using namespace device;
 
@@ -359,6 +378,180 @@ lmcu_inline void reset()
   }
 }
 
+template<typename _inst, typename _reg>
+constexpr inline void awd_mode_conf(awd_mode val, _reg&& r)
+{
+  r &= ~(_inst::CR1::JAWDEN | _inst::CR1::AWDEN | _inst::CR1::AWDSGL);
+
+  switch(val) {
+  case awd_mode::all_injected:
+    r |= _inst::CR1::JAWDEN;
+    break;
+  case awd_mode::all_regular:
+    r |= _inst::CR1::AWDEN;
+    break;
+  case awd_mode::all_injected_and_regular:
+    r |= (_inst::CR1::AWDEN | _inst::CR1::JAWDEN);
+    break;
+  case awd_mode::single_injected:
+    r |= (_inst::CR1::AWDSGL | _inst::CR1::JAWDEN);
+    break;
+  case awd_mode::single_regular:
+    r |= (_inst::CR1::AWDSGL | _inst::CR1::AWDEN);
+    break;
+  case awd_mode::single_regular_or_injected:
+    r |= (_inst::CR1::AWDSGL | _inst::CR1::AWDEN | _inst::CR1::JAWDEN);
+    break;
+  default: break;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void awd_channel_conf(channel val, _reg&& r)
+{
+  r &= ~_inst::CR1::AWDCH_MASK;
+  r |= uint32_t(val) << _inst::CR1::AWDCH_POS;
+}
+
+template<typename _inst>
+constexpr inline void awd_lo_threshold_conf(uint32_t val)
+{ _inst::LTR::set(val & _inst::LTR::LTR_MASK); }
+
+template<typename _inst>
+constexpr inline void awd_hi_threshold_conf(uint32_t val)
+{ _inst::HTR::set(val & _inst::HTR::HTR_MASK); }
+
+template<typename _inst, typename _reg>
+constexpr inline void dual_mode_conf(dual_mode val, _reg&& r)
+{
+  r &= ~_inst::CR1::DUALMOD_MASK;
+  r |= uint32_t(val) << _inst::CR1::DUALMOD_POS;
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void disc_mode_conf(disc_mode val, _reg&& cr1, _reg&& cr2)
+{
+  cr1 &= ~(_inst::CR1::DISCEN | _inst::CR1::JDISCEN);
+  cr2 &= ~_inst::CR2::CONT;
+
+  if(val == disc_mode::regular) {
+    cr1 |= _inst::CR1::DISCEN;
+  }
+  else
+  if(val == disc_mode::injected) {
+    cr1 |= _inst::CR1::JDISCEN;
+  }
+  else
+  if(val == disc_mode::regular_injected) {
+    cr1 |= (_inst::CR1::DISCEN | _inst::CR1::JDISCEN);
+  }
+  else
+  if(val == disc_mode::disable) {
+    cr2 |= _inst::CR2::CONT;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void discnum_conf(discnum val, _reg&& r)
+{
+  r &= ~_inst::CR1::DISCNUM_MASK;
+  r |= uint32_t(val) << _inst::CR1::DISCNUM_POS;
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void inj_auto_conf(inj_auto val, _reg&& r)
+{
+  if(val == inj_auto::enable) {
+    r |= _inst::CR1::JAUTO;
+  }
+  else {
+    r &= ~_inst::CR1::JAUTO;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void scan_conf(scan val, _reg&& r)
+{
+  if(val == scan::enable) {
+    r |= _inst::CR1::SCAN;
+  }
+  else {
+    r &= ~_inst::CR1::SCAN;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void reg_trig_conf(reg_trig val, _reg&& r)
+{
+  if(val == reg_trig::disable) {
+    r &= ~_inst::CR2::EXTTRIG;
+  }
+  else {
+    r |= _inst::CR2::EXTTRIG;
+    r &= ~_inst::CR2::EXTSEL_MASK;
+    r |= uint32_t(val) << _inst::CR2::EXTSEL_POS;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void inj_trig_conf(inj_trig val, _reg&& r)
+{
+  if(val == inj_trig::disable) {
+    r &= ~_inst::CR2::JEXTTRIG;
+  }
+  else {
+    r |= _inst::CR2::JEXTTRIG;
+    r &= ~_inst::CR2::JEXTSEL_MASK;
+    r |= uint32_t(val) << _inst::CR2::JEXTSEL_POS;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void temp_refint_conf(temp_refint val, _reg&& r)
+{
+  if(val == temp_refint::enable) {
+    r |= _inst::CR2::TSVREFE;
+  }
+  else {
+    r &= ~_inst::CR2::TSVREFE;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void data_align_conf(data_align val, _reg&& r)
+{
+  if(val == data_align::left) {
+    r |= _inst::CR2::ALIGN;
+  }
+  else {
+    r &= ~_inst::CR2::ALIGN;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void dma_conf(dma val, _reg&& r)
+{
+  if(val == dma::enable) {
+    r |= _inst::CR2::DMA;
+  }
+  else {
+    r &= ~_inst::CR2::DMA;
+  }
+}
+
+template<typename _inst, typename _reg>
+constexpr inline void events_conf(events val, _reg&& r)
+{
+  uint32_t evt = 0;
+
+  if(flags::all(val, events::jeoc)) { evt |= _inst::CR1::JEOCIE; }
+  if(flags::all(val, events::awd))  { evt |= _inst::CR1::AWDIE;  }
+  if(flags::all(val, events::eoc))  { evt |= _inst::CR1::EOCIE;  }
+
+  r &= ~_inst::CR1::JEOCIE_MASK;
+  r |= evt;
+}
+
 template<typename ..._cfg>
 void configure_adc()
 {
@@ -367,98 +560,41 @@ void configure_adc()
     using cfg = decltype(config);
     if constexpr(cfg::dev_class == dev_class::adc) {
       using inst = inst_t<cfg::id>;
-      uint32_t r;
 
-      r = 0;
-
-      switch(cfg::awd_mode) {
-      case awd_mode::all_injected:
-        r |= inst::CR1::JAWDEN;
-        break;
-      case awd_mode::all_regular:
-        r |= inst::CR1::AWDEN;
-        break;
-      case awd_mode::all_injected_and_regular:
-        r |= (inst::CR1::AWDEN | inst::CR1::JAWDEN);
-        break;
-      case awd_mode::single_injected:
-        r |= (inst::CR1::AWDSGL | inst::CR1::JAWDEN);
-        break;
-      case awd_mode::single_regular:
-        r |= (inst::CR1::AWDSGL | inst::CR1::AWDEN);
-        break;
-      case awd_mode::single_regular_or_injected:
-        r |= (inst::CR1::AWDSGL | inst::CR1::AWDEN | inst::CR1::JAWDEN);
-        break;
-      default: break;
-      }
-
-      switch(cfg::dual_mode)
+      constexpr auto r = []
       {
-      case dual_mode::regular_and_injected:    r |= inst::CR1::DUALMOD_REG_INJ;        break;
-      case dual_mode::regular_and_trigger:     r |= inst::CR1::DUALMOD_REG_ALT_TRIG;   break;
-      case dual_mode::injected_and_fast_inter: r |= inst::CR1::DUALMOD_INJ_FAST_INTER; break;
-      case dual_mode::injected_and_slow_inter: r |= inst::CR1::DUALMOD_INJ_SLOW_INTER; break;
-      case dual_mode::injected_only:           r |= inst::CR1::DUALMOD_INJ_ONLY;       break;
-      case dual_mode::regular_only:            r |= inst::CR1::DUALMOD_REG_ONLY;       break;
-      case dual_mode::fast_inter_only:         r |= inst::CR1::DUALMOD_FAST_INTER;     break;
-      case dual_mode::slow_inter_only:         r |= inst::CR1::DUALMOD_SLOW_INTER;     break;
-      case dual_mode::trigger_only:            r |= inst::CR1::DUALMOD_ALT_TRIG;       break;
-      default: break;
-      }
+        struct
+        {
+          uint32_t cr1 = 0, cr2 = 0;
+        } r;
 
-      r |= uint32_t(cfg::discnum) << inst::CR1::DISCNUM_POS;
+        awd_mode_conf<inst>(cfg::awd_mode, r.cr1);
+        dual_mode_conf<inst>(cfg::dual_mode, r.cr1);
+        disc_mode_conf<inst>(cfg::disc_mode, r.cr1, r.cr2);
+        discnum_conf<inst>(cfg::discnum, r.cr1);
+        inj_auto_conf<inst>(cfg::inj_auto, r.cr1);
+        scan_conf<inst>(cfg::scan, r.cr1);
+        awd_channel_conf<inst>(cfg::awd_channel, r.cr1);
 
-      if constexpr(cfg::disc_mode == disc_mode::regular) {
-        r |= inst::CR1::DISCEN;
-      }
-      else
-      if constexpr(cfg::disc_mode == disc_mode::injected) {
-        r |= inst::CR1::JDISCEN;
-      }
-      else
-      if constexpr(cfg::disc_mode == disc_mode::regular_injected) {
-        r |= (inst::CR1::DISCEN | inst::CR1::JDISCEN);
-      }
+        if constexpr(!option::is_null<cfg::events>()) {
+          events_conf<inst>(cfg::events, r.cr1);
+        }
 
-      if constexpr(cfg::inj_auto == inj_auto::enable) { r |= inst::CR1::JAUTO; }
+        reg_trig_conf<inst>(cfg::reg_trig, r.cr2);
+        inj_trig_conf<inst>(cfg::inj_trig, r.cr2);
+        temp_refint_conf<inst>(cfg::temp_refint, r.cr2);
+        data_align_conf<inst>(cfg::data_align, r.cr2);
+        dma_conf<inst>(cfg::dma, r.cr2);
 
-      if constexpr(cfg::scan == scan::enable) { r |= inst::CR1::SCAN; }
+        return r;
+      }();
 
-      if constexpr(cfg::awd_mode != awd_mode::disable) {
-        r |= uint32_t(cfg::awd_channel) << inst::CR1::AWDCH_POS;
-      }
-
-      if constexpr(!option::is_null<cfg::events>()) {
-        r |= (uint32_t(cfg::events) & 7) << inst::CR1::JEOCIE_POS;
-      }
-
-      inst::CR1::set(r);
-
-      r = 0;
-
-      if constexpr(cfg::disc_mode == disc_mode::disable) { r |= inst::CR2::CONT; }
-      if constexpr(cfg::temp_refint == temp_refint::enable) { r |= inst::CR2::TSVREFE; }
-
-      if constexpr(cfg::reg_trig != reg_trig::disable) {
-        r |= inst::CR2::EXTTRIG;
-        r |= uint32_t(cfg::reg_trig) << inst::CR2::EXTSEL_POS;
-      }
-
-      if constexpr(cfg::inj_trig != inj_trig::disable) {
-        r |= inst::CR2::JEXTTRIG;
-        r |= uint32_t(cfg::inj_trig) << inst::CR2::JEXTSEL_POS;
-      }
-
-      if constexpr(cfg::data_align == data_align::left) { r |= inst::CR2::ALIGN; }
-
-      if constexpr(cfg::dma == dma::enable) { r |= inst::CR2::DMA; }
-
-      inst::CR2::set(r);
+      inst::CR1::set(r.cr1);
+      inst::CR2::set(r.cr2);
 
       if constexpr(cfg::awd_mode != awd_mode::disable) {
-        inst::HTR::set( uint32_t(cfg::awd_hi_threshold) & inst::HTR::HTR_MASK );
-        inst::LTR::set( uint32_t(cfg::awd_lo_threshold) & inst::LTR::LTR_MASK );
+        awd_hi_threshold_conf<inst>(uint32_t(cfg::awd_hi_threshold));
+        awd_lo_threshold_conf<inst>(uint32_t(cfg::awd_lo_threshold));
       }
     }
   };
@@ -509,10 +645,10 @@ constexpr auto jofr()
 
     if constexpr(_id == cfg::id && cfg::dev_class == dev_class::adc_injected_channel) {
       r.n++;
-      if(r.n == 1) { r.jofr1 = cfg::inj_data_offset; } else
-      if(r.n == 2) { r.jofr2 = cfg::inj_data_offset; } else
-      if(r.n == 3) { r.jofr3 = cfg::inj_data_offset; } else
-      if(r.n == 4) { r.jofr4 = cfg::inj_data_offset; }
+      if(r.n == 1) { r.jofr1 = cfg::data_offset; } else
+      if(r.n == 2) { r.jofr2 = cfg::data_offset; } else
+      if(r.n == 3) { r.jofr3 = cfg::data_offset; } else
+      if(r.n == 4) { r.jofr4 = cfg::data_offset; }
     }
   };
 
@@ -598,20 +734,20 @@ constexpr auto jsqr()
 
   switch(r.n)
   {
-  case 0:
-    break;
+  case 1:
     r.bits = (ch[0] << ADC1::JSQR::JSQ4_POS);
     r.mask = ADC1::JSQR::JSQ4_MASK;
-  case 1:
+    break;
+  case 2:
     r.bits = (ch[0] << ADC1::JSQR::JSQ3_POS) | (ch[1] << ADC1::JSQR::JSQ4_POS);
     r.mask = ADC1::JSQR::JSQ3_MASK| ADC1::JSQR::JSQ4_MASK;
     break;
-  case 2:
+  case 3:
     r.bits = (ch[0] << ADC1::JSQR::JSQ2_POS) | (ch[1] << ADC1::JSQR::JSQ3_POS) |
              (ch[2] << ADC1::JSQR::JSQ4_POS);
     r.mask = ADC1::JSQR::JSQ2_MASK | ADC1::JSQR::JSQ3_MASK | ADC1::JSQR::JSQ4_MASK;
     break;
-  case 3:
+  case 4:
     r.bits = (ch[0] << ADC1::JSQR::JSQ1_POS) | (ch[1] << ADC1::JSQR::JSQ2_POS) |
              (ch[2] << ADC1::JSQR::JSQ3_POS) | (ch[3] << ADC1::JSQR::JSQ4_POS);
     r.mask = ADC1::JSQR::JSQ1_MASK | ADC1::JSQR::JSQ2_MASK | ADC1::JSQR::JSQ3_MASK |
@@ -621,7 +757,7 @@ constexpr auto jsqr()
   }
 
   if(r.n > 0) {
-    r.bits |= ((r.n - 1) << ADC1::JSQR::JL_POS);
+    r.bits |= (r.n - 1) << ADC1::JSQR::JL_POS;
     r.mask |= ADC1::JSQR::JL_MASK;
   }
 
@@ -675,7 +811,7 @@ void configure_inj_channel()
 }
 
 template<typename _cfg>
-void enable()
+inline void enable()
 {
   static_assert(_cfg::dev_class == dev_class::adc);
 
@@ -688,7 +824,7 @@ void enable()
 }
 
 template<typename _cfg>
-void disable()
+inline void disable()
 {
   static_assert(_cfg::dev_class == dev_class::adc);
 
@@ -700,7 +836,7 @@ void disable()
 }
 
 template<typename _cfg>
-void calibrate()
+inline void calibrate()
 {
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
@@ -723,13 +859,162 @@ void calibrate()
     ;
 }
 
-template<typename _cfg>
-void regular_soft_start()
+template<typename _cfg, bool _inj>
+inline void soft_start()
 {
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  inst::CR2::set_b(inst::CR2::SWSTART);
+  if constexpr(_inj) {
+    inst::CR2::set_b(inst::CR2::JSWSTART);
+  }
+  else {
+    inst::CR2::set_b(inst::CR2::SWSTART);
+  }
+}
+
+template<typename _cfg>
+inline void set_awd_mode(awd_mode val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  awd_mode_conf<inst>(val, inst::CR1::ref());
+}
+
+template<typename _cfg>
+inline void set_awd_channel(channel val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  awd_channel_conf(val, inst::CR1::ref());
+}
+
+template<typename _cfg>
+inline void set_awd_lo_threshold(uint32_t val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  awd_lo_threshold_conf<inst>(val);
+}
+
+template<typename _cfg>
+inline void set_awd_hi_threshold(uint32_t val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  awd_hi_threshold_conf<inst>(val);
+}
+
+template<typename _cfg>
+inline void set_dual_mode(dual_mode val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  dual_mode_conf<inst>(val, inst::CR1::ref());
+}
+
+template<typename _cfg>
+inline void set_disc_mode(disc_mode val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  disc_mode_conf<inst>(val);
+}
+
+template<typename _cfg>
+inline void set_discnum(discnum val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  discnum_conf<inst>(val, inst::CR1::ref());
+}
+
+template<typename _cfg>
+inline void set_inj_auto(inj_auto val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  inj_auto_conf<inst>(val, inst::CR1::ref());
+}
+
+template<typename _cfg>
+inline void set_temp_refint(temp_refint val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  temp_refint_conf<inst>(val, inst::CR2::ref());
+}
+
+template<typename _cfg>
+inline void set_scan(scan val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  scan_conf<inst>(val, inst::CR1::ref());
+}
+
+template<typename _cfg>
+inline void set_reg_trig(reg_trig val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  reg_trig_conf<inst>(val, inst::CR2::ref());
+}
+
+template<typename _cfg>
+inline void set_inj_trig(inj_trig val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  inj_trig_conf<inst>(val, inst::CR2::ref());
+}
+
+template<typename _cfg>
+inline void set_data_align(data_align val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  data_align_conf<inst>(val, inst::CR2::ref());
+}
+
+template<typename _cfg>
+inline void set_dma(dma val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  dma_conf<inst>(val, inst::CR2::ref());
+}
+
+template<typename _cfg>
+inline void set_events(events val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  events_conf<inst>(val, inst::CR1::ref());
+}
+
+template<typename _cfg>
+inline void clr_events(events val)
+{
+  static_assert(_cfg::dev_class == dev_class::adc);
+  using inst = detail::inst_t<_cfg::id>;
+
+  inst::SR::set( (~uint32_t(val)) & 0x1f );
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -737,9 +1022,9 @@ void regular_soft_start()
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @brief Enable clock on timer periph
+ * @brief Enable clock on timer periph.
  *
- * @tparam _ids - timer id list
+ * @tparam _ids - timer id list.
 */
 template<id ..._id>
 lmcu_inline void on()
@@ -749,9 +1034,9 @@ lmcu_inline void on()
 }
 
 /**
- * @brief Disable clock on timer periph
+ * @brief Disable clock on timer periph.
  *
- * @tparam _ids - timer id list
+ * @tparam _ids - timer id list.
 */
 template<id ..._id>
 lmcu_inline void off()
@@ -761,9 +1046,9 @@ lmcu_inline void off()
 }
 
 /**
- * @brief Reset adc periph
+ * @brief Reset adc periph.
  *
- * @tparam _ids - adc id list
+ * @tparam _ids - adc id list.
 */
 template<id ..._id>
 lmcu_inline void reset()
@@ -772,11 +1057,15 @@ lmcu_inline void reset()
   (detail::reset<_id>(), ...);
 }
 
+/**
+ * @brief Configure ADC and channels.
+ *
+ * @tparam _cfg - list of ADC and channel configs.
+*/
 template<typename ..._cfg>
-void configure()
+lmcu_inline void configure()
 {
   static_assert(sizeof...(_cfg) > 0);
-
   detail::configure_adc<_cfg...>();
   detail::configure_reg_channel<id::adc1, _cfg...>();
   detail::configure_reg_channel<id::adc2, _cfg...>();
@@ -786,39 +1075,511 @@ void configure()
   detail::configure_inj_channel<id::adc3, _cfg...>();
 }
 
+/**
+ * @brief Enable A/D converter.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
 template<typename ..._cfg>
-void enable()
+lmcu_inline void enable()
 {
   static_assert(sizeof...(_cfg) > 0);
   (detail::enable<_cfg>(), ...);
 }
 
+/**
+ * @brief Disable A/D converter.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
 template<typename ..._cfg>
-void disable()
+lmcu_inline void disable()
 {
   static_assert(sizeof...(_cfg) > 0);
   (detail::disable<_cfg>(), ...);
 }
 
+/**
+ * @brief Perform A/D converter calibration.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
 template<typename ..._cfg>
-void calibrate()
+lmcu_inline void calibrate()
 {
   static_assert(sizeof...(_cfg) > 0);
   (detail::calibrate<_cfg>(), ...);
 }
 
+/**
+ * @brief Starts A/D conversion on regular channels if 'reg_trig' parameter is 'sw_start'.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
 template<typename ..._cfg>
-void regular_soft_start()
+lmcu_inline void regular_soft_start()
 {
   static_assert(sizeof...(_cfg) > 0);
-  (detail::regular_soft_start<_cfg>(), ...);
+  (detail::soft_start<_cfg, false>(), ...);
 }
 
+/**
+ * @brief Starts A/D conversion on injected channels if 'inj_trig' parameter is 'sw_start'.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+lmcu_inline void injected_soft_start()
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::soft_start<_cfg, true>(), ...);
+}
+
+/**
+ * @brief Reads value from ADC data register (first regular channel).
+ *
+ * @tparam _cfg - ADC config.
+*/
 template<typename _cfg>
-uint16_t read()
+lmcu_inline uint16_t read() { return detail::inst_t<_cfg::id>::DR::get(); }
+
+/**
+ * @brief Reads value from ADC injected data register 1.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+lmcu_inline uint16_t jread_1() { return detail::inst_t<_cfg::id>::JDR1::get(); }
+
+/**
+ * @brief Reads value from ADC injected data register 2.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+lmcu_inline uint16_t jread_2() { return detail::inst_t<_cfg::id>::JDR2::get(); }
+
+/**
+ * @brief Reads value from ADC injected data register 3.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+lmcu_inline uint16_t jread_3() { return detail::inst_t<_cfg::id>::JDR3::get(); }
+
+/**
+ * @brief Reads value from ADC injected data register 4.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+lmcu_inline uint16_t jread_4() { return detail::inst_t<_cfg::id>::JDR4::get(); }
+
+/**
+ * @brief Returns address of data register for DMA.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+lmcu_inline auto dma_address() { return detail::inst_t<_cfg::id>::DR::base; }
+
+/**
+ * @brief Set analog wachdog mode.
+ *
+ * @tparam _cfg - list of ADC configs.
+ * @param val   - analog wachdog mode.
+*/
+template<typename ..._cfg>
+lmcu_inline void set_awd_mode(awd_mode val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_awd_mode<_cfg>(val), ...);
+}
+
+/**
+ * @brief Get analog wachdog mode.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+awd_mode get_awd_mode()
 {
   using inst = detail::inst_t<_cfg::id>;
-  return inst::DR::get();
+
+  auto r = inst::CR1::get() & (inst::CR1::JAWDEN | inst::CR1::AWDEN | inst::CR1::AWDSGL);
+
+  if(r == inst::CR1::JAWDEN) { return awd_mode::all_injected; }
+
+  if(r == inst::CR1::AWDEN) { return awd_mode::all_regular; }
+
+  if(r == (inst::CR1::AWDEN | inst::CR1::JAWDEN)) { return awd_mode::all_injected_and_regular; }
+
+  if(r == (inst::CR1::AWDSGL | inst::CR1::JAWDEN)) { return awd_mode::single_injected; }
+
+  if(r == (inst::CR1::AWDSGL | inst::CR1::AWDEN)) { return awd_mode::single_regular; }
+
+  if(r == (inst::CR1::AWDSGL | inst::CR1::AWDEN | inst::CR1::JAWDEN)) {
+    return awd_mode::single_regular_or_injected;
+  }
+
+  return awd_mode::disable;
+}
+
+/**
+ * @brief Set analog wachdog channel.
+ *
+ * @tparam _cfg - list of ADC configs.
+ * @param val   - channel number.
+*/
+template<typename ..._cfg>
+lmcu_inline void set_awd_channel(channel val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_awd_channel<_cfg>(val), ...);
+}
+
+/**
+ * @brief Get analog wachdog channel.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+channel get_awd_channel()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  return channel((inst::CR1::get() & inst::CR1::AWDCH_MASK) >> inst::CR1::AWDCH_POS);
+}
+
+/**
+ * @brief Set analog wachdog low threshold.
+ *
+ * @tparam _cfg - list of ADC configs.
+ * @param val   - threshold.
+*/
+template<typename ..._cfg>
+lmcu_inline void set_awd_lo_threshold(uint32_t val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_awd_lo_threshold<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns analog wachdog low threshold.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename _cfg>
+lmcu_inline uint32_t get_awd_lo_threshold() { return detail::inst_t<_cfg::id>::LTR::get(); }
+
+/**
+ * @brief Set analog wachdog high threshold.
+ *
+ * @tparam _cfg - list of ADC configs.
+ * @param val   - threshold.
+*/
+template<typename ..._cfg>
+lmcu_inline void set_awd_hi_threshold(uint32_t val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_awd_hi_threshold<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns analog wachdog high threshold.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename _cfg>
+lmcu_inline uint32_t get_awd_hi_threshold() { return detail::inst_t<_cfg::id>::HTR::get(); }
+
+/**
+ * @brief Set ADC dual mode.
+ *
+ * @tparam _cfg - list of ADC configs.
+ * @param val   - dual mode.
+*/
+template<typename ..._cfg>
+lmcu_inline void set_dual_mode(dual_mode val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_dual_mode<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns ADC dual mode.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+lmcu_inline dual_mode get_dual_mode()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  return dual_mode((inst::CR1::get() & inst::CR1::DUALMOD_MASK) >> inst::CR1::DUALMOD_POS);
+}
+
+/**
+ * @brief Set ADC discontinuous mode.
+ *
+ * @tparam _cfg - list of ADC configs.
+ * @param val   - discontinuous mode.
+*/
+template<typename ..._cfg>
+lmcu_inline void set_disc_mode(disc_mode val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_disc_mode<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns ADC discontinuous mode.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+lmcu_inline disc_mode get_disc_mode()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  auto r = inst::CR1::get() & (inst::CR1::DISCEN | inst::CR1::JDISCEN);
+
+  if(r == inst::CR1::DISCEN) { return disc_mode::regular; }
+  if(r == inst::CR1::JDISCEN) { return disc_mode::injected; }
+  if(r == (inst::CR1::DISCEN | inst::CR1::JDISCEN)) { return disc_mode::regular_injected; }
+}
+
+/**
+ * @brief Set discontinuous mode channel count.
+ *
+ * @tparam _cfg - list of ADC configs.
+ * @param val   - channel count.
+*/
+template<typename ..._cfg>
+void set_discnum(discnum val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_discnum<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns discontinuous mode channel count.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+discnum get_discnum()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  return discnum((inst::CR1::get() & inst::CR1::DISCNUM_MASK) >> inst::CR1::DISCNUM_POS);
+}
+
+/**
+ * @brief Set automatic injected group conversion.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void set_inj_auto(inj_auto val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_inj_auto<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns automatic injected group conversion status.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+inj_auto get_inj_auto()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  auto r = inst::CR1::get() & inst::CR1::JAUTO;
+  return r == 0? inj_auto::disable : inj_auto::enable;
+}
+
+/**
+ * @brief Set scan mode.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void set_scan(scan val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_scan<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns scan mode.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+scan get_scan()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  auto r = inst::CR1::get() & inst::CR1::SCAN;
+  return r == 0? scan::disable : scan::enable;
+}
+
+/**
+ * @brief Temperature sensor and VREFINT enable.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void set_temp_refint(temp_refint val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_temp_refint<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns temperature sensor and VREFINT status.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+temp_refint get_temp_refint()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  auto r = inst::CR2::get() & inst::CR2::TSVREFE;
+  return r == 0? temp_refint::disable : temp_refint::enable;
+}
+
+/**
+ * @brief External trigger select for regular group.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void set_reg_trig(reg_trig val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_reg_trig<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns external trigger for regular group.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+reg_trig get_reg_trig()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  auto r = inst::CR2::get() & inst::CR2::EXTSEL_MASK;
+  return reg_trig(r >> inst::CR2::EXTSEL_POS);
+}
+
+/**
+ * @brief External trigger select for injected group.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void set_inj_trig(inj_trig val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_inj_trig<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns external trigger for injected group.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+inj_trig get_inj_trig()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  auto r = inst::CR2::get() & inst::CR2::JEXTSEL_MASK;
+  return inj_trig(r >> inst::CR2::JEXTSEL_POS);
+}
+
+/**
+ * @brief Set data align for conversion result.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void set_data_align(data_align val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_data_align<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns data align of conversion result.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+data_align get_data_align()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  auto r = inst::CR2::get() & inst::CR2::ALIGN;
+  return r == 0? data_align::right : data_align::left;
+}
+
+/**
+ * @brief Enable / disable dma.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void set_dma(dma val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_dma<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns dma enable status.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+dma get_dma()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  auto r = inst::CR2::get() & inst::CR2::DMA;
+  return r == 0? dma::disable : dma::enable;
+}
+
+/**
+ * @brief Enable / disable events.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void set_events(events val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_events<_cfg>(val), ...);
+}
+
+/**
+ * @brief Returns occured events.
+ *
+ * @tparam _cfg - ADC config.
+*/
+template<typename _cfg>
+events get_events()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  return events(inst::SR);
+}
+
+/**
+ * @brief Clear occured events.
+ *
+ * @tparam _cfg - list of ADC configs.
+*/
+template<typename ..._cfg>
+void clr_events(events val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::clr_events<_cfg>(val), ...);
 }
 
 } // namespace lmcu::adc
