@@ -1,0 +1,205 @@
+peripheral:
+  $extends: periph.inc | peripheral
+  name: I2C1
+  desc: Inter-integrated circuit interface
+  base: 0x40005400
+  registers:
+    CR1:
+      desc: Control register 1
+      offset: 0x0
+      size: 16
+      fields:
+        PE:
+          desc: Peripheral enable
+          bits: 0
+        SMBUS:
+          desc: SMBus mode
+          bits: 1
+        SMBTYPE:
+          desc: SMBus type
+          bits: 3
+        ENARP:
+          desc: ARP enable
+          bits: 4
+        ENPEC:
+          desc: PEC enable
+          bits: 5
+        ENGC:
+          desc: General call enable
+          bits: 6
+        NOSTRETCH:
+          desc: Clock stretching disable (Slave mode)
+          bits: 7
+        START:
+          desc: Start generation
+          bits: 8
+        STOP:
+          desc: Stop generation
+          bits: 9
+        ACK:
+          desc: Acknowledge enable
+          bits: 10
+        POS:
+          desc: Acknowledge/PEC Position (for data reception)
+          bits: 11
+        PEC:
+          desc: Packet error checking
+          bits: 12
+        ALERT:
+          desc: SMBus alert
+          bits: 13
+        SWRST:
+          desc: Software reset
+          bits: 15
+    CR2:
+      desc: Control register 2
+      offset: 0x4
+      size: 16
+      fields:
+        FREQ:
+          desc: Peripheral clock frequency
+          bits: 5-0
+        ITERREN:
+          desc: Error interrupt enable
+          bits: 8
+        ITEVTEN:
+          desc: Event interrupt enable
+          bits: 9
+        ITBUFEN:
+          desc: Buffer interrupt enable
+          bits: 10
+        DMAEN:
+          desc: DMA requests enable
+          bits: 11
+        LAST:
+          desc: DMA last transfer
+          bits: 12
+    OAR1:
+      desc: Own address register 1
+      offset: 0x8
+      size: 16
+      fields:
+        ADD:
+          desc: Interface address
+          bits: 9-0
+        ADDMODE:
+          desc: Addressing mode (slave mode)
+          bits: 15
+    OAR2:
+      desc: Own address register 2
+      offset: 0xC
+      size: 16
+      fields:
+        ENDUAL:
+          desc: Dual addressing mode enable
+          bits: 0
+        ADD2:
+          desc: Interface address
+          bits: 7-1
+    DR:
+      desc: Data register
+      offset: 0x10
+      size: 16
+      fields:
+        DATA:
+          desc: 8-bit data
+          bits: 7-0
+    SR1:
+      desc: Status register 1
+      offset: 0x14
+      size: 16
+      fields:
+        SB:
+          desc: Start bit (Master mode)
+          bits: 0
+        ADDR:
+          desc: Address sent (master mode)/matched (slave mode)
+          bits: 1
+        BTF:
+          desc: Byte transfer finished
+          bits: 2
+        ADD10:
+          desc: 10-bit header sent (Master mode)
+          bits: 3
+        STOPF:
+          desc: Stop detection (slave mode)
+          bits: 4
+        RXNE:
+          desc: Data register not empty (receivers)
+          bits: 6
+        TXE:
+          desc: Data register empty (transmitters)
+          bits: 7
+        BERR:
+          desc: Bus error
+          bits: 8
+        ARLO:
+          desc: Arbitration lost (master mode)
+          bits: 9
+        AF:
+          desc: Acknowledge failure
+          bits: 10
+        OVR:
+          desc: Overrun/Underrun
+          bits: 11
+        PECERR:
+          desc: PEC Error in reception
+          bits: 12
+        TIMEOUT:
+          desc: Timeout or Tlow error
+          bits: 14
+        SMBALERT:
+          desc: SMBus alert
+          bits: 15
+    SR2:
+      desc: Status register 2
+      offset: 0x18
+      size: 16
+      fields:
+        MSL:
+          desc: Master/slave
+          bits: 0
+        BUSY:
+          desc: Bus busy
+          bits: 1
+        TRA:
+          desc: Transmitter/receiver
+          bits: 2
+        GENCALL:
+          desc: General call address (Slave mode)
+          bits: 4
+        SMBDEFAULT:
+          desc: SMBus device default address (Slave mode)
+          bits: 5
+        SMBHOST:
+          desc: SMBus host header (Slave mode)
+          bits: 6
+        DUALF:
+          desc: Dual flag (Slave mode)
+          bits: 7
+        PEC:
+          desc: Packet error checking register
+          bits: 15-8
+    CCR:
+      desc: Clock control register
+      offset: 0x1C
+      size: 16
+      fields:
+        CCR:
+          desc: Clock control register in Fm/Sm mode (Master mode)
+          bits: 11-0
+        DUTY:
+          desc: Fm mode duty cycle
+          bits: 14
+        F_S:
+          desc: I2C master mode selection
+          bits: 15
+    TRISE:
+      desc: TRISE register
+      offset: 0x20
+      size: 16
+      reset_val: 0x2
+      fields:
+        TRISE_VAL:
+          desc: Maximum rise time in Fm/Sm mode (Master mode)
+          bits: 5-0
