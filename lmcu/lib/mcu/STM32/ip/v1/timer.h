@@ -2184,9 +2184,9 @@ void configure_tim_9_12_10_11_13_14_out_channel()
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @brief Enable clock on timer periph.
+ * @brief Enable clock on periph.
  *
- * @tparam _id - timer id list.
+ * @tparam _id - periph id list.
 */
 template<id ..._id>
 lmcu_inline void on()
@@ -2220,9 +2220,9 @@ lmcu_inline void on()
 }
 
 /**
- * @brief Disable clock on timer periph.
+ * @brief Disable clock on periph.
  *
- * @tparam _id - timer id list.
+ * @tparam _id - periph id list.
 */
 template<id ..._id>
 lmcu_inline void off()
@@ -2256,9 +2256,9 @@ lmcu_inline void off()
 }
 
 /**
- * @brief Reset timer periph.
+ * @brief Reset periph.
  *
- * @tparam _id - timer id list.
+ * @tparam _id - periph id list.
 */
 template<id ..._id>
 lmcu_inline void reset()

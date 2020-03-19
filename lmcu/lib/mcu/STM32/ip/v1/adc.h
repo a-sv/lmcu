@@ -1022,9 +1022,9 @@ inline void clr_events(events val)
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @brief Enable clock on timer periph.
+ * @brief Enable clock on periph.
  *
- * @tparam _ids - timer id list.
+ * @tparam _id - periph id list.
 */
 template<id ..._id>
 lmcu_inline void on()
@@ -1034,9 +1034,9 @@ lmcu_inline void on()
 }
 
 /**
- * @brief Disable clock on timer periph.
+ * @brief Disable clock on periph.
  *
- * @tparam _ids - timer id list.
+ * @tparam _id - periph id list.
 */
 template<id ..._id>
 lmcu_inline void off()
@@ -1046,9 +1046,9 @@ lmcu_inline void off()
 }
 
 /**
- * @brief Reset adc periph.
+ * @brief Reset periph.
  *
- * @tparam _ids - adc id list.
+ * @tparam _id - periph id list.
 */
 template<id ..._id>
 lmcu_inline void reset()
