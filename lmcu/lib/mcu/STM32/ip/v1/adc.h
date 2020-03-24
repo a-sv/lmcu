@@ -332,12 +332,11 @@ inline void on()
 
   switch(_id)
   {
-  case id::adc1: RCC::APB2ENR::set_b(RCC::APB2ENR::ADC1EN);  break;
-  case id::adc2: RCC::APB2ENR::set_b(RCC::APB2ENR::ADC2EN);  break;
-  case id::adc3: RCC::APB2ENR::set_b(RCC::APB2ENR::ADC3EN);  break;
+  case id::adc1: RCC::APB2ENR::set_b(RCC::APB2ENR::ADC1EN); break;
+  case id::adc2: RCC::APB2ENR::set_b(RCC::APB2ENR::ADC2EN); break;
+  case id::adc3: RCC::APB2ENR::set_b(RCC::APB2ENR::ADC3EN); break;
   default: break;
   }
-
 }
 
 template<id _id>
@@ -347,12 +346,11 @@ inline void off()
 
   switch(_id)
   {
-  case id::adc1: RCC::APB2ENR::clr_b(RCC::APB2ENR::ADC1EN);  break;
-  case id::adc2: RCC::APB2ENR::clr_b(RCC::APB2ENR::ADC2EN);  break;
-  case id::adc3: RCC::APB2ENR::clr_b(RCC::APB2ENR::ADC3EN);  break;
+  case id::adc1: RCC::APB2ENR::clr_b(RCC::APB2ENR::ADC1EN); break;
+  case id::adc2: RCC::APB2ENR::clr_b(RCC::APB2ENR::ADC2EN); break;
+  case id::adc3: RCC::APB2ENR::clr_b(RCC::APB2ENR::ADC3EN); break;
   default: break;
   }
-
 }
 
 template<id _id>

@@ -268,8 +268,8 @@ struct I2C1
   {
     static constexpr type
     // Maximum rise time in Fm/Sm mode (Master mode) (bits: 5-0)
-     TRISE_VAL_MASK = 0x0000003F
-    ,TRISE_VAL_POS = 0
+     TRISEVAL_MASK = 0x0000003F
+    ,TRISEVAL_POS = 0
     ,TRISE_MASK = 0x0000003F
     ;
   };

@@ -200,6 +200,6 @@ peripheral:
       size: 16
       reset_val: 0x2
       fields:
-        TRISE_VAL:
+        TRISE:
           desc: Maximum rise time in Fm/Sm mode (Master mode)
           bits: 5-0
