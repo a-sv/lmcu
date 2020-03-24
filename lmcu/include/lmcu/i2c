@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(LMCU_STM32F1)
-  #include "../../lib/mcu/STM32/ip/v1/i2c.h"
+  #include "../../lib/STM32/ip/v1/i2c.h"
 #else
   #error "device not supported"
 #endif

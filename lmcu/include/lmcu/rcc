@@ -2,9 +2,9 @@
 #include <lmcu/dev/mcu>
 
 #if defined(LMCU_STM32F1_CONNECTIVITY)
-  #include "../../lib/mcu/STM32/F1/rcc_connectivity.h"
+  #include "../../lib/STM32/F1/rcc_connectivity.h"
 #elif defined(LMCU_STM32F1)
-  #include "../../lib/mcu/STM32/F1/rcc.h"
+  #include "../../lib/STM32/F1/rcc.h"
 #else
   #error "device not supported"
 #endif

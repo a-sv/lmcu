@@ -3,5 +3,5 @@
 #include "../../lib/delay/timer.h"
 
 #if defined(LMCU_CORTEX)
-  #include "../../lib/mcu/cortex/dwt_delay.h"
+  #include "../../lib/cortex/dwt_delay.h"
 #endif

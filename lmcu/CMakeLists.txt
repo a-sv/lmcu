@@ -72,11 +72,11 @@ if("${DEVICE_SIG}" STREQUAL "STM32")
   if("${DEVICE_SERIES}" STREQUAL "STM32F1")
     set(CORTEX "M3")
     set(LMCU_C_FLAGS "${CORTEX_M3_C_FLAGS}")
-    set(LD_DIR "${LMCU_DIR}/lib/mcu/device/ld/cortex-m3")
+    set(LD_DIR "${LMCU_DIR}/lib/ld/cortex-m3")
   elseif("${DEVICE_SERIES}" STREQUAL "STM32F4")
     set(CORTEX "M4")
     set(LMCU_C_FLAGS "${CORTEX_M4_C_FLAGS}")
-    set(LD_DIR "${LMCU_DIR}/lib/mcu/device/ld/cortex-m4")
+    set(LD_DIR "${LMCU_DIR}/lib/ld/cortex-m4")
   endif()
 
   set(LMCU_DEFINITIONS

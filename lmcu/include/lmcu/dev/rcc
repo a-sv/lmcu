@@ -2,7 +2,7 @@
 #include "mcu"
 
 #if defined(LMCU_STM32F1_CONNECTIVITY)
-  #include "../../../lib/mcu/device/include/STM32/F1/RCC_CONNECTIVITY.h"
+  #include "../../../lib/regs/STM32/F1/RCC_CONNECTIVITY.h"
 #elif defined(LMCU_STM32F1)
-  #include "../../../lib/mcu/device/include/STM32/F1/RCC.h"
+  #include "../../../lib/regs/STM32/F1/RCC.h"
 #endif

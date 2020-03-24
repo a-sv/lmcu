@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(LMCU_CORTEX)
-  #include "../../lib/mcu/cortex/systick.h"
+  #include "../../lib/cortex/systick.h"
 #else
   #error "device not supported"
 #endif
