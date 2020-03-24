@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct RCC
 {
-  static constexpr std::uintptr_t base = 0x40021000;
+  static constexpr std::uintptr_t base = 0x40021000UL;
 
   // Clock control register
-  struct CR : reg<32, base + 0x0, 0x00000000, 0x00000083>
+  struct CR : reg<base + 0x0, 0x00000083>
   {
     static constexpr type
     // Internal High Speed clock enable (bits: 0)
@@ -59,7 +59,7 @@ struct RCC
     ;
   };
   // Clock configuration register
-  struct CFGR : reg<32, base + 0x4, 0x00000000, 0x00000000>
+  struct CFGR : reg<base + 0x4>
   {
     static constexpr type
     // System clock switch (bits: 1-0)
@@ -151,7 +151,7 @@ struct RCC
     ;
   };
   // Clock interrupt register
-  struct CIR : reg<32, base + 0x8, 0x00000000, 0x00000000>
+  struct CIR : reg<base + 0x8>
   {
     static constexpr type
     // LSI ready interrupt flag (bits: 0)
@@ -226,7 +226,7 @@ struct RCC
     ;
   };
   // APB2 peripheral reset register
-  struct APB2RSTR : reg<32, base + 0xC, 0x00000000, 0x00000000>
+  struct APB2RSTR : reg<base + 0xC>
   {
     static constexpr type
     // Alternate function IO reset (bits: 0)
@@ -305,7 +305,7 @@ struct RCC
     ;
   };
   // APB1 peripheral reset register
-  struct APB1RSTR : reg<32, base + 0x10, 0x00000000, 0x00000000>
+  struct APB1RSTR : reg<base + 0x10>
   {
     static constexpr type
     // TIM2 timer reset (bits: 0)
@@ -404,7 +404,7 @@ struct RCC
     ;
   };
   // AHB peripheral clock enable register
-  struct AHBENR : reg<32, base + 0x14, 0x00000000, 0x00000014>
+  struct AHBENR : reg<base + 0x14, 0x00000014>
   {
     static constexpr type
     // DMA1 clock enable (bits: 0)
@@ -439,7 +439,7 @@ struct RCC
     ;
   };
   // APB2 peripheral clock enable register
-  struct APB2ENR : reg<32, base + 0x18, 0x00000000, 0x00000000>
+  struct APB2ENR : reg<base + 0x18>
   {
     static constexpr type
     // Alternate function IO clock enable (bits: 0)
@@ -518,7 +518,7 @@ struct RCC
     ;
   };
   // APB1 peripheral clock enable register
-  struct APB1ENR : reg<32, base + 0x1C, 0x00000000, 0x00000000>
+  struct APB1ENR : reg<base + 0x1C>
   {
     static constexpr type
     // TIM2 timer clock enable (bits: 0)
@@ -617,7 +617,7 @@ struct RCC
     ;
   };
   // Backup domain control register
-  struct BDCR : reg<32, base + 0x20, 0x00000000, 0x00000000>
+  struct BDCR : reg<base + 0x20>
   {
     static constexpr type
     // External low-speed oscillator enable (bits: 0)
@@ -651,7 +651,7 @@ struct RCC
     ;
   };
   // Control/status register
-  struct CSR : reg<32, base + 0x24, 0x00000000, 0x0C000000>
+  struct CSR : reg<base + 0x24, 0x0C000000>
   {
     static constexpr type
     // Internal low-speed oscillator enable (bits: 0)

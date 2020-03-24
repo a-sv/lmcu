@@ -49,7 +49,8 @@ def tpl_render(tpl, **kwargs):
   return Template(
     filename = tpl,
     default_filters = ["unicode"],
-    imports = ['from tpl_filters import bool, addr16, addr32, lower, upper, typesz, comment, toint']
+    imports = ['from tpl_filters import bool, addr16, addr32, lower, upper, typesz, comment, ' +
+                                       'toint, varargs']
   ).render(**kwargs)
 
 def to_object_tree(d):

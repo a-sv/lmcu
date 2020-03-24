@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct CORE_DEBUG
 {
-  static constexpr std::uintptr_t base = 0xE000EDF0;
+  static constexpr std::uintptr_t base = 0xE000EDF0UL;
 
   // Debug Halting Control and Status Register
-  struct DHCSR : reg<32, base + 0x0, 0x00000000, 0x00000000>
+  struct DHCSR : reg<base + 0x0>
   {
     static constexpr type
     // Enables debug. (bits: 0)
@@ -68,7 +68,7 @@ struct CORE_DEBUG
     ;
   };
   // Debug Halting Control and Status Register
-  struct DCRSR : reg<32, base + 0x4, 0x00000000, 0x00000000>
+  struct DCRSR : reg<base + 0x4>
   {
     static constexpr type
     // Register select (bits: 4-0)
@@ -97,9 +97,9 @@ struct CORE_DEBUG
     ;
   };
   // Debug Core Register Data Register
-  using DCRDR = reg<32, base + 0x8, 0x00000000, 0x00000000>;
+  using DCRDR = reg<base + 0x8>;
   // Debug Exception and Monitor Control Register
-  struct DEMCR : reg<32, base + 0xC, 0x00000000, 0x00000000>
+  struct DEMCR : reg<base + 0xC>
   {
     static constexpr type
     // Reset Vector Catch. Halt running system if Core reset occurs. (bits: 0)

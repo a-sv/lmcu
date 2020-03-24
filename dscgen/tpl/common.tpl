@@ -21,35 +21,45 @@ template<>
 struct reg_size<8>
 {
   using type = uint8_t;
-  static constexpr type maxval = 0xFF;
+  static constexpr type maxval = 0xFFUL;
+  static constexpr type bytes = 1;
 };
 
 template<>
 struct reg_size<16>
 {
   using type = uint16_t;
-  static constexpr type maxval = 0xFFFF;
+  static constexpr type maxval = 0xFFFFUL;
+  static constexpr type bytes = 2;
 };
 
 template<>
 struct reg_size<32>
 {
   using type = uint32_t;
-  static constexpr type maxval = 0xFFFFFFFF;
+  static constexpr type maxval = 0xFFFFFFFFUL;
+  static constexpr type bytes = 4;
 };
 
 template<>
 struct reg_size<64>
 {
   using type = uint64_t;
-  static constexpr type maxval = 0xFFFFFFFFFFFFFFFF;
+  static constexpr type maxval = 0xFFFFFFFFFFFFFFFFULL;
+  static constexpr type bytes = 8;
 };
 
 template<
-  uint32_t _size,
+  // register base address
   std::uintptr_t _base,
-  typename reg_size<_size>::type _reset_mask,
-  typename reg_size<_size>::type _reset_val
+  // register reset value
+  uint64_t _reset_val = 0,
+  // count of registers in array
+  uint32_t _count = 1,
+  // register bit width
+  uint32_t _size = 32,
+  // register struct size
+  uint32_t _s_size = reg_size<_size>::bytes
 >
 struct reg
 {
@@ -57,7 +67,6 @@ struct reg
 
   static constexpr type
   maxval = reg_size<_size>::maxval,
-  reset_mask = _reset_mask,
   reset_value = _reset_val
   ;
 
@@ -65,15 +74,34 @@ struct reg
   base = _base
   ;
 
+  static constexpr uint32_t
+  count = _count
+  ;
+
   __attribute__((always_inline)) static inline void set(type val) noexcept
   {
     *reinterpret_cast<volatile type*>(_base) = val;
   }
 
-  __attribute__((always_inline)) static inline void set(type mask, type val) noexcept
+  __attribute__((always_inline)) static inline void set(uint32_t i, type val) noexcept
   {
-    *reinterpret_cast<volatile type*>(_base) &= ~mask;
-    *reinterpret_cast<volatile type*>(_base) |= val;
+    *reinterpret_cast<volatile type*>(_base + (i * _s_size)) = val;
+  }
+
+  __attribute__((always_inline)) static inline void set_m(type mask, type val) noexcept
+  {
+    type r = *reinterpret_cast<volatile type*>(_base);
+    r &= ~mask;
+    r |= val;
+    *reinterpret_cast<volatile type*>(_base) = r;
+  }
+
+  __attribute__((always_inline)) static inline void set_m(uint32_t i, type mask, type val) noexcept
+  {
+    type r = *reinterpret_cast<volatile type*>(_base + (i * _s_size));
+    r &= ~mask;
+    r |= val;
+    *reinterpret_cast<volatile type*>(_base + (i * _s_size)) = r;
   }
 
   __attribute__((always_inline)) static inline type get() noexcept
@@ -81,9 +109,19 @@ struct reg
     return *reinterpret_cast<volatile type*>(_base);
   }
 
+  __attribute__((always_inline)) static inline type get(uint32_t i) noexcept
+  {
+    return *reinterpret_cast<volatile type*>(_base + (i * _s_size));
+  }
+
   __attribute__((always_inline)) static inline volatile type &ref() noexcept
   {
     return *reinterpret_cast<volatile type*>(_base);
+  }
+
+  __attribute__((always_inline)) static inline volatile type &ref(uint32_t i) noexcept
+  {
+    return *reinterpret_cast<volatile type*>(_base + (i * _s_size));
   }
 
   __attribute__((always_inline)) static inline void set_b(type val) noexcept
@@ -91,9 +129,19 @@ struct reg
     *reinterpret_cast<volatile type*>(_base) |= val;
   }
 
+  __attribute__((always_inline)) static inline void set_b(uint32_t i, type val) noexcept
+  {
+    *reinterpret_cast<volatile type*>(_base + (i * _s_size)) |= val;
+  }
+
   __attribute__((always_inline)) static inline void clr_b(type val) noexcept
   {
     *reinterpret_cast<volatile type*>(_base) &= ~val;
+  }
+
+  __attribute__((always_inline)) static inline void clr_b(uint32_t i, type val) noexcept
+  {
+    *reinterpret_cast<volatile type*>(_base + (i * _s_size)) &= ~val;
   }
 
   __attribute__((always_inline)) static inline bool is_set(type val) noexcept
@@ -101,9 +149,19 @@ struct reg
     return (get() & val) != 0;
   }
 
+  __attribute__((always_inline)) static inline bool is_set(uint32_t i, type val) noexcept
+  {
+    return (get(i) & val) != 0;
+  }
+
   __attribute__((always_inline)) static inline void reset() noexcept
   {
     *reinterpret_cast<volatile type*>(_base) = reset_value;
+  }
+
+  __attribute__((always_inline)) static inline void reset(uint32_t i) noexcept
+  {
+    *reinterpret_cast<volatile type*>(_base + (i * _s_size)) = reset_value;
   }
 };
 

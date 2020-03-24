@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct NVIC
 {
-  static constexpr std::uintptr_t base = 0xE000E000;
+  static constexpr std::uintptr_t base = 0xE000E000UL;
 
   // Interrupt Controller Type Register
-  struct ICTR : reg<32, base + 0x4, 0x00000000, 0x00000000>
+  struct ICTR : reg<base + 0x4>
   {
     static constexpr type
     // Number of interrupt lines that the NVIC supports (bits: 4-0)
@@ -24,7 +24,7 @@ struct NVIC
     ;
   };
   // SysTick Control and Status Register
-  struct STCSR : reg<32, base + 0x10, 0x00000000, 0x00000000>
+  struct STCSR : reg<base + 0x10>
   {
     static constexpr type
     // 1 = counter operates in a multi-shot way. 0 = counter disabled. (bits: 0)
@@ -47,7 +47,7 @@ struct NVIC
     ;
   };
   // SysTick Reload Value Register
-  struct STRVR : reg<32, base + 0x14, 0x00000000, 0x00000000>
+  struct STRVR : reg<base + 0x14>
   {
     static constexpr type
     // Value to load into the SysTick Current Value Register when the counter reaches 0. (bits: 23-0)
@@ -57,7 +57,7 @@ struct NVIC
     ;
   };
   // SysTick Current Value Register
-  struct STCVR : reg<32, base + 0x18, 0x00000000, 0x00000000>
+  struct STCVR : reg<base + 0x18>
   {
     static constexpr type
     // Current value at the time the register is accessed. (bits: 23-0)
@@ -67,7 +67,7 @@ struct NVIC
     ;
   };
   // SysTick Calibration Value Register
-  struct STCALIBR : reg<32, base + 0x1C, 0x00000000, 0x00000000>
+  struct STCALIBR : reg<base + 0x1C>
   {
     static constexpr type
     // This value is the Reload value to use for 10ms timing. (bits: 23-0)
@@ -85,7 +85,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER0 : reg<32, base + 0x100, 0x00000000, 0x00000000>
+  struct ISER0 : reg<base + 0x100>
   {
     static constexpr type
     // Interrupt set enable bits (bits: 31-0)
@@ -95,7 +95,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER1 : reg<32, base + 0x104, 0x00000000, 0x00000000>
+  struct ISER1 : reg<base + 0x104>
   {
     static constexpr type
     // Interrupt set enable bits (bits: 31-0)
@@ -105,7 +105,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER2 : reg<32, base + 0x108, 0x00000000, 0x00000000>
+  struct ISER2 : reg<base + 0x108>
   {
     static constexpr type
     // Interrupt set enable bits (bits: 31-0)
@@ -115,7 +115,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER3 : reg<32, base + 0x10C, 0x00000000, 0x00000000>
+  struct ISER3 : reg<base + 0x10C>
   {
     static constexpr type
     // Interrupt set enable bits (bits: 31-0)
@@ -125,7 +125,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER4 : reg<32, base + 0x110, 0x00000000, 0x00000000>
+  struct ISER4 : reg<base + 0x110>
   {
     static constexpr type
     // Interrupt set enable bits (bits: 31-0)
@@ -135,7 +135,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER5 : reg<32, base + 0x114, 0x00000000, 0x00000000>
+  struct ISER5 : reg<base + 0x114>
   {
     static constexpr type
     // Interrupt set enable bits (bits: 31-0)
@@ -145,7 +145,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER6 : reg<32, base + 0x118, 0x00000000, 0x00000000>
+  struct ISER6 : reg<base + 0x118>
   {
     static constexpr type
     // Interrupt set enable bits (bits: 31-0)
@@ -155,7 +155,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER7 : reg<32, base + 0x11C, 0x00000000, 0x00000000>
+  struct ISER7 : reg<base + 0x11C>
   {
     static constexpr type
     // Interrupt set enable bits (bits: 31-0)
@@ -165,7 +165,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER0 : reg<32, base + 0x180, 0x00000000, 0x00000000>
+  struct ICER0 : reg<base + 0x180>
   {
     static constexpr type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -175,7 +175,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER1 : reg<32, base + 0x184, 0x00000000, 0x00000000>
+  struct ICER1 : reg<base + 0x184>
   {
     static constexpr type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -185,7 +185,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER2 : reg<32, base + 0x188, 0x00000000, 0x00000000>
+  struct ICER2 : reg<base + 0x188>
   {
     static constexpr type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -195,7 +195,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER3 : reg<32, base + 0x18C, 0x00000000, 0x00000000>
+  struct ICER3 : reg<base + 0x18C>
   {
     static constexpr type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -205,7 +205,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER4 : reg<32, base + 0x190, 0x00000000, 0x00000000>
+  struct ICER4 : reg<base + 0x190>
   {
     static constexpr type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -215,7 +215,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER5 : reg<32, base + 0x194, 0x00000000, 0x00000000>
+  struct ICER5 : reg<base + 0x194>
   {
     static constexpr type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -225,7 +225,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER6 : reg<32, base + 0x198, 0x00000000, 0x00000000>
+  struct ICER6 : reg<base + 0x198>
   {
     static constexpr type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -235,7 +235,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER7 : reg<32, base + 0x19C, 0x00000000, 0x00000000>
+  struct ICER7 : reg<base + 0x19C>
   {
     static constexpr type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -245,7 +245,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR0 : reg<32, base + 0x200, 0x00000000, 0x00000000>
+  struct ISPR0 : reg<base + 0x200>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -255,7 +255,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR1 : reg<32, base + 0x204, 0x00000000, 0x00000000>
+  struct ISPR1 : reg<base + 0x204>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -265,7 +265,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR2 : reg<32, base + 0x208, 0x00000000, 0x00000000>
+  struct ISPR2 : reg<base + 0x208>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -275,7 +275,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR3 : reg<32, base + 0x20C, 0x00000000, 0x00000000>
+  struct ISPR3 : reg<base + 0x20C>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -285,7 +285,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR4 : reg<32, base + 0x210, 0x00000000, 0x00000000>
+  struct ISPR4 : reg<base + 0x210>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -295,7 +295,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR5 : reg<32, base + 0x214, 0x00000000, 0x00000000>
+  struct ISPR5 : reg<base + 0x214>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -305,7 +305,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR6 : reg<32, base + 0x218, 0x00000000, 0x00000000>
+  struct ISPR6 : reg<base + 0x218>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -315,7 +315,7 @@ struct NVIC
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR7 : reg<32, base + 0x21C, 0x00000000, 0x00000000>
+  struct ISPR7 : reg<base + 0x21C>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -325,7 +325,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR0 : reg<32, base + 0x280, 0x00000000, 0x00000000>
+  struct ICPR0 : reg<base + 0x280>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -335,7 +335,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR1 : reg<32, base + 0x284, 0x00000000, 0x00000000>
+  struct ICPR1 : reg<base + 0x284>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -345,7 +345,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR2 : reg<32, base + 0x288, 0x00000000, 0x00000000>
+  struct ICPR2 : reg<base + 0x288>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -355,7 +355,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR3 : reg<32, base + 0x28C, 0x00000000, 0x00000000>
+  struct ICPR3 : reg<base + 0x28C>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -365,7 +365,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR4 : reg<32, base + 0x290, 0x00000000, 0x00000000>
+  struct ICPR4 : reg<base + 0x290>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -375,7 +375,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR5 : reg<32, base + 0x294, 0x00000000, 0x00000000>
+  struct ICPR5 : reg<base + 0x294>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -385,7 +385,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR6 : reg<32, base + 0x298, 0x00000000, 0x00000000>
+  struct ICPR6 : reg<base + 0x298>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -395,7 +395,7 @@ struct NVIC
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR7 : reg<32, base + 0x29C, 0x00000000, 0x00000000>
+  struct ICPR7 : reg<base + 0x29C>
   {
     static constexpr type
     // Interrupt set-pending bits (bits: 31-0)
@@ -405,7 +405,7 @@ struct NVIC
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR0 : reg<32, base + 0x300, 0x00000000, 0x00000000>
+  struct IABR0 : reg<base + 0x300>
   {
     static constexpr type
     // Interrupt active flags (bits: 31-0)
@@ -415,7 +415,7 @@ struct NVIC
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR1 : reg<32, base + 0x304, 0x00000000, 0x00000000>
+  struct IABR1 : reg<base + 0x304>
   {
     static constexpr type
     // Interrupt active flags (bits: 31-0)
@@ -425,7 +425,7 @@ struct NVIC
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR2 : reg<32, base + 0x308, 0x00000000, 0x00000000>
+  struct IABR2 : reg<base + 0x308>
   {
     static constexpr type
     // Interrupt active flags (bits: 31-0)
@@ -435,7 +435,7 @@ struct NVIC
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR3 : reg<32, base + 0x30C, 0x00000000, 0x00000000>
+  struct IABR3 : reg<base + 0x30C>
   {
     static constexpr type
     // Interrupt active flags (bits: 31-0)
@@ -445,7 +445,7 @@ struct NVIC
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR4 : reg<32, base + 0x310, 0x00000000, 0x00000000>
+  struct IABR4 : reg<base + 0x310>
   {
     static constexpr type
     // Interrupt active flags (bits: 31-0)
@@ -455,7 +455,7 @@ struct NVIC
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR5 : reg<32, base + 0x314, 0x00000000, 0x00000000>
+  struct IABR5 : reg<base + 0x314>
   {
     static constexpr type
     // Interrupt active flags (bits: 31-0)
@@ -465,7 +465,7 @@ struct NVIC
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR6 : reg<32, base + 0x318, 0x00000000, 0x00000000>
+  struct IABR6 : reg<base + 0x318>
   {
     static constexpr type
     // Interrupt active flags (bits: 31-0)
@@ -475,7 +475,7 @@ struct NVIC
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR7 : reg<32, base + 0x31C, 0x00000000, 0x00000000>
+  struct IABR7 : reg<base + 0x31C>
   {
     static constexpr type
     // Interrupt active flags (bits: 31-0)
@@ -485,7 +485,7 @@ struct NVIC
     ;
   };
   // Interrupt Priority Register
-  struct IPR0 : reg<32, base + 0x400, 0x00000000, 0x00000000>
+  struct IPR0 : reg<base + 0x400>
   {
     static constexpr type
     // Priority of interrupt 0 (bits: 7-0)
@@ -504,7 +504,7 @@ struct NVIC
     ;
   };
   // Interrupt Priority Register
-  struct IPR1 : reg<32, base + 0x404, 0x00000000, 0x00000000>
+  struct IPR1 : reg<base + 0x404>
   {
     static constexpr type
     // Priority of interrupt 0 (bits: 7-0)
@@ -523,7 +523,7 @@ struct NVIC
     ;
   };
   // Interrupt Priority Register
-  struct IPR2 : reg<32, base + 0x408, 0x00000000, 0x00000000>
+  struct IPR2 : reg<base + 0x408>
   {
     static constexpr type
     // Priority of interrupt 0 (bits: 7-0)
@@ -542,7 +542,7 @@ struct NVIC
     ;
   };
   // Interrupt Priority Register
-  struct IPR3 : reg<32, base + 0x40C, 0x00000000, 0x00000000>
+  struct IPR3 : reg<base + 0x40C>
   {
     static constexpr type
     // Priority of interrupt 0 (bits: 7-0)
@@ -561,7 +561,7 @@ struct NVIC
     ;
   };
   // Interrupt Priority Register
-  struct IPR4 : reg<32, base + 0x410, 0x00000000, 0x00000000>
+  struct IPR4 : reg<base + 0x410>
   {
     static constexpr type
     // Priority of interrupt 0 (bits: 7-0)
@@ -580,7 +580,7 @@ struct NVIC
     ;
   };
   // Interrupt Priority Register
-  struct IPR5 : reg<32, base + 0x414, 0x00000000, 0x00000000>
+  struct IPR5 : reg<base + 0x414>
   {
     static constexpr type
     // Priority of interrupt 0 (bits: 7-0)
@@ -599,7 +599,7 @@ struct NVIC
     ;
   };
   // Interrupt Priority Register
-  struct IPR6 : reg<32, base + 0x418, 0x00000000, 0x00000000>
+  struct IPR6 : reg<base + 0x418>
   {
     static constexpr type
     // Priority of interrupt 0 (bits: 7-0)
@@ -618,7 +618,7 @@ struct NVIC
     ;
   };
   // Interrupt Priority Register
-  struct IPR7 : reg<32, base + 0x41C, 0x00000000, 0x00000000>
+  struct IPR7 : reg<base + 0x41C>
   {
     static constexpr type
     // Priority of interrupt 0 (bits: 7-0)
@@ -637,7 +637,7 @@ struct NVIC
     ;
   };
   // CPU ID Base Register
-  struct CPUIDBR : reg<32, base + 0xD00, 0x00000000, 0x411FC231>
+  struct CPUIDBR : reg<base + 0xD00, 0x411FC231>
   {
     static constexpr type
     // Implementation defined revision number. (bits: 3-0)
@@ -659,7 +659,7 @@ struct NVIC
     ;
   };
   // Interrupt Control State Register
-  struct ICSR : reg<32, base + 0xD04, 0x00000000, 0x00000000>
+  struct ICSR : reg<base + 0xD04>
   {
     static constexpr type
     // Active ISR number field. (bits: 8-0)
@@ -704,7 +704,7 @@ struct NVIC
     ;
   };
   // Vector Table Offset Register
-  struct VTOR : reg<32, base + 0xD08, 0x00000000, 0x00000000>
+  struct VTOR : reg<base + 0xD08>
   {
     static constexpr type
     // Vector table base offset field. Contains the offset of the table base from the bottom of the SRAM or CODE space.  (bits: 28-7)
@@ -718,7 +718,7 @@ struct NVIC
     ;
   };
   // System Control Register
-  struct SCR : reg<32, base + 0xD10, 0x00000000, 0x00000000>
+  struct SCR : reg<base + 0xD10>
   {
     static constexpr type
     // Sleep on exit when returning from Handler mode to Thread mode. (bits: 1)
@@ -737,7 +737,7 @@ struct NVIC
     ;
   };
   // Configuration Control Register
-  struct CCR : reg<32, base + 0xD14, 0x00000000, 0x00000000>
+  struct CCR : reg<base + 0xD14>
   {
     static constexpr type
     // When 0, default, It is only possible to enter Thread mode when returning from the last exception. When set to 1, Thread mode can be entered from any level in Handler mode by controlled return value.  (bits: 0)
@@ -768,7 +768,7 @@ struct NVIC
     ;
   };
   // System Handler Priority Register 0
-  struct SHPR0 : reg<32, base + 0xD18, 0x00000000, 0x00000000>
+  struct SHPR0 : reg<base + 0xD18>
   {
     static constexpr type
     // Priority of system handler 4, 8, and 12. Mem Manage, reserved, and Debug Monitor. (bits: 7-0)
@@ -787,7 +787,7 @@ struct NVIC
     ;
   };
   // System Handler Priority Register 1
-  struct SHPR1 : reg<32, base + 0xD1C, 0x00000000, 0x00000000>
+  struct SHPR1 : reg<base + 0xD1C>
   {
     static constexpr type
     // Priority of system handler 4, 8, and 12. Mem Manage, reserved, and Debug Monitor. (bits: 7-0)
@@ -806,7 +806,7 @@ struct NVIC
     ;
   };
   // System Handler Priority Register 2
-  struct SHPR2 : reg<32, base + 0xD20, 0x00000000, 0x00000000>
+  struct SHPR2 : reg<base + 0xD20>
   {
     static constexpr type
     // Priority of system handler 4, 8, and 12. Mem Manage, reserved, and Debug Monitor. (bits: 7-0)
@@ -825,7 +825,7 @@ struct NVIC
     ;
   };
   // Memory Manage Fault Status Register
-  struct MMFSR : reg<8, base + 0xD28, 0x00000000, 0x00000000>
+  struct MMFSR : reg<base + 0xD28, 0x00000000, 1, 8>
   {
     static constexpr type
     // Instruction access violation flag. (bits: 0)
@@ -852,7 +852,7 @@ struct NVIC
     ;
   };
   // Bus Fault Status Register
-  struct BFSR : reg<8, base + 0xD29, 0x00000000, 0x00000000>
+  struct BFSR : reg<base + 0xD29, 0x00000000, 1, 8>
   {
     static constexpr type
     // Instruction bus error flag. (bits: 0)
@@ -883,7 +883,7 @@ struct NVIC
     ;
   };
   // Usage Fault Status Register
-  struct UFSR : reg<16, base + 0xD2B, 0x00000000, 0x00000000>
+  struct UFSR : reg<base + 0xD2B, 0x00000000, 1, 16>
   {
     static constexpr type
     // The UNDEFINSTR flag is set when the processor attempts to execute an undefined instruction.  (bits: 0)
@@ -914,7 +914,7 @@ struct NVIC
     ;
   };
   // Hard Fault Status Register
-  struct HFSR : reg<32, base + 0xD2C, 0x00000000, 0x00000000>
+  struct HFSR : reg<base + 0xD2C>
   {
     static constexpr type
     // This bit is set if there is a fault because of vector table read on exception processing (Bus Fault).  (bits: 1)
@@ -933,7 +933,7 @@ struct NVIC
     ;
   };
   // Debug Fault Status Register
-  struct DFSR : reg<32, base + 0xD30, 0x00000000, 0x00000000>
+  struct DFSR : reg<base + 0xD30>
   {
     static constexpr type
     // Halt request flag (bits: 0)
@@ -960,13 +960,13 @@ struct NVIC
     ;
   };
   // Memory Manage Fault Address Register
-  using MMFAR = reg<32, base + 0xD34, 0x00000000, 0x00000000>;
+  using MMFAR = reg<base + 0xD34>;
   // Bus Fault Address Register
-  using BFAR = reg<32, base + 0xD38, 0x00000000, 0x00000000>;
+  using BFAR = reg<base + 0xD38>;
   // Auxiliary Fault Status Register
-  using AFSR = reg<32, base + 0xD3C, 0x00000000, 0x00000000>;
+  using AFSR = reg<base + 0xD3C>;
   // Software Trigger Interrupt Register
-  struct STIR : reg<32, base + 0xF00, 0x00000000, 0x00000000>
+  struct STIR : reg<base + 0xF00>
   {
     static constexpr type
     // Interrupt ID field. (bits: 8-0)

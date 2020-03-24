@@ -38,5 +38,3 @@ peripheral:
         CC3NP: null
     RCR: null
     BDTR: null
-    DMAR:
-      size: 16

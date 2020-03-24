@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct PWR
 {
-  static constexpr std::uintptr_t base = 0x40007000;
+  static constexpr std::uintptr_t base = 0x40007000UL;
 
   // Power control register
-  struct CR : reg<32, base + 0x0, 0x00000000, 0x00000000>
+  struct CR : reg<base + 0x0>
   {
     static constexpr type
     // Low-power deepsleep (bits: 0)
@@ -56,7 +56,7 @@ struct PWR
     ;
   };
   // Power control/status register
-  struct CSR : reg<32, base + 0x4, 0x00000000, 0x00000000>
+  struct CSR : reg<base + 0x4>
   {
     static constexpr type
     // Wakeup flag (bits: 0)

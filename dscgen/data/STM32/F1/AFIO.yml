@@ -7,7 +7,6 @@ peripheral:
     EVCR:
       desc: Event control register
       offset: 0x0
-      size: 32
       fields:
         PIN:
           desc: Select the pin used to output the Cortex® EVENTOUT signal.
@@ -86,7 +85,6 @@ peripheral:
     MAPR:
       desc: AF remap and debug I/O configuration register
       offset: 0x4
-      size: 32
       fields:
         SPI1_REMAP:
           desc: SPI1 remapping
@@ -208,7 +206,6 @@ peripheral:
     EXTICR1:
       desc: External interrupt configuration register 1
       offset: 0x8
-      size: 32
       fields:
         EXTI0: &EXTI0
           desc: EXTI x configuration
@@ -247,7 +244,6 @@ peripheral:
     EXTICR2:
       desc: External interrupt configuration register 2
       offset: 0xC
-      size: 32
       fields:
         EXTI4:
           <<: *EXTI0
@@ -260,7 +256,6 @@ peripheral:
     EXTICR3:
       desc: External interrupt configuration register 3
       offset: 0x10
-      size: 32
       fields:
         EXTI4:
           <<: *EXTI0
@@ -273,7 +268,6 @@ peripheral:
     EXTICR4:
       desc: External interrupt configuration register 4
       offset: 0x14
-      size: 32
       fields:
         EXTI12:
           <<: *EXTI0
@@ -286,7 +280,6 @@ peripheral:
     MAPR2:
       desc: AF remap and debug I/O configuration register 2
       offset: 0x1C
-      size: 32
       fields:
         TIM9_REMAP:
           desc: TIM9 remapping

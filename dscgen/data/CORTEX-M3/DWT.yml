@@ -8,7 +8,6 @@ peripheral:
   registers:
     CTRL:
       desc: Control Register
-      size: 32
       offset: 0x0
       fields:
         CYCCNTENA:
@@ -55,11 +54,9 @@ peripheral:
           bits: 31-28
     CYCCNT:
       desc: Current PC Sampler Cycle Count Register
-      size: 32
       offset: 0x4
     CPICR:
       desc: CPI Count Register
-      size: 32
       offset: 0x8
       fields:
         CPICNT:
@@ -67,7 +64,6 @@ peripheral:
           bits: 7-0
     EOCR:
       desc: Exception Overhead Count Register
-      size: 32
       offset: 0xC
       fields:
         INTCNT:
@@ -75,7 +71,6 @@ peripheral:
           bits: 7-0
     SCR:
       desc: Sleep Count Register
-      size: 32
       offset: 0x10
       fields:
         SLEEPCNT:
@@ -83,7 +78,6 @@ peripheral:
           bits: 7-0
     LSUCR:
       desc: LSU Count Register
-      size: 32
       offset: 0x14
       fields:
         LSUCNT:
@@ -93,7 +87,6 @@ peripheral:
           bits: 7-0
     FCR:
       desc: Fold Count Register
-      size: 32
       offset: 0x18
       fields:
         FOLDCNT:
@@ -101,11 +94,9 @@ peripheral:
           bits: 7-0
     PCSR:
       desc: Program Counter Sample Register
-      size: 32
       offset: 0x1C
     CMPR0: &CMPR0
       desc: Comparator Register
-      size: 32
       offset: 0x20
     CMPR1:
       <<: *CMPR0
@@ -118,7 +109,6 @@ peripheral:
       offset: 0x50
     MSKR0: &MSKR0
       desc: Mask Register
-      size: 32
       offset: 0x24
     MSKR1:
       <<: *MSKR0
@@ -131,7 +121,6 @@ peripheral:
       offset: 0x54
     FR0:
       desc: Function Register
-      size: 32
       offset: 0x28
       fields:
         FUNCTION:

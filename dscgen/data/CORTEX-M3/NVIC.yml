@@ -8,7 +8,6 @@ peripheral:
   registers:
     ICTR:
       desc: Interrupt Controller Type Register
-      size: 32
       offset: 0x4
       fields:
         INTLINESNUM:
@@ -16,7 +15,6 @@ peripheral:
           bits: 4-0
     STCSR:
       desc: SysTick Control and Status Register
-      size: 32
       offset: 0x10
       fields:
         ENABLE:
@@ -35,7 +33,6 @@ peripheral:
           bits: 16
     STRVR:
       desc: SysTick Reload Value Register
-      size: 32
       offset: 0x14
       fields:
         RELOAD:
@@ -43,7 +40,6 @@ peripheral:
           bits: 23-0
     STCVR:
       desc: SysTick Current Value Register
-      size: 32
       offset: 0x18
       fields:
         CURRENT:
@@ -51,7 +47,6 @@ peripheral:
           bits: 23-0
     STCALIBR:
       desc: SysTick Calibration Value Register
-      size: 32
       offset: 0x1C
       fields:
         TENMS:
@@ -65,7 +60,6 @@ peripheral:
           bits: 31
     ISER0: &ISER0
       desc: Interrupt Set-Enable Register
-      size: 32
       offset: 0x100
       fields:
         SETENA:
@@ -94,7 +88,6 @@ peripheral:
       offset: 0x11C
     ICER0: &ICER0
       desc: Interrupt Clear-Enable Register
-      size: 32
       offset: 0x180
       fields:
         CLRENA:
@@ -123,7 +116,6 @@ peripheral:
       offset: 0x19C
     ISPR0: &ISPR0
       desc: Interrupt Set-Pending Register
-      size: 32
       offset: 0x200
       fields:
         SETPEND:
@@ -152,7 +144,6 @@ peripheral:
       offset: 0x21C
     ICPR0: &ICPR0
       desc: Interrupt Clear-Pending Register
-      size: 32
       offset: 0x280
       fields:
         CLRPEND:
@@ -181,7 +172,6 @@ peripheral:
       offset: 0x29C
     IABR0: &IABR0
       desc: Interrupt Active Bit Register
-      size: 32
       offset: 0x300
       fields:
         ACTIVE:
@@ -210,7 +200,6 @@ peripheral:
       offset: 0x31C
     IPR0: &IPR0
       desc: Interrupt Priority Register
-      size: 32
       offset: 0x400
       fields:
         PRI_0:
@@ -248,7 +237,6 @@ peripheral:
       offset: 0x41C
     CPUIDBR:
       desc: CPU ID Base Register
-      size: 32
       offset: 0xD00
       reset_val: 0x411FC231
       fields:
@@ -269,7 +257,6 @@ peripheral:
           bits: 31-24
     ICSR:
       desc: Interrupt Control State Register
-      size: 32
       offset: 0xD04
       fields:
         VECTACTIVE:
@@ -308,7 +295,6 @@ peripheral:
           bits: 31
     VTOR:
       desc: Vector Table Offset Register
-      size: 32
       offset: 0xD08
       fields:
         TBLOFF:
@@ -321,7 +307,6 @@ peripheral:
           bits: 29
     SCR:
       desc: System Control Register
-      size: 32
       offset: 0xD10
       fields:
         SLEEPONEXIT:
@@ -337,7 +322,6 @@ peripheral:
           bits: 4
     CCR:
       desc: Configuration Control Register
-      size: 32
       offset: 0xD14
       fields:
         NONEBASETHRDENA:
@@ -378,7 +362,6 @@ peripheral:
           bits: 9
     SHPR0:
       desc: System Handler Priority Register 0
-      size: 32
       offset: 0xD18
       fields:
         PRI_4: &PRI_4
@@ -395,7 +378,6 @@ peripheral:
           bits: 31-24
     SHPR1:
       desc: System Handler Priority Register 1
-      size: 32
       offset: 0xD1C
       fields:
         PRI_8:
@@ -408,7 +390,6 @@ peripheral:
           <<: *PRI_7
     SHPR2:
       desc: System Handler Priority Register 2
-      size: 32
       offset: 0xD20
       fields:
         PRI_12:
@@ -495,7 +476,6 @@ peripheral:
           bits: 9
     HFSR:
       desc: Hard Fault Status Register
-      size: 32
       offset: 0xD2C
       fields:
         VECTTBL:
@@ -513,7 +493,6 @@ peripheral:
           bits: 31
     DFSR:
       desc: Debug Fault Status Register
-      size: 32
       offset: 0xD30
       fields:
         HALTED:
@@ -533,19 +512,15 @@ peripheral:
           bits: 4
     MMFAR:
       desc: Memory Manage Fault Address Register
-      size: 32
       offset: 0xD34
     BFAR:
       desc: Bus Fault Address Register
-      size: 32
       offset: 0xD38
     AFSR:
       desc: Auxiliary Fault Status Register
-      size: 32
       offset: 0xD3C
     STIR:
       desc: Software Trigger Interrupt Register
-      size: 32
       offset: 0xF00
       fields:
         INTID:

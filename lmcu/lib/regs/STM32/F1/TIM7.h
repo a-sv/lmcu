@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct TIM7
 {
-  static constexpr std::uintptr_t base = 0x40001400;
+  static constexpr std::uintptr_t base = 0x40001400UL;
 
   // Control register 1
-  struct CR1 : reg<16, base + 0x0, 0x00000000, 0x00000000>
+  struct CR1 : reg<base + 0x0>
   {
     static constexpr type
     // Counter enable (bits: 0)
@@ -41,7 +41,7 @@ struct TIM7
     ;
   };
   // Control register 2
-  struct CR2 : reg<16, base + 0x4, 0x00000000, 0x00000000>
+  struct CR2 : reg<base + 0x4>
   {
     static constexpr type
     // Master mode selection (bits: 6-4)
@@ -59,7 +59,7 @@ struct TIM7
     ;
   };
   // DMA/interrupt enable register
-  struct DIER : reg<16, base + 0xC, 0x00000000, 0x00000000>
+  struct DIER : reg<base + 0xC>
   {
     static constexpr type
     // Update interrupt enable (bits: 0)
@@ -74,7 +74,7 @@ struct TIM7
     ;
   };
   // Status register
-  struct SR : reg<16, base + 0x10, 0x00000000, 0x00000000>
+  struct SR : reg<base + 0x10>
   {
     static constexpr type
     // Update interrupt flag (bits: 0)
@@ -85,7 +85,7 @@ struct TIM7
     ;
   };
   // Event generation register
-  struct EGR : reg<16, base + 0x14, 0x00000000, 0x00000000>
+  struct EGR : reg<base + 0x14>
   {
     static constexpr type
     // Update generation (bits: 0)
@@ -96,11 +96,11 @@ struct TIM7
     ;
   };
   // Counter
-  using CNT = reg<16, base + 0x24, 0x00000000, 0x00000000>;
+  using CNT = reg<base + 0x24>;
   // Prescaler
-  using PSC = reg<16, base + 0x28, 0x00000000, 0x00000000>;
+  using PSC = reg<base + 0x28>;
   // Auto-reload register
-  using ARR = reg<16, base + 0x2C, 0x00000000, 0x0000FFFF>;
+  using ARR = reg<base + 0x2C, 0x0000FFFF>;
 }; // struct TIM7
 
 } // namespace lmcu::device

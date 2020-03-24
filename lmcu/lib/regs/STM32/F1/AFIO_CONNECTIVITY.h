@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct AFIO
 {
-  static constexpr std::uintptr_t base = 0x40010000;
+  static constexpr std::uintptr_t base = 0x40010000UL;
 
   // AF remap and debug I/O configuration register
-  struct MAPR : reg<32, base + 0x4, 0x00000000, 0x00000000>
+  struct MAPR : reg<base + 0x4>
   {
     static constexpr type
     // Ethernet MAC I/O remapping (bits: 21)
@@ -111,7 +111,7 @@ struct AFIO
     ;
   };
   // Event control register
-  struct EVCR : reg<32, base + 0x0, 0x00000000, 0x00000000>
+  struct EVCR : reg<base + 0x0>
   {
     static constexpr type
     // Select the pin used to output the Cortex® EVENTOUT signal. (bits: 3-0)
@@ -149,7 +149,7 @@ struct AFIO
     ;
   };
   // External interrupt configuration register 1
-  struct EXTICR1 : reg<32, base + 0x8, 0x00000000, 0x00000000>
+  struct EXTICR1 : reg<base + 0x8>
   {
     static constexpr type
     // EXTI x configuration (bits: 3-0)
@@ -196,7 +196,7 @@ struct AFIO
     ;
   };
   // External interrupt configuration register 2
-  struct EXTICR2 : reg<32, base + 0xC, 0x00000000, 0x00000000>
+  struct EXTICR2 : reg<base + 0xC>
   {
     static constexpr type
     // EXTI x configuration (bits: 3-0)
@@ -243,7 +243,7 @@ struct AFIO
     ;
   };
   // External interrupt configuration register 3
-  struct EXTICR3 : reg<32, base + 0x10, 0x00000000, 0x00000000>
+  struct EXTICR3 : reg<base + 0x10>
   {
     static constexpr type
     // EXTI x configuration (bits: 3-0)
@@ -290,7 +290,7 @@ struct AFIO
     ;
   };
   // External interrupt configuration register 4
-  struct EXTICR4 : reg<32, base + 0x14, 0x00000000, 0x00000000>
+  struct EXTICR4 : reg<base + 0x14>
   {
     static constexpr type
     // EXTI x configuration (bits: 3-0)
@@ -337,7 +337,7 @@ struct AFIO
     ;
   };
   // AF remap and debug I/O configuration register 2
-  struct MAPR2 : reg<32, base + 0x1C, 0x00000000, 0x00000000>
+  struct MAPR2 : reg<base + 0x1C>
   {
     static constexpr type
     // TIM9 remapping (bits: 5)

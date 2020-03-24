@@ -141,7 +141,6 @@ peripheral:
     AHBRSTR:
       desc: AHB peripheral clock reset register
       offset: 0x28
-      size: 32
       fields:
         OTGFSRST:
           desc: USB OTG FS reset
@@ -152,7 +151,6 @@ peripheral:
     CFGR2:
       desc: Clock configuration register2
       offset: 0x2C
-      size: 32
       fields:
         PREDIV1:
           desc: PREDIV1 division factor

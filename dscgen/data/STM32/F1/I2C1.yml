@@ -7,7 +7,6 @@ peripheral:
     CR1:
       desc: Control register 1
       offset: 0x0
-      size: 16
       fields:
         PE:
           desc: Peripheral enable
@@ -54,7 +53,6 @@ peripheral:
     CR2:
       desc: Control register 2
       offset: 0x4
-      size: 16
       fields:
         FREQ:
           desc: Peripheral clock frequency
@@ -77,7 +75,6 @@ peripheral:
     OAR1:
       desc: Own address register 1
       offset: 0x8
-      size: 16
       fields:
         ADD:
           desc: Interface address
@@ -88,7 +85,6 @@ peripheral:
     OAR2:
       desc: Own address register 2
       offset: 0xC
-      size: 16
       fields:
         ENDUAL:
           desc: Dual addressing mode enable
@@ -99,7 +95,6 @@ peripheral:
     DR:
       desc: Data register
       offset: 0x10
-      size: 16
       fields:
         DATA:
           desc: 8-bit data
@@ -107,7 +102,6 @@ peripheral:
     SR1:
       desc: Status register 1
       offset: 0x14
-      size: 16
       fields:
         SB:
           desc: Start bit (Master mode)
@@ -154,7 +148,6 @@ peripheral:
     SR2:
       desc: Status register 2
       offset: 0x18
-      size: 16
       fields:
         MSL:
           desc: Master/slave
@@ -183,7 +176,6 @@ peripheral:
     CCR:
       desc: Clock control register
       offset: 0x1C
-      size: 16
       fields:
         CCR:
           desc: Clock control register in Fm/Sm mode (Master mode)
@@ -197,7 +189,6 @@ peripheral:
     TRISE:
       desc: TRISE register
       offset: 0x20
-      size: 16
       reset_val: 0x2
       fields:
         TRISE:

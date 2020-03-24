@@ -69,3 +69,17 @@ def comment(val):
   if val:
     return '// ' + re.sub(r'\ {2,}', "", str(val)).replace('\n', ' ')
   return ''
+
+def varargs(args):
+  pos = 0
+  for i in range(len(args)):
+    val, defval = args[i]
+    if str(val) != '' and val != defval:
+      pos = i + 1
+  res = []
+  for i in range(pos):
+    res.append(str(args[i][0]) or str(args[i][1]))
+  res = ', '.join(res)
+  if res:
+    res = ', ' + res
+  return res

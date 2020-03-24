@@ -7,15 +7,30 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct ${D.name}
 {
-  static constexpr std::uintptr_t base = ${D.base | addr32};
+  static constexpr std::uintptr_t base = ${D.base | addr32}UL;
 
   % for reg_name, reg in D.registers:
+<%
+  reg_size = reg.size or 32
+
+  if reg.struct:
+    s_size = reg.struct
+    if s_size < 1:
+      s_size = 0
+  else:
+    s_size = 0
+
+  reg_count = reg.count or 1
+  if reg_count < 1:
+    reg_count = 1
+
+  va = [(addr32(reg.reset_val), addr32(0)), (reg_count, 1), (reg_size, 32), (s_size, 0)]
+%>\
     % if reg.desc:
   ${reg.desc | comment}
     % endif
     % if reg.fields:
-<% %>\
-  struct ${reg_name} : reg<${reg.size}, base + ${'0x%X' % reg.offset}, ${reg.reset_mask or 0 | addr32}, ${reg.reset_val | addr32}>
+  struct ${reg_name} : reg<base + ${'0x%X' % reg.offset}${va | n,varargs}>
   {
 <%  line = 0; fields_mask = 0 %>\
     static constexpr type
@@ -50,7 +65,7 @@ struct ${D.name}
     ;
   };
     % else:
-  using ${reg_name} = reg<${reg.size}, base + ${'0x%X' % reg.offset}, ${reg.reset_mask or 0 | addr32}, ${reg.reset_val | addr32}>;
+  using ${reg_name} = reg<base + ${'0x%X' % reg.offset}${va | n,varargs}>;
     % endif
   % endfor
 }; // struct ${D.name}

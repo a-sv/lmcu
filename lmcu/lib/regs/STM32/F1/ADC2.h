@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct ADC2
 {
-  static constexpr std::uintptr_t base = 0x40012800;
+  static constexpr std::uintptr_t base = 0x40012800UL;
 
   // ADC regular data register
-  struct DR : reg<32, base + 0x4C, 0x00000000, 0x00000000>
+  struct DR : reg<base + 0x4C>
   {
     static constexpr type
     // Regular data (bits: 15-0)
@@ -24,7 +24,7 @@ struct ADC2
     ;
   };
   // ADC status register
-  struct SR : reg<32, base + 0x0, 0x00000000, 0x00000000>
+  struct SR : reg<base + 0x0>
   {
     static constexpr type
     // Analog watchdog flag (bits: 0)
@@ -51,7 +51,7 @@ struct ADC2
     ;
   };
   // ADC control register 1
-  struct CR1 : reg<32, base + 0x4, 0x00000000, 0x00000000>
+  struct CR1 : reg<base + 0x4>
   {
     static constexpr type
     // Analog watchdog channel select bits (bits: 4-0)
@@ -135,7 +135,7 @@ struct ADC2
     ;
   };
   // ADC control register 2
-  struct CR2 : reg<32, base + 0x8, 0x00000000, 0x00000000>
+  struct CR2 : reg<base + 0x8>
   {
     static constexpr type
     // A/D converter ON / OFF (bits: 0)
@@ -192,7 +192,7 @@ struct ADC2
     ;
   };
   // ADC control register 1
-  struct SMPR1 : reg<32, base + 0xC, 0x00000000, 0x00000000>
+  struct SMPR1 : reg<base + 0xC>
   {
     static constexpr type
     // Channel x Sample time selection (bits: 2-0)
@@ -287,7 +287,7 @@ struct ADC2
     ;
   };
   // ADC control register 2
-  struct SMPR2 : reg<32, base + 0x10, 0x00000000, 0x00000000>
+  struct SMPR2 : reg<base + 0x10>
   {
     static constexpr type
     // Channel x Sample time selection (bits: 2-0)
@@ -404,7 +404,7 @@ struct ADC2
     ;
   };
   // ADC injected channel data offset register 1
-  struct JOFR1 : reg<32, base + 0x14, 0x00000000, 0x00000000>
+  struct JOFR1 : reg<base + 0x14>
   {
     static constexpr type
     // Data offset for injected channel x (bits: 11-0)
@@ -414,7 +414,7 @@ struct ADC2
     ;
   };
   // ADC injected channel data offset register 2
-  struct JOFR2 : reg<32, base + 0x18, 0x00000000, 0x00000000>
+  struct JOFR2 : reg<base + 0x18>
   {
     static constexpr type
     // Data offset for injected channel x (bits: 11-0)
@@ -424,7 +424,7 @@ struct ADC2
     ;
   };
   // ADC injected channel data offset register 3
-  struct JOFR3 : reg<32, base + 0x1C, 0x00000000, 0x00000000>
+  struct JOFR3 : reg<base + 0x1C>
   {
     static constexpr type
     // Data offset for injected channel x (bits: 11-0)
@@ -434,7 +434,7 @@ struct ADC2
     ;
   };
   // ADC injected channel data offset register 4
-  struct JOFR4 : reg<32, base + 0x20, 0x00000000, 0x00000000>
+  struct JOFR4 : reg<base + 0x20>
   {
     static constexpr type
     // Data offset for injected channel x (bits: 11-0)
@@ -444,7 +444,7 @@ struct ADC2
     ;
   };
   // ADC watchdog high threshold register
-  struct HTR : reg<32, base + 0x24, 0x00000000, 0x00000000>
+  struct HTR : reg<base + 0x24>
   {
     static constexpr type
     // Analog watchdog high threshold (bits: 11-0)
@@ -454,7 +454,7 @@ struct ADC2
     ;
   };
   // ADC watchdog low threshold register
-  struct LTR : reg<32, base + 0x28, 0x00000000, 0x00000000>
+  struct LTR : reg<base + 0x28>
   {
     static constexpr type
     // Analog watchdog low threshold (bits: 11-0)
@@ -464,7 +464,7 @@ struct ADC2
     ;
   };
   // ADC regular sequence register 1
-  struct SQR1 : reg<32, base + 0x2C, 0x00000000, 0x00000000>
+  struct SQR1 : reg<base + 0x2C>
   {
     static constexpr type
     // 13 conversion in regular sequence (bits: 4-0)
@@ -486,7 +486,7 @@ struct ADC2
     ;
   };
   // ADC regular sequence register 2
-  struct SQR2 : reg<32, base + 0x30, 0x00000000, 0x00000000>
+  struct SQR2 : reg<base + 0x30>
   {
     static constexpr type
     // 7 conversion in regular sequence (bits: 4-0)
@@ -511,7 +511,7 @@ struct ADC2
     ;
   };
   // ADC regular sequence register 3
-  struct SQR3 : reg<32, base + 0x34, 0x00000000, 0x00000000>
+  struct SQR3 : reg<base + 0x34>
   {
     static constexpr type
     // 1 conversion in regular sequence (bits: 4-0)
@@ -536,7 +536,7 @@ struct ADC2
     ;
   };
   // ADC injected sequence register
-  struct JSQR : reg<32, base + 0x38, 0x00000000, 0x00000000>
+  struct JSQR : reg<base + 0x38>
   {
     static constexpr type
     // first conversion in injected sequence (when JL[1:0] = 3) (bits: 4-0)
@@ -558,7 +558,7 @@ struct ADC2
     ;
   };
   // ADC injected data register 1
-  struct JDR1 : reg<32, base + 0x3C, 0x00000000, 0x00000000>
+  struct JDR1 : reg<base + 0x3C>
   {
     static constexpr type
     // Injected data (bits: 15-0)
@@ -568,7 +568,7 @@ struct ADC2
     ;
   };
   // ADC injected data register 2
-  struct JDR2 : reg<32, base + 0x40, 0x00000000, 0x00000000>
+  struct JDR2 : reg<base + 0x40>
   {
     static constexpr type
     // Injected data (bits: 15-0)
@@ -578,7 +578,7 @@ struct ADC2
     ;
   };
   // ADC injected data register 3
-  struct JDR3 : reg<32, base + 0x44, 0x00000000, 0x00000000>
+  struct JDR3 : reg<base + 0x44>
   {
     static constexpr type
     // Injected data (bits: 15-0)
@@ -588,7 +588,7 @@ struct ADC2
     ;
   };
   // ADC injected data register 4
-  struct JDR4 : reg<32, base + 0x48, 0x00000000, 0x00000000>
+  struct JDR4 : reg<base + 0x48>
   {
     static constexpr type
     // Injected data (bits: 15-0)

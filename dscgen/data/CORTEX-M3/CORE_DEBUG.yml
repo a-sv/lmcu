@@ -8,7 +8,6 @@ peripheral:
   registers:
     DHCSR:
       desc: Debug Halting Control and Status Register
-      size: 32
       offset: 0x0
       fields:
         C_DEBUGEN:
@@ -55,7 +54,6 @@ peripheral:
           bits: 31-16
     DCRSR:
       desc: Debug Halting Control and Status Register
-      size: 32
       offset: 0x4
       fields:
         REGSEL:
@@ -106,11 +104,9 @@ peripheral:
               val: 18
     DCRDR:
       desc: Debug Core Register Data Register
-      size: 32
       offset: 0x8
     DEMCR:
       desc: Debug Exception and Monitor Control Register
-      size: 32
       offset: 0xC
       fields:
         VC_CORERESET:

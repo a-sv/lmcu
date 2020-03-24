@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct TIM2
 {
-  static constexpr std::uintptr_t base = 0x40000000;
+  static constexpr std::uintptr_t base = 0x40000000UL;
 
   // Control register 2
-  struct CR2 : reg<16, base + 0x4, 0x00000000, 0x00000000>
+  struct CR2 : reg<base + 0x4>
   {
     static constexpr type
     // Capture/compare DMA selection (bits: 3)
@@ -40,7 +40,7 @@ struct TIM2
     ;
   };
   // DMA/interrupt enable register
-  struct DIER : reg<16, base + 0xC, 0x00000000, 0x00000000>
+  struct DIER : reg<base + 0xC>
   {
     static constexpr type
     // Update interrupt enable (bits: 0)
@@ -95,7 +95,7 @@ struct TIM2
     ;
   };
   // Status register
-  struct SR : reg<16, base + 0x10, 0x00000000, 0x00000000>
+  struct SR : reg<base + 0x10>
   {
     static constexpr type
     // Update interrupt flag (bits: 0)
@@ -142,7 +142,7 @@ struct TIM2
     ;
   };
   // Event generation register
-  struct EGR : reg<16, base + 0x14, 0x00000000, 0x00000000>
+  struct EGR : reg<base + 0x14>
   {
     static constexpr type
     // Update generation (bits: 0)
@@ -173,7 +173,7 @@ struct TIM2
     ;
   };
   // Capture/compare mode register 2
-  struct CCER : reg<16, base + 0x20, 0x00000000, 0x00000000>
+  struct CCER : reg<base + 0x20>
   {
     static constexpr type
     // Capture/Compare y output enable (bits: 0)
@@ -211,10 +211,8 @@ struct TIM2
     ,CCER_MASK = 0x00003333
     ;
   };
-  // DMA address for full transfer
-  using DMAR = reg<16, base + 0x4C, 0x00000000, 0x00000000>;
   // Control register 1
-  struct CR1 : reg<16, base + 0x0, 0x00000000, 0x00000000>
+  struct CR1 : reg<base + 0x0>
   {
     static constexpr type
     // Counter enable (bits: 0)
@@ -258,7 +256,7 @@ struct TIM2
     ;
   };
   // Slave mode control register
-  struct SMCR : reg<16, base + 0x8, 0x00000000, 0x00000000>
+  struct SMCR : reg<base + 0x8>
   {
     static constexpr type
     // Slave mode selection (bits: 2-0)
@@ -325,7 +323,7 @@ struct TIM2
     ;
   };
   // Capture/compare mode register 1
-  struct CCMR1 : reg<16, base + 0x18, 0x00000000, 0x00000000>
+  struct CCMR1 : reg<base + 0x18>
   {
     static constexpr type
     // Capture/Compare 1 selection (bits: 1-0)
@@ -444,7 +442,7 @@ struct TIM2
     ;
   };
   // Capture/compare mode register 2
-  struct CCMR2 : reg<16, base + 0x1C, 0x00000000, 0x00000000>
+  struct CCMR2 : reg<base + 0x1C>
   {
     static constexpr type
     // Capture/Compare 3 selection (bits: 1-0)
@@ -563,21 +561,21 @@ struct TIM2
     ;
   };
   // Counter
-  using CNT = reg<16, base + 0x24, 0x00000000, 0x00000000>;
+  using CNT = reg<base + 0x24>;
   // Prescaler
-  using PSC = reg<16, base + 0x28, 0x00000000, 0x00000000>;
+  using PSC = reg<base + 0x28>;
   // Auto-reload register
-  using ARR = reg<16, base + 0x2C, 0x00000000, 0x0000FFFF>;
+  using ARR = reg<base + 0x2C, 0x0000FFFF>;
   // Capture/compare register 1
-  using CCR1 = reg<16, base + 0x34, 0x00000000, 0x00000000>;
+  using CCR1 = reg<base + 0x34>;
   // Capture/compare register 2
-  using CCR2 = reg<16, base + 0x38, 0x00000000, 0x00000000>;
+  using CCR2 = reg<base + 0x38>;
   // Capture/compare register 3
-  using CCR3 = reg<16, base + 0x3C, 0x00000000, 0x00000000>;
+  using CCR3 = reg<base + 0x3C>;
   // Capture/compare register 4
-  using CCR4 = reg<16, base + 0x40, 0x00000000, 0x00000000>;
+  using CCR4 = reg<base + 0x40>;
   // DMA control register
-  struct DCR : reg<16, base + 0x48, 0x00000000, 0x00000000>
+  struct DCR : reg<base + 0x48>
   {
     static constexpr type
     // DMA base address (bits: 4-0)
@@ -589,6 +587,8 @@ struct TIM2
     ,DCR_MASK = 0x00001F1F
     ;
   };
+  // DMA address for full transfer
+  using DMAR = reg<base + 0x4C>;
 }; // struct TIM2
 
 } // namespace lmcu::device

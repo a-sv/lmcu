@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct TIM9
 {
-  static constexpr std::uintptr_t base = 0x40014C00;
+  static constexpr std::uintptr_t base = 0x40014C00UL;
 
   // Control register 1
-  struct CR1 : reg<16, base + 0x0, 0x00000000, 0x00000000>
+  struct CR1 : reg<base + 0x0>
   {
     static constexpr type
     // Counter enable (bits: 0)
@@ -47,7 +47,7 @@ struct TIM9
     ;
   };
   // Slave mode control register
-  struct SMCR : reg<16, base + 0x8, 0x00000000, 0x00000000>
+  struct SMCR : reg<base + 0x8>
   {
     static constexpr type
     // Slave mode selection (bits: 2-0)
@@ -76,7 +76,7 @@ struct TIM9
     ;
   };
   // DMA/interrupt enable register
-  struct DIER : reg<16, base + 0xC, 0x00000000, 0x00000000>
+  struct DIER : reg<base + 0xC>
   {
     static constexpr type
     // Update interrupt enable (bits: 0)
@@ -99,7 +99,7 @@ struct TIM9
     ;
   };
   // Status register
-  struct SR : reg<16, base + 0x10, 0x00000000, 0x00000000>
+  struct SR : reg<base + 0x10>
   {
     static constexpr type
     // Update interrupt flag (bits: 0)
@@ -130,7 +130,7 @@ struct TIM9
     ;
   };
   // Event generation register
-  struct EGR : reg<16, base + 0x14, 0x00000000, 0x00000000>
+  struct EGR : reg<base + 0x14>
   {
     static constexpr type
     // Update generation (bits: 0)
@@ -153,7 +153,7 @@ struct TIM9
     ;
   };
   // Capture/compare mode register 2
-  struct CCER : reg<16, base + 0x20, 0x00000000, 0x00000000>
+  struct CCER : reg<base + 0x20>
   {
     static constexpr type
     // Capture/Compare y output enable (bits: 0)
@@ -184,7 +184,7 @@ struct TIM9
     ;
   };
   // Capture/compare mode register 1
-  struct CCMR1 : reg<16, base + 0x18, 0x00000000, 0x00000000>
+  struct CCMR1 : reg<base + 0x18>
   {
     static constexpr type
     // Capture/Compare 1 selection (bits: 1-0)
@@ -303,15 +303,15 @@ struct TIM9
     ;
   };
   // Counter
-  using CNT = reg<16, base + 0x24, 0x00000000, 0x00000000>;
+  using CNT = reg<base + 0x24>;
   // Prescaler
-  using PSC = reg<16, base + 0x28, 0x00000000, 0x00000000>;
+  using PSC = reg<base + 0x28>;
   // Auto-reload register
-  using ARR = reg<16, base + 0x2C, 0x00000000, 0x0000FFFF>;
+  using ARR = reg<base + 0x2C, 0x0000FFFF>;
   // Capture/compare register 1
-  using CCR1 = reg<16, base + 0x34, 0x00000000, 0x00000000>;
+  using CCR1 = reg<base + 0x34>;
   // Capture/compare register 2
-  using CCR2 = reg<16, base + 0x38, 0x00000000, 0x00000000>;
+  using CCR2 = reg<base + 0x38>;
 }; // struct TIM9
 
 } // namespace lmcu::device

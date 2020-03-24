@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct I2C1
 {
-  static constexpr std::uintptr_t base = 0x40005400;
+  static constexpr std::uintptr_t base = 0x40005400UL;
 
   // Control register 1
-  struct CR1 : reg<16, base + 0x0, 0x00000000, 0x00000000>
+  struct CR1 : reg<base + 0x0>
   {
     static constexpr type
     // Peripheral enable (bits: 0)
@@ -77,7 +77,7 @@ struct I2C1
     ;
   };
   // Control register 2
-  struct CR2 : reg<16, base + 0x4, 0x00000000, 0x00000000>
+  struct CR2 : reg<base + 0x4>
   {
     static constexpr type
     // Peripheral clock frequency (bits: 5-0)
@@ -107,7 +107,7 @@ struct I2C1
     ;
   };
   // Own address register 1
-  struct OAR1 : reg<16, base + 0x8, 0x00000000, 0x00000000>
+  struct OAR1 : reg<base + 0x8>
   {
     static constexpr type
     // Interface address (bits: 9-0)
@@ -121,7 +121,7 @@ struct I2C1
     ;
   };
   // Own address register 2
-  struct OAR2 : reg<16, base + 0xC, 0x00000000, 0x00000000>
+  struct OAR2 : reg<base + 0xC>
   {
     static constexpr type
     // Dual addressing mode enable (bits: 0)
@@ -135,7 +135,7 @@ struct I2C1
     ;
   };
   // Data register
-  struct DR : reg<16, base + 0x10, 0x00000000, 0x00000000>
+  struct DR : reg<base + 0x10>
   {
     static constexpr type
     // 8-bit data (bits: 7-0)
@@ -145,7 +145,7 @@ struct I2C1
     ;
   };
   // Status register 1
-  struct SR1 : reg<16, base + 0x14, 0x00000000, 0x00000000>
+  struct SR1 : reg<base + 0x14>
   {
     static constexpr type
     // Start bit (Master mode) (bits: 0)
@@ -208,7 +208,7 @@ struct I2C1
     ;
   };
   // Status register 2
-  struct SR2 : reg<16, base + 0x18, 0x00000000, 0x00000000>
+  struct SR2 : reg<base + 0x18>
   {
     static constexpr type
     // Master/slave (bits: 0)
@@ -246,7 +246,7 @@ struct I2C1
     ;
   };
   // Clock control register
-  struct CCR : reg<16, base + 0x1C, 0x00000000, 0x00000000>
+  struct CCR : reg<base + 0x1C>
   {
     static constexpr type
     // Clock control register in Fm/Sm mode (Master mode) (bits: 11-0)
@@ -264,7 +264,7 @@ struct I2C1
     ;
   };
   // TRISE register
-  struct TRISE : reg<16, base + 0x20, 0x00000000, 0x00000002>
+  struct TRISE : reg<base + 0x20, 0x00000002>
   {
     static constexpr type
     // Maximum rise time in Fm/Sm mode (Master mode) (bits: 5-0)

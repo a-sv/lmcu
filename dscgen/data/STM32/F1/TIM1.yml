@@ -7,7 +7,6 @@ peripheral:
     CR1:
       desc: Control register 1
       offset: 0x0
-      size: 16
       fields:
         CEN:
           desc: Counter enable
@@ -70,7 +69,6 @@ peripheral:
     CR2:
       desc: Control register 2
       offset: 0x4
-      size: 16
       fields:
         CCPC:
           desc: Capture/compare preloaded control
@@ -139,7 +137,6 @@ peripheral:
     SMCR:
       desc: Slave mode control register
       offset: 0x8
-      size: 16
       fields:
         SMS:
           desc: Slave mode selection
@@ -290,7 +287,6 @@ peripheral:
     DIER:
       desc: DMA/interrupt enable register
       offset: 0xC
-      size: 16
       fields:
         UIE:
           desc: Update interrupt enable
@@ -340,7 +336,6 @@ peripheral:
     SR:
       desc: Status register
       offset: 0x10
-      size: 16
       fields:
         UIF:
           desc: Update interrupt flag
@@ -381,7 +376,6 @@ peripheral:
     EGR:
       desc: Event generation register
       offset: 0x14
-      size: 16
       fields:
         UG:
           desc: Update generation
@@ -410,7 +404,6 @@ peripheral:
     CCMR1:
       desc: Capture/compare mode register 1
       offset: 0x18
-      size: 16
       fields:
         CC1S:
           desc: Capture/Compare 1 selection
@@ -531,7 +524,6 @@ peripheral:
     CCMR2:
       desc: Capture/compare mode register 2
       offset: 0x1C
-      size: 16
       fields:
         CC3S:
           desc: Capture/Compare 3 selection
@@ -592,7 +584,6 @@ peripheral:
     CCER:
       desc: Capture/compare mode register 2
       offset: 0x20
-      size: 16
       fields:
         CC1E:
           desc: Capture/Compare y output enable
@@ -639,40 +630,31 @@ peripheral:
     CNT:
       desc: Counter
       offset: 0x24
-      size: 16
     PSC:
       desc: Prescaler
       offset: 0x28
-      size: 16
     ARR:
       desc: Auto-reload register
       offset: 0x2C
-      size: 16
       reset_val: 0xFFFF
     RCR:
       desc: Repetition counter register
       offset: 0x30
-      size: 16
     CCR1:
       desc: Capture/compare register 1
       offset: 0x34
-      size: 16
     CCR2:
       desc: Capture/compare register 2
       offset: 0x38
-      size: 16
     CCR3:
       desc: Capture/compare register 3
       offset: 0x3C
-      size: 16
     CCR4:
       desc: Capture/compare register 4
       offset: 0x40
-      size: 16
     BDTR:
       desc: Break and dead-time register
       offset: 0x44
-      size: 16
       fields:
         DTG:
           desc: Dead-time generator setup
@@ -722,7 +704,6 @@ peripheral:
     DCR:
       desc: DMA control register
       offset: 0x48
-      size: 16
       fields:
         DBA:
           desc: DMA base address
@@ -733,4 +714,3 @@ peripheral:
     DMAR:
       desc: DMA address for full transfer
       offset: 0x4C
-      size: 32

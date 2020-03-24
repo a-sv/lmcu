@@ -7,7 +7,6 @@ peripheral:
     CRL:
       desc: Port configuration register low
       offset: 0x0
-      size: 32
       reset_val:  0x44444444
       fields:
         MODE0: &MODE0
@@ -74,7 +73,6 @@ peripheral:
     CRH:
       desc: Port configuration register high
       offset: 0x4
-      size: 32
       reset_val:  0x44444444
       fields:
         MODE8: *MODE0
@@ -96,7 +94,6 @@ peripheral:
     IDR:
       desc: Port input data register
       offset: 0x8
-      size: 32
       fields:
         IDR0: &IDR0
           desc: Port input data
@@ -149,7 +146,6 @@ peripheral:
     ODR:
       desc: Port output data register
       offset: 0xC
-      size: 32
       fields:
         ODR0: &ODR0
           desc: Port output data
@@ -202,7 +198,6 @@ peripheral:
     BSRR:
       desc: Port bit set/reset register
       offset: 0x10
-      size: 32
       fields:
         BS0: &BS0
           desc: Port x Set bit
@@ -303,7 +298,6 @@ peripheral:
     BRR:
       desc: Port bit reset register
       offset: 0x14
-      size: 32
       fields:
         BR0:
           <<: *BR0
@@ -356,7 +350,6 @@ peripheral:
     LCKR:
       desc: Port configuration lock register
       offset: 0x18
-      size: 32
       fields:
         LCK0: &LCK0
           desc: Port x Lock bit y (y = 0 .. 15)

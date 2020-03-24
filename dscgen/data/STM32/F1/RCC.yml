@@ -7,7 +7,6 @@ peripheral:
     CR:
       desc: Clock control register
       offset: 0x0
-      size: 32
       reset_val: 0x00000083
       fields:
         HSION:
@@ -43,7 +42,6 @@ peripheral:
     CFGR:
       desc: Clock configuration register
       offset: 0x4
-      size: 32
       fields:
         SW:
           desc: System clock switch
@@ -236,7 +234,6 @@ peripheral:
     CIR:
       desc: Clock interrupt register
       offset: 0x8
-      size: 32
       fields:
         LSIRDYF:
           desc: LSI ready interrupt flag
@@ -292,7 +289,6 @@ peripheral:
     APB2RSTR:
       desc: APB2 peripheral reset register
       offset: 0xc
-      size: 32
       fields:
         AFIORST:
           desc: Alternate function IO reset
@@ -351,7 +347,6 @@ peripheral:
     APB1RSTR:
       desc: APB1 peripheral reset register
       offset: 0x10
-      size: 32
       fields:
         TIM2RST:
           desc: TIM2 timer reset
@@ -425,7 +420,6 @@ peripheral:
     AHBENR:
       desc: AHB peripheral clock enable register
       offset: 0x14
-      size: 32
       reset_val: 0x00000014
       fields:
         DMA1EN:
@@ -452,7 +446,6 @@ peripheral:
     APB2ENR:
       desc: APB2 peripheral clock enable register
       offset: 0x18
-      size: 32
       fields:
         AFIOEN:
           desc: Alternate function IO clock enable
@@ -511,7 +504,6 @@ peripheral:
     APB1ENR:
       desc: APB1 peripheral clock enable register
       offset: 0x1C
-      size: 32
       fields:
         TIM2EN:
           desc: TIM2 timer clock enable
@@ -585,7 +577,6 @@ peripheral:
     BDCR:
       desc: Backup domain control register
       offset: 0x20
-      size: 32
       fields:
         LSEON:
           desc: External low-speed oscillator enable
@@ -621,7 +612,6 @@ peripheral:
     CSR:
       desc: Control/status register
       offset: 0x24
-      size: 32
       reset_val: 0x0C000000
       fields:
         LSION:

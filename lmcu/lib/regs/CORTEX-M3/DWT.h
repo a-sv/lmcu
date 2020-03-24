@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct DWT
 {
-  static constexpr std::uintptr_t base = 0xE0001000;
+  static constexpr std::uintptr_t base = 0xE0001000UL;
 
   // Control Register
-  struct CTRL : reg<32, base + 0x0, 0x00000000, 0x00000000>
+  struct CTRL : reg<base + 0x0>
   {
     static constexpr type
     // Enable the CYCCNT counter. (bits: 0)
@@ -73,9 +73,9 @@ struct DWT
     ;
   };
   // Current PC Sampler Cycle Count Register
-  using CYCCNT = reg<32, base + 0x4, 0x00000000, 0x00000000>;
+  using CYCCNT = reg<base + 0x4>;
   // CPI Count Register
-  struct CPICR : reg<32, base + 0x8, 0x00000000, 0x00000000>
+  struct CPICR : reg<base + 0x8>
   {
     static constexpr type
     // Current CPI counter value. (bits: 7-0)
@@ -85,7 +85,7 @@ struct DWT
     ;
   };
   // Exception Overhead Count Register
-  struct EOCR : reg<32, base + 0xC, 0x00000000, 0x00000000>
+  struct EOCR : reg<base + 0xC>
   {
     static constexpr type
     // Current interrupt overhead counter value. (bits: 7-0)
@@ -95,7 +95,7 @@ struct DWT
     ;
   };
   // Sleep Count Register
-  struct SCR : reg<32, base + 0x10, 0x00000000, 0x00000000>
+  struct SCR : reg<base + 0x10>
   {
     static constexpr type
     // Sleep counter. Counts the number of cycles during which the processor is sleeping. (bits: 7-0)
@@ -105,7 +105,7 @@ struct DWT
     ;
   };
   // LSU Count Register
-  struct LSUCR : reg<32, base + 0x14, 0x00000000, 0x00000000>
+  struct LSUCR : reg<base + 0x14>
   {
     static constexpr type
     // LSU counter. This counts the total number of cycles that the processor is processing an LSU operation.  (bits: 7-0)
@@ -115,7 +115,7 @@ struct DWT
     ;
   };
   // Fold Count Register
-  struct FCR : reg<32, base + 0x18, 0x00000000, 0x00000000>
+  struct FCR : reg<base + 0x18>
   {
     static constexpr type
     // This counts the total number folded instructions. (bits: 7-0)
@@ -125,25 +125,25 @@ struct DWT
     ;
   };
   // Program Counter Sample Register
-  using PCSR = reg<32, base + 0x1C, 0x00000000, 0x00000000>;
+  using PCSR = reg<base + 0x1C>;
   // Comparator Register
-  using CMPR0 = reg<32, base + 0x20, 0x00000000, 0x00000000>;
+  using CMPR0 = reg<base + 0x20>;
   // Comparator Register
-  using CMPR1 = reg<32, base + 0x30, 0x00000000, 0x00000000>;
+  using CMPR1 = reg<base + 0x30>;
   // Comparator Register
-  using CMPR2 = reg<32, base + 0x40, 0x00000000, 0x00000000>;
+  using CMPR2 = reg<base + 0x40>;
   // Comparator Register
-  using CMPR3 = reg<32, base + 0x50, 0x00000000, 0x00000000>;
+  using CMPR3 = reg<base + 0x50>;
   // Mask Register
-  using MSKR0 = reg<32, base + 0x24, 0x00000000, 0x00000000>;
+  using MSKR0 = reg<base + 0x24>;
   // Mask Register
-  using MSKR1 = reg<32, base + 0x34, 0x00000000, 0x00000000>;
+  using MSKR1 = reg<base + 0x34>;
   // Mask Register
-  using MSKR2 = reg<32, base + 0x44, 0x00000000, 0x00000000>;
+  using MSKR2 = reg<base + 0x44>;
   // Mask Register
-  using MSKR3 = reg<32, base + 0x54, 0x00000000, 0x00000000>;
+  using MSKR3 = reg<base + 0x54>;
   // Function Register
-  struct FR0 : reg<32, base + 0x28, 0x00000000, 0x00000000>
+  struct FR0 : reg<base + 0x28>
   {
     static constexpr type
     // FUNCTION settings (bits: 3-0)

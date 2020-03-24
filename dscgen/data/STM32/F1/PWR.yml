@@ -7,7 +7,6 @@ peripheral:
     CR:
       desc: Power control register
       offset: 0x0
-      size: 32
       fields:
         LPDS:
           desc: Low-power deepsleep
@@ -58,7 +57,6 @@ peripheral:
     CSR:
       desc: Power control/status register
       offset: 0x4
-      size: 32
       fields:
         WUF:
           desc: Wakeup flag

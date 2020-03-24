@@ -7,7 +7,6 @@ peripheral:
     SR:
       desc: ADC status register
       offset: 0x0
-      size: 32
       fields:
         AWD:
           desc: Analog watchdog flag
@@ -27,7 +26,6 @@ peripheral:
     CR1:
       desc: ADC control register 1
       offset: 0x4
-      size: 32
       fields:
         AWDCH:
           desc: Analog watchdog channel select bits
@@ -157,7 +155,6 @@ peripheral:
     CR2:
       desc: ADC control register 2
       offset: 0x8
-      size: 32
       fields:
         ADON:
           desc: A/D converter ON / OFF
@@ -201,7 +198,6 @@ peripheral:
     SMPR1:
       desc: ADC control register 1
       offset: 0xC
-      size: 32
       fields:
         SMP10: &SMP10
           desc: Channel x Sample time selection
@@ -255,7 +251,6 @@ peripheral:
     SMPR2:
       desc: ADC control register 2
       offset: 0x10
-      size: 32
       fields:
         SMP0:
           <<: *SMP10
@@ -290,7 +285,6 @@ peripheral:
     JOFR1: &JOFR1
       desc: ADC injected channel data offset register 1
       offset: 0x14
-      size: 32
       fields:
         JOFFSET:
           desc: Data offset for injected channel x
@@ -310,7 +304,6 @@ peripheral:
     HTR:
       desc: ADC watchdog high threshold register
       offset: 0x24
-      size: 32
       fields:
         HT:
           desc: Analog watchdog high threshold
@@ -318,7 +311,6 @@ peripheral:
     LTR:
       desc: ADC watchdog low threshold register
       offset: 0x28
-      size: 32
       fields:
         LT:
           desc: Analog watchdog low threshold
@@ -326,7 +318,6 @@ peripheral:
     SQR1:
       desc: ADC regular sequence register 1
       offset: 0x2C
-      size: 32
       fields:
         SQ13:
           desc: 13 conversion in regular sequence
@@ -346,7 +337,6 @@ peripheral:
     SQR2:
       desc: ADC regular sequence register 2
       offset: 0x30
-      size: 32
       fields:
         SQ7:
           desc: 7 conversion in regular sequence
@@ -369,7 +359,6 @@ peripheral:
     SQR3:
       desc: ADC regular sequence register 3
       offset: 0x34
-      size: 32
       fields:
         SQ1:
           desc: 1 conversion in regular sequence
@@ -392,7 +381,6 @@ peripheral:
     JSQR:
       desc: ADC injected sequence register
       offset: 0x38
-      size: 32
       fields:
         JSQ1:
           desc: first conversion in injected sequence (when JL[1:0] = 3)
@@ -412,7 +400,6 @@ peripheral:
     JDR1: &JDR1
       desc: ADC injected data register 1
       offset: 0x3C
-      size: 32
       fields:
         JDATA:
           desc: Injected data
@@ -432,7 +419,6 @@ peripheral:
     DR:
       desc: ADC regular data register
       offset: 0x4C
-      size: 32
       fields:
         DATA:
           desc: Regular data

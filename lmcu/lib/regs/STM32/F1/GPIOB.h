@@ -11,10 +11,10 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct GPIOB
 {
-  static constexpr std::uintptr_t base = 0x40010C00;
+  static constexpr std::uintptr_t base = 0x40010C00UL;
 
   // Port configuration register low
-  struct CRL : reg<32, base + 0x0, 0x00000000, 0x44444444>
+  struct CRL : reg<base + 0x0, 0x44444444>
   {
     static constexpr type
     // Port x mode bits (bits: 1-0)
@@ -101,7 +101,7 @@ struct GPIOB
     ;
   };
   // Port configuration register high
-  struct CRH : reg<32, base + 0x4, 0x00000000, 0x44444444>
+  struct CRH : reg<base + 0x4, 0x44444444>
   {
     static constexpr type
     // Port x mode bits (bits: 1-0)
@@ -188,7 +188,7 @@ struct GPIOB
     ;
   };
   // Port input data register
-  struct IDR : reg<32, base + 0x8, 0x00000000, 0x00000000>
+  struct IDR : reg<base + 0x8>
   {
     static constexpr type
     // Port input data (bits: 0)
@@ -259,7 +259,7 @@ struct GPIOB
     ;
   };
   // Port output data register
-  struct ODR : reg<32, base + 0xC, 0x00000000, 0x00000000>
+  struct ODR : reg<base + 0xC>
   {
     static constexpr type
     // Port output data (bits: 0)
@@ -330,7 +330,7 @@ struct GPIOB
     ;
   };
   // Port bit set/reset register
-  struct BSRR : reg<32, base + 0x10, 0x00000000, 0x00000000>
+  struct BSRR : reg<base + 0x10>
   {
     static constexpr type
     // Port x Set bit (bits: 0)
@@ -465,7 +465,7 @@ struct GPIOB
     ;
   };
   // Port bit reset register
-  struct BRR : reg<32, base + 0x14, 0x00000000, 0x00000000>
+  struct BRR : reg<base + 0x14>
   {
     static constexpr type
     // Port x Reset bit (bits: 0)
@@ -536,7 +536,7 @@ struct GPIOB
     ;
   };
   // Port configuration lock register
-  struct LCKR : reg<32, base + 0x18, 0x00000000, 0x00000000>
+  struct LCKR : reg<base + 0x18>
   {
     static constexpr type
     // Port x Lock bit y (y = 0 .. 15) (bits: 0)
