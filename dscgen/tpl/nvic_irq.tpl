@@ -1,5 +1,4 @@
 ## coding: utf-8
-${D.header}
 namespace lmcu::device {
 
 enum class irqn : int32_t

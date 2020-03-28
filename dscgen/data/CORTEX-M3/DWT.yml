@@ -1,8 +1,6 @@
-peripheral:
+ip:
   header: |
-    #pragma once
     #include "../common.h"
-  name: DWT
   desc: The DWT unit performs the following debug functionality
   base: 0xE0001000
   registers:

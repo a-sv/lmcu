@@ -1,0 +1,404 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: General-purpose I/Os
+  ver: 1
+  registers:
+    CRL:
+      desc: Port configuration register low
+      offset: 0x0
+      reset_val:  0x44444444
+      fields:
+        MODE0: &MODE0
+          desc: Port x mode bits
+          bits: 1-0
+          enum:
+            INPUT:
+              desc: Input mode (reset state)
+              val: 0
+            SPEED_10MHZ:
+              desc: Output mode, max speed 10 MHz.
+              val: 1
+            SPEED_2MHZ:
+              desc: Output mode, max speed 10 MHz.
+              val: 2
+            SPEED_50MHZ:
+              desc: Output mode, max speed 50 MHz.
+              val: 3
+        CNF0: &CNF0
+          desc: Port x configuration bits
+          bits: 3-2
+        MODE1: &MODE1
+          <<: *MODE0
+          bits: 5-4
+        CNF1: &CNF1
+          <<: *CNF0
+          bits: 7-6
+        MODE2: &MODE2
+          <<: *MODE0
+          bits: 9-8
+        CNF2: &CNF2
+          <<: *CNF0
+          bits: 11-10
+        MODE3: &MODE3
+          <<: *MODE0
+          bits: 13-12
+        CNF3: &CNF3
+          <<: *CNF0
+          bits: 15-14
+        MODE4: &MODE4
+          <<: *MODE0
+          bits: 17-16
+        CNF4: &CNF4
+          <<: *CNF0
+          bits: 19-18
+        MODE5: &MODE5
+          <<: *MODE0
+          bits: 21-20
+        CNF5: &CNF5
+          <<: *CNF0
+          bits: 23-22
+        MODE6: &MODE6
+          <<: *MODE0
+          bits: 25-24
+        CNF6: &CNF6
+          <<: *CNF0
+          bits: 27-26
+        MODE7: &MODE7
+          <<: *MODE0
+          bits: 29-28
+        CNF7: &CNF7
+          <<: *CNF0
+          bits: 31-30
+    CRH:
+      desc: Port configuration register high
+      offset: 0x4
+      reset_val:  0x44444444
+      fields:
+        MODE8: *MODE0
+        CNF8: *CNF0
+        MODE9: *MODE1
+        CNF9: *CNF1
+        MODE10: *MODE2
+        CNF10: *CNF2
+        MODE11: *MODE3
+        CNF11: *CNF3
+        MODE12: *MODE4
+        CNF12: *CNF4
+        MODE13: *MODE5
+        CNF13: *CNF5
+        MODE14: *MODE6
+        CNF14: *CNF6
+        MODE15: *MODE7
+        CNF15: *CNF7
+    IDR:
+      desc: Port input data register
+      offset: 0x8
+      fields:
+        IDR0: &IDR0
+          desc: Port input data
+          bits: 0
+        IDR1:
+          <<: *IDR0
+          bits: 1
+        IDR2:
+          <<: *IDR0
+          bits: 2
+        IDR3:
+          <<: *IDR0
+          bits: 3
+        IDR4:
+          <<: *IDR0
+          bits: 4
+        IDR5:
+          <<: *IDR0
+          bits: 5
+        IDR6:
+          <<: *IDR0
+          bits: 6
+        IDR7:
+          <<: *IDR0
+          bits: 7
+        IDR8:
+          <<: *IDR0
+          bits: 8
+        IDR9:
+          <<: *IDR0
+          bits: 9
+        IDR10:
+          <<: *IDR0
+          bits: 10
+        IDR11:
+          <<: *IDR0
+          bits: 11
+        IDR12:
+          <<: *IDR0
+          bits: 12
+        IDR13:
+          <<: *IDR0
+          bits: 13
+        IDR14:
+          <<: *IDR0
+          bits: 14
+        IDR15:
+          <<: *IDR0
+          bits: 15
+    ODR:
+      desc: Port output data register
+      offset: 0xC
+      fields:
+        ODR0: &ODR0
+          desc: Port output data
+          bits: 0
+        ODR1:
+          <<: *ODR0
+          bits: 1
+        ODR2:
+          <<: *ODR0
+          bits: 2
+        ODR3:
+          <<: *ODR0
+          bits: 3
+        ODR4:
+          <<: *ODR0
+          bits: 4
+        ODR5:
+          <<: *ODR0
+          bits: 5
+        ODR6:
+          <<: *ODR0
+          bits: 6
+        ODR7:
+          <<: *ODR0
+          bits: 7
+        ODR8:
+          <<: *ODR0
+          bits: 8
+        ODR9:
+          <<: *ODR0
+          bits: 9
+        ODR10:
+          <<: *ODR0
+          bits: 10
+        ODR11:
+          <<: *ODR0
+          bits: 11
+        ODR12:
+          <<: *ODR0
+          bits: 12
+        ODR13:
+          <<: *ODR0
+          bits: 13
+        ODR14:
+          <<: *ODR0
+          bits: 14
+        ODR15:
+          <<: *ODR0
+          bits: 15
+    BSRR:
+      desc: Port bit set/reset register
+      offset: 0x10
+      fields:
+        BS0: &BS0
+          desc: Port x Set bit
+          bits: 0
+        BS1:
+          <<: *BS0
+          bits: 1
+        BS2:
+          <<: *BS0
+          bits: 2
+        BS3:
+          <<: *BS0
+          bits: 3
+        BS4:
+          <<: *BS0
+          bits: 4
+        BS5:
+          <<: *BS0
+          bits: 5
+        BS6:
+          <<: *BS0
+          bits: 6
+        BS7:
+          <<: *BS0
+          bits: 7
+        BS8:
+          <<: *BS0
+          bits: 8
+        BS9:
+          <<: *BS0
+          bits: 9
+        BS10:
+          <<: *BS0
+          bits: 10
+        BS11:
+          <<: *BS0
+          bits: 11
+        BS12:
+          <<: *BS0
+          bits: 12
+        BS13:
+          <<: *BS0
+          bits: 13
+        BS14:
+          <<: *BS0
+          bits: 14
+        BS15:
+          <<: *BS0
+          bits: 15
+        BR0: &BR0
+          desc: Port x Reset bit
+          bits: 16
+        BR1:
+          <<: *BR0
+          bits: 17
+        BR2:
+          <<: *BR0
+          bits: 18
+        BR3:
+          <<: *BR0
+          bits: 19
+        BR4:
+          <<: *BR0
+          bits: 20
+        BR5:
+          <<: *BR0
+          bits: 21
+        BR6:
+          <<: *BR0
+          bits: 22
+        BR7:
+          <<: *BR0
+          bits: 23
+        BR8:
+          <<: *BR0
+          bits: 24
+        BR9:
+          <<: *BR0
+          bits: 25
+        BR10:
+          <<: *BR0
+          bits: 26
+        BR11:
+          <<: *BR0
+          bits: 27
+        BR12:
+          <<: *BR0
+          bits: 28
+        BR13:
+          <<: *BR0
+          bits: 29
+        BR14:
+          <<: *BR0
+          bits: 30
+        BR15:
+          <<: *BR0
+          bits: 31
+    BRR:
+      desc: Port bit reset register
+      offset: 0x14
+      fields:
+        BR0:
+          <<: *BR0
+          bits: 0
+        BR1:
+          <<: *BR0
+          bits: 1
+        BR2:
+          <<: *BR0
+          bits: 2
+        BR3:
+          <<: *BR0
+          bits: 3
+        BR4:
+          <<: *BR0
+          bits: 4
+        BR5:
+          <<: *BR0
+          bits: 5
+        BR6:
+          <<: *BR0
+          bits: 6
+        BR7:
+          <<: *BR0
+          bits: 7
+        BR8:
+          <<: *BR0
+          bits: 8
+        BR9:
+          <<: *BR0
+          bits: 9
+        BR10:
+          <<: *BR0
+          bits: 10
+        BR11:
+          <<: *BR0
+          bits: 11
+        BR12:
+          <<: *BR0
+          bits: 12
+        BR13:
+          <<: *BR0
+          bits: 13
+        BR14:
+          <<: *BR0
+          bits: 14
+        BR15:
+          <<: *BR0
+          bits: 15
+    LCKR:
+      desc: Port configuration lock register
+      offset: 0x18
+      fields:
+        LCK0: &LCK0
+          desc: Port x Lock bit y (y = 0 .. 15)
+          bits: 0
+        LCK1:
+          <<: *LCK0
+          bits: 1
+        LCK2:
+          <<: *LCK0
+          bits: 2
+        LCK3:
+          <<: *LCK0
+          bits: 3
+        LCK4:
+          <<: *LCK0
+          bits: 4
+        LCK5:
+          <<: *LCK0
+          bits: 5
+        LCK6:
+          <<: *LCK0
+          bits: 6
+        LCK7:
+          <<: *LCK0
+          bits: 7
+        LCK8:
+          <<: *LCK0
+          bits: 8
+        LCK9:
+          <<: *LCK0
+          bits: 9
+        LCK10:
+          <<: *LCK0
+          bits: 10
+        LCK11:
+          <<: *LCK0
+          bits: 11
+        LCK12:
+          <<: *LCK0
+          bits: 12
+        LCK13:
+          <<: *LCK0
+          bits: 13
+        LCK14:
+          <<: *LCK0
+          bits: 14
+        LCK15:
+          <<: *LCK0
+          bits: 15
+        LCKK:
+          desc: Lock key
+          bits: 16

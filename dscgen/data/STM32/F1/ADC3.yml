@@ -1,4 +1,3 @@
 peripheral:
-  $extends: ADC2.yml | peripheral
-  name: ADC3
+  ip: v1/ADC2
   base: 0x40013C00

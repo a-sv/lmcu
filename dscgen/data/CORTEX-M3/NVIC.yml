@@ -1,8 +1,6 @@
-peripheral:
+ip:
   header: |
-    #pragma once
     #include "../common.h"
-  name: NVIC
   desc: Nested Vectored Interrupt Controller
   base: 0xE000E000
   registers:

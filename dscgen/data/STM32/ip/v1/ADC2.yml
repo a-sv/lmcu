@@ -1,0 +1,6 @@
+ip:
+  $extends: ADC1.yml | ip
+  registers:
+    DR:
+      fields:
+        ADC2DATA: null

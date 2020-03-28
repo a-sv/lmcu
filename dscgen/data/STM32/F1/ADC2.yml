@@ -1,8 +1,3 @@
 peripheral:
-  $extends: ADC1.yml | peripheral
-  name: ADC2
+  ip: v1/ADC2
   base: 0x40012800
-  registers:
-    DR:
-      fields:
-        ADC2DATA: null

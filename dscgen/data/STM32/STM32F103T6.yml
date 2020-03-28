@@ -1,6 +1,5 @@
 device:
   $extends: F1/device.inc | device
-  name: STM32F103T6
   rom_size: 32768
   ram_size: 10240
   pins: 36

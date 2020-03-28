@@ -1,0 +1,71 @@
+ip:
+  $extends: TIM1_8.yml | ip
+  desc: Basic timer
+  registers:
+    CR1:
+      fields:
+        CMS: null
+        DIR: null
+        CKD: null
+    CR2:
+      fields:
+        CCPC: null
+        CCDS: null
+        CCUS: null
+        OIS4: null
+        OIS3N: null
+        OIS3: null
+        OIS2N: null
+        OIS2: null
+        OIS1N: null
+        OIS1: null
+        TI1S: null
+    SMCR: null
+    DIER:
+      fields:
+        BIE: null
+        TIE: null
+        COMIE: null
+        CC4IE: null
+        CC3IE: null
+        CC2IE: null
+        CC1IE: null
+        TDE: null
+        COMDE : null
+        CC4DE : null
+        CC3DE : null
+        CC2DE : null
+        CC1DE: null
+    SR:
+      fields:
+        CC4OF: null
+        CC3OF: null
+        CC2OF: null
+        CC1OF: null
+        BIF: null
+        TIF: null
+        COMIF: null
+        CC4IF: null
+        CC3IF: null
+        CC2IF: null
+        CC1IF: null
+    EGR:
+      fields:
+        BG: null
+        TG: null
+        COMG: null
+        CC4G: null
+        CC3G: null
+        CC2G: null
+        CC1G: null
+    CCMR1: null
+    CCMR2: null
+    CCER: null
+    RCR: null
+    CCR1: null
+    CCR2: null
+    CCR3: null
+    CCR4: null
+    BDTR: null
+    DCR: null
+    DMAR: null

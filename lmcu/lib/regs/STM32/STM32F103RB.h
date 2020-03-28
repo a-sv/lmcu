@@ -22,7 +22,6 @@ static constexpr uint32_t nvic_prio_bits = 4;
 
 } // namespace lmcu::device
 
-
 namespace lmcu::device {
 
 enum class irqn : int32_t

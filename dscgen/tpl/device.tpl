@@ -2,7 +2,7 @@
 ${D.header}
 namespace lmcu::device {
 
-static constexpr auto name = "${D.name}";
+static constexpr auto name = "${E.name}";
 
 static constexpr auto cpu_arch = arch::${D.arch};
 

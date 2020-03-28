@@ -1,27 +1,3 @@
 peripheral:
   $extends: AFIO.yml | peripheral
-  registers:
-    MAPR:
-      fields:
-        ADC1_ETRGINJ_REMAP: null
-        ADC1_ETRGREG_REMAP: null
-        ADC2_ETRGINJ_REMAP: null
-        ADC2_ETRGREG_REMAP: null
-        ETH_REMAP:
-          desc: Ethernet MAC I/O remapping
-          bits: 21
-        CAN2_REMAP:
-          desc: CAN2 I/O remapping
-          bits: 22
-        MII_RMII_SEL:
-          desc: MII or RMII selection
-          bits: 23
-        SPI3_REMAP:
-          desc: SPI3/I2S3 remapping
-          bits: 28
-        TIM2ITR1_IREMAP:
-          desc: TIM2 internal trigger 1 remapping
-          bits: 29
-        PTP_PPS_REMAP:
-          desc: Ethernet PTP PPS remapping
-          bits: 30
+  ip: v1/AFIO_CONNECTIVITY

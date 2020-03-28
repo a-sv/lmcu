@@ -1,6 +1,5 @@
 device:
   $extends: F1/device.inc | device
-  name: STM32F103R4
   rom_size: 16384
   ram_size: 6144
   pins: 64

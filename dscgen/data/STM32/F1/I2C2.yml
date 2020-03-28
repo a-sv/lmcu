@@ -1,4 +1,3 @@
 peripheral:
-  $extends: I2C1.yml | peripheral
-  name: I2C2
+  ip: v1/I2C
   base: 0x40005800

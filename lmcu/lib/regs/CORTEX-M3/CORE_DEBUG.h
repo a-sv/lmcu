@@ -11,12 +11,12 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct CORE_DEBUG
 {
-  static constexpr std::uintptr_t base = 0xE000EDF0UL;
+  static constexpr std::uintptr_t base = 0xE000EDF0;
 
   // Debug Halting Control and Status Register
   struct DHCSR : reg<base + 0x0>
   {
-    static constexpr type
+    static constexpr typename DHCSR::type
     // Enables debug. (bits: 0)
      C_DEBUGEN_MASK = 0x00000001
     ,C_DEBUGEN_POS = 0
@@ -33,11 +33,11 @@ struct CORE_DEBUG
     ,C_MASKINTS_MASK = 0x00000008
     ,C_MASKINTS_POS = 3
     ,C_MASKINTS = 0x00000008
-    // If the core is stalled on a load/store operation the stall ceases and the instruction is forced to complete. This enables Halting debug to gain control of the core.  (bits: 5)
+    // If the core is stalled on a load/store operation the stall ceases and the instruction is forced to complete. This enables Halting debug to gain control of the core. (bits: 5)
     ,C_SNAPSTALL_MASK = 0x00000020
     ,C_SNAPSTALL_POS = 5
     ,C_SNAPSTALL = 0x00000020
-    // Register Read/Write on the Debug Core Register Selector register is available. Last transfer is complete.  (bits: 16)
+    // Register Read/Write on the Debug Core Register Selector register is available. Last transfer is complete. (bits: 16)
     ,S_REGRDY_MASK = 0x00010000
     ,S_REGRDY_POS = 16
     ,S_REGRDY = 0x00010000
@@ -57,7 +57,7 @@ struct CORE_DEBUG
     ,S_RETIRE_ST_MASK = 0x01000000
     ,S_RETIRE_ST_POS = 24
     ,S_RETIRE_ST = 0x01000000
-    // Indicates that the core has been reset, or is now being reset, since the last time this bit was read.  (bits: 25)
+    // Indicates that the core has been reset, or is now being reset, since the last time this bit was read. (bits: 25)
     ,S_RESET_ST_MASK = 0x02000000
     ,S_RESET_ST_POS = 25
     ,S_RESET_ST = 0x02000000
@@ -70,7 +70,7 @@ struct CORE_DEBUG
   // Debug Halting Control and Status Register
   struct DCRSR : reg<base + 0x4>
   {
-    static constexpr type
+    static constexpr typename DCRSR::type
     // Register select (bits: 4-0)
      REGSEL_MASK = 0x0000001F
     ,REGSEL_POS = 0
@@ -101,7 +101,7 @@ struct CORE_DEBUG
   // Debug Exception and Monitor Control Register
   struct DEMCR : reg<base + 0xC>
   {
-    static constexpr type
+    static constexpr typename DEMCR::type
     // Reset Vector Catch. Halt running system if Core reset occurs. (bits: 0)
      VC_CORERESET_MASK = 0x00000001
     ,VC_CORERESET_POS = 0
@@ -110,7 +110,7 @@ struct CORE_DEBUG
     ,VC_MMERR_MASK = 0x00000010
     ,VC_MMERR_POS = 4
     ,VC_MMERR = 0x00000010
-    // Debug trap on Usage Fault access to Coprocessor which is not present or marked as not present in CAR register.  (bits: 5)
+    // Debug trap on Usage Fault access to Coprocessor which is not present or marked as not present in CAR register. (bits: 5)
     ,VC_NOCPERR_MASK = 0x00000020
     ,VC_NOCPERR_POS = 5
     ,VC_NOCPERR = 0x00000020

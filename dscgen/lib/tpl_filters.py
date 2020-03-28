@@ -65,9 +65,14 @@ def toint(val):
     return int(val, 2)
   return int(val)
 
+def strip(val):
+  if val:
+    return re.sub(r'\ {2,}', ' ', str(val).replace('\r', ' ').replace('\n', ' ')).strip()
+  return ''
+
 def comment(val):
   if val:
-    return '// ' + re.sub(r'\ {2,}', "", str(val)).replace('\n', ' ')
+    return '// ' + strip(val)
   return ''
 
 def varargs(args):

@@ -50,7 +50,7 @@ def tpl_render(tpl, **kwargs):
     filename = tpl,
     default_filters = ["unicode"],
     imports = ['from tpl_filters import bool, addr16, addr32, lower, upper, typesz, comment, ' +
-                                       'toint, varargs']
+                                       'toint, strip, varargs']
   ).render(**kwargs)
 
 def to_object_tree(d):
@@ -137,8 +137,12 @@ def main():
     if is_dir:
       os.makedirs(dstpath, mode = 0o755, exist_ok = True)
     else:
-      ext   = dstpath[dstpath.rfind('.'):]
+      ext = dstpath[dstpath.rfind('.'):]
       outfn = dstpath[:-len(ext)] + '.h'
+
+      env = Object()
+      env.name = os.path.basename(dstpath)[:-len(ext)]
+
       if ext != '.yml':
         continue
       with open(outfn, 'w') as out_f:
@@ -150,7 +154,7 @@ def main():
           tplfn = TPL_DIR + '/' + objname + '.tpl'
           obj   = data[objname]
           extends(obj, os.path.dirname(path))
-          out_f.write(tpl_render(tplfn, D = to_object_tree(obj)))
+          out_f.write(tpl_render(tplfn, E = env, D = to_object_tree(obj)))
           out_f.write('\n')
         out_f.flush()
 

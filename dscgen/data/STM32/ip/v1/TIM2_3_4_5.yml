@@ -1,0 +1,38 @@
+ip:
+  $extends: TIM1_8.yml | ip
+  desc: General-purpose timer
+  registers:
+    CR2:
+      fields:
+        CCPC: null
+        CCUS: null
+        OIS4: null
+        OIS3N: null
+        OIS3: null
+        OIS2N: null
+        OIS2: null
+        OIS1N: null
+        OIS1: null
+    DIER:
+      fields:
+        COMIE: null
+        BIE: null
+        COMDE: null
+    SR:
+      fields:
+        COMIF: null
+        BIF: null
+    EGR:
+      fields:
+        COMG: null
+        BG: null
+    CCER:
+      fields:
+        CC1NE: null
+        CC1NP: null
+        CC2NE: null
+        CC2NP: null
+        CC3NE: null
+        CC3NP: null
+    RCR: null
+    BDTR: null

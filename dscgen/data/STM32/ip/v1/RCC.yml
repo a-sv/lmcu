@@ -1,0 +1,643 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: Reset and clock control
+  ver: 1
+  registers:
+    CR:
+      desc: Clock control register
+      offset: 0x0
+      reset_val: 0x00000083
+      fields:
+        HSION:
+          desc: Internal High Speed clock enable
+          bits: 0
+        HSIRDY:
+          desc: Internal High Speed clock ready flag
+          bits: 1
+        HSITRIM:
+          desc: Internal High Speed clock trimming
+          bits: 7-3
+        HSICAL:
+          desc: Internal high-speed clock calibration
+          bits: 15-8
+        HSEON:
+          desc: HSE clock enable
+          bits: 16
+        HSERDY:
+          desc: External high-speed clock ready flag
+          bits: 17
+        HSEBYP:
+          desc: External high-speed clock bypass
+          bits: 18
+        CSSON:
+          desc: Clock security system enable
+          bits: 19
+        PLLON:
+          desc: PLL enable
+          bits: 24
+        PLLRDY:
+          desc: PLL clock ready flag
+          bits: 25
+    CFGR:
+      desc: Clock configuration register
+      offset: 0x4
+      fields:
+        SW:
+          desc: System clock switch
+          bits: 1-0
+          enum:
+            HSI:
+              desc: HSI selected as system clock
+              val: 0
+            HSE:
+              desc: HSE selected as system clock
+              val: 1
+            PLL:
+              desc: PLL selected as system clock
+              val: 2
+        SWS:
+          desc: System clock switch status
+          bits: 3-2
+          enum:
+            HSI:
+              desc: HSI oscillator used as system clock
+              val: 0
+            HSE:
+              desc: HSE oscillator used as system clock
+              val: 1
+            PLL:
+              desc: PLL used as system clock
+              val: 2
+        HPRE:
+          desc: AHB prescaler
+          bits: 7-4
+          enum:
+            DIV1:
+              desc: SYSCLK not divided
+              val: 0
+            DIV2:
+              desc: SYSCLK divided by 2
+              val: 8
+            DIV4:
+              desc: SYSCLK divided by 4
+              val: 9
+            DIV8:
+              desc: SYSCLK divided by 8
+              val: 10
+            DIV16:
+              desc: SYSCLK divided by 16
+              val: 11
+            DIV64:
+              desc: SYSCLK divided by 64
+              val: 12
+            DIV128:
+              desc: SYSCLK divided by 128
+              val: 13
+            DIV256:
+              desc: SYSCLK divided by 256
+              val: 14
+            DIV512:
+              desc: SYSCLK divided by 512
+              val: 15
+        PPRE1:
+          desc: APB low-speed prescaler (APB1)
+          bits: 10-8
+          enum:
+            DIV1:
+              desc: HCLK not divided
+              val: 0
+            DIV2:
+              desc: HCLK divided by 2
+              val: 4
+            DIV4:
+              desc: HCLK divided by 4
+              val: 5
+            DIV8:
+              desc: HCLK divided by 8
+              val: 6
+            DIV16:
+              desc: HCLK divided by 16
+              val: 7
+        PPRE2:
+          desc: APB high-speed prescaler (APB2)
+          bits: 13-11
+          enum:
+            DIV1:
+              desc: HCLK not divided
+              val: 0
+            DIV2:
+              desc: HCLK divided by 2
+              val: 4
+            DIV4:
+              desc: HCLK divided by 4
+              val: 5
+            DIV8:
+              desc: HCLK divided by 8
+              val: 6
+            DIV16:
+              desc: HCLK divided by 16
+              val: 7
+        ADCPRE:
+          desc: ADC prescaler
+          bits: 15-14
+          enum:
+            DIV2:
+              desc: HCLK divided by 2
+              val: 0
+            DIV4:
+              desc: HCLK divided by 4
+              val: 1
+            DIV6:
+              desc: HCLK divided by 6
+              val: 2
+            DIV8:
+              desc: HCLK divided by 8
+              val: 3
+        PLLSRC:
+          desc: PLL entry clock source
+          bits: 16
+        PLLXTPRE:
+          desc: HSE divider for PLL entry
+          bits: 17
+        PLLMUL:
+          desc: PLL multiplication factor
+          bits: 21-18
+          enum:
+            MUL2:
+              desc: PLL input clock x 2
+              val: 0
+            MUL3:
+              desc: PLL input clock x 3
+              val: 1
+            MUL4:
+              desc: PLL input clock x 4
+              val: 2
+            MUL5:
+              desc: PLL input clock x 5
+              val: 3
+            MUL6:
+              desc: PLL input clock x 6
+              val: 4
+            MUL7:
+              desc: PLL input clock x 7
+              val: 5
+            MUL8:
+              desc: PLL input clock x 8
+              val: 6
+            MUL9:
+              desc: PLL input clock x 9
+              val: 7
+            MUL10:
+              desc: PLL input clock x 10
+              val: 8
+            MUL11:
+              desc: PLL input clock x 11
+              val: 9
+            MUL12:
+              desc: PLL input clock x 12
+              val: 10
+            MUL13:
+              desc: PLL input clock x 13
+              val: 11
+            MUL14:
+              desc: PLL input clock x 14
+              val: 12
+            MUL15:
+              desc: PLL input clock x 15
+              val: 13
+            MUL16:
+              desc: PLL input clock x 16
+              val: 14
+        USBPRE:
+          desc: USB prescaler
+          bits: 22
+        MCO:
+          desc: Microcontroller clock output
+          bits: 26-24
+          enum:
+            DISABLE:
+              desc: No clock
+              val: 0
+            SYSCLK:
+              desc: System clock (SYSCLK)
+              val: 4
+            HSI:
+              desc: HSI clock
+              val: 5
+            HSE:
+              desc: HSE clock
+              val: 6
+            PLL_DIV2:
+              desc: PLL clock divided by 2
+              val: 7
+    CIR:
+      desc: Clock interrupt register
+      offset: 0x8
+      fields:
+        LSIRDYF:
+          desc: LSI ready interrupt flag
+          bits: 0
+        LSERDYF:
+          desc: LSE ready interrupt flag
+          bits: 1
+        HSIRDYF:
+          desc: HSI ready interrupt flag
+          bits: 2
+        HSERDYF:
+          desc: HSE ready interrupt flag
+          bits: 3
+        PLLRDYF:
+          desc: PLL ready interrupt flag
+          bits: 4
+        CSSF:
+          desc: Clock security system interrupt flag
+          bits: 7
+        LSIRDYIE:
+          desc: LSI ready interrupt enable
+          bits: 8
+        LSERDYIE:
+          desc: LSE ready interrupt enable
+          bits: 9
+        HSIRDYIE:
+          desc: HSI ready interrupt enable
+          bits: 10
+        HSERDYIE:
+          desc: HSE ready interrupt enable
+          bits: 11
+        PLLRDYIE:
+          desc: PLL ready interrupt enable
+          bits: 12
+        LSIRDYC:
+          desc: LSI ready interrupt clear
+          bits: 16
+        LSERDYC:
+          desc: LSE ready interrupt clear
+          bits: 17
+        HSIRDYC:
+          desc: HSI ready interrupt clear
+          bits: 18
+        HSERDYC:
+          desc: HSE ready interrupt clear
+          bits: 19
+        PLLRDYC:
+          desc: PLL ready interrupt clear
+          bits: 20
+        CSSC:
+          desc: Clock security system interrupt clear
+          bits: 23
+    APB2RSTR:
+      desc: APB2 peripheral reset register
+      offset: 0xc
+      fields:
+        AFIORST:
+          desc: Alternate function IO reset
+          bits: 0
+        IOPARST:
+          desc: IO port A reset
+          bits: 2
+        IOPBRST:
+          desc: IO port B reset
+          bits: 3
+        IOPCRST:
+          desc: IO port C reset
+          bits: 4
+        IOPDRST:
+          desc: IO port D reset
+          bits: 5
+        IOPERST:
+          desc: IO port E reset
+          bits: 6
+        IOPFRST:
+          desc: IO port F reset
+          bits: 7
+        IOPGRST:
+          desc: IO port G reset
+          bits: 8
+        ADC1RST:
+          desc: ADC1 interface reset
+          bits: 9
+        ADC2RST:
+          desc: ADC2 interface reset
+          bits: 10
+        TIM1RST:
+          desc: TIM1 timer reset
+          bits: 11
+        SPI1RST:
+          desc: SPI1 reset
+          bits: 12
+        TIM8RST:
+          desc: TIM8 timer reset
+          bits: 13
+        USART1RST:
+          desc: USART1 reset
+          bits: 14
+        ADC3RST:
+          desc: ADC3 interface reset
+          bits: 15
+        TIM9RST:
+          desc: TIM9 timer reset
+          bits: 19
+        TIM10RST:
+          desc: TIM10 timer reset
+          bits: 20
+        TIM11RST:
+          desc: TIM11 timer reset
+          bits: 21
+    APB1RSTR:
+      desc: APB1 peripheral reset register
+      offset: 0x10
+      fields:
+        TIM2RST:
+          desc: TIM2 timer reset
+          bits: 0
+        TIM3RST:
+          desc: TIM3 timer reset
+          bits: 1
+        TIM4RST:
+          desc: TIM4 timer reset
+          bits: 2
+        TIM5RST:
+          desc: TIM5 timer reset
+          bits: 3
+        TIM6RST:
+          desc: TIM6 timer reset
+          bits: 4
+        TIM7RST:
+          desc: TIM7 timer reset
+          bits: 5
+        TIM12RST:
+          desc: TIM12 timer reset
+          bits: 6
+        TIM13RST:
+          desc: TIM13 timer reset
+          bits: 7
+        TIM14RST:
+          desc: TIM14 timer reset
+          bits: 8
+        WWDGRST:
+          desc: Window watchdog reset
+          bits: 11
+        SPI2RST:
+          desc: SPI2 reset
+          bits: 14
+        SPI3RST:
+          desc: SPI3 reset
+          bits: 15
+        USART2RST:
+          desc: USART2 reset
+          bits: 17
+        USART3RST:
+          desc: USART3 reset
+          bits: 18
+        UART4RST:
+          desc: USART4 reset
+          bits: 19
+        UART5RST:
+          desc: USART5 reset
+          bits: 20
+        I2C1RST:
+          desc: I2C1 reset
+          bits: 21
+        I2C2RST:
+          desc: I2C2 reset
+          bits: 22
+        USBRST:
+          desc: USB reset
+          bits: 23
+        CAN1RST:
+          desc: CAN1 reset
+          bits: 25
+        BKPRST:
+          desc: Backup interface reset
+          bits: 27
+        PWRRST:
+          desc: Power interface reset
+          bits: 28
+        DACRST:
+          desc: DAC interface reset
+          bits: 29
+    AHBENR:
+      desc: AHB peripheral clock enable register
+      offset: 0x14
+      reset_val: 0x00000014
+      fields:
+        DMA1EN:
+          desc: DMA1 clock enable
+          bits: 0
+        DMA2EN:
+          desc: DMA2 clock enable
+          bits: 1
+        SRAMEN:
+          desc: SRAM interface clock enable
+          bits: 2
+        FLITFEN:
+          desc: FLITF clock enable
+          bits: 4
+        CRCEN:
+          desc: CRC clock enable
+          bits: 6
+        FSMCEN:
+          desc: FSMC clock enable
+          bits: 8
+        SDIOEN:
+          desc: SDIO clock enable
+          bits: 10
+    APB2ENR:
+      desc: APB2 peripheral clock enable register
+      offset: 0x18
+      fields:
+        AFIOEN:
+          desc: Alternate function IO clock enable
+          bits: 0
+        IOPAEN:
+          desc: IO port A clock enable
+          bits: 2
+        IOPBEN:
+          desc: IO port B clock enable
+          bits: 3
+        IOPCEN:
+          desc: IO port C clock enable
+          bits: 4
+        IOPDEN:
+          desc: IO port D clock enable
+          bits: 5
+        IOPEEN:
+          desc: IO port E clock enable
+          bits: 6
+        IOPFEN:
+          desc: IO port F clock enable
+          bits: 7
+        IOPGEN:
+          desc: IO port G clock enable
+          bits: 8
+        ADC1EN:
+          desc: ADC1 interface clock enable
+          bits: 9
+        ADC2EN:
+          desc: ADC2 interface clock enable
+          bits: 10
+        TIM1EN:
+          desc: TIM1 timer clock enable
+          bits: 11
+        SPI1EN:
+          desc: SPI1 clock enable
+          bits: 12
+        TIM8EN:
+          desc: TIM8 Timer clock enable
+          bits: 13
+        USART1EN:
+          desc: USART1 clock enable
+          bits: 14
+        ADC3EN:
+          desc: ADC3 interface clock enable
+          bits: 15
+        TIM9EN:
+          desc: TIM9 timer clock enable
+          bits: 19
+        TIM10EN:
+          desc: TIM10 timer clock enable
+          bits: 20
+        TIM11EN:
+          desc: TIM11 timer clock enable
+          bits: 21
+    APB1ENR:
+      desc: APB1 peripheral clock enable register
+      offset: 0x1C
+      fields:
+        TIM2EN:
+          desc: TIM2 timer clock enable
+          bits: 0
+        TIM3EN:
+          desc: TIM3 timer clock enable
+          bits: 1
+        TIM4EN:
+          desc: TIM4 timer clock enable
+          bits: 2
+        TIM5EN:
+          desc: TIM5 timer clock enable
+          bits: 3
+        TIM6EN:
+          desc: TIM6 timer clock enable
+          bits: 4
+        TIM7EN:
+          desc: TIM7 timer clock enable
+          bits: 5
+        TIM12EN:
+          desc: TIM12 timer clock enable
+          bits: 6
+        TIM13EN:
+          desc: TIM13 timer clock enable
+          bits: 7
+        TIM14EN:
+          desc: TIM14 timer clock enable
+          bits: 8
+        WWDGEN:
+          desc: Window watchdog clock enable
+          bits: 11
+        SPI2EN:
+          desc: SPI2 clock enable
+          bits: 14
+        SPI3EN:
+          desc: SPI 3 clock enable
+          bits: 15
+        USART2EN:
+          desc: USART2 clock enable
+          bits: 17
+        USART3EN:
+          desc: USART3 clock enable
+          bits: 18
+        UART4EN:
+          desc: USART4 clock enable
+          bits: 19
+        UART5EN:
+          desc: USART5 clock enable
+          bits: 20
+        I2C1EN:
+          desc: I2C1 clock enable
+          bits: 21
+        I2C2EN:
+          desc: I2C2 clock enable
+          bits: 22
+        USBEN:
+          desc: USB clock enable
+          bits: 23
+        CAN1EN:
+          desc: CAN1 clock enable
+          bits: 25
+        BKPEN:
+          desc: Backup interface clock enable
+          bits: 27
+        PWREN:
+          desc: Power interface clock enable
+          bits: 28
+        DACEN:
+          desc: DAC interface clock enable
+          bits: 29
+    BDCR:
+      desc: Backup domain control register
+      offset: 0x20
+      fields:
+        LSEON:
+          desc: External low-speed oscillator enable
+          bits: 0
+        LSERDY:
+          desc: External low-speed oscillator ready
+          bits: 1
+        LSEBYP:
+          desc: External low-speed oscillator bypass
+          bits: 2
+        RTCSEL:
+          desc: RTC clock source selection
+          bits: 9-8
+          enum:
+            DISABLE:
+              desc: No clock
+              val: 0
+            LSE:
+              desc: LSE oscillator clock used as RTC clock
+              val: 1
+            LSI:
+              desc: LSI oscillator clock used as RTC clock
+              val: 2
+            HSE:
+              desc: HSE oscillator clock divided by 128 used as RTC clock
+              val: 3
+        RTCEN:
+          desc: RTC clock enable
+          bits: 15
+        BDRST:
+          desc: Backup domain software reset
+          bits: 16
+    CSR:
+      desc: Control/status register
+      offset: 0x24
+      reset_val: 0x0C000000
+      fields:
+        LSION:
+          desc: Internal low-speed oscillator enable
+          bits: 0
+        LSIRDY:
+          desc: Internal low-speed oscillator ready
+          bits: 1
+        RMVF:
+          desc: Remove reset flag
+          bits: 24
+        PINRSTF:
+          desc: PIN reset flag
+          bits: 26
+        PORRSTF:
+          desc: POR/PDR reset flag
+          bits: 27
+        SFTRSTF:
+          desc: Software reset flag
+          bits: 28
+        IWDGRSTF:
+          desc: Independent watchdog reset flag
+          bits: 29
+        WWDGRSTF:
+          desc: Window watchdog reset flag
+          bits: 30
+        LPWRRSTF:
+          desc: Low-power reset flag
+          bits: 31

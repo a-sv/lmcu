@@ -11,12 +11,12 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct DWT
 {
-  static constexpr std::uintptr_t base = 0xE0001000UL;
+  static constexpr std::uintptr_t base = 0xE0001000;
 
   // Control Register
   struct CTRL : reg<base + 0x0>
   {
-    static constexpr type
+    static constexpr typename CTRL::type
     // Enable the CYCCNT counter. (bits: 0)
      CYCCNTENA_MASK = 0x00000001
     ,CYCCNTENA_POS = 0
@@ -77,7 +77,7 @@ struct DWT
   // CPI Count Register
   struct CPICR : reg<base + 0x8>
   {
-    static constexpr type
+    static constexpr typename CPICR::type
     // Current CPI counter value. (bits: 7-0)
      CPICNT_MASK = 0x000000FF
     ,CPICNT_POS = 0
@@ -87,7 +87,7 @@ struct DWT
   // Exception Overhead Count Register
   struct EOCR : reg<base + 0xC>
   {
-    static constexpr type
+    static constexpr typename EOCR::type
     // Current interrupt overhead counter value. (bits: 7-0)
      INTCNT_MASK = 0x000000FF
     ,INTCNT_POS = 0
@@ -97,7 +97,7 @@ struct DWT
   // Sleep Count Register
   struct SCR : reg<base + 0x10>
   {
-    static constexpr type
+    static constexpr typename SCR::type
     // Sleep counter. Counts the number of cycles during which the processor is sleeping. (bits: 7-0)
      SLEEPCNT_MASK = 0x000000FF
     ,SLEEPCNT_POS = 0
@@ -107,8 +107,8 @@ struct DWT
   // LSU Count Register
   struct LSUCR : reg<base + 0x14>
   {
-    static constexpr type
-    // LSU counter. This counts the total number of cycles that the processor is processing an LSU operation.  (bits: 7-0)
+    static constexpr typename LSUCR::type
+    // LSU counter. This counts the total number of cycles that the processor is processing an LSU operation. (bits: 7-0)
      LSUCNT_MASK = 0x000000FF
     ,LSUCNT_POS = 0
     ,LSUCR_MASK = 0x000000FF
@@ -117,7 +117,7 @@ struct DWT
   // Fold Count Register
   struct FCR : reg<base + 0x18>
   {
-    static constexpr type
+    static constexpr typename FCR::type
     // This counts the total number folded instructions. (bits: 7-0)
      FOLDCNT_MASK = 0x000000FF
     ,FOLDCNT_POS = 0
@@ -145,14 +145,14 @@ struct DWT
   // Function Register
   struct FR0 : reg<base + 0x28>
   {
-    static constexpr type
+    static constexpr typename FR0::type
     // FUNCTION settings (bits: 3-0)
      FUNCTION_MASK = 0x0000000F
     ,FUNCTION_POS = 0
     ,FUNCTION_DISABLED = 0x00000000 // disabled
-    ,FUNCTION_FN1 = 0x00000001 // EMITRANGE = 0, sample and emit PC through ITM; EMITRANGE = 1, emit address offset through ITM 
-    ,FUNCTION_FN2 = 0x00000002 // EMITRANGE = 0, emit data through ITM on read and write; EMITRANGE = 1, emit data and address offset through ITM on read or write. 
-    ,FUNCTION_FN3 = 0x00000003 // EMITRANGE = 0, sample PC and data value through ITM on read or write; EMITRANGE = 1, emit address offset and data value through ITM on read or write. 
+    ,FUNCTION_FN1 = 0x00000001 // EMITRANGE = 0, sample and emit PC through ITM; EMITRANGE = 1, emit address offset through ITM
+    ,FUNCTION_FN2 = 0x00000002 // EMITRANGE = 0, emit data through ITM on read and write; EMITRANGE = 1, emit data and address offset through ITM on read or write.
+    ,FUNCTION_FN3 = 0x00000003 // EMITRANGE = 0, sample PC and data value through ITM on read or write; EMITRANGE = 1, emit address offset and data value through ITM on read or write.
     ,FUNCTION_FN4 = 0x00000004 // Watchpoint on PC match.
     ,FUNCTION_FN5 = 0x00000005 // Watchpoint on read.
     ,FUNCTION_FN6 = 0x00000006 // Watchpoint on write.

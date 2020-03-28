@@ -1,8 +1,6 @@
-peripheral:
+ip:
   header: |
-    #pragma once
     #include "../common.h"
-  name: CORE_DEBUG
   desc: Core debug functionality
   base: 0xE000EDF0
   registers:

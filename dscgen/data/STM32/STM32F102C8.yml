@@ -1,6 +1,5 @@
 device:
   $extends: F1/device.inc | device
-  name: STM32F102C8
   rom_size: 65536
   ram_size: 10240
   pins: 48
