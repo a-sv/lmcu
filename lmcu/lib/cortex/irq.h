@@ -115,11 +115,9 @@ void enable_irq()
 {
   using namespace device;
 
-  auto ISER = reinterpret_cast<volatile NVIC::ISER0::type*>(NVIC::ISER0::base);
-
-  auto irq_e = [ISER](auto irq)
+  auto irq_e = [](auto irq)
   {
-    if(irq >= 0) { ISER[irq >> 5UL] = (1UL << (irq & 0x1fUL)); }
+    if(irq >= 0) { NVIC::ISER::set(irq >> 5UL, 1UL << (irq & 0x1fUL)); }
   };
 
   (irq_e(uint32_t(_irq_n)), ...);
@@ -135,11 +133,9 @@ void disable_irq()
 {
   using namespace device;
 
-  auto ICER = reinterpret_cast<volatile NVIC::ICER0::type*>(NVIC::ICER0::base);
-
-  auto irq_d = [ICER](auto irq)
+  auto irq_d = [](auto irq)
   {
-    if(irq >= 0) { ICER[irq >> 5UL] = (1UL << (irq & 0x1fUL)); }
+    if(irq >= 0) { NVIC::ICER::set(irq >> 5UL, 1UL << (irq & 0x1fUL)); }
   };
 
   (irq_d(uint32_t(_irq_n)), ...);
@@ -175,12 +171,12 @@ void set_priority()
     ;
 
     if constexpr(int32_t(_irq_n) < 0) {
-      auto SHP = reinterpret_cast<volatile uint8_t*>(NVIC::SHPR0::base);
-      SHP[(uint32_t(_irq_n) & 0xfUL) - 4UL] = (priority << (8UL - nvic_prio_bits)) & 0xffUL;
+      NVIC::SHPR::set(
+        (uint32_t(_irq_n) & 0xfUL) - 4UL, (priority << (8UL - nvic_prio_bits)) & 0xffUL
+      );
     }
     else {
-      auto IP = reinterpret_cast<volatile uint8_t*>(NVIC::IPR0::base);
-      IP[uint32_t(_irq_n)] = (priority << (8UL - nvic_prio_bits)) & 0xffUL;
+      NVIC::IPR::set(uint32_t(_irq_n), (priority << (8UL - nvic_prio_bits)) & 0xffUL);
     }
   }
 }

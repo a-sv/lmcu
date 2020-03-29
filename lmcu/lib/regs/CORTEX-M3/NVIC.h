@@ -85,555 +85,63 @@ struct NVIC
     ;
   };
   // Interrupt Set-Enable Register
-  struct ISER0 : reg<base + 0x100>
+  struct ISER : reg<base + 0x100, 0x00000000, 8>
   {
-    static constexpr typename ISER0::type
+    static constexpr typename ISER::type
     // Interrupt set enable bits (bits: 31-0)
      SETENA_MASK = 0xFFFFFFFF
     ,SETENA_POS = 0
-    ,ISER0_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Enable Register
-  struct ISER1 : reg<base + 0x104>
-  {
-    static constexpr typename ISER1::type
-    // Interrupt set enable bits (bits: 31-0)
-     SETENA_MASK = 0xFFFFFFFF
-    ,SETENA_POS = 0
-    ,ISER1_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Enable Register
-  struct ISER2 : reg<base + 0x108>
-  {
-    static constexpr typename ISER2::type
-    // Interrupt set enable bits (bits: 31-0)
-     SETENA_MASK = 0xFFFFFFFF
-    ,SETENA_POS = 0
-    ,ISER2_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Enable Register
-  struct ISER3 : reg<base + 0x10C>
-  {
-    static constexpr typename ISER3::type
-    // Interrupt set enable bits (bits: 31-0)
-     SETENA_MASK = 0xFFFFFFFF
-    ,SETENA_POS = 0
-    ,ISER3_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Enable Register
-  struct ISER4 : reg<base + 0x110>
-  {
-    static constexpr typename ISER4::type
-    // Interrupt set enable bits (bits: 31-0)
-     SETENA_MASK = 0xFFFFFFFF
-    ,SETENA_POS = 0
-    ,ISER4_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Enable Register
-  struct ISER5 : reg<base + 0x114>
-  {
-    static constexpr typename ISER5::type
-    // Interrupt set enable bits (bits: 31-0)
-     SETENA_MASK = 0xFFFFFFFF
-    ,SETENA_POS = 0
-    ,ISER5_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Enable Register
-  struct ISER6 : reg<base + 0x118>
-  {
-    static constexpr typename ISER6::type
-    // Interrupt set enable bits (bits: 31-0)
-     SETENA_MASK = 0xFFFFFFFF
-    ,SETENA_POS = 0
-    ,ISER6_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Enable Register
-  struct ISER7 : reg<base + 0x11C>
-  {
-    static constexpr typename ISER7::type
-    // Interrupt set enable bits (bits: 31-0)
-     SETENA_MASK = 0xFFFFFFFF
-    ,SETENA_POS = 0
-    ,ISER7_MASK = 0xFFFFFFFF
+    ,ISER_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Enable Register
-  struct ICER0 : reg<base + 0x180>
+  struct ICER : reg<base + 0x180, 0x00000000, 8>
   {
-    static constexpr typename ICER0::type
+    static constexpr typename ICER::type
     // Interrupt clear-enable bits (bits: 31-0)
      CLRENA_MASK = 0xFFFFFFFF
     ,CLRENA_POS = 0
-    ,ICER0_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Enable Register
-  struct ICER1 : reg<base + 0x184>
-  {
-    static constexpr typename ICER1::type
-    // Interrupt clear-enable bits (bits: 31-0)
-     CLRENA_MASK = 0xFFFFFFFF
-    ,CLRENA_POS = 0
-    ,ICER1_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Enable Register
-  struct ICER2 : reg<base + 0x188>
-  {
-    static constexpr typename ICER2::type
-    // Interrupt clear-enable bits (bits: 31-0)
-     CLRENA_MASK = 0xFFFFFFFF
-    ,CLRENA_POS = 0
-    ,ICER2_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Enable Register
-  struct ICER3 : reg<base + 0x18C>
-  {
-    static constexpr typename ICER3::type
-    // Interrupt clear-enable bits (bits: 31-0)
-     CLRENA_MASK = 0xFFFFFFFF
-    ,CLRENA_POS = 0
-    ,ICER3_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Enable Register
-  struct ICER4 : reg<base + 0x190>
-  {
-    static constexpr typename ICER4::type
-    // Interrupt clear-enable bits (bits: 31-0)
-     CLRENA_MASK = 0xFFFFFFFF
-    ,CLRENA_POS = 0
-    ,ICER4_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Enable Register
-  struct ICER5 : reg<base + 0x194>
-  {
-    static constexpr typename ICER5::type
-    // Interrupt clear-enable bits (bits: 31-0)
-     CLRENA_MASK = 0xFFFFFFFF
-    ,CLRENA_POS = 0
-    ,ICER5_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Enable Register
-  struct ICER6 : reg<base + 0x198>
-  {
-    static constexpr typename ICER6::type
-    // Interrupt clear-enable bits (bits: 31-0)
-     CLRENA_MASK = 0xFFFFFFFF
-    ,CLRENA_POS = 0
-    ,ICER6_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Enable Register
-  struct ICER7 : reg<base + 0x19C>
-  {
-    static constexpr typename ICER7::type
-    // Interrupt clear-enable bits (bits: 31-0)
-     CLRENA_MASK = 0xFFFFFFFF
-    ,CLRENA_POS = 0
-    ,ICER7_MASK = 0xFFFFFFFF
+    ,ICER_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Set-Pending Register
-  struct ISPR0 : reg<base + 0x200>
+  struct ISPR : reg<base + 0x200, 0x00000000, 8>
   {
-    static constexpr typename ISPR0::type
+    static constexpr typename ISPR::type
     // Interrupt set-pending bits (bits: 31-0)
      SETPEND_MASK = 0xFFFFFFFF
     ,SETPEND_POS = 0
-    ,ISPR0_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Pending Register
-  struct ISPR1 : reg<base + 0x204>
-  {
-    static constexpr typename ISPR1::type
-    // Interrupt set-pending bits (bits: 31-0)
-     SETPEND_MASK = 0xFFFFFFFF
-    ,SETPEND_POS = 0
-    ,ISPR1_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Pending Register
-  struct ISPR2 : reg<base + 0x208>
-  {
-    static constexpr typename ISPR2::type
-    // Interrupt set-pending bits (bits: 31-0)
-     SETPEND_MASK = 0xFFFFFFFF
-    ,SETPEND_POS = 0
-    ,ISPR2_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Pending Register
-  struct ISPR3 : reg<base + 0x20C>
-  {
-    static constexpr typename ISPR3::type
-    // Interrupt set-pending bits (bits: 31-0)
-     SETPEND_MASK = 0xFFFFFFFF
-    ,SETPEND_POS = 0
-    ,ISPR3_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Pending Register
-  struct ISPR4 : reg<base + 0x210>
-  {
-    static constexpr typename ISPR4::type
-    // Interrupt set-pending bits (bits: 31-0)
-     SETPEND_MASK = 0xFFFFFFFF
-    ,SETPEND_POS = 0
-    ,ISPR4_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Pending Register
-  struct ISPR5 : reg<base + 0x214>
-  {
-    static constexpr typename ISPR5::type
-    // Interrupt set-pending bits (bits: 31-0)
-     SETPEND_MASK = 0xFFFFFFFF
-    ,SETPEND_POS = 0
-    ,ISPR5_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Pending Register
-  struct ISPR6 : reg<base + 0x218>
-  {
-    static constexpr typename ISPR6::type
-    // Interrupt set-pending bits (bits: 31-0)
-     SETPEND_MASK = 0xFFFFFFFF
-    ,SETPEND_POS = 0
-    ,ISPR6_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Set-Pending Register
-  struct ISPR7 : reg<base + 0x21C>
-  {
-    static constexpr typename ISPR7::type
-    // Interrupt set-pending bits (bits: 31-0)
-     SETPEND_MASK = 0xFFFFFFFF
-    ,SETPEND_POS = 0
-    ,ISPR7_MASK = 0xFFFFFFFF
+    ,ISPR_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Clear-Pending Register
-  struct ICPR0 : reg<base + 0x280>
+  struct ICPR : reg<base + 0x280, 0x00000000, 8>
   {
-    static constexpr typename ICPR0::type
+    static constexpr typename ICPR::type
     // Interrupt set-pending bits (bits: 31-0)
      CLRPEND_MASK = 0xFFFFFFFF
     ,CLRPEND_POS = 0
-    ,ICPR0_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Pending Register
-  struct ICPR1 : reg<base + 0x284>
-  {
-    static constexpr typename ICPR1::type
-    // Interrupt set-pending bits (bits: 31-0)
-     CLRPEND_MASK = 0xFFFFFFFF
-    ,CLRPEND_POS = 0
-    ,ICPR1_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Pending Register
-  struct ICPR2 : reg<base + 0x288>
-  {
-    static constexpr typename ICPR2::type
-    // Interrupt set-pending bits (bits: 31-0)
-     CLRPEND_MASK = 0xFFFFFFFF
-    ,CLRPEND_POS = 0
-    ,ICPR2_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Pending Register
-  struct ICPR3 : reg<base + 0x28C>
-  {
-    static constexpr typename ICPR3::type
-    // Interrupt set-pending bits (bits: 31-0)
-     CLRPEND_MASK = 0xFFFFFFFF
-    ,CLRPEND_POS = 0
-    ,ICPR3_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Pending Register
-  struct ICPR4 : reg<base + 0x290>
-  {
-    static constexpr typename ICPR4::type
-    // Interrupt set-pending bits (bits: 31-0)
-     CLRPEND_MASK = 0xFFFFFFFF
-    ,CLRPEND_POS = 0
-    ,ICPR4_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Pending Register
-  struct ICPR5 : reg<base + 0x294>
-  {
-    static constexpr typename ICPR5::type
-    // Interrupt set-pending bits (bits: 31-0)
-     CLRPEND_MASK = 0xFFFFFFFF
-    ,CLRPEND_POS = 0
-    ,ICPR5_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Pending Register
-  struct ICPR6 : reg<base + 0x298>
-  {
-    static constexpr typename ICPR6::type
-    // Interrupt set-pending bits (bits: 31-0)
-     CLRPEND_MASK = 0xFFFFFFFF
-    ,CLRPEND_POS = 0
-    ,ICPR6_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Clear-Pending Register
-  struct ICPR7 : reg<base + 0x29C>
-  {
-    static constexpr typename ICPR7::type
-    // Interrupt set-pending bits (bits: 31-0)
-     CLRPEND_MASK = 0xFFFFFFFF
-    ,CLRPEND_POS = 0
-    ,ICPR7_MASK = 0xFFFFFFFF
+    ,ICPR_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Active Bit Register
-  struct IABR0 : reg<base + 0x300>
+  struct IABR : reg<base + 0x300, 0x00000000, 8>
   {
-    static constexpr typename IABR0::type
+    static constexpr typename IABR::type
     // Interrupt active flags (bits: 31-0)
      ACTIVE_MASK = 0xFFFFFFFF
     ,ACTIVE_POS = 0
-    ,IABR0_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Active Bit Register
-  struct IABR1 : reg<base + 0x304>
-  {
-    static constexpr typename IABR1::type
-    // Interrupt active flags (bits: 31-0)
-     ACTIVE_MASK = 0xFFFFFFFF
-    ,ACTIVE_POS = 0
-    ,IABR1_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Active Bit Register
-  struct IABR2 : reg<base + 0x308>
-  {
-    static constexpr typename IABR2::type
-    // Interrupt active flags (bits: 31-0)
-     ACTIVE_MASK = 0xFFFFFFFF
-    ,ACTIVE_POS = 0
-    ,IABR2_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Active Bit Register
-  struct IABR3 : reg<base + 0x30C>
-  {
-    static constexpr typename IABR3::type
-    // Interrupt active flags (bits: 31-0)
-     ACTIVE_MASK = 0xFFFFFFFF
-    ,ACTIVE_POS = 0
-    ,IABR3_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Active Bit Register
-  struct IABR4 : reg<base + 0x310>
-  {
-    static constexpr typename IABR4::type
-    // Interrupt active flags (bits: 31-0)
-     ACTIVE_MASK = 0xFFFFFFFF
-    ,ACTIVE_POS = 0
-    ,IABR4_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Active Bit Register
-  struct IABR5 : reg<base + 0x314>
-  {
-    static constexpr typename IABR5::type
-    // Interrupt active flags (bits: 31-0)
-     ACTIVE_MASK = 0xFFFFFFFF
-    ,ACTIVE_POS = 0
-    ,IABR5_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Active Bit Register
-  struct IABR6 : reg<base + 0x318>
-  {
-    static constexpr typename IABR6::type
-    // Interrupt active flags (bits: 31-0)
-     ACTIVE_MASK = 0xFFFFFFFF
-    ,ACTIVE_POS = 0
-    ,IABR6_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Active Bit Register
-  struct IABR7 : reg<base + 0x31C>
-  {
-    static constexpr typename IABR7::type
-    // Interrupt active flags (bits: 31-0)
-     ACTIVE_MASK = 0xFFFFFFFF
-    ,ACTIVE_POS = 0
-    ,IABR7_MASK = 0xFFFFFFFF
+    ,IABR_MASK = 0xFFFFFFFF
     ;
   };
   // Interrupt Priority Register
-  struct IPR0 : reg<base + 0x400>
+  struct IPR : reg<base + 0x400, 0x00000000, 240, 8>
   {
-    static constexpr typename IPR0::type
-    // Priority of interrupt 0 (bits: 7-0)
-     PRI_0_MASK = 0x000000FF
-    ,PRI_0_POS = 0
-    // Priority of interrupt 1 (bits: 15-8)
-    ,PRI_1_MASK = 0x0000FF00
-    ,PRI_1_POS = 8
-    // Priority of interrupt 2 (bits: 23-16)
-    ,PRI_2_MASK = 0x00FF0000
-    ,PRI_2_POS = 16
-    // Priority of interrupt 3 (bits: 31-24)
-    ,PRI_3_MASK = 0xFF000000
-    ,PRI_3_POS = 24
-    ,IPR0_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Priority Register
-  struct IPR1 : reg<base + 0x404>
-  {
-    static constexpr typename IPR1::type
-    // Priority of interrupt 0 (bits: 7-0)
-     PRI_0_MASK = 0x000000FF
-    ,PRI_0_POS = 0
-    // Priority of interrupt 1 (bits: 15-8)
-    ,PRI_1_MASK = 0x0000FF00
-    ,PRI_1_POS = 8
-    // Priority of interrupt 2 (bits: 23-16)
-    ,PRI_2_MASK = 0x00FF0000
-    ,PRI_2_POS = 16
-    // Priority of interrupt 3 (bits: 31-24)
-    ,PRI_3_MASK = 0xFF000000
-    ,PRI_3_POS = 24
-    ,IPR1_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Priority Register
-  struct IPR2 : reg<base + 0x408>
-  {
-    static constexpr typename IPR2::type
-    // Priority of interrupt 0 (bits: 7-0)
-     PRI_0_MASK = 0x000000FF
-    ,PRI_0_POS = 0
-    // Priority of interrupt 1 (bits: 15-8)
-    ,PRI_1_MASK = 0x0000FF00
-    ,PRI_1_POS = 8
-    // Priority of interrupt 2 (bits: 23-16)
-    ,PRI_2_MASK = 0x00FF0000
-    ,PRI_2_POS = 16
-    // Priority of interrupt 3 (bits: 31-24)
-    ,PRI_3_MASK = 0xFF000000
-    ,PRI_3_POS = 24
-    ,IPR2_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Priority Register
-  struct IPR3 : reg<base + 0x40C>
-  {
-    static constexpr typename IPR3::type
-    // Priority of interrupt 0 (bits: 7-0)
-     PRI_0_MASK = 0x000000FF
-    ,PRI_0_POS = 0
-    // Priority of interrupt 1 (bits: 15-8)
-    ,PRI_1_MASK = 0x0000FF00
-    ,PRI_1_POS = 8
-    // Priority of interrupt 2 (bits: 23-16)
-    ,PRI_2_MASK = 0x00FF0000
-    ,PRI_2_POS = 16
-    // Priority of interrupt 3 (bits: 31-24)
-    ,PRI_3_MASK = 0xFF000000
-    ,PRI_3_POS = 24
-    ,IPR3_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Priority Register
-  struct IPR4 : reg<base + 0x410>
-  {
-    static constexpr typename IPR4::type
-    // Priority of interrupt 0 (bits: 7-0)
-     PRI_0_MASK = 0x000000FF
-    ,PRI_0_POS = 0
-    // Priority of interrupt 1 (bits: 15-8)
-    ,PRI_1_MASK = 0x0000FF00
-    ,PRI_1_POS = 8
-    // Priority of interrupt 2 (bits: 23-16)
-    ,PRI_2_MASK = 0x00FF0000
-    ,PRI_2_POS = 16
-    // Priority of interrupt 3 (bits: 31-24)
-    ,PRI_3_MASK = 0xFF000000
-    ,PRI_3_POS = 24
-    ,IPR4_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Priority Register
-  struct IPR5 : reg<base + 0x414>
-  {
-    static constexpr typename IPR5::type
-    // Priority of interrupt 0 (bits: 7-0)
-     PRI_0_MASK = 0x000000FF
-    ,PRI_0_POS = 0
-    // Priority of interrupt 1 (bits: 15-8)
-    ,PRI_1_MASK = 0x0000FF00
-    ,PRI_1_POS = 8
-    // Priority of interrupt 2 (bits: 23-16)
-    ,PRI_2_MASK = 0x00FF0000
-    ,PRI_2_POS = 16
-    // Priority of interrupt 3 (bits: 31-24)
-    ,PRI_3_MASK = 0xFF000000
-    ,PRI_3_POS = 24
-    ,IPR5_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Priority Register
-  struct IPR6 : reg<base + 0x418>
-  {
-    static constexpr typename IPR6::type
-    // Priority of interrupt 0 (bits: 7-0)
-     PRI_0_MASK = 0x000000FF
-    ,PRI_0_POS = 0
-    // Priority of interrupt 1 (bits: 15-8)
-    ,PRI_1_MASK = 0x0000FF00
-    ,PRI_1_POS = 8
-    // Priority of interrupt 2 (bits: 23-16)
-    ,PRI_2_MASK = 0x00FF0000
-    ,PRI_2_POS = 16
-    // Priority of interrupt 3 (bits: 31-24)
-    ,PRI_3_MASK = 0xFF000000
-    ,PRI_3_POS = 24
-    ,IPR6_MASK = 0xFFFFFFFF
-    ;
-  };
-  // Interrupt Priority Register
-  struct IPR7 : reg<base + 0x41C>
-  {
-    static constexpr typename IPR7::type
-    // Priority of interrupt 0 (bits: 7-0)
-     PRI_0_MASK = 0x000000FF
-    ,PRI_0_POS = 0
-    // Priority of interrupt 1 (bits: 15-8)
-    ,PRI_1_MASK = 0x0000FF00
-    ,PRI_1_POS = 8
-    // Priority of interrupt 2 (bits: 23-16)
-    ,PRI_2_MASK = 0x00FF0000
-    ,PRI_2_POS = 16
-    // Priority of interrupt 3 (bits: 31-24)
-    ,PRI_3_MASK = 0xFF000000
-    ,PRI_3_POS = 24
-    ,IPR7_MASK = 0xFFFFFFFF
+    static constexpr typename IPR::type
+    // Priority of interrupt (bits: 7-0)
+     PRI_MASK = 0x000000FF
+    ,PRI_POS = 0
+    ,IPR_MASK = 0x000000FF
     ;
   };
   // CPU ID Base Register
@@ -717,6 +225,38 @@ struct NVIC
     ,VTOR_MASK = 0x3FFFFF80
     ;
   };
+  // Application Interrupt and Reset Control Register
+  struct AIRCR : reg<base + 0xD0C>
+  {
+    static constexpr typename AIRCR::type
+    // System Reset bit. (bits: 0)
+     VECTRESET_MASK = 0x00000001
+    ,VECTRESET_POS = 0
+    ,VECTRESET = 0x00000001
+    // Clear active vector bit. (bits: 1)
+    ,VECTCLRACTIVE_MASK = 0x00000002
+    ,VECTCLRACTIVE_POS = 1
+    ,VECTCLRACTIVE = 0x00000002
+    // Causes a signal to be asserted to the outer system that indicates a reset is requested. (bits: 2)
+    ,SYSRESETREQ_MASK = 0x00000004
+    ,SYSRESETREQ_POS = 2
+    ,SYSRESETREQ = 0x00000004
+    // Interrupt priority grouping field. (bits: 10-8)
+    ,PRIGROUP_MASK = 0x00000700
+    ,PRIGROUP_POS = 8
+    // Data endianness bit. (bits: 15)
+    ,ENDIANESS_MASK = 0x00008000
+    ,ENDIANESS_POS = 15
+    ,ENDIANESS = 0x00008000
+    // Reads as 0xFA05. (bits: 31-16)
+    ,VECTKEYSTAT_MASK = 0xFFFF0000
+    ,VECTKEYSTAT_POS = 16
+    // Register key. (bits: 31-16)
+    ,VECTKEY_MASK = 0xFFFF0000
+    ,VECTKEY_POS = 16
+    ,AIRCR_MASK = 0xFFFF8707
+    ;
+  };
   // System Control Register
   struct SCR : reg<base + 0xD10>
   {
@@ -767,61 +307,77 @@ struct NVIC
     ,CCR_MASK = 0x0000031B
     ;
   };
-  // System Handler Priority Register 0
-  struct SHPR0 : reg<base + 0xD18>
+  // System Handler Priority Register
+  struct SHPR : reg<base + 0xD18, 0x00000000, 12, 8>
   {
-    static constexpr typename SHPR0::type
-    // Priority of system handler 4, 8, and 12. Mem Manage, reserved, and Debug Monitor. (bits: 7-0)
-     PRI_4_MASK = 0x000000FF
-    ,PRI_4_POS = 0
-    // Priority of system handler 5, 9, and 13, Bus Fault, reserved, and reserved. (bits: 15-8)
-    ,PRI_5_MASK = 0x0000FF00
-    ,PRI_5_POS = 8
-    // Priority of system handler 6, 10, and 14. Usage Fault, reserved, and PendSV. (bits: 23-16)
-    ,PRI_6_MASK = 0x00FF0000
-    ,PRI_6_POS = 16
-    // Priority of system handler 7, 11, and 15. Reserved, SVCall, and SysTick. (bits: 31-24)
-    ,PRI_7_MASK = 0xFF000000
-    ,PRI_7_POS = 24
-    ,SHPR0_MASK = 0xFFFFFFFF
+    static constexpr typename SHPR::type
+    // Priority of system handler. (bits: 7-0)
+     PRI_MASK = 0x000000FF
+    ,PRI_POS = 0
+    ,SHPR_MASK = 0x000000FF
     ;
   };
-  // System Handler Priority Register 1
-  struct SHPR1 : reg<base + 0xD1C>
+  // System Handler Control and State Register
+  struct SHCSR : reg<base + 0xD24>
   {
-    static constexpr typename SHPR1::type
-    // Priority of system handler 4, 8, and 12. Mem Manage, reserved, and Debug Monitor. (bits: 7-0)
-     PRI_8_MASK = 0x000000FF
-    ,PRI_8_POS = 0
-    // Priority of system handler 5, 9, and 13, Bus Fault, reserved, and reserved. (bits: 15-8)
-    ,PRI_9_MASK = 0x0000FF00
-    ,PRI_9_POS = 8
-    // Priority of system handler 6, 10, and 14. Usage Fault, reserved, and PendSV. (bits: 23-16)
-    ,PRI_10_MASK = 0x00FF0000
-    ,PRI_10_POS = 16
-    // Priority of system handler 7, 11, and 15. Reserved, SVCall, and SysTick. (bits: 31-24)
-    ,PRI_11_MASK = 0xFF000000
-    ,PRI_11_POS = 24
-    ,SHPR1_MASK = 0xFFFFFFFF
-    ;
-  };
-  // System Handler Priority Register 2
-  struct SHPR2 : reg<base + 0xD20>
-  {
-    static constexpr typename SHPR2::type
-    // Priority of system handler 4, 8, and 12. Mem Manage, reserved, and Debug Monitor. (bits: 7-0)
-     PRI_12_MASK = 0x000000FF
-    ,PRI_12_POS = 0
-    // Priority of system handler 5, 9, and 13, Bus Fault, reserved, and reserved. (bits: 15-8)
-    ,PRI_13_MASK = 0x0000FF00
-    ,PRI_13_POS = 8
-    // Priority of system handler 6, 10, and 14. Usage Fault, reserved, and PendSV. (bits: 23-16)
-    ,PRI_14_MASK = 0x00FF0000
-    ,PRI_14_POS = 16
-    // Priority of system handler 7, 11, and 15. Reserved, SVCall, and SysTick. (bits: 31-24)
-    ,PRI_15_MASK = 0xFF000000
-    ,PRI_15_POS = 24
-    ,SHPR2_MASK = 0xFFFFFFFF
+    static constexpr typename SHCSR::type
+    // Reads as 1 if MemManage is active. (bits: 0)
+     MEMFAULTACT_MASK = 0x00000001
+    ,MEMFAULTACT_POS = 0
+    ,MEMFAULTACT = 0x00000001
+    // Reads as 1 if BusFault is active. (bits: 1)
+    ,BUSFAULTACT_MASK = 0x00000002
+    ,BUSFAULTACT_POS = 1
+    ,BUSFAULTACT = 0x00000002
+    // Reads as 1 if UsageFault is active. (bits: 3)
+    ,USGFAULTACT_MASK = 0x00000008
+    ,USGFAULTACT_POS = 3
+    ,USGFAULTACT = 0x00000008
+    // Reads as 1 if SVCall is active. (bits: 7)
+    ,SVCALLACT_MASK = 0x00000080
+    ,SVCALLACT_POS = 7
+    ,SVCALLACT = 0x00000080
+    // Reads as 1 if the Monitor is active. (bits: 8)
+    ,MONITORACT_MASK = 0x00000100
+    ,MONITORACT_POS = 8
+    ,MONITORACT = 0x00000100
+    // Reads as 1 if PendSV is active. (bits: 10)
+    ,PENDSVACT_MASK = 0x00000400
+    ,PENDSVACT_POS = 10
+    ,PENDSVACT = 0x00000400
+    // Reads as 1 if SysTick is active. (bits: 11)
+    ,SYSTICKACT_MASK = 0x00000800
+    ,SYSTICKACT_POS = 11
+    ,SYSTICKACT = 0x00000800
+    // Read as 1 if usage fault is pended. (bits: 12)
+    ,USGFAULTPENDED_MASK = 0x00001000
+    ,USGFAULTPENDED_POS = 12
+    ,USGFAULTPENDED = 0x00001000
+    // Reads as 1 if MemManage is pended. (bits: 13)
+    ,MEMFAULTPENDED_MASK = 0x00002000
+    ,MEMFAULTPENDED_POS = 13
+    ,MEMFAULTPENDED = 0x00002000
+    // Reads as 1 if BusFault is pended. (bits: 14)
+    ,BUSFAULTPENDED_MASK = 0x00004000
+    ,BUSFAULTPENDED_POS = 14
+    ,BUSFAULTPENDED = 0x00004000
+    // Reads as 1 if SVCall is pended. (bits: 15)
+    ,SVCALLPENDED_MASK = 0x00008000
+    ,SVCALLPENDED_POS = 15
+    ,SVCALLPENDED = 0x00008000
+    // Set to 0 to disable, else 1 for enabled. (bits: 16)
+    ,MEMFAULTENA_MASK = 0x00010000
+    ,MEMFAULTENA_POS = 16
+    ,MEMFAULTENA = 0x00010000
+    // Set to 0 to disable, else 1 for enabled. (bits: 17)
+    ,BUSFAULTENA_MASK = 0x00020000
+    ,BUSFAULTENA_POS = 17
+    ,BUSFAULTENA = 0x00020000
+    // Set to 0 to disable, else 1 for enabled. (bits: 18)
+    ,USGFAULTENA_MASK = 0x00040000
+    ,USGFAULTENA_POS = 18
+    ,USGFAULTENA = 0x00040000
+    ,SHCSR_MASK = 0x0007FD8B
     ;
   };
   // Memory Manage Fault Status Register

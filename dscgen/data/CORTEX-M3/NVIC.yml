@@ -56,183 +56,55 @@ ip:
         NOREF:
           desc: 1 = the reference clock is not provided.
           bits: 31
-    ISER0: &ISER0
+    ISER:
       desc: Interrupt Set-Enable Register
       offset: 0x100
+      count: 8
       fields:
         SETENA:
           desc: Interrupt set enable bits
           bits: 31-0
-    ISER1:
-      <<: *ISER0
-      offset: 0x104
-    ISER2:
-      <<: *ISER0
-      offset: 0x108
-    ISER3:
-      <<: *ISER0
-      offset: 0x10C
-    ISER4:
-      <<: *ISER0
-      offset: 0x110
-    ISER5:
-      <<: *ISER0
-      offset: 0x114
-    ISER6:
-      <<: *ISER0
-      offset: 0x118
-    ISER7:
-      <<: *ISER0
-      offset: 0x11C
-    ICER0: &ICER0
+    ICER:
       desc: Interrupt Clear-Enable Register
       offset: 0x180
+      count: 8
       fields:
         CLRENA:
           desc: Interrupt clear-enable bits
           bits: 31-0
-    ICER1:
-      <<: *ICER0
-      offset: 0x184
-    ICER2:
-      <<: *ICER0
-      offset: 0x188
-    ICER3:
-      <<: *ICER0
-      offset: 0x18C
-    ICER4:
-      <<: *ICER0
-      offset: 0x190
-    ICER5:
-      <<: *ICER0
-      offset: 0x194
-    ICER6:
-      <<: *ICER0
-      offset: 0x198
-    ICER7:
-      <<: *ICER0
-      offset: 0x19C
-    ISPR0: &ISPR0
+    ISPR:
       desc: Interrupt Set-Pending Register
       offset: 0x200
+      count: 8
       fields:
         SETPEND:
           desc: Interrupt set-pending bits
           bits: 31-0
-    ISPR1:
-      <<: *ISPR0
-      offset: 0x204
-    ISPR2:
-      <<: *ISPR0
-      offset: 0x208
-    ISPR3:
-      <<: *ISPR0
-      offset: 0x20C
-    ISPR4:
-      <<: *ISPR0
-      offset: 0x210
-    ISPR5:
-      <<: *ISPR0
-      offset: 0x214
-    ISPR6:
-      <<: *ISPR0
-      offset: 0x218
-    ISPR7:
-      <<: *ISPR0
-      offset: 0x21C
-    ICPR0: &ICPR0
+    ICPR:
       desc: Interrupt Clear-Pending Register
       offset: 0x280
+      count: 8
       fields:
         CLRPEND:
           desc: Interrupt set-pending bits
           bits: 31-0
-    ICPR1:
-      <<: *ICPR0
-      offset: 0x284
-    ICPR2:
-      <<: *ICPR0
-      offset: 0x288
-    ICPR3:
-      <<: *ICPR0
-      offset: 0x28C
-    ICPR4:
-      <<: *ICPR0
-      offset: 0x290
-    ICPR5:
-      <<: *ICPR0
-      offset: 0x294
-    ICPR6:
-      <<: *ICPR0
-      offset: 0x298
-    ICPR7:
-      <<: *ICPR0
-      offset: 0x29C
-    IABR0: &IABR0
+    IABR:
       desc: Interrupt Active Bit Register
       offset: 0x300
+      count: 8
       fields:
         ACTIVE:
           desc: Interrupt active flags
           bits: 31-0
-    IABR1:
-      <<: *IABR0
-      offset: 0x304
-    IABR2:
-      <<: *IABR0
-      offset: 0x308
-    IABR3:
-      <<: *IABR0
-      offset: 0x30C
-    IABR4:
-      <<: *IABR0
-      offset: 0x310
-    IABR5:
-      <<: *IABR0
-      offset: 0x314
-    IABR6:
-      <<: *IABR0
-      offset: 0x318
-    IABR7:
-      <<: *IABR0
-      offset: 0x31C
-    IPR0: &IPR0
+    IPR:
       desc: Interrupt Priority Register
       offset: 0x400
+      size: 8
+      count: 240
       fields:
-        PRI_0:
-          desc: Priority of interrupt 0
+        PRI:
+          desc: Priority of interrupt
           bits: 7-0
-        PRI_1:
-          desc: Priority of interrupt 1
-          bits: 15-8
-        PRI_2:
-          desc: Priority of interrupt 2
-          bits: 23-16
-        PRI_3:
-          desc: Priority of interrupt 3
-          bits: 31-24
-    IPR1:
-      <<: *IPR0
-      offset: 0x404
-    IPR2:
-      <<: *IPR0
-      offset: 0x408
-    IPR3:
-      <<: *IPR0
-      offset: 0x40C
-    IPR4:
-      <<: *IPR0
-      offset: 0x410
-    IPR5:
-      <<: *IPR0
-      offset: 0x414
-    IPR6:
-      <<: *IPR0
-      offset: 0x418
-    IPR7:
-      <<: *IPR0
-      offset: 0x41C
     CPUIDBR:
       desc: CPU ID Base Register
       offset: 0xD00
@@ -303,6 +175,32 @@ ip:
         TBLBASE:
           desc: Table base is in Code (0) or RAM (1)
           bits: 29
+    AIRCR:
+      desc: Application Interrupt and Reset Control Register
+      offset: 0xD0C
+      fields:
+        VECTRESET:
+          desc: System Reset bit.
+          bits: 0
+        VECTCLRACTIVE:
+          desc: Clear active vector bit.
+          bits: 1
+        SYSRESETREQ:
+          desc: |
+            Causes a signal to be asserted to the outer system that indicates a reset is requested.
+          bits: 2
+        PRIGROUP:
+          desc: Interrupt priority grouping field.
+          bits: 10-8
+        ENDIANESS:
+          desc: Data endianness bit.
+          bits: 15
+        VECTKEYSTAT:
+          desc: Reads as 0xFA05.
+          bits: 31-16
+        VECTKEY:
+          desc: Register key.
+          bits: 31-16
     SCR:
       desc: System Control Register
       offset: 0xD10
@@ -358,46 +256,61 @@ ip:
             0 = only 4-byte alignment is guaranteed for the SP used prior to the exception on
             exception entry.
           bits: 9
-    SHPR0:
-      desc: System Handler Priority Register 0
+    SHPR:
+      desc: System Handler Priority Register
       offset: 0xD18
+      size: 8
+      count: 12
       fields:
-        PRI_4: &PRI_4
-          desc: Priority of system handler 4, 8, and 12. Mem Manage, reserved, and Debug Monitor.
+        PRI:
+          desc: Priority of system handler.
           bits: 7-0
-        PRI_5: &PRI_5
-          desc: Priority of system handler 5, 9, and 13, Bus Fault, reserved, and reserved.
-          bits: 15-8
-        PRI_6: &PRI_6
-          desc: Priority of system handler 6, 10, and 14. Usage Fault, reserved, and PendSV.
-          bits: 23-16
-        PRI_7: &PRI_7
-          desc: Priority of system handler 7, 11, and 15. Reserved, SVCall, and SysTick.
-          bits: 31-24
-    SHPR1:
-      desc: System Handler Priority Register 1
-      offset: 0xD1C
+    SHCSR:
+      desc: System Handler Control and State Register
+      offset: 0xD24
       fields:
-        PRI_8:
-          <<: *PRI_4
-        PRI_9:
-          <<: *PRI_5
-        PRI_10:
-          <<: *PRI_6
-        PRI_11:
-          <<: *PRI_7
-    SHPR2:
-      desc: System Handler Priority Register 2
-      offset: 0xD20
-      fields:
-        PRI_12:
-          <<: *PRI_4
-        PRI_13:
-          <<: *PRI_5
-        PRI_14:
-          <<: *PRI_6
-        PRI_15:
-          <<: *PRI_7
+        MEMFAULTACT:
+          desc: Reads as 1 if MemManage is active.
+          bits: 0
+        BUSFAULTACT:
+          desc: Reads as 1 if BusFault is active.
+          bits: 1
+        USGFAULTACT:
+          desc: Reads as 1 if UsageFault is active.
+          bits: 3
+        SVCALLACT:
+          desc: Reads as 1 if SVCall is active.
+          bits: 7
+        MONITORACT:
+          desc: Reads as 1 if the Monitor is active.
+          bits: 8
+        PENDSVACT:
+          desc: Reads as 1 if PendSV is active.
+          bits: 10
+        SYSTICKACT:
+          desc: Reads as 1 if SysTick is active.
+          bits: 11
+        USGFAULTPENDED:
+          desc: Read as 1 if usage fault is pended.
+          bits: 12
+        MEMFAULTPENDED:
+          desc: Reads as 1 if MemManage is pended.
+          bits: 13
+        BUSFAULTPENDED:
+          desc: Reads as 1 if BusFault is pended.
+          bits: 14
+        SVCALLPENDED:
+          desc: Reads as 1 if SVCall is pended.
+          bits: 15
+        MEMFAULTENA:
+          desc: Set to 0 to disable, else 1 for enabled.
+          bits: 16
+        BUSFAULTENA:
+          desc: Set to 0 to disable, else 1 for enabled.
+          bits: 17
+        USGFAULTENA:
+          desc: Set to 0 to disable, else 1 for enabled.
+          bits: 18
     MMFSR:
       desc: Memory Manage Fault Status Register
       size: 8
