@@ -2720,6 +2720,33 @@ lmcu_static_inline void set_deadtime(uint8_t val)
 }
 
 /**
+ * @brief Enable / disable timer main output.
+ *
+ * @tparam _cfg - timer config.
+ * @param  val  - true == enable.
+*/
+template<typename ..._cfg>
+lmcu_static_inline void set_main_output(bool val)
+{
+  auto _do = [&val](auto config)
+  {
+    using cfg  = decltype(config);
+    using inst = detail::inst_t<cfg::id>;
+
+    static_assert(cfg::dev_class == dev_class::timer);
+
+    if(val) {
+      inst::BDTR::set_b(inst::BDTR::MOE);
+    }
+    else {
+      inst::BDTR::clr_b(inst::BDTR::MOE);
+    }
+  };
+
+  (_do(_cfg{}), ...);
+}
+
+/**
  * @brief Returns DMA destination address.
  *
  * @tparam _cfg - timer config.
