@@ -436,5 +436,5 @@ lmcu_inline void device_init()
   RCC::APB2ENR::reset();
   RCC::CSR::reset();
   // Set vector table relocation
-  NVIC::VTOR::set( NVIC::VTOR::type(&lmcu::isr::vectors[0]) );
+  NVIC::VTOR::set( NVIC::VTOR::type(lmcu::isr::vectors) );
 }
