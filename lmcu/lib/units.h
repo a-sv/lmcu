@@ -1,7 +1,9 @@
 #pragma once
 #include <cstdint>
 
+// ------------------------------------------------------------------------------------------------
 namespace lmcu {
+// ------------------------------------------------------------------------------------------------
 
 constexpr auto operator"" _GHz(long double x) { return static_cast<uint64_t>(x * 1e9L); }
 constexpr auto operator"" _GHz(unsigned long long int x) { return static_cast<uint64_t>(x * 1e9L); }
@@ -24,4 +26,6 @@ constexpr auto operator"" _Kbyte(unsigned long long int x)
   return static_cast<uint64_t>(x * 1024);
 }
 
+// ------------------------------------------------------------------------------------------------
 } // namespace lmcu
+// ------------------------------------------------------------------------------------------------

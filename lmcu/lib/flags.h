@@ -76,7 +76,9 @@ constexpr inline lmcu_flags_t<_flags, _flags> operator -=(_flags &a, const _flag
   return (a = a - b);
 }
 
+// ------------------------------------------------------------------------------------------------
 namespace lmcu::flags {
+// ------------------------------------------------------------------------------------------------
 
 template<typename _flags>
 constexpr inline lmcu_flags_t<_flags, std::underlying_type_t<_flags>> value(_flags f) noexcept
@@ -114,4 +116,6 @@ constexpr inline lmcu_flags_t<_flags, bool> none(const _flags f, const _bits ...
   return !any(f, bits...);
 }
 
+// ------------------------------------------------------------------------------------------------
 } // namespace lmcu::flags
+// ------------------------------------------------------------------------------------------------
