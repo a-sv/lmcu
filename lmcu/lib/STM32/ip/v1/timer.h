@@ -1790,7 +1790,7 @@ void configure_tim_1_8()
 
   constexpr auto brk_irqn = device::find_irqn(_cfg::id == timer::id::tim1? "tim1_brk" : "tim8_brk");
   if constexpr(!option::is_null<_cfg::brk_irq>()) {
-    nvic::set_priority<brk_irqn, _cfg::brk_irq>();
+    nvic::set_encoded_priority<brk_irqn, _cfg::brk_irq>();
     nvic::enable_irq<brk_irqn>();
   }
   else {
@@ -1799,7 +1799,7 @@ void configure_tim_1_8()
 
   constexpr auto up_irqn = device::find_irqn(_cfg::id == timer::id::tim1? "tim1_up" : "tim8_up");
   if constexpr(!option::is_null<_cfg::up_irq>()) {
-    nvic::set_priority<up_irqn, _cfg::up_irq>();
+    nvic::set_encoded_priority<up_irqn, _cfg::up_irq>();
     nvic::enable_irq<up_irqn>();
   }
   else {
@@ -1809,7 +1809,7 @@ void configure_tim_1_8()
   constexpr auto trg_com_irqn = device::find_irqn(_cfg::id == timer::id::tim1? "tim1_trg_com" :
                                                                                "tim8_trg_com");
   if constexpr(!option::is_null<_cfg::trg_com_irq>()) {
-    nvic::set_priority<trg_com_irqn, _cfg::trg_com_irq>();
+    nvic::set_encoded_priority<trg_com_irqn, _cfg::trg_com_irq>();
     nvic::enable_irq<trg_com_irqn>();
   }
   else {
@@ -1818,7 +1818,7 @@ void configure_tim_1_8()
 
   constexpr auto cc_irqn = device::find_irqn(_cfg::id == timer::id::tim1? "tim1_cc" : "tim8_cc");
   if constexpr(!option::is_null<_cfg::cc_irq>()) {
-    nvic::set_priority<cc_irqn, _cfg::cc_irq>();
+    nvic::set_encoded_priority<cc_irqn, _cfg::cc_irq>();
     nvic::enable_irq<cc_irqn>();
   }
   else {
@@ -1893,7 +1893,7 @@ void configure_tim_2_3_4_5()
   }();
 
   if constexpr(!option::is_null<_cfg::irq>()) {
-    nvic::set_priority<irqn, _cfg::irq>();
+    nvic::set_encoded_priority<irqn, _cfg::irq>();
     nvic::enable_irq<irqn>();
   }
   else {
@@ -1937,7 +1937,7 @@ void configure_tim_6_7()
   constexpr auto irqn = device::find_irqn(_cfg::id == id::tim6? "tim6" : "tim7");
 
   if constexpr(!option::is_null<_cfg::irq>()) {
-    nvic::set_priority<irqn, _cfg::irq>();
+    nvic::set_encoded_priority<irqn, _cfg::irq>();
     nvic::enable_irq<irqn>();
   }
   else {
@@ -1988,7 +1988,7 @@ void configure_tim_9_12()
   constexpr auto irqn = device::find_irqn(_cfg::id == id::tim9? "tim9" : "tim12");
 
   if constexpr(!option::is_null<_cfg::irq>()) {
-    nvic::set_priority<irqn, _cfg::irq>();
+    nvic::set_encoded_priority<irqn, _cfg::irq>();
     nvic::enable_irq<irqn>();
   }
   else {
@@ -2038,7 +2038,7 @@ void configure_tim_10_11_13_14()
   }();
 
   if constexpr(!option::is_null<_cfg::irq>()) {
-    nvic::set_priority<irqn, _cfg::irq>();
+    nvic::set_encoded_priority<irqn, _cfg::irq>();
     nvic::enable_irq<irqn>();
   }
   else {
@@ -2714,8 +2714,10 @@ lmcu_static_inline void set_deadtime(uint8_t val)
 
     static_assert(cfg::dev_class == dev_class::timer);
 
-    inst::BDTR::clr_b(inst::BDTR::DTG_MASK);
-    inst::BDTR::set_b(val);
+    uint32_t r = inst::BDTR::get();
+    r &= ~inst::BDTR::DTG_MASK;
+    r |= (val << inst::BDTR::DTG_POS);
+    inst::BDTR::set(r);
   };
 
   (_do(_cfg{}), ...);
@@ -2742,6 +2744,71 @@ lmcu_static_inline void set_main_output(bool val)
     }
     else {
       inst::BDTR::clr_b(inst::BDTR::MOE);
+    }
+  };
+
+  (_do(_cfg{}), ...);
+}
+
+template<typename ..._cfg>
+lmcu_static_inline void set_out_mode(out_mode val)
+{
+  auto _do = [&val](auto config)
+  {
+    using cfg  = decltype(config);
+    using inst = detail::inst_t<cfg::id>;
+
+    static_assert(cfg::dev_class == dev_class::timer_out_channel);
+
+    constexpr uint32_t ccmr_mask[] = { inst::CCMR1::OC1M_MASK, inst::CCMR1::OC2M_MASK,
+                                       inst::CCMR2::OC3M_MASK, inst::CCMR2::OC4M_MASK };
+
+    constexpr auto ch_n = uint32_t(cfg::channel);
+
+    uint32_t r;
+
+    if constexpr(ch_n <= 1) {
+      r = inst::CCMR1::get();
+    }
+    else {
+      r = inst::CCMR2::get();
+    }
+
+    r &= ~ccmr_mask[ch_n];
+
+    constexpr bool _1 = ch_n % 2 == 0;
+
+    switch(val)
+    {
+    case out_mode::active_on_match:
+      r |= _1? inst::CCMR1::OC1M_ACTIVE : inst::CCMR1::OC2M_ACTIVE;
+      break;
+    case out_mode::inactive_on_match:
+      r |= _1? inst::CCMR1::OC1M_INACTIVE : inst::CCMR1::OC2M_INACTIVE;
+      break;
+    case out_mode::toggle:
+      r |= _1? inst::CCMR1::OC1M_TOGGLE : inst::CCMR1::OC2M_TOGGLE;
+      break;
+    case out_mode::force_inactive:
+      r |= _1? inst::CCMR1::OC1M_FORCE_INACTIVE : inst::CCMR1::OC2M_FORCE_INACTIVE;
+      break;
+    case out_mode::force_active:
+      r |= _1? inst::CCMR1::OC1M_FORCE_ACTIVE : inst::CCMR1::OC2M_FORCE_ACTIVE;
+      break;
+    case out_mode::pwm_1:
+      r |= _1? inst::CCMR1::OC1M_PWM_MODE_1 : inst::CCMR1::OC2M_PWM_MODE_1;
+      break;
+    case out_mode::pwm_2:
+      r |= _1? inst::CCMR1::OC1M_PWM_MODE_2 : inst::CCMR1::OC2M_PWM_MODE_2;
+      break;
+    default: break;
+    }
+
+    if constexpr(ch_n <= 1) {
+      inst::CCMR1::set(r);
+    }
+    else {
+      inst::CCMR2::set(r);
     }
   };
 

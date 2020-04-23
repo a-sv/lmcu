@@ -64,7 +64,7 @@ void configure()
   using namespace device;
 
   if constexpr(!option::is_null<_cfg::irq>()) {
-    nvic::set_priority<device::irqn::sys_tick, _cfg::irq>();
+    nvic::set_encoded_priority<device::irqn::sys_tick, _cfg::irq>();
   }
 
   const uint32_t r = []

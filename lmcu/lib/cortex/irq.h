@@ -8,17 +8,17 @@ namespace lmcu::irq {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @brief Enable global interrupts
+ * @brief Enable global interrupts.
 */
 lmcu_static_inline void enable() noexcept { asm volatile("cpsie i" ::: "memory"); }
 
 /**
- * @brief Disable global interrupts
+ * @brief Disable global interrupts.
 */
 lmcu_static_inline void disable() noexcept { asm volatile("cpsid i" ::: "memory"); }
 
 /**
- * @brief Return interrupt priority mask
+ * @brief Return interrupt priority mask.
 */
 lmcu_static_inline uint32_t primask() noexcept
 {
@@ -35,7 +35,7 @@ public:
   lmcu_inline ctl() noexcept { }
 
   /**
-   * @brief Force enable global interrupts
+   * @brief Force enable global interrupts.
   */
   lmcu_inline void enable() noexcept
   {
@@ -43,7 +43,7 @@ public:
   }
 
   /**
-   * @brief Enables global interrupts if them been enabled, before call 'ctl::disable'
+   * @brief Enables global interrupts if them been enabled, before call 'ctl::disable'.
   */
   lmcu_inline void enable_if_needed() noexcept
   {
@@ -51,7 +51,7 @@ public:
   }
 
   /**
-   * @brief Disable global interrupts
+   * @brief Disable global interrupts.
   */
   lmcu_inline void disable() noexcept
   {
@@ -86,8 +86,8 @@ struct irq_conf
   group_prio group;
 };
 
-template<typename _irq_id, auto ..._args>
-constexpr inline _irq_id encode_irq_conf() noexcept
+template<typename _irq_cfg, auto ..._args>
+constexpr inline _irq_cfg encode_irq_conf() noexcept
 {
   constexpr auto pp = option::get_u<preempt_prio, _args...>(preempt_prio::defval);
   constexpr auto sp = option::get_u<sub_prio, _args...>(sub_prio::defval);
@@ -98,11 +98,11 @@ constexpr inline _irq_id encode_irq_conf() noexcept
     _args...
   >());
 
-  return _irq_id((uint32_t(pp) << 16) | (uint32_t(sp) << 8) | uint32_t(gp));
+  return _irq_cfg((uint32_t(pp) << 16) | (uint32_t(sp) << 8) | uint32_t(gp));
 }
 
-template<typename _irq_id>
-constexpr inline auto decode_irq_conf(_irq_id irq_id) noexcept
+template<typename _irq_cfg>
+constexpr inline auto decode_irq_conf(_irq_cfg irq_id) noexcept
 {
   auto r = uint32_t(irq_id);
 
@@ -112,9 +112,9 @@ constexpr inline auto decode_irq_conf(_irq_id irq_id) noexcept
 }
 
 /**
- * @brief Enable IRQ vectors
+ * @brief Enable IRQ vectors.
  *
- * @tparam _irq_n - IRQ numbers
+ * @tparam _irq_n - IRQ numbers.
 */
 template<device::irqn ..._irq_n>
 void enable_irq()
@@ -130,9 +130,9 @@ void enable_irq()
 }
 
 /**
- * @brief Disable IRQ vectors
+ * @brief Disable IRQ vectors.
  *
- * @tparam _irq_n - IRQ numbers
+ * @tparam _irq_n - IRQ numbers.
 */
 template<device::irqn ..._irq_n>
 void disable_irq()
@@ -148,18 +148,18 @@ void disable_irq()
 }
 
 /**
- * @brief Set IRQ priority
+ * @brief Set IRQ priority.
  *
- * @tparam _irq_n      - IRQ number
- * @tparam _irq_config - IRQ priority config
+ * @tparam _irq_n   - IRQ number.
+ * @tparam _irq_cfg - encoded IRQ priority config.
 */
-template<device::irqn _irq_n, auto _irq_id>
-void set_priority()
+template<device::irqn _irq_n, auto _irq_cfg>
+void set_encoded_priority()
 {
   using namespace device;
 
   if constexpr(_irq_n != irqn::invalid_irqn) {
-    constexpr auto cfg = decode_irq_conf(_irq_id);
+    constexpr auto cfg = decode_irq_conf(_irq_cfg);
 
     constexpr uint32_t priority_group = uint32_t(cfg.group) & 0x7UL;
 
@@ -186,6 +186,23 @@ void set_priority()
     }
   }
 }
+
+/**
+ * @brief Set IRQ priority.
+ *
+ * @tparam _irq_n - IRQ number.
+ * @tparam _args  - Any combination of 'preempt_prio', 'sub_prio', 'group_prio' values.
+*/
+template<device::irqn _irq_n, auto ..._args>
+lmcu_inline void set_priority()
+{ set_encoded_priority<_irq_n, encode_irq_conf<uint32_t, _args...>()>(); }
+
+/**
+ * @brief Set library default IRQ priority.
+*/
+template<device::irqn _irq_n>
+lmcu_inline void set_default_priority()
+{ set_priority<_irq_n, preempt_prio::defval, sub_prio::defval, group_prio::defval>(); }
 
 // ------------------------------------------------------------------------------------------------
 } // namespace lmcu::nvic

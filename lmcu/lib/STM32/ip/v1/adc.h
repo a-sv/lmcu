@@ -8,6 +8,7 @@
 // ------------------------------------------------------------------------------------------------
 namespace lmcu::adc {
 // ------------------------------------------------------------------------------------------------
+#include <lmcu/private/irq_id.h>
 
 enum class id { adc1, adc2, adc3 };
 
@@ -121,6 +122,9 @@ enum class events : uint32_t
   start  = 1 << 4  // regular channel start flag
 };
 
+template <auto ..._args>
+constexpr auto irq = nvic::encode_irq_conf<irq_id::_0, _args...>();
+
 template<auto ..._args>
 struct config
 {
@@ -164,6 +168,8 @@ struct config
   static constexpr auto dma = option::get<adc::dma, _args...>(adc::dma::disable);
   // Events config
   static constexpr auto events = option::get<adc::events, _args...>(adc::events(0));
+  // ADC global IRQ
+  static constexpr auto irq = option::get<irq_id::_0, _args...>();
 
   static_assert(!option::is_null<id>());
 
@@ -248,7 +254,8 @@ struct config
       adc::inj_trig,
       adc::data_align,
       adc::dma,
-      adc::events
+      adc::events,
+      irq_id::_0
     >,
     _args...
   >());
@@ -595,6 +602,23 @@ void configure_adc()
       if constexpr(cfg::awd_mode != awd_mode::disable) {
         awd_hi_threshold_conf<inst>(uint32_t(cfg::awd_hi_threshold));
         awd_lo_threshold_conf<inst>(uint32_t(cfg::awd_lo_threshold));
+      }
+
+      if constexpr(!option::is_null<cfg::irq>()) {
+        constexpr auto irqn = []
+        {
+          switch(cfg::id)
+          {
+          case id::adc1: return device::find_irqn("adc1");;
+          case id::adc2: return device::find_irqn("adc2");;
+          case id::adc3: return device::find_irqn("adc3");;
+          default: break;
+          }
+          return device::irqn::invalid_irqn;
+        }();
+
+        nvic::set_encoded_priority<irqn, cfg::irq>();
+        nvic::enable_irq<irqn>();
       }
     }
   };
@@ -1567,7 +1591,7 @@ template<typename _cfg>
 events get_events()
 {
   using inst = detail::inst_t<_cfg::id>;
-  return events(inst::SR);
+  return events(inst::SR::get());
 }
 
 /**
