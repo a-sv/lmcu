@@ -2,123 +2,117 @@
 #include <lmcu/dev/mcu>
 #include "../isr.h"
 
-#ifdef __cplusplus
 // ------------------------------------------------------------------------------------------------
 namespace lmcu::isr {
 // ------------------------------------------------------------------------------------------------
-extern "C" {
-#endif
 
-void wwdg_irq();
-void pvd_irq();
-void tamper_irq();
-void rtc_irq();
-void flash_irq();
-void rcc_irq();
-void exti0_irq();
-void exti1_irq();
-void exti2_irq();
-void exti3_irq();
-void exti4_irq();
-void dma1_channel1_irq();
-void dma1_channel2_irq();
-void dma1_channel3_irq();
-void dma1_channel4_irq();
-void dma1_channel5_irq();
-void dma1_channel6_irq();
-void dma1_channel7_irq();
-void adc1_2_irq();
+void wwdg();
+void pvd();
+void tamper();
+void rtc();
+void flash();
+void rcc();
+void exti0();
+void exti1();
+void exti2();
+void exti3();
+void exti4();
+void dma1_channel1();
+void dma1_channel2();
+void dma1_channel3();
+void dma1_channel4();
+void dma1_channel5();
+void dma1_channel6();
+void dma1_channel7();
+void adc1_2();
 
 #if defined(LMCU_STM32F1_CONNECTIVITY)
-void can1_tx_irq();
-void can1_rx0_irq();
+void can1_tx();
+void can1_rx0();
 #else
-void usb_hp_can1_tx_irq();
-void usb_lp_can1_rx0_irq();
+void usb_hp_can1_tx();
+void usb_lp_can1_rx0();
 #endif
 
-void can1_rx1_irq();
-void can1_sce_irq();
-void exti9_5_irq();
+void can1_rx1();
+void can1_sce();
+void exti9_5();
 
 #if defined(LMCU_STM32F1_XL_DENSITY)
-void tim1_brk_tim9_irq();
-void tim1_up_tim10_irq();
-void tim1_trg_com_tim11_irq();
+void tim1_brk_tim9();
+void tim1_up_tim10();
+void tim1_trg_com_tim11();
 #else
-void tim1_brk_irq();
-void tim1_up_irq();
-void tim1_trg_com_irq();
+void tim1_brk();
+void tim1_up();
+void tim1_trg_com();
 #endif
 
-void tim1_cc_irq();
-void tim2_irq();
-void tim3_irq();
-void tim4_irq();
-void i2c1_ev_irq();
-void i2c1_er_irq();
-void i2c2_ev_irq();
-void i2c2_er_irq();
-void spi1_irq();
-void spi2_irq();
-void usart1_irq();
-void usart2_irq();
-void usart3_irq();
-void exti15_10_irq();
-void rtc_alarm_irq();
+void tim1_cc();
+void tim2();
+void tim3();
+void tim4();
+void i2c1_ev();
+void i2c1_er();
+void i2c2_ev();
+void i2c2_er();
+void spi1();
+void spi2();
+void usart1();
+void usart2();
+void usart3();
+void exti15_10();
+void rtc_alarm();
 
 #if defined(LMCU_STM32F1_CONNECTIVITY)
-void otg_fs_wakeup_irq();
+void otg_fs_wakeup();
 #else
-void usb_wakeup_irq();
+void usb_wakeup();
 #endif
 
 #if !defined(LMCU_STM32F1_CONNECTIVITY)
 
 #if defined(LMCU_STM32F1_XL_DENSITY)
-void tim8_brk_tim12_irq();
-void tim8_up_tim13_irq();
-void tim8_trg_com_tim14_irq();
+void tim8_brk_tim12();
+void tim8_up_tim13();
+void tim8_trg_com_tim14();
 #else
-void tim8_brk_irq();
-void tim8_up_irq();
-void tim8_trg_com_irq();
+void tim8_brk();
+void tim8_up();
+void tim8_trg_com();
 #endif // LMCU_STM32F1_XL_DENSITY
 
-void tim8_cc_irq();
-void adc3_irq();
-void fsmc_irq();
-void sdio_irq();
+void tim8_cc();
+void adc3();
+void fsmc();
+void sdio();
 
 #endif // !LMCU_STM32F1_CONNECTIVITY
 
-void tim5_irq();
-void spi3_irq();
-void uart4_irq();
-void uart5_irq();
-void tim6_irq();
-void tim7_irq();
-void dma2_channel1_irq();
-void dma2_channel2_irq();
-void dma2_channel3_irq();
+void tim5();
+void spi3();
+void uart4();
+void uart5();
+void tim6();
+void tim7();
+void dma2_channel1();
+void dma2_channel2();
+void dma2_channel3();
 
 #if defined(LMCU_STM32F1_CONNECTIVITY)
-void dma2_channel4_irq();
-void dma2_channel5_irq();
-void eth_irq();
-void eth_wakeup_irq();
-void can2_tx_irq();
-void can2_rx0_irq();
-void can2_rx1_irq();
-void can2_sce_irq();
-void otg_fs_irq();
+void dma2_channel4();
+void dma2_channel5();
+void eth();
+void eth_wakeup();
+void can2_tx();
+void can2_rx0();
+void can2_rx1();
+void can2_sce();
+void otg_fs();
 #else
-void dma2_channel4_5_irq();
+void dma2_channel4_5();
 #endif
 
-#ifdef __cplusplus
-} // extern "C"
 // ------------------------------------------------------------------------------------------------
 } // namespace lmcu::isr
 // ------------------------------------------------------------------------------------------------
-#endif

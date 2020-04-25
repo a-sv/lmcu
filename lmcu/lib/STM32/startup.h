@@ -52,20 +52,33 @@ void lmcu_reset_handler()
   _start();
 }
 
-static void default_handler()
+static void lmcu_default_handler()
 {
   while(true)
     ;
 }
 
-#pragma weak nmi_irq = default_handler
-#pragma weak hard_fault_irq = default_handler
-#pragma weak mem_manage_irq = default_handler
-#pragma weak bus_fault_irq = default_handler
-#pragma weak usage_fault_irq = default_handler
-#pragma weak svcall_irq = default_handler
-#pragma weak debug_mon_irq = default_handler
-#pragma weak pend_sv_irq = default_handler
-#pragma weak sys_tick_irq = default_handler
-
 } // extern "C"
+
+#define ISR_VECTOR(name) \
+  void name() __attribute__((weak, alias("_ZN4lmcu3isr15default_handlerEv")));
+
+// ------------------------------------------------------------------------------------------------
+namespace lmcu::isr {
+// ------------------------------------------------------------------------------------------------
+
+void default_handler() __attribute__((weak, alias("lmcu_default_handler")));
+
+ISR_VECTOR(nmi)
+ISR_VECTOR(hard_fault)
+ISR_VECTOR(mem_manage)
+ISR_VECTOR(bus_fault)
+ISR_VECTOR(usage_fault)
+ISR_VECTOR(svcall)
+ISR_VECTOR(debug_mon)
+ISR_VECTOR(pend_sv)
+ISR_VECTOR(sys_tick)
+
+// ------------------------------------------------------------------------------------------------
+} // namespace lmcu::isr
+// ------------------------------------------------------------------------------------------------
