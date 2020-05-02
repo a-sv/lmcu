@@ -430,10 +430,10 @@ struct _config<id::tim1, _args...>
                                                                             disable);
   // Count direction.
   static constexpr auto direction = option::get<timer::direction, _args...>(timer::direction::up);
-  //  Center-aligned mode selection.
+  // Center-aligned mode selection.
   static constexpr auto center_align = option::get<timer::center_align, _args...>(
                                          timer::center_align::disable);
-  // Center-aligned mode selection.
+  // Auto-reload preload enable.
   static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(timer::auto_reload::
                                                                                 disable);
   // Dead time generator and digital filter clock division.
@@ -576,7 +576,7 @@ struct _config<id::tim2, _args...>
   //  Center-aligned mode selection.
   static constexpr auto center_align = option::get<timer::center_align, _args...>(
                                          timer::center_align::disable);
-  // Center-aligned mode selection.
+  // Auto-reload preload enable.
   static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(timer::auto_reload::
                                                                                 disable);
   // Digital filter clock division.
@@ -674,7 +674,7 @@ struct _config<id::tim6, _args...>
   // One pulse mode.
   static constexpr auto one_pulse = option::get<timer::one_pulse, _args...>(timer::one_pulse::
                                                                             disable);
-  // Center-aligned mode selection.
+  // Auto-reload preload enable.
   static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(timer::auto_reload::
                                                                                 disable);
   // Master mode selection.
@@ -717,7 +717,7 @@ struct _config<id::tim9, _args...>
   // One pulse mode.
   static constexpr auto one_pulse = option::get<timer::one_pulse, _args...>(timer::one_pulse::
                                                                             disable);
-  // Center-aligned mode selection.
+  // Auto-reload preload enable.
   static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(timer::auto_reload::
                                                                                 disable);
   // Dead time generator and digital filter clock division.
@@ -771,7 +771,7 @@ struct _config<id::tim10, _args...>
   // One pulse mode.
   static constexpr auto one_pulse = option::get<timer::one_pulse, _args...>(timer::one_pulse::
                                                                             disable);
-  // Center-aligned mode selection.
+  // Auto-reload preload enable.
   static constexpr auto auto_reload = option::get<timer::auto_reload, _args...>(timer::auto_reload::
                                                                                 disable);
   // Dead time generator and digital filter clock division.
