@@ -1591,9 +1591,10 @@ void channel_n_en_conf(_reg&& r)
 
   constexpr auto ch_n = uint32_t(_cfg::channel);
 
-  r &= ~ccne_mask[ch_n];
-
-  if constexpr(ch_n < 3 && _cfg::channel_n_en == channel_n_en::enable) { r |= ccne[ch_n]; }
+  if constexpr(ch_n < 3 && _cfg::channel_n_en == channel_n_en::enable) {
+    r &= ~ccne_mask[ch_n];
+    r |= ccne[ch_n];
+  }
 }
 
 template<typename _inst, typename _cfg, typename _reg>
@@ -1607,9 +1608,8 @@ void channel_n_polarity_conf(_reg&& r)
 
   constexpr auto ch_n = uint32_t(_cfg::channel);
 
-  r &= ~ccnp_mask[ch_n];
-
   if constexpr(ch_n < 3 && _cfg::channel_n_polarity == channel_n_polarity::inverted) {
+    r &= ~ccnp_mask[ch_n];
     r |= ccnp[ch_n];
   }
 }
