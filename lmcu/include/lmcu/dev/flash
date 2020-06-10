@@ -1,0 +1,7 @@
+#pragma once
+
+#if defined(LMCU_STM32F1_XL_DENSITY)
+  #include "../../../lib/regs/STM32/F1/FLASH_XL.h"
+#elif defined(LMCU_STM32F1)
+  #include "../../../lib/regs/STM32/F1/FLASH.h"
+#endif

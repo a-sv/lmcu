@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/FLASH_XL
+  base: 0x40022000

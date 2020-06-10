@@ -1,0 +1,22 @@
+ip:
+  $extends: FLASH.yml | ip
+  registers:
+    KEYR2:
+      $extends: FLASH.yml | ip.registers.KEYR
+      desc: FPEC key register2
+      offset: 0x44
+    SR2:
+      $extends: FLASH.yml | ip.registers.SR
+      desc: Flash status register2
+      offset: 0x4C
+    CR2:
+      $extends: FLASH.yml | ip.registers.CR
+      desc: Flash control register2
+      offset: 0x50
+      fields:
+        OPTPG: null
+        OPTER: null
+        OPTWRE: null
+    AR2:
+      desc: Flash address register2
+      offset: 0x54

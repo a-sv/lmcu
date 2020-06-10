@@ -1,0 +1,131 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: FLASH controller
+  ver: 1
+  registers:
+    ACR:
+      desc: Flash access control register
+      offset: 0x0
+      reset_val: 0x30
+      fields:
+        LATENCY:
+          desc: Latency
+          bits: 2-0
+          enum:
+            '0':
+              desc: Zero wait state, if 0 < SYSCLK ≤ 24 MHz
+              val: 0
+            '1':
+              desc: One wait state, if 24 MHz < SYSCLK ≤ 48 MHz
+              val: 1
+            '2':
+              desc: Two wait states, if 48 MHz < SYSCLK ≤ 72 MHz
+              val: 2
+        HLFCYA:
+          desc: Flash half cycle access enable
+          bits: 3
+        PRFTBE:
+          desc: Prefetch buffer enable
+          bits: 4
+        PRFTBS:
+          desc: Prefetch buffer status
+          bits: 5
+    KEYR:
+      desc: FPEC key register
+      offset: 0x4
+      fields:
+        VAL:
+          bits: 31-0
+          enum:
+            RDPRT:
+              val: 0x00A5
+            KEY1:
+              val: 0x45670123
+            KEY2:
+              val: 0xCDEF89AB
+    OPTKEYR:
+      desc: Flash OPTKEY register
+      offset: 0x8
+    SR:
+      desc: Flash status register
+      offset: 0xC
+      fields:
+        BSY:
+          desc: Busy
+          bits: 0
+        PGERR:
+          desc: Programming error
+          bits: 2
+        WRPRTERR:
+          desc: Write protection error
+          bits: 4
+        EOP:
+          desc: End of operation
+          bits: 5
+    CR:
+      desc: Flash control register
+      offset: 0x10
+      reset_val: 0x80
+      fields:
+        PG:
+          desc: Programming
+          bits: 0
+        PER:
+          desc: Page erase
+          bits: 1
+        MER:
+          desc: Mass erase
+          bits: 2
+        OPTPG:
+          desc: Option byte programming
+          bits: 4
+        OPTER:
+          desc: Option byte erase
+          bits: 5
+        STRT:
+          desc: Start
+          bits: 6
+        LOCK:
+          desc: Lock
+          bits: 7
+        OPTWRE:
+          desc: Option bytes write enable
+          bits: 9
+        ERRIE:
+          desc: Error interrupt enable
+          bits: 10
+        EOPIE:
+          desc: End of operation interrupt enable
+          bits: 12
+    AR:
+      desc: Flash address register
+      offset: 0x14
+    OBR:
+      desc: Option byte register
+      offset: 0x1C
+      fields:
+        OPTERR:
+          desc: Option byte error
+          bits: 0
+        RDPRT:
+          desc: Read protection
+          bits: 1
+        USER:
+          desc: User option bytes
+          bits: 9-2
+          enum:
+            WDG_SW:
+              val: 4
+            NRST_STOP:
+              val: 8
+            NRST_STDBY:
+              val: 16
+        DATA0:
+          bits: 17-10
+        DATA1:
+          bits: 25-18
+    WRPR:
+      desc: Write protection register
+      offset: 0x20
+      reset_val: 0xFFFFFFFF
