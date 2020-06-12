@@ -903,7 +903,9 @@ inline void set_awd_mode(awd_mode val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  awd_mode_conf<inst>(val, inst::CR1::ref());
+  uint32_t r = inst::CR1::get();
+  awd_mode_conf<inst>(val, r);
+  inst::CR1::set(r);
 }
 
 template<typename _cfg>
@@ -912,7 +914,9 @@ inline void set_awd_channel(channel val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  awd_channel_conf(val, inst::CR1::ref());
+  uint32_t r = inst::CR1::get();
+  awd_channel_conf<inst>(val, r);
+  inst::CR1::set(r);
 }
 
 template<typename _cfg>
@@ -939,7 +943,9 @@ inline void set_dual_mode(dual_mode val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  dual_mode_conf<inst>(val, inst::CR1::ref());
+  uint32_t r = inst::CR1::get();
+  dual_mode_conf<inst>(val, r);
+  inst::CR1::set(r);
 }
 
 template<typename _cfg>
@@ -957,7 +963,9 @@ inline void set_discnum(discnum val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  discnum_conf<inst>(val, inst::CR1::ref());
+  uint32_t r = inst::CR1::get();
+  discnum_conf<inst>(val, r);
+  inst::CR1::set(r);
 }
 
 template<typename _cfg>
@@ -966,7 +974,9 @@ inline void set_inj_auto(inj_auto val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  inj_auto_conf<inst>(val, inst::CR1::ref());
+  uint32_t r = inst::CR1::get();
+  inj_auto_conf<inst>(val, r);
+  inst::CR1::set(r);
 }
 
 template<typename _cfg>
@@ -975,7 +985,9 @@ inline void set_temp_refint(temp_refint val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  temp_refint_conf<inst>(val, inst::CR2::ref());
+  uint32_t r = inst::CR2::get();
+  temp_refint_conf<inst>(val, r);
+  inst::CR2::set(r);
 }
 
 template<typename _cfg>
@@ -984,7 +996,9 @@ inline void set_scan(scan val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  scan_conf<inst>(val, inst::CR1::ref());
+  uint32_t r = inst::CR1::get();
+  scan_conf<inst>(val, r);
+  inst::CR1::set(r);
 }
 
 template<typename _cfg>
@@ -993,7 +1007,9 @@ inline void set_reg_trig(reg_trig val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  reg_trig_conf<inst>(val, inst::CR2::ref());
+  uint32_t r = inst::CR2::get();
+  reg_trig_conf<inst>(val, r);
+  inst::CR2::set(r);
 }
 
 template<typename _cfg>
@@ -1002,7 +1018,9 @@ inline void set_inj_trig(inj_trig val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  inj_trig_conf<inst>(val, inst::CR2::ref());
+  uint32_t r = inst::CR2::get();
+  inj_trig_conf<inst>(val, r);
+  inst::CR2::set(r);
 }
 
 template<typename _cfg>
@@ -1011,7 +1029,9 @@ inline void set_data_align(data_align val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  data_align_conf<inst>(val, inst::CR2::ref());
+  uint32_t r = inst::CR2::get();
+  data_align_conf<inst>(val, r);
+  inst::CR2::set(r);
 }
 
 template<typename _cfg>
@@ -1020,7 +1040,9 @@ inline void set_dma(dma val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  dma_conf<inst>(val, inst::CR2::ref());
+  uint32_t r = inst::CR2::get();
+  dma_conf<inst>(val, r);
+  inst::CR2::set(r);
 }
 
 template<typename _cfg>
@@ -1029,7 +1051,9 @@ inline void set_events(events val)
   static_assert(_cfg::dev_class == dev_class::adc);
   using inst = detail::inst_t<_cfg::id>;
 
-  events_conf<inst>(val, inst::CR1::ref());
+  uint32_t r = inst::CR1::get();
+  events_conf<inst>(val, r);
+  inst::CR1::set(r);
 }
 
 template<typename _cfg>

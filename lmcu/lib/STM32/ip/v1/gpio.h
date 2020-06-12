@@ -269,7 +269,8 @@ lmcu_inline void toggle()
 {
   constexpr auto msk = pin_mask<_port, _pins...>();
   if constexpr(msk != 0) {
-    inst_t<_port>::ODR::ref() ^= msk;
+    using ODR = typename inst_t<_port>::ODR;
+    ODR::set(ODR::get() ^ msk);
   }
 }
 
@@ -562,7 +563,7 @@ lmcu_inline void eventout_on()
   default: break;
   }
 
-  r |= (uint32_t(_pin::n) & 0xf) << AFIO::EVCR::PIN_POS;
+  r |= (uint32_t(_pin::n) & 0xF) << AFIO::EVCR::PIN_POS;
 
   AFIO::EVCR::set(r);
 }
@@ -811,7 +812,11 @@ lmcu_inline void set(uint32_t val) { detail::inst_t<_port>::ODR::set(val); }
  * @tparam _port - GPIO port
 */
 template<port _port>
-lmcu_inline void toggle() { detail::inst_t<_port>::ODR::ref() ^= 0xffff; }
+lmcu_inline void toggle()
+{
+  using ODR = typename detail::inst_t<_port>::ODR;
+  ODR::set(ODR::get() ^ 0xFFFF);
+}
 
 /**
  * @brief Returns current port or pin output state (ODR).

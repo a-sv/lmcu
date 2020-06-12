@@ -62,7 +62,11 @@ public:
 
   inline uint32_t remaining() const { return expire_ - elapsed(); }
 
-  static inline void tick() { counter_++; }
+  static inline void tick()
+  {
+    _counter_t cnt = counter_;
+    counter_ = cnt + 1;
+  }
 
   static inline _counter_t counter() { return counter_; }
 private:
