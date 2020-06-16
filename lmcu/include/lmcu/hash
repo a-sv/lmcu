@@ -1,0 +1,4 @@
+#pragma once
+
+#include "../../lib/hash/ecc.h"
+#include "../../lib/hash/dallas/crc8.h"
