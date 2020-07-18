@@ -2447,7 +2447,7 @@ lmcu_static_inline events get_events()
   static_assert(_cfg::dev_class == dev_class::timer);
 
   using inst = detail::inst_t<_cfg::id>;
-  return flags::from_value<timer::events>(inst::SR);
+  return flags::from_value<timer::events>(inst::SR::get());
 }
 
 /**
