@@ -626,7 +626,7 @@ void configure_adc()
   (_do(_cfg{}), ...);
 }
 
-template<id _id, uint32_t _lo, uint32_t _hi, typename ..._cfg>
+template<id _id, int32_t _lo, int32_t _hi, typename ..._cfg>
 constexpr auto smpr()
 {
   struct
@@ -641,7 +641,7 @@ constexpr auto smpr()
       cfg::dev_class == dev_class::adc_regular_channel ||
       cfg::dev_class == dev_class::adc_injected_channel
     ) {
-      auto ch_n = uint32_t(cfg::channel);
+      auto ch_n = int32_t(cfg::channel);
 
       if(_id == cfg::id && ch_n >= _lo && ch_n <= _hi) {
         auto ofs = (ch_n - _lo) * 3;
