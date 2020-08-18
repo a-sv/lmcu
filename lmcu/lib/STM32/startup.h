@@ -52,10 +52,9 @@ void lmcu_reset_handler()
   _start();
 }
 
-static void lmcu_default_handler()
+static void default_handler()
 {
-  while(true)
-    ;
+  while(true) { asm volatile("nop"); }
 }
 
 } // extern "C"
@@ -67,7 +66,7 @@ static void lmcu_default_handler()
 namespace lmcu::isr {
 // ------------------------------------------------------------------------------------------------
 
-void default_handler() __attribute__((weak, alias("lmcu_default_handler")));
+void default_handler() __attribute__((weak, alias("default_handler")));
 
 ISR_VECTOR(nmi)
 ISR_VECTOR(hard_fault)
