@@ -1,0 +1,145 @@
+ip:
+  header: |
+    #include "../common.h"
+  desc: The ITM is a an application driven trace source that supports printf style debugging
+  base: 0xE0000000
+  registers:
+    SP:
+      desc: Stimulus Ports
+      offset: 0x0
+      count: 32
+    TER:
+      desc: Trace Enable Register
+      offset: 0xE00
+      fields:
+        STIMENA:
+          desc: Bit mask to enable tracing on ITM stimulus ports. One bit per stimulus port.
+          bits: 31-0
+    TPR:
+      desc: Trace Privilege Register
+      offset: 0xE40
+      fields:
+        PRIVMASK:
+          desc: Bit mask to enable tracing on ITM stimulus ports
+          bits: 3-0
+    TCR:
+      desc: Trace Control Register
+      offset: 0xE80
+      fields:
+        BUSY:
+          desc: Set when ITM events present and being drained
+          bits: 23
+        ATBID:
+          desc: ATB ID for CoreSight system
+          bits: 22-16
+        TSPRESCALE:
+          desc: Timestamp prescaler
+          bits: 9-8
+          enum:
+            '1':
+              desc: no prescaling
+              val: 0
+            '4':
+              desc: divide by 4
+              val: 1
+            '16':
+              desc: divide by 16
+              val: 2
+            '64':
+              desc: divide by 64
+              val: 3
+        SWOENA:
+          desc: Enable SWV behavior – count on TPIUEMIT and TPIUBAUD
+          bits: 4
+        DWTENA:
+          desc: Enables the DWT stimulus
+          bits: 3
+        SYNCENA:
+          desc: Enables sync packets for TPIU
+          bits: 2
+        TSENA:
+          desc: Enables differential timestamps
+          bits: 1
+        ITMENA:
+          desc: Enable ITM
+          bits: 0
+    IWR:
+      desc: Integration Write Register
+      offset: 0xEF8
+      fields:
+        ATVALIDM:
+          desc: "When the integration mode is set: 0 = ATVALIDM clear, 1 = ATVALIDM set"
+          bits: 0
+    IRR:
+      desc: Integration Read Register
+      offset: 0xEFC
+      fields:
+        ATREADYM:
+          desc: Value on ATREADYM
+          bits: 0
+    IMCR:
+      desc: Integration Mode Control
+      offset: 0xF00
+      fields:
+        INTEGRATION:
+          desc: 0 = ATVALIDM normal, 1 = ATVALIDM driven from Integration Write Register
+          bits: 0
+    LAR:
+      desc: Lock Access Register
+      offset: 0xFB0
+      fields:
+        LOCK_ACCESS:
+          desc: |
+            A privileged write of KEY enables more write access to Control Register 0xE00::0xFFC.
+            An invalid write removes write access.
+          bits: 31-0
+          enum:
+            KEY:
+              val: 0xC5ACCE55
+
+    LSR:
+      desc: Lock Status Register
+      offset: 0xFB4
+      reset_val: 0x3
+      fields:
+        BYTE_ACC:
+          desc: You cannot implement 8-bit lock accesses
+          bits: 2
+        ACCESS:
+          desc: Write access to component is blocked. All writes are ignored, reads are permitted
+          bits: 1
+        PRESENT:
+          desc: Indicates that a lock mechanism exists for this component
+          bits: 0
+    PID4:
+      offset: 0xFD0
+      reset_val: 0x4
+    PID5:
+      offset: 0xFD4
+    PID6:
+      offset: 0xFD8
+    PID7:
+      offset: 0xFDC
+    PID0:
+      offset: 0xFE0
+      reset_val: 0x1
+    PID1:
+      offset: 0xFE4
+      reset_val: 0xB0
+    PID2:
+      offset: 0xFE8
+      reset_val: 0x1B
+    PID3:
+      offset: 0xFEC
+    CID0:
+      offset: 0xFF0
+      reset_val: 0xD
+    CID1:
+      offset: 0xFF4
+      reset_val: 0xE0
+    CID2:
+      offset: 0xFF8
+      reset_val: 0x5
+    CID3:
+      offset: 0xFFC
+      reset_val: 0xB1

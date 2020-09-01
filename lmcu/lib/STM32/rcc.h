@@ -1,6 +1,6 @@
 #pragma once
 #include <lmcu/dev/rcc>
-#include <lmcu/dev/nvic>
+#include <lmcu/dev/cortex/nvic>
 #include <lmcu/irq>
 #include <lmcu/pwr>
 

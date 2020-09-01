@@ -1,0 +1,5 @@
+#pragma once
+
+#if defined(LMCU_CORTEX_M3)
+  #include "../../../../lib/regs/CORTEX-M3/ITM.h"
+#endif

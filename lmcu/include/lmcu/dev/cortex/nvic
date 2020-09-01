@@ -1,0 +1,5 @@
+#pragma once
+
+#if defined(LMCU_STM32F1)
+  #include "../../../../lib/regs/CORTEX-M3/NVIC.h"
+#endif

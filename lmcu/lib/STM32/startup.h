@@ -1,9 +1,9 @@
 #pragma once
 #include <lmcu/irq>
 #include <lmcu/dev/rcc>
-#include <lmcu/dev/nvic>
-#include <lmcu/dev/core_debug>
-#include <lmcu/dev/dwt>
+#include <lmcu/dev/cortex/nvic>
+#include <lmcu/dev/cortex/core_debug>
+#include <lmcu/dev/cortex/dwt>
 
 lmcu_inline void device_init();
 

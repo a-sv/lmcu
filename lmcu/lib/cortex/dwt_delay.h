@@ -1,6 +1,6 @@
 #pragma once
 #include <lmcu/delay>
-#include <lmcu/dev/dwt>
+#include <lmcu/dev/cortex/dwt>
 
 // ------------------------------------------------------------------------------------------------
 namespace lmcu::delay {
