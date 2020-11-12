@@ -1,1 +1,6 @@
 __pycache__
+test*
+docs
+TODO
+build
+tmp
