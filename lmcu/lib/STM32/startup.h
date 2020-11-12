@@ -28,8 +28,6 @@ void lmcu_reset_handler()
   // End address for the .bss section.
   extern unsigned long _ebss;
 
-  extern int _start();
-
   lmcu::irq::disable();
 
   // Copy the data segment initializers from flash to SRAM.
@@ -49,7 +47,10 @@ void lmcu_reset_handler()
   DWT::CTRL::set_b(DWT::CTRL::CYCCNTENA);
 
   // Start main program.
-  _start();
+  asm volatile(
+  "bl __libc_init_array;"
+  "bl main;"
+  );
 }
 
 static void default_handler()
