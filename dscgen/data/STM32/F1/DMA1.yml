@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/DMA
+  base: 0x40020000

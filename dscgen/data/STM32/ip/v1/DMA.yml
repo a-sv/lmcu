@@ -1,0 +1,243 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: Direct memory access controller
+  ver: 1
+  registers:
+    ISR:
+      desc: DMA interrupt status register
+      offset: 0x0
+      fields:
+        GIF1:
+          desc: Channel global interrupt flag
+          bits: 0
+        TCIF1:
+          desc: Channel transfer complete flag
+          bits: 1
+        HTIF1:
+          desc: Channel half transfer flag
+          bits: 2
+        TEIF1:
+          desc: Channel transfer error flag
+          bits: 3
+        GIF2:
+          desc: Channel global interrupt flag
+          bits: 4
+        TCIF2:
+          desc: Channel transfer complete flag
+          bits: 5
+        HTIF2:
+          desc: Channel half transfer flag
+          bits: 6
+        TEIF2:
+          desc: Channel transfer error flag
+          bits: 7
+        GIF3:
+          desc: Channel global interrupt flag
+          bits: 8
+        TCIF3:
+          desc: Channel transfer complete flag
+          bits: 9
+        HTIF3:
+          desc: Channel half transfer flag
+          bits: 10
+        TEIF3:
+          desc: Channel transfer error flag
+          bits: 11
+        GIF4:
+          desc: Channel global interrupt flag
+          bits: 12
+        TCIF4:
+          desc: Channel transfer complete flag
+          bits: 13
+        HTIF4:
+          desc: Channel half transfer flag
+          bits: 14
+        TEIF4:
+          desc: Channel transfer error flag
+          bits: 15
+        GIF5:
+          desc: Channel global interrupt flag
+          bits: 16
+        TCIF5:
+          desc: Channel transfer complete flag
+          bits: 17
+        HTIF5:
+          desc: Channel half transfer flag
+          bits: 18
+        TEIF5:
+          desc: Channel transfer error flag
+          bits: 19
+        GIF6:
+          desc: Channel global interrupt flag
+          bits: 20
+        TCIF6:
+          desc: Channel transfer complete flag
+          bits: 21
+        HTIF6:
+          desc: Channel half transfer flag
+          bits: 22
+        TEIF6:
+          desc: Channel transfer error flag
+          bits: 23
+        GIF7:
+          desc: Channel global interrupt flag
+          bits: 24
+        TCIF7:
+          desc: Channel transfer complete flag
+          bits: 25
+        HTIF7:
+          desc: Channel half transfer flag
+          bits: 26
+        TEIF7:
+          desc: Channel transfer error flag
+          bits: 27
+    IFCR:
+      desc: DMA interrupt flag clear register
+      offset: 0x4
+      fields:
+        CGIF1:
+          desc: Channel global interrupt clear
+          bits: 0
+        CTCIF1:
+          desc: Channel transfer complete clear
+          bits: 1
+        CHTIF1:
+          desc: Channel half transfer clear
+          bits: 2
+        CTEIF1:
+          desc: Channel transfer error clear
+          bits: 3
+        CGIF2:
+          desc: Channel global interrupt clear
+          bits: 4
+        CTCIF2:
+          desc: Channel transfer complete clear
+          bits: 5
+        CHTIF2:
+          desc: Channel half transfer clear
+          bits: 6
+        CTEIF2:
+          desc: Channel transfer error clear
+          bits: 7
+        CGIF3:
+          desc: Channel global interrupt clear
+          bits: 8
+        CTCIF3:
+          desc: Channel transfer complete clear
+          bits: 9
+        CHTIF3:
+          desc: Channel half transfer clear
+          bits: 10
+        CTEIF3:
+          desc: Channel transfer error clear
+          bits: 11
+        CGIF4:
+          desc: Channel global interrupt clear
+          bits: 12
+        CTCIF4:
+          desc: Channel transfer complete clear
+          bits: 13
+        CHTIF4:
+          desc: Channel half transfer clear
+          bits: 14
+        CTEIF4:
+          desc: Channel transfer error clear
+          bits: 15
+        CGIF5:
+          desc: Channel global interrupt clear
+          bits: 16
+        CTCIF5:
+          desc: Channel transfer complete clear
+          bits: 17
+        CHTIF5:
+          desc: Channel half transfer clear
+          bits: 18
+        CTEIF5:
+          desc: Channel transfer error clear
+          bits: 19
+        CGIF6:
+          desc: Channel global interrupt clear
+          bits: 20
+        CTCIF6:
+          desc: Channel transfer complete clear
+          bits: 21
+        CHTIF6:
+          desc: Channel half transfer clear
+          bits: 22
+        CTEIF6:
+          desc: Channel transfer error clear
+          bits: 23
+        CGIF7:
+          desc: Channel global interrupt clear
+          bits: 24
+        CTCIF7:
+          desc: Channel transfer complete clear
+          bits: 25
+        CHTIF7:
+          desc: Channel half transfer clear
+          bits: 26
+        CTEIF7:
+          desc: Channel transfer error clear
+          bits: 27
+    CCR:
+      desc: DMA channel configuration register
+      offset: 0x8
+      struct: 0x20
+      count: 7
+      fields:
+        EN:
+          desc: Channel enable
+          bits: 0
+        TCIE:
+          desc: Transfer complete interrupt enable
+          bits: 1
+        HTIE:
+          desc: Half transfer interrupt enable
+          bits: 2
+        TEIE:
+          desc: Transfer error interrupt enable
+          bits: 3
+        DIR:
+          desc: Data transfer direction
+          bits: 4
+        CIRC:
+          desc: Circular mode
+          bits: 5
+        PINC:
+          desc: Peripheral increment mode
+          bits: 6
+        MINC:
+          desc: Memory increment mode
+          bits: 7
+        PSIZE:
+          desc: Peripheral size
+          bits: 9-8
+        MSIZE:
+          desc: Memory size
+          bits: 11-10
+        PL:
+          desc: Channel priority level
+          bits: 13-12
+        MEM2MEM:
+          desc: Memory to memory mode
+          bits: 14
+    CNDTR:
+      desc: DMA channel number of data register
+      offset: 0xC
+      struct: 0x20
+      count: 7
+      fields:
+        NDT:
+          desc: Number of data to transfer
+          bits: 15-0
+    CPAR:
+      desc: DMA channel peripheral address register
+      offset: 0x10
+      struct: 0x20
+      count: 7
+    CMAR:
+      desc: DMA channel memory address register
+      offset: 0x14
+      struct: 0x20
+      count: 7
