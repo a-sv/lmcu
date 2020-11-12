@@ -5,4 +5,3 @@ Directory struct:
   dscgen       - MCU description data and code generator.
   lmcu/drivers - External device drivers.
   lmcu/include - Library interface header files.
-  lmcu/mcu     - MCU specific code.
