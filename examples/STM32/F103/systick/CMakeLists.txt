@@ -1,11 +1,14 @@
-set(CMAKE_C_COMPILER_WORKS TRUE)
-set(CMAKE_CXX_COMPILER_WORKS TRUE)
+cmake_minimum_required(VERSION 3.11)
+project(systick-example NONE)
 
-cmake_minimum_required(VERSION 2.8)
-
-project(systick-example)
+include_directories(src)
+file(GLOB_RECURSE SOURCES src/*.S src/*.c src/*.cc src/*.h)
+add_executable(${CMAKE_PROJECT_NAME} ${SOURCES})
 
 set(LMCU_DEVICE "STM32F103CB")
 set(LMCU_BOOT_FROM_RAM TRUE)
+include(../../../../lmcu/lmcu.cmake)
+add_definitions(${LMCU_DEFINITIONS})
+include_directories(${LMCU_INCLUDE_DIR})
 
-include(../../common.cmake)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${LMCU_LIBRARY})

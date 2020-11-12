@@ -56,7 +56,7 @@ int main()
   return 0;
 }
 
-void isr::sys_tick_irq()
+void isr::sys_tick()
 {
   gpio::toggle<led>();
 }

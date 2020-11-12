@@ -74,7 +74,7 @@ int main()
   return 0;
 }
 
-void isr::sys_tick_irq()
+void isr::sys_tick()
 {
   // Increment timer counter every millisecond.
   delay::timer32::tick();
