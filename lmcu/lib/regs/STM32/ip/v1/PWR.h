@@ -12,8 +12,10 @@ namespace lmcu::device::ip::v1 {
 template<std::uintptr_t base>
 struct PWR
 {
+  static constexpr auto ip_ver = ip_version::_1;
+
   // Power control register
-  struct CR : reg<base + 0x0>
+  struct CR : reg<ip_ver, base + 0x0>
   {
     static constexpr typename CR::type
     // Low-power deepsleep (bits: 0)
@@ -55,7 +57,7 @@ struct PWR
     ;
   };
   // Power control/status register
-  struct CSR : reg<base + 0x4>
+  struct CSR : reg<ip_ver, base + 0x4>
   {
     static constexpr typename CSR::type
     // Wakeup flag (bits: 0)

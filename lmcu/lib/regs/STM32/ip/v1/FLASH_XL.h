@@ -12,8 +12,10 @@ namespace lmcu::device::ip::v1 {
 template<std::uintptr_t base>
 struct FLASH_XL
 {
+  static constexpr auto ip_ver = ip_version::_1;
+
   // FPEC key register2
-  struct KEYR2 : reg<base + 0x44>
+  struct KEYR2 : reg<ip_ver, base + 0x44>
   {
     static constexpr typename KEYR2::type
     // (bits: 31-0)
@@ -26,7 +28,7 @@ struct FLASH_XL
     ;
   };
   // Flash status register2
-  struct SR2 : reg<base + 0x4C>
+  struct SR2 : reg<ip_ver, base + 0x4C>
   {
     static constexpr typename SR2::type
     // Busy (bits: 0)
@@ -49,7 +51,7 @@ struct FLASH_XL
     ;
   };
   // Flash control register2
-  struct CR2 : reg<base + 0x50, 0x00000080>
+  struct CR2 : reg<ip_ver, base + 0x50, 0x00000080>
   {
     static constexpr typename CR2::type
     // Programming (bits: 0)
@@ -84,9 +86,9 @@ struct FLASH_XL
     ;
   };
   // Flash address register2
-  using AR2 = reg<base + 0x54>;
+  using AR2 = reg<ip_ver, base + 0x54>;
   // Flash access control register
-  struct ACR : reg<base + 0x0, 0x00000030>
+  struct ACR : reg<ip_ver, base + 0x0, 0x00000030>
   {
     static constexpr typename ACR::type
     // Latency (bits: 2-0)
@@ -111,7 +113,7 @@ struct FLASH_XL
     ;
   };
   // FPEC key register
-  struct KEYR : reg<base + 0x4>
+  struct KEYR : reg<ip_ver, base + 0x4>
   {
     static constexpr typename KEYR::type
     // (bits: 31-0)
@@ -124,9 +126,9 @@ struct FLASH_XL
     ;
   };
   // Flash OPTKEY register
-  using OPTKEYR = reg<base + 0x8>;
+  using OPTKEYR = reg<ip_ver, base + 0x8>;
   // Flash status register
-  struct SR : reg<base + 0xC>
+  struct SR : reg<ip_ver, base + 0xC>
   {
     static constexpr typename SR::type
     // Busy (bits: 0)
@@ -149,7 +151,7 @@ struct FLASH_XL
     ;
   };
   // Flash control register
-  struct CR : reg<base + 0x10, 0x00000080>
+  struct CR : reg<ip_ver, base + 0x10, 0x00000080>
   {
     static constexpr typename CR::type
     // Programming (bits: 0)
@@ -196,9 +198,9 @@ struct FLASH_XL
     ;
   };
   // Flash address register
-  using AR = reg<base + 0x14>;
+  using AR = reg<ip_ver, base + 0x14>;
   // Option byte register
-  struct OBR : reg<base + 0x1C>
+  struct OBR : reg<ip_ver, base + 0x1C>
   {
     static constexpr typename OBR::type
     // Option byte error (bits: 0)
@@ -225,7 +227,7 @@ struct FLASH_XL
     ;
   };
   // Write protection register
-  using WRPR = reg<base + 0x20, 0xFFFFFFFF>;
+  using WRPR = reg<ip_ver, base + 0x20, 0xFFFFFFFF>;
 }; // struct FLASH_XL
 
 } // namespace lmcu::device::ip::v1

@@ -1,7 +1,10 @@
 ## coding: utf-8
 #pragma once
 ${D.header}
-<% ns =  '::ip::v' + str(D.ver) if D.ver else '' %>\
+<%
+  ns     = '::ip::v' + str(D.ver) if D.ver else ''
+  ip_ver = '_' + str(D.ver) if D.ver else 'none'
+%>\
 namespace lmcu::device${ns} {
 
 // ------------------------------------------------------------------------------------------------
@@ -12,6 +15,8 @@ template<std::uintptr_t base>
 % endif
 struct ${E.name}
 {
+  static constexpr auto ip_ver = ip_version::${ip_ver};
+
   % if D.base:
   static constexpr std::uintptr_t base = ${D.base | addr32};
 
@@ -33,11 +38,11 @@ struct ${E.name}
 
   va = [(addr32(reg.reset_val), addr32(0)), (reg_count, 1), (reg_size, 32), (s_size, 0)]
 %>\
-    % if reg.desc:
-  // ${reg.desc | strip}
+    % if reg.desc or reg_count > 1:
+  // ${reg.desc | strip}${' (count: ' + str(reg_count) + ')' if reg_count > 1 else ''}
     % endif
     % if reg.fields:
-  struct ${reg_name} : reg<base + ${'0x%X' % reg.offset}${va | n,varargs}>
+  struct ${reg_name} : reg<ip_ver, base + ${'0x%X' % reg.offset}${va | n,varargs}>
   {
 <%  line = 0; fields_mask = 0 %>\
     static constexpr typename ${reg_name}::type
@@ -76,7 +81,7 @@ struct ${E.name}
     ;
   };
     % else:
-  using ${reg_name} = reg<base + ${'0x%X' % reg.offset}${va | n,varargs}>;
+  using ${reg_name} = reg<ip_ver, base + ${'0x%X' % reg.offset}${va | n,varargs}>;
     % endif
   % endfor
 }; // struct ${E.name}

@@ -12,8 +12,10 @@ namespace lmcu::device::ip::v1 {
 template<std::uintptr_t base>
 struct I2C
 {
+  static constexpr auto ip_ver = ip_version::_1;
+
   // Control register 1
-  struct CR1 : reg<base + 0x0>
+  struct CR1 : reg<ip_ver, base + 0x0>
   {
     static constexpr typename CR1::type
     // Peripheral enable (bits: 0)
@@ -76,7 +78,7 @@ struct I2C
     ;
   };
   // Control register 2
-  struct CR2 : reg<base + 0x4>
+  struct CR2 : reg<ip_ver, base + 0x4>
   {
     static constexpr typename CR2::type
     // Peripheral clock frequency (bits: 5-0)
@@ -106,7 +108,7 @@ struct I2C
     ;
   };
   // Own address register 1
-  struct OAR1 : reg<base + 0x8>
+  struct OAR1 : reg<ip_ver, base + 0x8>
   {
     static constexpr typename OAR1::type
     // Interface address (bits: 9-0)
@@ -120,7 +122,7 @@ struct I2C
     ;
   };
   // Own address register 2
-  struct OAR2 : reg<base + 0xC>
+  struct OAR2 : reg<ip_ver, base + 0xC>
   {
     static constexpr typename OAR2::type
     // Dual addressing mode enable (bits: 0)
@@ -134,7 +136,7 @@ struct I2C
     ;
   };
   // Data register
-  struct DR : reg<base + 0x10>
+  struct DR : reg<ip_ver, base + 0x10>
   {
     static constexpr typename DR::type
     // 8-bit data (bits: 7-0)
@@ -144,7 +146,7 @@ struct I2C
     ;
   };
   // Status register 1
-  struct SR1 : reg<base + 0x14>
+  struct SR1 : reg<ip_ver, base + 0x14>
   {
     static constexpr typename SR1::type
     // Start bit (Master mode) (bits: 0)
@@ -207,7 +209,7 @@ struct I2C
     ;
   };
   // Status register 2
-  struct SR2 : reg<base + 0x18>
+  struct SR2 : reg<ip_ver, base + 0x18>
   {
     static constexpr typename SR2::type
     // Master/slave (bits: 0)
@@ -245,7 +247,7 @@ struct I2C
     ;
   };
   // Clock control register
-  struct CCR : reg<base + 0x1C>
+  struct CCR : reg<ip_ver, base + 0x1C>
   {
     static constexpr typename CCR::type
     // Clock control register in Fm/Sm mode (Master mode) (bits: 11-0)
@@ -263,7 +265,7 @@ struct I2C
     ;
   };
   // TRISE register
-  struct TRISE : reg<base + 0x20, 0x00000002>
+  struct TRISE : reg<ip_ver, base + 0x20, 0x00000002>
   {
     static constexpr typename TRISE::type
     // Maximum rise time in Fm/Sm mode (Master mode) (bits: 5-0)

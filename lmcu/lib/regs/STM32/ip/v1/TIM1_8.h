@@ -12,8 +12,10 @@ namespace lmcu::device::ip::v1 {
 template<std::uintptr_t base>
 struct TIM1_8
 {
+  static constexpr auto ip_ver = ip_version::_1;
+
   // Control register 1
-  struct CR1 : reg<base + 0x0>
+  struct CR1 : reg<ip_ver, base + 0x0>
   {
     static constexpr typename CR1::type
     // Counter enable (bits: 0)
@@ -57,7 +59,7 @@ struct TIM1_8
     ;
   };
   // Control register 2
-  struct CR2 : reg<base + 0x4>
+  struct CR2 : reg<ip_ver, base + 0x4>
   {
     static constexpr typename CR2::type
     // Capture/compare preloaded control (bits: 0)
@@ -119,7 +121,7 @@ struct TIM1_8
     ;
   };
   // Slave mode control register
-  struct SMCR : reg<base + 0x8>
+  struct SMCR : reg<ip_ver, base + 0x8>
   {
     static constexpr typename SMCR::type
     // Slave mode selection (bits: 2-0)
@@ -186,7 +188,7 @@ struct TIM1_8
     ;
   };
   // DMA/interrupt enable register
-  struct DIER : reg<base + 0xC>
+  struct DIER : reg<ip_ver, base + 0xC>
   {
     static constexpr typename DIER::type
     // Update interrupt enable (bits: 0)
@@ -253,7 +255,7 @@ struct TIM1_8
     ;
   };
   // Status register
-  struct SR : reg<base + 0x10>
+  struct SR : reg<ip_ver, base + 0x10>
   {
     static constexpr typename SR::type
     // Update interrupt flag (bits: 0)
@@ -308,7 +310,7 @@ struct TIM1_8
     ;
   };
   // Event generation register
-  struct EGR : reg<base + 0x14>
+  struct EGR : reg<ip_ver, base + 0x14>
   {
     static constexpr typename EGR::type
     // Update generation (bits: 0)
@@ -347,7 +349,7 @@ struct TIM1_8
     ;
   };
   // Capture/compare mode register 1
-  struct CCMR1 : reg<base + 0x18>
+  struct CCMR1 : reg<ip_ver, base + 0x18>
   {
     static constexpr typename CCMR1::type
     // Capture/Compare 1 selection (bits: 1-0)
@@ -466,7 +468,7 @@ struct TIM1_8
     ;
   };
   // Capture/compare mode register 2
-  struct CCMR2 : reg<base + 0x1C>
+  struct CCMR2 : reg<ip_ver, base + 0x1C>
   {
     static constexpr typename CCMR2::type
     // Capture/Compare 3 selection (bits: 1-0)
@@ -585,7 +587,7 @@ struct TIM1_8
     ;
   };
   // Capture/compare mode register 2
-  struct CCER : reg<base + 0x20>
+  struct CCER : reg<ip_ver, base + 0x20>
   {
     static constexpr typename CCER::type
     // Capture/Compare y output enable (bits: 0)
@@ -648,23 +650,23 @@ struct TIM1_8
     ;
   };
   // Counter
-  using CNT = reg<base + 0x24>;
+  using CNT = reg<ip_ver, base + 0x24>;
   // Prescaler
-  using PSC = reg<base + 0x28>;
+  using PSC = reg<ip_ver, base + 0x28>;
   // Auto-reload register
-  using ARR = reg<base + 0x2C, 0x0000FFFF>;
+  using ARR = reg<ip_ver, base + 0x2C, 0x0000FFFF>;
   // Repetition counter register
-  using RCR = reg<base + 0x30>;
+  using RCR = reg<ip_ver, base + 0x30>;
   // Capture/compare register 1
-  using CCR1 = reg<base + 0x34>;
+  using CCR1 = reg<ip_ver, base + 0x34>;
   // Capture/compare register 2
-  using CCR2 = reg<base + 0x38>;
+  using CCR2 = reg<ip_ver, base + 0x38>;
   // Capture/compare register 3
-  using CCR3 = reg<base + 0x3C>;
+  using CCR3 = reg<ip_ver, base + 0x3C>;
   // Capture/compare register 4
-  using CCR4 = reg<base + 0x40>;
+  using CCR4 = reg<ip_ver, base + 0x40>;
   // Break and dead-time register
-  struct BDTR : reg<base + 0x44>
+  struct BDTR : reg<ip_ver, base + 0x44>
   {
     static constexpr typename BDTR::type
     // Dead-time generator setup (bits: 7-0)
@@ -705,7 +707,7 @@ struct TIM1_8
     ;
   };
   // DMA control register
-  struct DCR : reg<base + 0x48>
+  struct DCR : reg<ip_ver, base + 0x48>
   {
     static constexpr typename DCR::type
     // DMA base address (bits: 4-0)
@@ -718,7 +720,7 @@ struct TIM1_8
     ;
   };
   // DMA address for full transfer
-  using DMAR = reg<base + 0x4C>;
+  using DMAR = reg<ip_ver, base + 0x4C>;
 }; // struct TIM1_8
 
 } // namespace lmcu::device::ip::v1

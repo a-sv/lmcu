@@ -12,8 +12,10 @@ namespace lmcu::device::ip::v1 {
 template<std::uintptr_t base>
 struct RCC_CONNECTIVITY
 {
+  static constexpr auto ip_ver = ip_version::_1;
+
   // Clock control register
-  struct CR : reg<base + 0x0, 0x00000083>
+  struct CR : reg<ip_ver, base + 0x0, 0x00000083>
   {
     static constexpr typename CR::type
     // PLL clock ready flag (bits: 25)
@@ -74,7 +76,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // Clock configuration register
-  struct CFGR : reg<base + 0x4>
+  struct CFGR : reg<ip_ver, base + 0x4>
   {
     static constexpr typename CFGR::type
     // LSB of division factor PREDIV1 (bits: 17)
@@ -162,7 +164,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // Clock interrupt register
-  struct CIR : reg<base + 0x8>
+  struct CIR : reg<ip_ver, base + 0x8>
   {
     static constexpr typename CIR::type
     // PLL2 Ready Interrupt flag (bits: 5)
@@ -261,7 +263,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // APB2 peripheral reset register
-  struct APB2RSTR : reg<base + 0xC>
+  struct APB2RSTR : reg<ip_ver, base + 0xC>
   {
     static constexpr typename APB2RSTR::type
     // Alternate function IO reset (bits: 0)
@@ -312,7 +314,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // APB1 peripheral reset register
-  struct APB1RSTR : reg<base + 0x10>
+  struct APB1RSTR : reg<ip_ver, base + 0x10>
   {
     static constexpr typename APB1RSTR::type
     // CAN2 reset (bits: 26)
@@ -399,7 +401,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // AHB peripheral clock enable register
-  struct AHBENR : reg<base + 0x14, 0x00000014>
+  struct AHBENR : reg<ip_ver, base + 0x14, 0x00000014>
   {
     static constexpr typename AHBENR::type
     // USB OTG FS clock enable (bits: 12)
@@ -442,7 +444,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // APB2 peripheral clock enable register
-  struct APB2ENR : reg<base + 0x18>
+  struct APB2ENR : reg<ip_ver, base + 0x18>
   {
     static constexpr typename APB2ENR::type
     // Alternate function IO clock enable (bits: 0)
@@ -493,7 +495,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // APB1 peripheral clock enable register
-  struct APB1ENR : reg<base + 0x1C>
+  struct APB1ENR : reg<ip_ver, base + 0x1C>
   {
     static constexpr typename APB1ENR::type
     // CAN2 clock enable (bits: 26)
@@ -580,7 +582,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // AHB peripheral clock reset register
-  struct AHBRSTR : reg<base + 0x28>
+  struct AHBRSTR : reg<ip_ver, base + 0x28>
   {
     static constexpr typename AHBRSTR::type
     // USB OTG FS reset (bits: 12)
@@ -595,7 +597,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // Clock configuration register2
-  struct CFGR2 : reg<base + 0x2C>
+  struct CFGR2 : reg<ip_ver, base + 0x2C>
   {
     static constexpr typename CFGR2::type
     // PREDIV1 division factor (bits: 3-0)
@@ -676,7 +678,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // Backup domain control register
-  struct BDCR : reg<base + 0x20>
+  struct BDCR : reg<ip_ver, base + 0x20>
   {
     static constexpr typename BDCR::type
     // External low-speed oscillator enable (bits: 0)
@@ -710,7 +712,7 @@ struct RCC_CONNECTIVITY
     ;
   };
   // Control/status register
-  struct CSR : reg<base + 0x24, 0x0C000000>
+  struct CSR : reg<ip_ver, base + 0x24, 0x0C000000>
   {
     static constexpr typename CSR::type
     // Internal low-speed oscillator enable (bits: 0)

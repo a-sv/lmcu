@@ -12,8 +12,10 @@ namespace lmcu::device::ip::v1 {
 template<std::uintptr_t base>
 struct AFIO
 {
+  static constexpr auto ip_ver = ip_version::_1;
+
   // Event control register
-  struct EVCR : reg<base + 0x0>
+  struct EVCR : reg<ip_ver, base + 0x0>
   {
     static constexpr typename EVCR::type
     // Select the pin used to output the Cortex® EVENTOUT signal. (bits: 3-0)
@@ -51,7 +53,7 @@ struct AFIO
     ;
   };
   // AF remap and debug I/O configuration register
-  struct MAPR : reg<base + 0x4>
+  struct MAPR : reg<ip_ver, base + 0x4>
   {
     static constexpr typename MAPR::type
     // SPI1 remapping (bits: 0)
@@ -140,7 +142,7 @@ struct AFIO
     ;
   };
   // External interrupt configuration register 1
-  struct EXTICR1 : reg<base + 0x8>
+  struct EXTICR1 : reg<ip_ver, base + 0x8>
   {
     static constexpr typename EXTICR1::type
     // EXTI x configuration (bits: 3-0)
@@ -187,7 +189,7 @@ struct AFIO
     ;
   };
   // External interrupt configuration register 2
-  struct EXTICR2 : reg<base + 0xC>
+  struct EXTICR2 : reg<ip_ver, base + 0xC>
   {
     static constexpr typename EXTICR2::type
     // EXTI x configuration (bits: 3-0)
@@ -234,7 +236,7 @@ struct AFIO
     ;
   };
   // External interrupt configuration register 3
-  struct EXTICR3 : reg<base + 0x10>
+  struct EXTICR3 : reg<ip_ver, base + 0x10>
   {
     static constexpr typename EXTICR3::type
     // EXTI x configuration (bits: 3-0)
@@ -281,7 +283,7 @@ struct AFIO
     ;
   };
   // External interrupt configuration register 4
-  struct EXTICR4 : reg<base + 0x14>
+  struct EXTICR4 : reg<ip_ver, base + 0x14>
   {
     static constexpr typename EXTICR4::type
     // EXTI x configuration (bits: 3-0)
@@ -328,7 +330,7 @@ struct AFIO
     ;
   };
   // AF remap and debug I/O configuration register 2
-  struct MAPR2 : reg<base + 0x1C>
+  struct MAPR2 : reg<ip_ver, base + 0x1C>
   {
     static constexpr typename MAPR2::type
     // TIM9 remapping (bits: 5)

@@ -14,6 +14,12 @@ enum class arch
 
 enum class endian { little, big, selectable, other };
 
+enum class ip_version
+{
+  none,
+  _1
+};
+
 template<uint32_t _sz>
 struct reg_size { };
 
@@ -50,6 +56,8 @@ struct reg_size<64>
 };
 
 template<
+  // IP version
+  ip_version _ip_ver,
   // register base address
   std::uintptr_t _base,
   // register reset value
@@ -64,6 +72,10 @@ template<
 struct reg
 {
   using type = typename reg_size<_size>::type;
+
+  static constexpr ip_version
+  ip_ver = _ip_ver
+  ;
 
   static constexpr type
   maxval = reg_size<_size>::maxval,

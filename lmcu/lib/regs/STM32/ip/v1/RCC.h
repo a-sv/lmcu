@@ -12,8 +12,10 @@ namespace lmcu::device::ip::v1 {
 template<std::uintptr_t base>
 struct RCC
 {
+  static constexpr auto ip_ver = ip_version::_1;
+
   // Clock control register
-  struct CR : reg<base + 0x0, 0x00000083>
+  struct CR : reg<ip_ver, base + 0x0, 0x00000083>
   {
     static constexpr typename CR::type
     // Internal High Speed clock enable (bits: 0)
@@ -58,7 +60,7 @@ struct RCC
     ;
   };
   // Clock configuration register
-  struct CFGR : reg<base + 0x4>
+  struct CFGR : reg<ip_ver, base + 0x4>
   {
     static constexpr typename CFGR::type
     // System clock switch (bits: 1-0)
@@ -150,7 +152,7 @@ struct RCC
     ;
   };
   // Clock interrupt register
-  struct CIR : reg<base + 0x8>
+  struct CIR : reg<ip_ver, base + 0x8>
   {
     static constexpr typename CIR::type
     // LSI ready interrupt flag (bits: 0)
@@ -225,7 +227,7 @@ struct RCC
     ;
   };
   // APB2 peripheral reset register
-  struct APB2RSTR : reg<base + 0xC>
+  struct APB2RSTR : reg<ip_ver, base + 0xC>
   {
     static constexpr typename APB2RSTR::type
     // Alternate function IO reset (bits: 0)
@@ -304,7 +306,7 @@ struct RCC
     ;
   };
   // APB1 peripheral reset register
-  struct APB1RSTR : reg<base + 0x10>
+  struct APB1RSTR : reg<ip_ver, base + 0x10>
   {
     static constexpr typename APB1RSTR::type
     // TIM2 timer reset (bits: 0)
@@ -403,7 +405,7 @@ struct RCC
     ;
   };
   // AHB peripheral clock enable register
-  struct AHBENR : reg<base + 0x14, 0x00000014>
+  struct AHBENR : reg<ip_ver, base + 0x14, 0x00000014>
   {
     static constexpr typename AHBENR::type
     // DMA1 clock enable (bits: 0)
@@ -438,7 +440,7 @@ struct RCC
     ;
   };
   // APB2 peripheral clock enable register
-  struct APB2ENR : reg<base + 0x18>
+  struct APB2ENR : reg<ip_ver, base + 0x18>
   {
     static constexpr typename APB2ENR::type
     // Alternate function IO clock enable (bits: 0)
@@ -517,7 +519,7 @@ struct RCC
     ;
   };
   // APB1 peripheral clock enable register
-  struct APB1ENR : reg<base + 0x1C>
+  struct APB1ENR : reg<ip_ver, base + 0x1C>
   {
     static constexpr typename APB1ENR::type
     // TIM2 timer clock enable (bits: 0)
@@ -616,7 +618,7 @@ struct RCC
     ;
   };
   // Backup domain control register
-  struct BDCR : reg<base + 0x20>
+  struct BDCR : reg<ip_ver, base + 0x20>
   {
     static constexpr typename BDCR::type
     // External low-speed oscillator enable (bits: 0)
@@ -650,7 +652,7 @@ struct RCC
     ;
   };
   // Control/status register
-  struct CSR : reg<base + 0x24, 0x0C000000>
+  struct CSR : reg<ip_ver, base + 0x24, 0x0C000000>
   {
     static constexpr typename CSR::type
     // Internal low-speed oscillator enable (bits: 0)

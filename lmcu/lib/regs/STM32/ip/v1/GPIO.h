@@ -12,8 +12,10 @@ namespace lmcu::device::ip::v1 {
 template<std::uintptr_t base>
 struct GPIO
 {
+  static constexpr auto ip_ver = ip_version::_1;
+
   // Port configuration register low
-  struct CRL : reg<base + 0x0, 0x44444444>
+  struct CRL : reg<ip_ver, base + 0x0, 0x44444444>
   {
     static constexpr typename CRL::type
     // Port x mode bits (bits: 1-0)
@@ -100,7 +102,7 @@ struct GPIO
     ;
   };
   // Port configuration register high
-  struct CRH : reg<base + 0x4, 0x44444444>
+  struct CRH : reg<ip_ver, base + 0x4, 0x44444444>
   {
     static constexpr typename CRH::type
     // Port x mode bits (bits: 1-0)
@@ -187,7 +189,7 @@ struct GPIO
     ;
   };
   // Port input data register
-  struct IDR : reg<base + 0x8>
+  struct IDR : reg<ip_ver, base + 0x8>
   {
     static constexpr typename IDR::type
     // Port input data (bits: 0)
@@ -258,7 +260,7 @@ struct GPIO
     ;
   };
   // Port output data register
-  struct ODR : reg<base + 0xC>
+  struct ODR : reg<ip_ver, base + 0xC>
   {
     static constexpr typename ODR::type
     // Port output data (bits: 0)
@@ -329,7 +331,7 @@ struct GPIO
     ;
   };
   // Port bit set/reset register
-  struct BSRR : reg<base + 0x10>
+  struct BSRR : reg<ip_ver, base + 0x10>
   {
     static constexpr typename BSRR::type
     // Port x Set bit (bits: 0)
@@ -464,7 +466,7 @@ struct GPIO
     ;
   };
   // Port bit reset register
-  struct BRR : reg<base + 0x14>
+  struct BRR : reg<ip_ver, base + 0x14>
   {
     static constexpr typename BRR::type
     // Port x Reset bit (bits: 0)
@@ -535,7 +537,7 @@ struct GPIO
     ;
   };
   // Port configuration lock register
-  struct LCKR : reg<base + 0x18>
+  struct LCKR : reg<ip_ver, base + 0x18>
   {
     static constexpr typename LCKR::type
     // Port x Lock bit y (y = 0 .. 15) (bits: 0)

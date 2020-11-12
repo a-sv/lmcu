@@ -11,10 +11,12 @@ namespace lmcu::device {
 // ------------------------------------------------------------------------------------------------
 struct NVIC
 {
+  static constexpr auto ip_ver = ip_version::none;
+
   static constexpr std::uintptr_t base = 0xE000E000;
 
   // Interrupt Controller Type Register
-  struct ICTR : reg<base + 0x4>
+  struct ICTR : reg<ip_ver, base + 0x4>
   {
     static constexpr typename ICTR::type
     // Number of interrupt lines that the NVIC supports (bits: 4-0)
@@ -24,7 +26,7 @@ struct NVIC
     ;
   };
   // SysTick Control and Status Register
-  struct STCSR : reg<base + 0x10>
+  struct STCSR : reg<ip_ver, base + 0x10>
   {
     static constexpr typename STCSR::type
     // 1 = counter operates in a multi-shot way. 0 = counter disabled. (bits: 0)
@@ -47,7 +49,7 @@ struct NVIC
     ;
   };
   // SysTick Reload Value Register
-  struct STRVR : reg<base + 0x14>
+  struct STRVR : reg<ip_ver, base + 0x14>
   {
     static constexpr typename STRVR::type
     // Value to load into the SysTick Current Value Register when the counter reaches 0. (bits: 23-0)
@@ -57,7 +59,7 @@ struct NVIC
     ;
   };
   // SysTick Current Value Register
-  struct STCVR : reg<base + 0x18>
+  struct STCVR : reg<ip_ver, base + 0x18>
   {
     static constexpr typename STCVR::type
     // Current value at the time the register is accessed. (bits: 23-0)
@@ -67,7 +69,7 @@ struct NVIC
     ;
   };
   // SysTick Calibration Value Register
-  struct STCALIBR : reg<base + 0x1C>
+  struct STCALIBR : reg<ip_ver, base + 0x1C>
   {
     static constexpr typename STCALIBR::type
     // This value is the Reload value to use for 10ms timing. (bits: 23-0)
@@ -84,8 +86,8 @@ struct NVIC
     ,STCALIBR_MASK = 0xC0FFFFFF
     ;
   };
-  // Interrupt Set-Enable Register
-  struct ISER : reg<base + 0x100, 0x00000000, 8>
+  // Interrupt Set-Enable Register (count: 8)
+  struct ISER : reg<ip_ver, base + 0x100, 0x00000000, 8>
   {
     static constexpr typename ISER::type
     // Interrupt set enable bits (bits: 31-0)
@@ -94,8 +96,8 @@ struct NVIC
     ,ISER_MASK = 0xFFFFFFFF
     ;
   };
-  // Interrupt Clear-Enable Register
-  struct ICER : reg<base + 0x180, 0x00000000, 8>
+  // Interrupt Clear-Enable Register (count: 8)
+  struct ICER : reg<ip_ver, base + 0x180, 0x00000000, 8>
   {
     static constexpr typename ICER::type
     // Interrupt clear-enable bits (bits: 31-0)
@@ -104,8 +106,8 @@ struct NVIC
     ,ICER_MASK = 0xFFFFFFFF
     ;
   };
-  // Interrupt Set-Pending Register
-  struct ISPR : reg<base + 0x200, 0x00000000, 8>
+  // Interrupt Set-Pending Register (count: 8)
+  struct ISPR : reg<ip_ver, base + 0x200, 0x00000000, 8>
   {
     static constexpr typename ISPR::type
     // Interrupt set-pending bits (bits: 31-0)
@@ -114,8 +116,8 @@ struct NVIC
     ,ISPR_MASK = 0xFFFFFFFF
     ;
   };
-  // Interrupt Clear-Pending Register
-  struct ICPR : reg<base + 0x280, 0x00000000, 8>
+  // Interrupt Clear-Pending Register (count: 8)
+  struct ICPR : reg<ip_ver, base + 0x280, 0x00000000, 8>
   {
     static constexpr typename ICPR::type
     // Interrupt set-pending bits (bits: 31-0)
@@ -124,8 +126,8 @@ struct NVIC
     ,ICPR_MASK = 0xFFFFFFFF
     ;
   };
-  // Interrupt Active Bit Register
-  struct IABR : reg<base + 0x300, 0x00000000, 8>
+  // Interrupt Active Bit Register (count: 8)
+  struct IABR : reg<ip_ver, base + 0x300, 0x00000000, 8>
   {
     static constexpr typename IABR::type
     // Interrupt active flags (bits: 31-0)
@@ -134,8 +136,8 @@ struct NVIC
     ,IABR_MASK = 0xFFFFFFFF
     ;
   };
-  // Interrupt Priority Register
-  struct IPR : reg<base + 0x400, 0x00000000, 240, 8>
+  // Interrupt Priority Register (count: 240)
+  struct IPR : reg<ip_ver, base + 0x400, 0x00000000, 240, 8>
   {
     static constexpr typename IPR::type
     // Priority of interrupt (bits: 7-0)
@@ -145,7 +147,7 @@ struct NVIC
     ;
   };
   // CPU ID Base Register
-  struct CPUIDBR : reg<base + 0xD00, 0x411FC231>
+  struct CPUIDBR : reg<ip_ver, base + 0xD00, 0x411FC231>
   {
     static constexpr typename CPUIDBR::type
     // Implementation defined revision number. (bits: 3-0)
@@ -167,7 +169,7 @@ struct NVIC
     ;
   };
   // Interrupt Control State Register
-  struct ICSR : reg<base + 0xD04>
+  struct ICSR : reg<ip_ver, base + 0xD04>
   {
     static constexpr typename ICSR::type
     // Active ISR number field. (bits: 8-0)
@@ -212,7 +214,7 @@ struct NVIC
     ;
   };
   // Vector Table Offset Register
-  struct VTOR : reg<base + 0xD08>
+  struct VTOR : reg<ip_ver, base + 0xD08>
   {
     static constexpr typename VTOR::type
     // Vector table base offset field. Contains the offset of the table base from the bottom of the SRAM or CODE space. (bits: 28-7)
@@ -226,7 +228,7 @@ struct NVIC
     ;
   };
   // Application Interrupt and Reset Control Register
-  struct AIRCR : reg<base + 0xD0C>
+  struct AIRCR : reg<ip_ver, base + 0xD0C>
   {
     static constexpr typename AIRCR::type
     // System Reset bit. (bits: 0)
@@ -258,7 +260,7 @@ struct NVIC
     ;
   };
   // System Control Register
-  struct SCR : reg<base + 0xD10>
+  struct SCR : reg<ip_ver, base + 0xD10>
   {
     static constexpr typename SCR::type
     // Sleep on exit when returning from Handler mode to Thread mode. (bits: 1)
@@ -277,7 +279,7 @@ struct NVIC
     ;
   };
   // Configuration Control Register
-  struct CCR : reg<base + 0xD14>
+  struct CCR : reg<ip_ver, base + 0xD14>
   {
     static constexpr typename CCR::type
     // When 0, default, It is only possible to enter Thread mode when returning from the last exception. When set to 1, Thread mode can be entered from any level in Handler mode by controlled return value. (bits: 0)
@@ -307,8 +309,8 @@ struct NVIC
     ,CCR_MASK = 0x0000031B
     ;
   };
-  // System Handler Priority Register
-  struct SHPR : reg<base + 0xD18, 0x00000000, 12, 8>
+  // System Handler Priority Register (count: 12)
+  struct SHPR : reg<ip_ver, base + 0xD18, 0x00000000, 12, 8>
   {
     static constexpr typename SHPR::type
     // Priority of system handler. (bits: 7-0)
@@ -318,7 +320,7 @@ struct NVIC
     ;
   };
   // System Handler Control and State Register
-  struct SHCSR : reg<base + 0xD24>
+  struct SHCSR : reg<ip_ver, base + 0xD24>
   {
     static constexpr typename SHCSR::type
     // Reads as 1 if MemManage is active. (bits: 0)
@@ -381,7 +383,7 @@ struct NVIC
     ;
   };
   // Memory Manage Fault Status Register
-  struct MMFSR : reg<base + 0xD28, 0x00000000, 1, 8>
+  struct MMFSR : reg<ip_ver, base + 0xD28, 0x00000000, 1, 8>
   {
     static constexpr typename MMFSR::type
     // Instruction access violation flag. (bits: 0)
@@ -408,7 +410,7 @@ struct NVIC
     ;
   };
   // Bus Fault Status Register
-  struct BFSR : reg<base + 0xD29, 0x00000000, 1, 8>
+  struct BFSR : reg<ip_ver, base + 0xD29, 0x00000000, 1, 8>
   {
     static constexpr typename BFSR::type
     // Instruction bus error flag. (bits: 0)
@@ -439,7 +441,7 @@ struct NVIC
     ;
   };
   // Usage Fault Status Register
-  struct UFSR : reg<base + 0xD2B, 0x00000000, 1, 16>
+  struct UFSR : reg<ip_ver, base + 0xD2B, 0x00000000, 1, 16>
   {
     static constexpr typename UFSR::type
     // The UNDEFINSTR flag is set when the processor attempts to execute an undefined instruction. (bits: 0)
@@ -470,7 +472,7 @@ struct NVIC
     ;
   };
   // Hard Fault Status Register
-  struct HFSR : reg<base + 0xD2C>
+  struct HFSR : reg<ip_ver, base + 0xD2C>
   {
     static constexpr typename HFSR::type
     // This bit is set if there is a fault because of vector table read on exception processing (Bus Fault). (bits: 1)
@@ -489,7 +491,7 @@ struct NVIC
     ;
   };
   // Debug Fault Status Register
-  struct DFSR : reg<base + 0xD30>
+  struct DFSR : reg<ip_ver, base + 0xD30>
   {
     static constexpr typename DFSR::type
     // Halt request flag (bits: 0)
@@ -516,13 +518,13 @@ struct NVIC
     ;
   };
   // Memory Manage Fault Address Register
-  using MMFAR = reg<base + 0xD34>;
+  using MMFAR = reg<ip_ver, base + 0xD34>;
   // Bus Fault Address Register
-  using BFAR = reg<base + 0xD38>;
+  using BFAR = reg<ip_ver, base + 0xD38>;
   // Auxiliary Fault Status Register
-  using AFSR = reg<base + 0xD3C>;
+  using AFSR = reg<ip_ver, base + 0xD3C>;
   // Software Trigger Interrupt Register
-  struct STIR : reg<base + 0xF00>
+  struct STIR : reg<ip_ver, base + 0xF00>
   {
     static constexpr typename STIR::type
     // Interrupt ID field. (bits: 8-0)
