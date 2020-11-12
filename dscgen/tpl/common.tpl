@@ -14,6 +14,7 @@ enum class arch
 
 enum class endian { little, big, selectable, other };
 
+// Internal peripheral version
 enum class ip_version
 {
   none,

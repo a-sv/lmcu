@@ -31,7 +31,7 @@ struct config
 {
   static constexpr auto dev_class = lmcu::dev_class::i2c;
 
-  static constexpr auto ip_version = lmcu::ip_version::_1;
+  static constexpr auto ip_ver = device::ip_version::_1;
 
   static constexpr auto id = option::get<i2c::id, _args...>();
 

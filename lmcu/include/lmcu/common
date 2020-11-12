@@ -3,7 +3,7 @@
 #include <cstddef>
 
 #define lmcu_inline __attribute__((always_inline)) inline
-#define lmcu_static_inline __attribute__((always_inline)) static inline
+#define lmcu_static_inline [[maybe_unused]] __attribute__((always_inline)) static inline
 
 #include "../../lib/error.h"
 #include "../../lib/defer.h"
@@ -11,4 +11,3 @@
 #include "../../lib/option.h"
 #include "../../lib/units.h"
 #include "../../lib/dev_class.h"
-#include "../../lib/ip_version.h"

@@ -39,7 +39,7 @@ struct pin
 {
   static constexpr auto dev_class = lmcu::dev_class::gpio_pin;
 
-  static constexpr auto ip_version = lmcu::ip_version::_1;
+  static constexpr auto ip_ver = device::ip_version::_1;
 
   static constexpr auto port = option::get<gpio::port, _args...>();
 

@@ -130,7 +130,7 @@ struct config
 {
   static constexpr auto dev_class = lmcu::dev_class::adc;
 
-  static constexpr auto ip_version = lmcu::ip_version::_1;
+  static constexpr auto ip_ver = device::ip_version::_1;
 
   static constexpr auto id = option::get<adc::id, _args...>();
 
@@ -266,7 +266,7 @@ struct rchanel_config
 {
   static constexpr auto dev_class = lmcu::dev_class::adc_regular_channel;
 
-  static constexpr auto ip_version = lmcu::ip_version::_1;
+  static constexpr auto ip_ver = device::ip_version::_1;
 
   static constexpr auto id = option::get<adc::id, _args...>();
   // Channel number
@@ -291,7 +291,7 @@ struct jchanel_config
 {
   static constexpr auto dev_class = lmcu::dev_class::adc_injected_channel;
 
-  static constexpr auto ip_version = lmcu::ip_version::_1;
+  static constexpr auto ip_ver = device::ip_version::_1;
 
   static constexpr auto id = option::get<adc::id, _args...>();
   // Channel number
