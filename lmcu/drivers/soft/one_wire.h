@@ -60,7 +60,7 @@ namespace detail {
 // ------------------------------------------------------------------------------------------------
 
 template<typename _cfg>
-static io::result rx_bit(bool &b)
+static int rx_bit(bool &b)
 {
   delay::dwt::timer t;
 
@@ -81,15 +81,15 @@ static io::result rx_bit(bool &b)
 
   t.start<delay::units::us>(_cfg::rec_time);
   while(!gpio::read<dq_rx_pin>()) {
-    if(t.expired()) { return io::result::error; }
+    if(t.expired()) { return etimedout; }
   }
   t.wait();
 
-  return io::result::success;
+  return success;
 }
 
 template<typename _cfg>
-static io::result tx_bit(bool b)
+static int tx_bit(bool b)
 {
   using dq_tx_pin = typename _cfg::dq_tx_pin;
   using dq_rx_pin = typename _cfg::dq_rx_pin;
@@ -105,7 +105,7 @@ static io::result tx_bit(bool b)
 
     t.start<delay::units::us>(_cfg::time_slot - _cfg::min_low_time);
     while(!gpio::read<dq_rx_pin>()) {
-      if(t.expired()) { return io::result::error; }
+      if(t.expired()) { return etimedout; }
     }
     t.wait();
   }
@@ -116,11 +116,11 @@ static io::result tx_bit(bool b)
 
   t.start<delay::units::us>(_cfg::rec_time);
   while(!gpio::read<dq_rx_pin>()) {
-    if(t.expired()) { return io::result::error; }
+    if(t.expired()) { return etimedout; }
   }
   t.wait();
 
-  return io::result::success;
+  return success;
 }
 
 template<typename _cfg>
@@ -194,18 +194,18 @@ static inline bool check_rom(const uint8_t rom[8])
  * @param  t     - timeout
  */
 template<typename _cfg, typename _data>
-io::result rx(_data&& data, const delay::expirable &t)
+int rx(_data&& data, const delay::expirable &t)
 {
   data = 0;
 
   for(uint_fast8_t n = 0; n < (sizeof(_data) * 8); n++) {
-    if(t.expired()) { return io::result::busy; }
+    if(t.expired()) { return etimedout; }
     bool b;
-    if(auto r = detail::rx_bit<_cfg>(b); r != io::result::success) { return r; }
+    if(auto r = detail::rx_bit<_cfg>(b); r != success) { return r; }
     data |= static_cast<std::remove_reference_t<_data>>(b) << n;
   }
 
-  return io::result::success;
+  return success;
 }
 
 /**
@@ -218,15 +218,15 @@ io::result rx(_data&& data, const delay::expirable &t)
  * @param  t     - timeout
  */
 template<typename _cfg, typename _data>
-io::result tx(_data data, const delay::expirable &t)
+int tx(_data data, const delay::expirable &t)
 {
   for(uint_fast8_t n = 0; n < (sizeof(_data) * 8); n++) {
-    if(t.expired()) { return io::result::busy; }
-    if(auto r = detail::tx_bit<_cfg>((data & 1) != 0); r != io::result::success) { return r; }
+    if(t.expired()) { return etimedout; }
+    if(auto r = detail::tx_bit<_cfg>((data & 1) != 0); r != success) { return r; }
     data >>= 1;
   }
 
-  return io::result::success;
+  return success;
 }
 
 /**
@@ -239,15 +239,15 @@ io::result tx(_data data, const delay::expirable &t)
  * @param  t    - timeout
  */
 template<typename _cfg>
-io::result read(void *data, uint32_t sz, const delay::expirable &t)
+int read(void *data, uint32_t sz, const delay::expirable &t)
 {
   auto p = static_cast<uint8_t*>(data), end = p + sz;
 
   for(; p < end; ++p) {
-    if(auto r = rx<_cfg>(*p, t); r != io::result::success) { return r; }
+    if(auto r = rx<_cfg>(*p, t); r != success) { return r; }
   }
 
-  return io::result::success;
+  return success;
 }
 
 /**
@@ -260,15 +260,15 @@ io::result read(void *data, uint32_t sz, const delay::expirable &t)
  * @param  t    - timeout
  */
 template<typename _cfg>
-io::result write(const void *data, uint32_t sz, const delay::expirable &t)
+int write(const void *data, uint32_t sz, const delay::expirable &t)
 {
   auto p = static_cast<const uint8_t*>(data), end = p + sz;
 
   for(; p < end; ++p) {
-    if(auto r = tx<_cfg>(*p, t); r != io::result::success) { return r; }
+    if(auto r = tx<_cfg>(*p, t); r != success) { return r; }
   }
 
-  return io::result::success;
+  return success;
 }
 
 /**
@@ -281,15 +281,15 @@ io::result write(const void *data, uint32_t sz, const delay::expirable &t)
  * @param  t    - timeout
  */
 template<typename _cfg>
-io::result read_rom(uint8_t rom[8], const delay::expirable &t)
+int read_rom(uint8_t rom[8], const delay::expirable &t)
 {
   constexpr uint8_t read_rom_cmd = 0x33;
 
-  if(!detail::presence<_cfg>()) { return io::result::error; }
-  if(auto r = tx<_cfg>(read_rom_cmd, t); r != io::result::success) { return r; }
-  if(auto r = read<_cfg>(rom, 8, t); r != io::result::success) { return r; }
+  if(!detail::presence<_cfg>()) { return eio; }
+  if(auto r = tx<_cfg>(read_rom_cmd, t); r != success) { return r; }
+  if(auto r = read<_cfg>(rom, 8, t); r != success) { return r; }
 
-  return detail::check_rom(rom)? io::result::success : io::result::error;
+  return detail::check_rom(rom)? success : eio;
 }
 
 /**
@@ -302,7 +302,7 @@ io::result read_rom(uint8_t rom[8], const delay::expirable &t)
  * @param  t         - timeout
  */
 template<typename _cfg, bool _alarm, typename _rom_found>
-io::result search(_rom_found&& rom_found, const delay::expirable &t)
+int search(_rom_found&& rom_found, const delay::expirable &t)
 {
   class rom_id
   {
@@ -336,21 +336,19 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
   while(!done_flag) {
     uint_fast8_t bit_index = 1, discrepancy_marker = 0;
 
-    if(!detail::presence<_cfg>()) { return io::result::error; }
-    if(auto r = tx<_cfg>(search_rom_cmd, t); r != io::result::success) { return r; }
+    if(!detail::presence<_cfg>()) { return eio; }
+    if(auto r = tx<_cfg>(search_rom_cmd, t); r != success) { return r; }
 
     do {
-      if(t.expired()) { return io::result::busy; }
+      if(t.expired()) { return etimedout; }
 
       bool bit_a, bit_b;
 
-      if(
-        detail::rx_bit<_cfg>(bit_a) != io::result::success ||
-        detail::rx_bit<_cfg>(bit_b) != io::result::success
-      ) { return io::result::error; }
+      if(auto r = detail::rx_bit<_cfg>(bit_a); r != success) { return r; }
+      if(auto r = detail::rx_bit<_cfg>(bit_b); r != success) { return r; }
 
       if(bit_a == bit_b) {
-        if(bit_a) { return io::result::error; }
+        if(bit_a) { return eio; }
 
         if(bit_index == last_discrepancy) {
           rom_bit = true;
@@ -370,7 +368,7 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
       }
 
       rom_id.set(bit_index - 1, rom_bit);
-      if(detail::tx_bit<_cfg>(rom_bit) != io::result::success) { return io::result::error; }
+      if(auto r = detail::tx_bit<_cfg>(rom_bit); r != success) { return r; }
     } while(++bit_index <= 64);
 
     if(rom_id.is_valid()) {
@@ -383,7 +381,7 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
     }
   }
 
-  return io::result::success;
+  return success;
 }
 
 /**
@@ -395,15 +393,15 @@ io::result search(_rom_found&& rom_found, const delay::expirable &t)
  * @param  t    - timeout
  */
 template<typename _cfg>
-io::result select(const uint8_t rom[8], const delay::expirable &t)
+int select(const uint8_t rom[8], const delay::expirable &t)
 {
   constexpr uint8_t match_rom_cmd = 0x55;
 
-  if(!detail::presence<_cfg>()) { return io::result::error; }
-  if(auto r = tx<_cfg>(match_rom_cmd, t); r != io::result::success) { return r; }
-  if(auto r = write<_cfg>(rom, 8, t); r != io::result::success) { return r; }
+  if(!detail::presence<_cfg>()) { return eio; }
+  if(auto r = tx<_cfg>(match_rom_cmd, t); r != success) { return r; }
+  if(auto r = write<_cfg>(rom, 8, t); r != success) { return r; }
 
-  return io::result::success;
+  return success;
 }
 
 /**
@@ -413,14 +411,14 @@ io::result select(const uint8_t rom[8], const delay::expirable &t)
  * @param  t    - timeout
  */
 template<typename _cfg>
-io::result select_all(const delay::expirable &t)
+int select_all(const delay::expirable &t)
 {
   constexpr uint8_t skip_rom_cmd = 0xCC;
 
-  if(!detail::presence<_cfg>()) { return io::result::error; }
-  if(auto r = tx<_cfg>(skip_rom_cmd, t); r != io::result::success) { return r; }
+  if(!detail::presence<_cfg>()) { return eio; }
+  if(auto r = tx<_cfg>(skip_rom_cmd, t); r != success) { return r; }
 
-  return io::result::success;
+  return success;
 }
 
 /**
@@ -433,7 +431,7 @@ io::result select_all(const delay::expirable &t)
  * @param  t      - timeout
  */
 template<typename _cfg, bool _alarm = false>
-io::result present(const uint8_t rom[8], const delay::expirable &t)
+int present(const uint8_t rom[8], const delay::expirable &t)
 {
   constexpr uint8_t search_rom_cmd = _alarm? 0xEC : 0xF0;
 
@@ -443,31 +441,29 @@ io::result present(const uint8_t rom[8], const delay::expirable &t)
     return (rom[idx] & (1U << shr)) != 0;
   };
 
-  if(!detail::presence<_cfg>()) { return io::result::error; }
-  if(auto r = tx<_cfg>(search_rom_cmd, t); r != io::result::success) { return r; }
+  if(!detail::presence<_cfg>()) { return eio; }
+  if(auto r = tx<_cfg>(search_rom_cmd, t); r != success) { return r; }
 
   for(uint_fast8_t n = 0; n < 64; n++) {
-    if(t.expired()) { return io::result::busy; }
+    if(t.expired()) { return etimedout; }
 
     bool bit_a, bit_b;
 
-    if(
-      detail::rx_bit<_cfg>(bit_a) != io::result::success ||
-      detail::rx_bit<_cfg>(bit_b) != io::result::success
-    ) { return io::result::error; }
+    if(auto r = detail::rx_bit<_cfg>(bit_a); r != success) { return r; }
+    if(auto r = detail::rx_bit<_cfg>(bit_b); r != success) { return r; }
 
     if(bit_a == bit_b) {
-      if(bit_a) { return io::result::error; }
+      if(bit_a) { return eio; }
       bit_a = bit(n);
     }
     else {
-      if(bit_a != bit(n)) { return io::result::error; }
+      if(bit_a != bit(n)) { return eio; }
     }
 
-    if(detail::tx_bit<_cfg>(bit_a) != io::result::success) { return io::result::error; }
+    if(auto r = detail::tx_bit<_cfg>(bit_a); r != success) { return r; }
   }
 
-  return io::result::success;
+  return success;
 }
 
 // ------------------------------------------------------------------------------------------------

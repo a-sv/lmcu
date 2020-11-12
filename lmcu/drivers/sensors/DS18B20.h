@@ -32,19 +32,19 @@ public:
     if constexpr(_use_id) { memcpy(st_.id, id, sizeof(st_.id)); }
   }
 
-  io::result start_conversion(const delay::expirable &t)
+  int start_conversion(const delay::expirable &t)
   {
     using namespace drv::soft;
 
     scratchpad sp;
-    if(auto r = read_scratchpad(sp, t); r != io::result::success) { return r; }
+    if(auto r = read_scratchpad(sp, t); r != success) { return r; }
 
     if(!scratchpad_cmp(sp)) {
-      if(auto r = write_scratchpad(t); r != io::result::success) { return r; }
+      if(auto r = write_scratchpad(t); r != success) { return r; }
     }
 
-    if(auto r = select<!_use_id>(t); r != io::result::success) { return r; }
-    if(auto r = one_wire::tx<_1wire_cfg>(cmd_conv_t, t); r != io::result::success) { return r; }
+    if(auto r = select<!_use_id>(t); r != success) { return r; }
+    if(auto r = one_wire::tx<_1wire_cfg>(cmd_conv_t, t); r != success) { return r; }
 
 
     delay::dwt::timer &tim = st_.t;
@@ -57,17 +57,17 @@ public:
     case resolution::_12bit: tim.start<delay::units::ms>(750); break;
     }
 
-    return io::result::success;
+    return success;
   }
 
-  io::result read_temp(int32_t &temp, const delay::expirable &t)
+  int read_temp(int32_t &temp, const delay::expirable &t)
   {
-    if(!st_.t.expired()) { return io::result::again; }
+    if(!st_.t.expired()) { return eagain; }
 
     scratchpad sp;
-    if(auto r = read_scratchpad(sp, t); r != io::result::success) { return r; }
+    if(auto r = read_scratchpad(sp, t); r != success) { return r; }
 
-    if(!scratchpad_cmp(sp)) { return io::result::error; }
+    if(!scratchpad_cmp(sp)) { return eio; }
 
     if((sp.temp & 0xF800) != 0) {
       sp.temp = ~sp.temp + 1;
@@ -77,23 +77,23 @@ public:
     temp *= 10000;
     temp += (sp.temp & 0xF) * 625;
 
-    return io::result::success;
+    return success;
   }
 
   inline void set_resolution(resolution val) { st_.cfg = (st_.cfg & 0x60) | (uint8_t(val) << 5); }
 
   inline resolution get_resolution() { return resolution((st_.cfg >> 5) & 2); }
 
-  io::result read_config(const delay::expirable &t)
+  int read_config(const delay::expirable &t)
   {
     scratchpad sp;
-    if(auto r = read_scratchpad(sp, t); r != io::result::success) { return r; }
+    if(auto r = read_scratchpad(sp, t); r != success) { return r; }
 
     st_.th  = sp.th;
     st_.tl  = sp.tl;
     st_.cfg = sp.cfg;
 
-    return io::result::success;
+    return success;
   }
 private:
   struct scratchpad
@@ -122,7 +122,7 @@ private:
   state_t st_;
 
   template<bool _all>
-  io::result select(const delay::expirable &t)
+  int select(const delay::expirable &t)
   {
     using namespace drv::soft;
 
@@ -134,45 +134,33 @@ private:
     }
   }
 
-  io::result read_scratchpad(scratchpad &sp, const delay::expirable &t)
+  int read_scratchpad(scratchpad &sp, const delay::expirable &t)
   {
     using namespace drv::soft;
 
-    if(auto r = select<!_use_id>(t); r != io::result::success) {
-      return r;
-    }
-    if(auto r = one_wire::tx<_1wire_cfg>(cmd_read_scratchpad, t); r != io::result::success) {
-      return r;
-    }
-    if(auto r = one_wire::read<_1wire_cfg>(&sp, sizeof(sp), t); r != io::result::success) {
-      return r;
-    }
+    if(auto r = select<!_use_id>(t); r != success) { return r; }
+    if(auto r = one_wire::tx<_1wire_cfg>(cmd_read_scratchpad, t); r != success) { return r; }
+    if(auto r = one_wire::read<_1wire_cfg>(&sp, sizeof(sp), t); r != success) { return r; }
 
     hash::dallas::crc8 crc;
     crc.update(&sp, sizeof(sp) - 1);
-    if(sp.crc != crc.digest()) { return io::result::error; }
+    if(sp.crc != crc.digest()) { return eio; }
 
-    return io::result::success;
+    return success;
   }
 
-  io::result write_scratchpad(const delay::expirable &t)
+  int write_scratchpad(const delay::expirable &t)
   {
     using namespace drv::soft;
 
-    if(auto r = select<!_use_id>(t); r != io::result::success) {
-      return r;
-    }
-    if(auto r = one_wire::tx<_1wire_cfg>(cmd_write_scratchpad, t); r != io::result::success) {
-      return r;
-    }
+    if(auto r = select<!_use_id>(t); r != success) { return r; }
+    if(auto r = one_wire::tx<_1wire_cfg>(cmd_write_scratchpad, t); r != success) { return r; }
 
     const uint8_t sp[] = {st_.th, st_.tl, st_.cfg};
 
-    if(auto r = one_wire::write<_1wire_cfg>(sp, sizeof(sp), t); r != io::result::success) {
-      return r;
-    }
+    if(auto r = one_wire::write<_1wire_cfg>(sp, sizeof(sp), t); r != success) { return r; }
 
-    return io::result::success;
+    return success;
   }
 
   inline bool scratchpad_cmp(const scratchpad &sp)
