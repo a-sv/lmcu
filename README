@@ -1,4 +1,4 @@
-LibMCU - C++20 library simplifying interaction with the periphery of the microcontrollers with minimal overhead.
+LibMCU - с++20 hardware abstraction layer of the microcontrollers with minimal overhead and external device drivers.
 
 Directory struct:
   examples     - Examples of code using library.
