@@ -68,4 +68,5 @@ nvic_irqn:
   dma2_channel1: 56
   dma2_channel2: 57
   dma2_channel3: 58
-  dma2_channel4_5: 59
+  dma2_channel4: 59
+  dma2_channel5: 59

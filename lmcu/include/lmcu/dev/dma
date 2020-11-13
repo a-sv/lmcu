@@ -1,0 +1,6 @@
+#pragma once
+
+#if defined(LMCU_STM32F1)
+  #include "../../../lib/regs/STM32/F1/DMA1.h"
+  #include "../../../lib/regs/STM32/F1/DMA2.h"
+#endif

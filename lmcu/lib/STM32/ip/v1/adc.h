@@ -609,9 +609,9 @@ void configure_adc()
         {
           switch(cfg::id)
           {
-          case id::adc1: return device::find_irqn("adc1");;
-          case id::adc2: return device::find_irqn("adc2");;
-          case id::adc3: return device::find_irqn("adc3");;
+          case id::adc1: return device::find_irqn("adc1");
+          case id::adc2: return device::find_irqn("adc2");
+          case id::adc3: return device::find_irqn("adc3");
           default: break;
           }
           return device::irqn::invalid_irqn;

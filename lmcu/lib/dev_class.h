@@ -14,6 +14,7 @@ enum class dev_class
   adc_regular_channel,
   adc_injected_channel,
   i2c,
+  dma,
   one_wire,
   temp_sensor
 };
