@@ -32,6 +32,10 @@ enum class pinc { disable, enable };
 
 enum class circ { disable, enable };
 
+enum class periph_address : std::uintptr_t { };
+
+enum class mem_address : std::uintptr_t { };
+
 enum class events : uint32_t
 {
   lmcu_flags,
@@ -71,6 +75,10 @@ struct config
   static constexpr auto pinc = option::get<dma::pinc, _args...>(dma::pinc::disable);
   // Circular mode
   static constexpr auto circ = option::get<dma::circ, _args...>(dma::circ::disable);
+  // Periph address
+  static constexpr auto periph_address = option::get_u<dma::periph_address, _args...>();
+  // Memory address
+  static constexpr auto mem_address = option::get_u<dma::mem_address, _args...>();
   // DMA interrupt events
   static constexpr auto events = option::get<dma::events, _args...>(dma::events(0));
   // DMA channel IRQ
@@ -90,6 +98,8 @@ struct config
       dma::minc,
       dma::pinc,
       dma::circ,
+      dma::periph_address,
+      dma::mem_address,
       dma::events,
       irq_id::_0
     >,
@@ -175,6 +185,14 @@ void configure()
   );
 
   inst::CCR::set(uint32_t(_cfg::channel), r);
+
+  if constexpr(!option::is_null<_cfg::periph_address>()) {
+    inst::CPAR::set(uint32_t(_cfg::channel), _cfg::periph_address);
+  }
+
+  if constexpr(!option::is_null<_cfg::mem_address>()) {
+    inst::CMAR::set(uint32_t(_cfg::channel), _cfg::mem_address);
+  }
 
   if constexpr(!option::is_null<_cfg::irq>()) {
     constexpr auto irqn = []
@@ -538,6 +556,54 @@ lmcu_inline circ get_circ()
 {
   using inst = detail::inst_t<_cfg::id>;
   return inst::CCR::is_set(uint32_t(_cfg::channel), inst::CCR::CIRC)? circ::enable : circ::disable;
+}
+
+/**
+ * @brief Set DMA periph addres.
+ *
+ * @tparam _cfg - DMA config.
+*/
+template<typename _cfg>
+lmcu_inline void set_periph_address(std::uintptr_t val)
+{
+  using inst = detail::inst_t<_cfg::id>;
+  inst::CPAR::set(uint32_t(_cfg::channel), val);
+}
+
+/**
+ * @brief Get DMA periph addres.
+ *
+ * @tparam _cfg - DMA config.
+*/
+template<typename _cfg>
+lmcu_inline auto get_periph_address()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  return inst::CPAR::get(uint32_t(_cfg::channel));
+}
+
+/**
+ * @brief Set DMA memory addres.
+ *
+ * @tparam _cfg - DMA config.
+*/
+template<typename _cfg>
+lmcu_inline void set_mem_address(std::uintptr_t val)
+{
+  using inst = detail::inst_t<_cfg::id>;
+  inst::CMAR::set(uint32_t(_cfg::channel), val);
+}
+
+/**
+ * @brief Get DMA memory addres.
+ *
+ * @tparam _cfg - DMA config.
+*/
+template<typename _cfg>
+lmcu_inline auto get_mem_address()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  return inst::CMAR::get(uint32_t(_cfg::channel));
 }
 
 /**
