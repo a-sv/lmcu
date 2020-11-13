@@ -850,6 +850,22 @@ lmcu_inline auto read()
   }
 }
 
+/**
+ * @brief Get DMA input address.
+ *
+ * @tparam _port - GPIO port
+*/
+template<port _port>
+constexpr auto dma_in_address() { return detail::inst_t<_port>::IDR::base; }
+
+/**
+ * @brief Get DMA output address.
+ *
+ * @tparam _port - GPIO port
+*/
+template<port _port>
+constexpr auto dma_out_address() { return detail::inst_t<_port>::ODR::base; }
+
 // ------------------------------------------------------------------------------------------------
 } // namespace lmcu::gpio
 // ------------------------------------------------------------------------------------------------
