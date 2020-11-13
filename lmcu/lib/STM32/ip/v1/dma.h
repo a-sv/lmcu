@@ -36,6 +36,8 @@ enum class periph_address : std::uintptr_t { };
 
 enum class mem_address : std::uintptr_t { };
 
+enum class count : uint16_t { };
+
 enum class events : uint32_t
 {
   lmcu_flags,
@@ -60,6 +62,8 @@ struct config
 
   // DMA channel number
   static constexpr auto channel = option::get<dma::channel, _args...>();
+  // Number of data to transfer
+  static constexpr auto count = option::get_u<dma::count, _args...>();
   // DMA transfer direction
   static constexpr auto direction = option::get<dma::direction, _args...>(dma::direction::
                                                                           periph_mem);
@@ -92,6 +96,7 @@ struct config
     std::tuple<
       dma::id,
       dma::channel,
+      dma::count,
       dma::direction,
       dma::msize,
       dma::psize,
@@ -186,6 +191,10 @@ void configure()
 
   inst::CCR::set(uint32_t(_cfg::channel), r);
 
+  if constexpr(!option::is_null<_cfg::count>()) {
+    inst::CNDTR::set(_cfg::count);
+  }
+
   if constexpr(!option::is_null<_cfg::periph_address>()) {
     inst::CPAR::set(uint32_t(_cfg::channel), _cfg::periph_address);
   }
@@ -262,6 +271,13 @@ void set_direction(direction val)
   }
 
   inst::CCR::set_m(uint32_t(_cfg::channel), inst::CCR::MEM2MEM | inst::CCR::DIR, r);
+}
+
+template<typename _cfg>
+void set_count(uint16_t val)
+{
+  using inst = detail::inst_t<_cfg::id>;
+  inst::CNDTR::set(uint32_t(_cfg::channel), val);
 }
 
 template<typename _cfg>
@@ -409,6 +425,31 @@ lmcu_inline direction get_direction()
   }
 
   return direction::periph_mem;
+}
+
+/**
+ * @brief Set DMA transfer count.
+ *
+ * @tparam _cfg - list of DMA channel configs.
+ * @param val - transfer count.
+*/
+template<typename ..._cfg>
+lmcu_inline void set_count(uint16_t val)
+{
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::set_count<_cfg>(val), ...);
+}
+
+/**
+ * @brief Get current DMA transfer count.
+ *
+ * @tparam _cfg - DMA config.
+*/
+template<typename _cfg>
+lmcu_inline uint16_t get_count()
+{
+  using inst = detail::inst_t<_cfg::id>;
+  return inst::CNDTR::get(uint32_t(_cfg::channel));;
 }
 
 /**
