@@ -16,6 +16,7 @@ enum class arch
 
 enum class endian { little, big, selectable, other };
 
+// Internal peripheral version
 enum class ip_version
 {
   none,
@@ -69,7 +70,7 @@ template<
   // register bit width
   uint32_t _size = 32,
   // register struct size
-  uint32_t _s_size = reg_size<_size>::bytes
+  uint32_t _s_size = (_count > 1? reg_size<_size>::bytes : 0)
 >
 struct reg
 {
@@ -102,16 +103,6 @@ struct reg
     *reinterpret_cast<volatile type*>(_base + (i * _s_size)) = val;
   }
 
-  __attribute__((always_inline)) static inline void set_m(type mask, type val) noexcept
-  {
-    set((get() & ~mask) | val);
-  }
-
-  __attribute__((always_inline)) static inline void set_m(uint32_t i, type mask, type val) noexcept
-  {
-    set(i, (get(i) & ~mask) | val);
-  }
-
   __attribute__((always_inline)) static inline type get() noexcept
   {
     return *reinterpret_cast<volatile type*>(_base);
@@ -140,6 +131,16 @@ struct reg
   __attribute__((always_inline)) static inline void clr_b(uint32_t i, type val) noexcept
   {
     set(i, get(i) & ~val);
+  }
+
+  __attribute__((always_inline)) static inline void set_m(type mask, type val) noexcept
+  {
+    set((get() & ~mask) | (val & mask));
+  }
+
+  __attribute__((always_inline)) static inline void set_m(uint32_t i, type mask, type val) noexcept
+  {
+    set(i, (get(i) & ~mask) | (val & mask));
   }
 
   __attribute__((always_inline)) static inline bool is_set(type val) noexcept
