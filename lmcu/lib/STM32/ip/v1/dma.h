@@ -98,6 +98,7 @@ struct config
       dma::channel,
       dma::count,
       dma::direction,
+      dma::priority,
       dma::msize,
       dma::psize,
       dma::minc,
@@ -252,7 +253,7 @@ template<typename _cfg>
 void clr_events(events val)
 {
   using inst = inst_t<_cfg::id>;
-  inst::IFCR::set(uint32_t(val) << (4 * uint32(_cfg::channel)));
+  inst::IFCR::set(uint32_t(val) << (4 * uint32_t(_cfg::channel)));
 }
 
 template<typename _cfg>
