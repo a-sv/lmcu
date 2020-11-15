@@ -669,7 +669,7 @@ template<typename _cfg>
 lmcu_inline events get_events()
 {
   using inst = detail::inst_t<_cfg::id>;
-  return events( (inst::ISR::get() >> (4 * uint32(_cfg::channel))) & 0xf );
+  return events( (inst::ISR::get() >> (4 * uint32_t(_cfg::channel))) & 0xf );
 }
 
 /**
