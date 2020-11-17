@@ -2451,6 +2451,20 @@ lmcu_static_inline events get_events()
 }
 
 /**
+ * @brief Enable / disable timer events.
+ *
+ * @tparam _cfg - timer config.
+*/
+template<typename _cfg>
+lmcu_static_inline void set_events(events evt)
+{
+  static_assert(_cfg::dev_class == dev_class::timer);
+
+  using inst = detail::inst_t<_cfg::id>;
+  inst::DIER::set(uint32_t(evt));
+}
+
+/**
  * @brief Clear event flags.
  *
  * @tparam _cfg - timer config.
