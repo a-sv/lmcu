@@ -2829,6 +2829,47 @@ lmcu_static_inline void set_out_mode(out_mode val)
   (_do(_cfg{}), ...);
 }
 
+template<typename ..._cfg>
+lmcu_static_inline void set_out_clear(out_clear val)
+{
+  auto _do = [&val](auto config)
+  {
+    using cfg  = decltype(config);
+    using inst = detail::inst_t<cfg::id>;
+
+    static_assert(cfg::dev_class == dev_class::timer_out_channel);
+
+    constexpr auto ch_n = uint32_t(cfg::channel);
+
+    uint32_t r;
+
+    if constexpr(ch_n <= 1) {
+      r = inst::CCMR1::get();
+    }
+    else {
+      r = inst::CCMR2::get();
+    }
+
+    constexpr bool _1 = ch_n % 2 == 0;
+
+    if(val == out_clear::enable) {
+      r |= _1? inst::CCMR1::OC1CE : inst::CCMR1::OC2CE;
+    }
+    else {
+      r &= ~(_1? inst::CCMR1::OC1CE : inst::CCMR1::OC2CE);
+    }
+
+    if constexpr(ch_n <= 1) {
+      inst::CCMR1::set(r);
+    }
+    else {
+      inst::CCMR2::set(r);
+    }
+  };
+
+  (_do(_cfg{}), ...);
+}
+
 /**
  * @brief Returns DMA destination address.
  *
