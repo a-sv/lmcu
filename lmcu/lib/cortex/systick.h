@@ -48,12 +48,12 @@ struct config
 /**
  * @brief Enable module clock
 */
-void on() { device::NVIC::STCSR::set_b(device::NVIC::STCSR::ENABLE); }
+lmcu_static_inline void on() { device::NVIC::STCSR::set_b(device::NVIC::STCSR::ENABLE); }
 
 /**
  * @brief Disable module clock
 */
-void off() { device::NVIC::STCSR::clr_b(device::NVIC::STCSR::ENABLE); }
+lmcu_static_inline void off() { device::NVIC::STCSR::clr_b(device::NVIC::STCSR::ENABLE); }
 
 /**
  * @brief Apply module config
