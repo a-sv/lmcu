@@ -8,6 +8,8 @@ namespace lmcu::delay {
 
 lmcu_inline uint32_t start() { return (0xffffffff - device::DWT::CYCCNT::get()) + 1; }
 
+lmcu_inline uint32_t elapsed(uint32_t start) { return device::DWT::CYCCNT::get() + start; }
+
 /**
  * @brief Delay in cycles.
  * @param cyc: cycles to wait
