@@ -824,15 +824,10 @@ lmcu_inline void toggle()
  * @tparam _p - gpio port or pin
 */
 template<typename _p>
-lmcu_inline auto get()
-{
-  if constexpr(std::is_same_v<_p, port>) {
-    return detail::inst_t<_p{}>::ODR::get();
-  }
-  else {
-    return (detail::inst_t<_p::port>::ODR::get() & _p::mask) != 0;
-  }
-}
+lmcu_inline auto get() { return (detail::inst_t<_p::port>::ODR::get() & _p::mask) != 0; }
+
+template<port _p>
+lmcu_inline auto get() { return detail::inst_t<_p>::ODR::get(); }
 
 /**
  * @brief Reads input signal on the port or pin (IDR).
@@ -840,15 +835,10 @@ lmcu_inline auto get()
  * @tparam _p - gpio port or pin
 */
 template<typename _p>
-lmcu_inline auto read()
-{
-  if constexpr(std::is_same_v<_p, port>) {
-    return detail::inst_t<_p{}>::IDR::get();
-  }
-  else {
-    return (detail::inst_t<_p::port>::IDR::get() & _p::mask) != 0;
-  }
-}
+lmcu_inline auto read() { return (detail::inst_t<_p::port>::IDR::get() & _p::mask) != 0; }
+
+template<port _p>
+lmcu_inline auto read() { return detail::inst_t<_p>::IDR::get(); }
 
 /**
  * @brief Get DMA input address.
