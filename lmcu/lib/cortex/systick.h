@@ -88,6 +88,8 @@ void configure()
   NVIC::STCSR::set_b(option::is_null<_cfg::irq>()? 0 : NVIC::STCSR::TICKINT);
 }
 
+lmcu_static_inline uint32_t reload() { return device::NVIC::STRVR::get(); }
+
 lmcu_static_inline uint32_t value() { return device::NVIC::STCVR::get(); }
 
 // ------------------------------------------------------------------------------------------------
