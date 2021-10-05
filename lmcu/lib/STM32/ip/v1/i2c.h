@@ -1,6 +1,7 @@
 #pragma once
 #include <lmcu/dev/i2c>
 #include <lmcu/rcc>
+#include <lmcu/gpio>
 #include <lmcu/common>
 #include <lmcu/delay>
 
@@ -26,7 +27,9 @@ enum class no_stretch { enable, disable };
 
 enum class allow_overclock { yes, no };
 
-template<auto ..._args>
+enum class direction { read, write };
+
+template<typename _scl, typename _sda, auto ..._args>
 struct config
 {
   static constexpr auto dev_class = lmcu::dev_class::i2c;
@@ -54,25 +57,26 @@ struct config
   static constexpr auto allow_overclock = option::get<i2c::allow_overclock, _args...>(
                                             i2c::allow_overclock::no);
 
+  using scl_pin = _scl;
+  using sda_pin = _sda;
+
   static_assert(!option::is_null<id>());
 
   static_assert(option::check<
     std::tuple<
       i2c::id,
+      i2c::freq,
       i2c::dutycycle,
       i2c::addr_mode,
       i2c::addr_1,
-      i2c::addr_2
+      i2c::addr_2,
+      i2c::general_call,
+      i2c::no_stretch,
+      i2c::allow_overclock
     >,
     _args...
   >());
 };
-
-template<typename _cfg>
-lmcu_inline io::result start(const delay::expirable &t = delay::inf());
-
-template<typename _cfg>
-lmcu_inline io::result stop(const delay::expirable &t = delay::inf());
 
 // ------------------------------------------------------------------------------------------------
 namespace detail {
@@ -138,8 +142,6 @@ lmcu_inline void reset()
 template<typename _cfg>
 lmcu_inline void enable()
 {
-  static_assert(_cfg::dev_class == dev_class::i2c);
-
   using inst = detail::inst_t<_cfg::id>;
   inst::CR1::set_b(inst::CR1::PE);
 }
@@ -147,8 +149,6 @@ lmcu_inline void enable()
 template<typename _cfg>
 lmcu_inline void disable()
 {
-  static_assert(_cfg::dev_class == dev_class::i2c);
-
   using inst = inst_t<_cfg::id>;
   inst::CR1::clr_b(inst::CR1::PE);
 }
@@ -210,13 +210,16 @@ void configure()
                  (_cfg::no_stretch == no_stretch::enable? inst::CR1::NOSTRETCH : 0));
 
   if constexpr(!option::is_null<_cfg::addr_1>()) {
-    inst::OAR1::set((_cfg::addr_1 << 1) | (_cfg::addr_mode == addr_mode::_7bit? 0 : inst::OAR1::
-                                                                                    ADDMODE));
+    inst::OAR1::set(
+      (_cfg::addr_1 << inst::OAR1::ADD_POS) |
+      (_cfg::addr_mode == addr_mode::_7bit? 0 : inst::OAR1::ADDMODE)
+    );
+
     if constexpr(dual_addr) {
-      inst::OAR2::set((_cfg::addr_2 << 1) | inst::OAR2::ENDUAL);
+      inst::OAR2::set((_cfg::addr_2 << inst::OAR2::ADD2_POS) | inst::OAR2::ENDUAL);
     }
     else {
-      inst::OAR2::clr_b(inst::OAR2::ENDUAL);
+      inst::OAR2::set(0);
     }
   }
 
@@ -224,10 +227,45 @@ void configure()
 }
 
 template<typename _cfg>
-void reconfigure()
+lmcu_inline void reconfigure()
 {
+  using scl_input = gpio::pin<option::null, _cfg::scl_pin::port, gpio::pin_n{_cfg::scl_pin::n},
+                              gpio::mode::input, gpio::pull::up>;
+  using sda_input = gpio::pin<option::null, _cfg::sda_pin::port, gpio::pin_n{_cfg::sda_pin::n},
+                              gpio::mode::input, gpio::pull::up>;
+  using scl_out = gpio::pin<option::null, _cfg::scl_pin::port, gpio::pin_n{_cfg::scl_pin::n},
+                            gpio::mode::output_open_drain, gpio::pull::up, gpio::speed::high>;
+
+  gpio::configure<scl_input, sda_input>();
+
+  if(gpio::read<scl_input>() && !gpio::read<sda_input>()) {
+    // slave stuck detected
+    gpio::configure<scl_out>();
+    // generate 9 clocks for unlock SDA line
+    for(uint32_t i = 0; i < 9; i++) {
+      gpio::set<scl_out>(false);
+      delay::us(5);
+      gpio::set<scl_out>(true);
+      delay::us(5);
+    }
+  }
+
+  gpio::configure<typename _cfg::scl_pin, typename _cfg::sda_pin>();
+
   reset<_cfg::id>();
   configure<_cfg>();
+}
+
+template<typename _cfg>
+lmcu_inline int wait_ready(const delay::expirable &t)
+{
+  using inst = detail::inst_t<_cfg::id>;
+
+  while((inst::SR2::get() & inst::SR2::BUSY) != 0) {
+    if(t.expired()) { return etimedout; }
+  }
+
+  return success;
 }
 
 template<typename _cfg>
@@ -243,41 +281,66 @@ lmcu_inline bool ack_failure()
   return false;
 }
 
-template<typename _cfg>
-lmcu_inline io::result wait_bus_ready(const delay::expirable &t)
+template<typename _cfg, direction _dir>
+lmcu_inline int tx_addr(uint16_t addr, const delay::expirable &t)
 {
   using inst = detail::inst_t<_cfg::id>;
 
-  while((inst::SR2::get() & inst::SR2::BUSY) != 0) {
-    if(t.expired()) { return io::result::busy; }
-  }
+  auto f_wait = [&t](uint32_t f)
+  {
+    while((inst::SR1::get() & f) == 0) {
+      if(t.expired()) {
+        return etimedout;
+      }
 
-  return io::result::success;
-}
-
-template<typename _cfg, bool _rd>
-lmcu_inline io::result tx_addr(uint16_t addr, const delay::expirable &t)
-{
-  using inst = detail::inst_t<_cfg::id>;
+      if(ack_failure<_cfg>()) {
+        stop<_cfg>(t);
+        return eio;
+      }
+    }
+    return success;
+  };
 
   if constexpr(_cfg::addr_mode == addr_mode::_7bit) {
-    inst::DR::set( ((addr << 1) & 0xFE) | _rd );
+    inst::DR::set( ((addr << 1) & 0xFE) | (_dir == direction::read) );
+  }
+  else { // 10 bit address
+    inst::DR::set( ((addr & 0x300) >> 7) | (_dir == direction::write? 0xF0 : 0xF1) );
+
+    if(auto r = f_wait(inst::SR1::ADD10); r != success) { return r; }
+
+    inst::DR::set(addr & 0xFF);
   }
 
-  while((inst::SR1::get() & inst::SR1::ADDR) == 0) {
-    if(t.expired()) { return io::result::busy; }
-
-    if(ack_failure<_cfg>()) {
-      stop<_cfg>(t);
-      return io::result::error;
-    }
-  }
+  if(auto r = f_wait(inst::SR1::ADDR); r != success) { return r; }
 
   // clear ADDR flag
   inst::SR1::get();
   inst::SR2::get();
 
-  return io::result::success;
+  return success;
+}
+
+template<typename _cfg>
+lmcu_inline void clr_addr_flag()
+{
+  using inst = detail::inst_t<_cfg::id>;
+
+  inst::SR1::get();
+  inst::SR2::get();
+}
+
+template<typename _cfg>
+static inline int wait_rxne(const delay::expirable &t)
+{
+  using inst = detail::inst_t<_cfg::id>;
+
+  while((inst::SR1::get() & inst::SR1::RXNE) == 0) {
+    if(t.expired()) { return etimedout; }
+    if((inst::SR1::get() & inst::SR1::STOPF) != 0) { return eio; }
+  }
+
+  return success;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -320,87 +383,262 @@ lmcu_inline void reset()
   (detail::reset<_id>(), ...);
 }
 
+/**
+ * @brief Configure periph.
+ *
+ * @tparam _id - periph id list.
+*/
 template<typename ..._cfg>
-lmcu_inline void configure()
+void configure()
 {
   static_assert(sizeof...(_cfg) > 0);
   (detail::configure<_cfg>(), ...);
 }
 
-template<typename _cfg>
-lmcu_inline io::result start(const delay::expirable &t)
+template<typename ..._cfg>
+void reconfigure()
 {
-  static_assert(_cfg::dev_class == dev_class::i2c);
+  static_assert(sizeof...(_cfg) > 0);
+  (detail::reconfigure<_cfg>(), ...);
+}
 
+template<typename _cfg>
+int start(const delay::expirable &t)
+{
   using inst = detail::inst_t<_cfg::id>;
 
   inst::CR1::set_b(inst::CR1::START);
 
   while((inst::SR1::get() & inst::SR1::SB) == 0) {
-    if(t.expired()) { return io::result::busy; }
+    if(t.expired()) { return etimedout; }
   }
 
-  return io::result::success;
+  return success;
 }
 
 template<typename _cfg>
-lmcu_inline io::result stop(const delay::expirable &t)
+int stop(const delay::expirable &t)
 {
-  static_assert(_cfg::dev_class == dev_class::i2c);
-
   using inst = detail::inst_t<_cfg::id>;
 
   inst::CR1::set_b(inst::CR1::STOP);
-
   while((inst::SR2::get() & inst::SR2::MSL) != 0) {
-    if(t.expired()) { return io::result::busy; }
+    if(t.expired()) { return etimedout; }
   }
 
-  return io::result::success;
+  return success;
 }
 
-template<typename _cfg, bool _rd = false>
-io::result ping(uint16_t addr, const delay::expirable &t)
+template<typename _cfg, direction _dir = direction::write>
+int ping(uint16_t addr, const delay::expirable &t)
 {
-  static_assert(_cfg::dev_class == dev_class::i2c);
-
   using inst = detail::inst_t<_cfg::id>;
 
-  if(auto r = detail::wait_bus_ready<_cfg>(t); r != io::result::success) {
+  if(auto r = detail::wait_ready<_cfg>(t); r != success) {
     detail::reconfigure<_cfg>(); return r;
   }
 
   inst::CR1::clr_b(inst::CR1::POS);
 
-  if constexpr(_rd) { inst::CR1::clr_b(inst::CR1::ACK); }
+  if constexpr(_dir == direction::read) {
+    inst::CR1::clr_b(inst::CR1::ACK);
+  }
 
-  if(auto r = start<_cfg>(t); r != io::result::success) {
+  if(auto r = start<_cfg>(t); r != success) {
     detail::reconfigure<_cfg>(); return r;
   }
 
-  auto r = detail::tx_addr<_cfg, _rd>(addr, t);
+  auto r = detail::tx_addr<_cfg, _dir>(addr, t);
 
-  if(r == io::result::success) { stop<_cfg>(t); }
+  detail::clr_addr_flag<_cfg>();
+
+  if(r == success) { stop<_cfg>(t); }
 
   return r;
 }
 
 template<typename _cfg>
-io::result master_tx_begin(uint16_t addr, const delay::expirable &t)
+int master_read(uint16_t addr, void *data, uint32_t size, const delay::expirable &t)
 {
   using inst = detail::inst_t<_cfg::id>;
 
-  if(auto r = detail::wait_bus_ready<_cfg>(t); r != io::result::success) { return r; }
+  if(auto r = detail::wait_ready<_cfg>(t); r != success) {
+    detail::reconfigure<_cfg>(); return r;
+  }
+
+  lmcu_defer([] { inst::CR1::clr_b(inst::CR1::ACK); });
+
+  uint32_t r = inst::CR1::get();
+  r &= ~inst::CR1::POS;
+  r |= inst::CR1::ACK;
+  inst::CR1::set(r);
+
+  if(auto r = start<_cfg>(t); r != success) { return r; }
+
+  if(auto r = detail::tx_addr<_cfg>(addr); r != success) {
+    inst::CR1::set_b(inst::CR1::STOP); return r;
+  }
+
+  auto p = static_cast<uint8_t*>(data);
+
+  auto rx_last = [&p, &t](uint32_t size)
+  {
+    switch(size) {
+    case 0: {
+      detail::clr_addr_flag<_cfg>();
+      inst::CR1::set_b(inst::CR1::STOP);
+    } return success;
+
+    case 1: {
+      inst::CR1::clr_b(inst::CR1::ACK);
+
+      irq::ctl ic;
+      ic.disable();
+
+      detail::clr_addr_flag<_cfg>();
+      inst::CR1::set_b(inst::CR1::STOP);
+
+      if(auto r = detail::wait_rxne<_cfg>(t); r != success) { return r; }
+      *p = inst::DR::get();
+    } return success;
+
+    case 2: {
+      inst::CR1::set_b(inst::CR1::POS);
+
+      {
+        irq::ctl ic;
+        ic.disable();
+
+        detail::clr_addr_flag<_cfg>();
+        inst::CR1::clr_b(inst::CR1::ACK);
+      }
+
+      if((inst::SR1::get() & inst::SR1::BTF) == 0) {
+        if(t.expired()) { return etimedout; }
+      }
+
+      {
+        irq::ctl ic;
+        ic.disable();
+
+        inst::CR1::set_b(inst::CR1::STOP);
+        *p++ = inst::DR::get();
+      }
+
+      *p = inst::DR::get();
+    } return success;
+
+    case 3: {
+      detail::clr_addr_flag<_cfg>();
+
+      if((inst::SR1::get() & inst::SR1::BTF) == 0) {
+        if(t.expired()) { return etimedout; }
+      }
+
+      inst::CR1::clr_b(inst::CR1::ACK);
+
+      irq::ctl ic;
+      ic.disable();
+
+      *p++ = inst::DR::get();
+
+      if((inst::SR1::get() & inst::SR1::BTF) == 0) {
+        if(t.expired()) { return etimedout; }
+      }
+
+      inst::CR1::set_b(inst::CR1::STOP);
+
+      *p++ = inst::DR::get();
+      *p++ = inst::DR::get();
+    } return success;
+
+    default:
+      return einval;
+    }
+  };
+
+  if(auto r = rx_last(size); r != einval) { return r; }
+
+  detail::clr_addr_flag<_cfg>();
+
+  const auto end = p + size;
+
+  while((end - p) > 3) {
+    if(auto r = detail::wait_rxne<_cfg>(t); r != success) { return r; }
+    *p++ = inst::DR::get();
+    if((inst::SR1::get() & inst::SR1::BTF) != 0) { *p++ = inst::DR::get(); }
+  }
+
+  return rx_last(end - p);
+}
+
+template<typename _cfg>
+int master_tx_begin(uint16_t addr, const delay::expirable &t)
+{
+  using inst = detail::inst_t<_cfg::id>;
+
+  if(auto r = detail::wait_ready<_cfg>(t); r != success) { return r; }
 
   inst::CR1::clr_b(inst::CR1::POS);
   inst::CR1::clr_b(inst::CR1::ACK);
 
+  if(auto r = start<_cfg>(t); r != success) { stop<_cfg>(t); return r; }
+
+  if(auto r = detail::tx_addr<_cfg, direction::write>(addr, t); r != success) {
+    stop<_cfg>(t);
+    return r;
+  }
+
+  return success;
+}
+
+template<typename _cfg>
+int master_tx_end(const delay::expirable &t)
+{
+  using inst = detail::inst_t<_cfg::id>;
+
   lmcu_defer([&t] { stop<_cfg>(t); });
-  if(auto r = start<_cfg>(t); r != io::result::success) { return r; }
 
-  if(auto r = detail::tx_addr<_cfg, false>(addr, t); r != io::result::success) { return r; }
+  do {
+    if(detail::ack_failure<_cfg>()) { return eio; }
+    if(t.expired()) { return etimedout; }
+  } while((inst::SR1::get() & inst::SR1::BTF) == 0);
 
-  return io::result::success;
+  return success;
+}
+
+template<typename _cfg>
+int master_tx(uint8_t data, const delay::expirable &t)
+{
+  using inst = detail::inst_t<_cfg::id>;
+
+  do {
+    if(detail::ack_failure<_cfg>()) { return eio; }
+    if(t.expired()) { return etimedout; }
+  } while((inst::SR1::get() & inst::SR1::TXE) == 0);
+
+  inst::DR::set(data);
+
+  return success;
+}
+
+template<typename _cfg>
+int master_write(const void *data, size_t sz, const delay::expirable &t)
+{
+  using inst = detail::inst_t<_cfg::id>;
+
+  auto b = static_cast<const uint8_t*>(data), e = b + sz;
+
+  while(b < e) {
+    do {
+      if(detail::ack_failure<_cfg>()) { return eio; }
+      if(t.expired()) { return etimedout; }
+    } while((inst::SR1::get() & inst::SR1::TXE) == 0);
+
+    inst::DR::set(*b++);
+  }
+
+  return success;
 }
 
 // ------------------------------------------------------------------------------------------------
