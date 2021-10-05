@@ -253,7 +253,7 @@ struct DMA
     ;
   };
   // DMA channel configuration register (count: 7)
-  struct CCR : reg<ip_ver, base + 0x8, 0x00000000, 7, 32, 32>
+  struct CCR : reg<ip_ver, base + 0x8, 0x00000000, 7, 32, 20>
   {
     static constexpr typename CCR::type
     // Channel enable (bits: 0)
@@ -305,7 +305,7 @@ struct DMA
     ;
   };
   // DMA channel number of data register (count: 7)
-  struct CNDTR : reg<ip_ver, base + 0xC, 0x00000000, 7, 32, 32>
+  struct CNDTR : reg<ip_ver, base + 0xC, 0x00000000, 7, 32, 20>
   {
     static constexpr typename CNDTR::type
     // Number of data to transfer (bits: 15-0)
@@ -315,9 +315,9 @@ struct DMA
     ;
   };
   // DMA channel peripheral address register (count: 7)
-  using CPAR = reg<ip_ver, base + 0x10, 0x00000000, 7, 32, 32>;
+  using CPAR = reg<ip_ver, base + 0x10, 0x00000000, 7, 32, 20>;
   // DMA channel memory address register (count: 7)
-  using CMAR = reg<ip_ver, base + 0x14, 0x00000000, 7, 32, 32>;
+  using CMAR = reg<ip_ver, base + 0x14, 0x00000000, 7, 32, 20>;
 }; // struct DMA
 
 } // namespace lmcu::device::ip::v1

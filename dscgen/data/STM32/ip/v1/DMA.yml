@@ -183,7 +183,7 @@ ip:
     CCR:
       desc: DMA channel configuration register
       offset: 0x8
-      struct: 0x20
+      struct: 0x14
       count: 7
       fields:
         EN:
@@ -225,7 +225,7 @@ ip:
     CNDTR:
       desc: DMA channel number of data register
       offset: 0xC
-      struct: 0x20
+      struct: 0x14
       count: 7
       fields:
         NDT:
@@ -234,10 +234,10 @@ ip:
     CPAR:
       desc: DMA channel peripheral address register
       offset: 0x10
-      struct: 0x20
+      struct: 0x14
       count: 7
     CMAR:
       desc: DMA channel memory address register
       offset: 0x14
-      struct: 0x20
+      struct: 0x14
       count: 7
