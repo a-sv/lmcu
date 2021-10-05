@@ -6,7 +6,7 @@
 namespace lmcu::drv::soft::touch_key {
 // ------------------------------------------------------------------------------------------------
 
-enum class threshold : uint16_t { defval = 15 };
+enum class threshold : uint16_t { defval = 30 };
 
 enum class press_time : uint16_t { defval = 10 };
 
@@ -15,6 +15,17 @@ enum class long_press_time : uint16_t { defval = 1000 };
 enum class release_time : uint16_t { defval = 10 };
 
 enum class max_value : uint16_t { defval = 4096 };
+
+enum class filter : uint16_t { defval = 180 };
+
+enum class kstate : uint8_t
+{
+  not_pressed,
+  pressed,
+  lpressed,
+  pressed_release,
+  lpressed_release
+};
 
 template<typename _pin, auto ..._args>
 class device
@@ -42,13 +53,17 @@ public:
   static constexpr auto max_value = option::get_u<touch_key::max_value, _args...>(
                                       touch_key::max_value::defval);
 
+  static constexpr auto filter = option::get_u<touch_key::filter, _args...>(
+                                   touch_key::filter::defval);
+
   static_assert(option::check<
     std::tuple<
       touch_key::threshold,
       touch_key::press_time,
       touch_key::long_press_time,
       touch_key::release_time,
-      touch_key::max_value
+      touch_key::max_value,
+      touch_key::filter
     >,
     _args...
   >());
@@ -61,18 +76,25 @@ public:
     max_value > 0
   );
 
-  inline bool pressed() const { return state_ >= state_t::pressed; }
+  inline auto state() const { return state_; }
 
-  inline bool long_pressed() const { return state_ >= state_t::lpressed; }
+  inline bool pressed() const { return lmcu::flags::all(flags_, flags_t::pressed); }
 
-  bool changed()
-  {
-    if(state_ != p_state_ && state_ <= state_t::lpressed) {
-      p_state_ = state_;
-      return true;
-    }
-    return false;
-  }
+  inline void clr_pressed() { flags_ -= flags_t::pressed; }
+
+  inline bool lpressed() const { return lmcu::flags::all(flags_, flags_t::lpressed); }
+
+  inline void clr_lpressed() { flags_ -= flags_t::lpressed; }
+
+  inline bool clicked() const { return lmcu::flags::all(flags_, flags_t::clicked); }
+
+  inline void clr_clicked() { flags_ -= flags_t::clicked; }
+
+  inline bool released() const { return lmcu::flags::all(flags_, flags_t::released); }
+
+  inline void clr_released() { flags_ -= flags_t::released; }
+
+  inline void clr_all() { flags_ = flags_t(0); }
 
   inline int32_t value() const { return val_ - ofs_; }
 
@@ -94,12 +116,26 @@ public:
     gpio::set<out>(false);
     gpio::configure<in>();
 
-    uint32_t start = delay::start();
-    do {
-      val_ = delay::elapsed(start);
-    }
-    while(!gpio::read<in>() && val_ < max_value);
+    uint32_t start, val;
 
+    start = delay::start();
+    do {
+      val = delay::elapsed(start);
+    }
+    while(!gpio::read<in>() && val < max_value);
+
+    if constexpr(filter > 0) {
+      avg_ += val;
+
+      if(++avg_n_ >= filter) {
+        val_ = avg_ / avg_n_;
+        avg_   = 0;
+        avg_n_ = 0;
+      }
+    }
+    else {
+      val_ = val;
+    }
 
     if(ofs_ == 0) {
       ofs_ = val_;
@@ -112,18 +148,24 @@ public:
       //
       switch(state_)
       {
-      case state_t::not_pressed:
-        if(tm_.elapsed<delay::units::ms>() >= press_time) { state_ = state_t::pressed; }
+      case kstate::not_pressed:
+        if(tm_.elapsed<delay::units::ms>() >= press_time) {
+          state_ = kstate::pressed;
+          flags_ += flags_t::pressed;
+        }
         break;
-      case state_t::pressed:
-        if(tm_.expired()) { state_ = state_t::lpressed; }
+      case kstate::pressed:
+        if(tm_.expired()) {
+          state_ = kstate::lpressed;
+          flags_ += flags_t::lpressed;
+        }
         break;
-      case state_t::pressed_release:
-        state_ = state_t::pressed;
+      case kstate::pressed_release:
+        state_ = kstate::pressed;
         tm_.start<delay::units::ms>(tm_r_);
         break;
-      case state_t::lpressed_release:
-        state_ = state_t::lpressed;
+      case kstate::lpressed_release:
+        state_ = kstate::lpressed;
         break;
       default:
         break;
@@ -133,40 +175,48 @@ public:
       //
       // KEY released
       //
-      if(state_ == state_t::not_pressed) {
+      if(state_ == kstate::not_pressed) {
         tm_.start<delay::units::ms>(long_press_time);
       }
       else {
-        if(state_ == state_t::pressed) {
-          state_ = state_t::pressed_release;
+        if(state_ == kstate::pressed) {
+          state_ = kstate::pressed_release;
           tm_r_ = tm_.remaining<delay::units::ms>();
           tm_.start<delay::units::ms>(release_time);
         }
         else
-        if(state_ == state_t::lpressed) {
-          state_ = state_t::lpressed_release;
+        if(state_ == kstate::lpressed) {
+          state_ = kstate::lpressed_release;
           tm_.start<delay::units::ms>(release_time);
         }
         else
         if(
-          (state_ == state_t::pressed_release || state_ == state_t::lpressed_release) &&
+          (state_ == kstate::pressed_release || state_ == kstate::lpressed_release) &&
           tm_.expired()
-        ) { state_ = state_t::not_pressed; }
+        ) {
+          if(state_ == kstate::pressed_release) {
+            flags_ += flags_t::clicked;
+          }
+          state_ = kstate::not_pressed;
+          flags_ += flags_t::released;
+        }
       }
     }
   }
 private:
-  enum class state_t : uint8_t
+  enum class flags_t : uint8_t
   {
-    not_pressed,
-    pressed,
-    lpressed,
-    pressed_release,
-    lpressed_release
+    lmcu_flags,
+    pressed  = 1U << 0,
+    lpressed = 1U << 1,
+    clicked  = 1U << 2,
+    released = 1U << 3
   };
 
-  uint16_t val_ = 0, ofs_ = 0, th_ = 0, tm_r_ = 0;
-  state_t state_ = state_t::not_pressed, p_state_ = state_;
+  uint32_t avg_ = 0;
+  uint16_t avg_n_ = 0, val_ = 0, ofs_ = 0, th_ = 0, tm_r_ = 0;
+  kstate state_ = kstate::not_pressed;
+  flags_t flags_ = flags_t(0);
   lmcu::delay::dwt::timer tm_;
 };
 
