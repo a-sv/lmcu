@@ -2870,6 +2870,36 @@ lmcu_static_inline void set_out_clear(out_clear val)
   (_do(_cfg{}), ...);
 }
 
+template<typename ..._cfg>
+lmcu_static_inline void set_master_mode(master_mode val)
+{
+  auto _do = [&val](auto config)
+  {
+    using cfg  = decltype(config);
+    using inst = detail::inst_t<cfg::id>;
+
+    uint32_t r = inst::CR2::get();
+
+    r &= ~inst::CR2::MMS_MASK;
+
+    switch(val)
+    {
+    case master_mode::enable:     r |= inst::CR2::MMS_ENABLE;        break;
+    case master_mode::update:     r |= inst::CR2::MMS_UPDATE;        break;
+    case master_mode::comp_pulse: r |= inst::CR2::MMS_COMPARE_PULSE; break;
+    case master_mode::comp_1:     r |= inst::CR2::MMS_CMP_OC1REF;    break;
+    case master_mode::comp_2:     r |= inst::CR2::MMS_CMP_OC2REF;    break;
+    case master_mode::comp_3:     r |= inst::CR2::MMS_CMP_OC3REF;    break;
+    case master_mode::comp_4:     r |= inst::CR2::MMS_CMP_OC4REF;    break;
+    default: break;
+    }
+
+    inst::CR2::set(r);
+  };
+
+  (_do(_cfg{}), ...);
+}
+
 /**
  * @brief Returns DMA destination address.
  *
