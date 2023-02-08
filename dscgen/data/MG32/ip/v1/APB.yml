@@ -1,0 +1,1101 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: APB Module Global Control
+  ver: 1
+  registers:
+    STA:
+      desc: APB status register
+      offset: 0x0
+      reset_val: 0x3000000
+      fields:
+        OBM1_SW:
+          desc: "OBM-1 break switching signal status"
+          bits: 25
+        OBM0_SW:
+          desc: "OBM-0 break switching signal status"
+          bits: 24
+        OBM1_OUT:
+          desc: "OBM-1 output signal status"
+          bits: 17
+        OBM0_OUT:
+          desc: "OBM-0 output signal status"
+          bits: 16
+        OBM1F:
+          desc: "OBM-1 break trigger event detect flag"
+          bits: 9
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "reset event happened"
+              val: 1
+        OBM0F:
+          desc: "OBM-0 break trigger event detect flag"
+          bits: 8
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "reset event happened"
+              val: 1
+    INT:
+      desc: APB interrupt enable register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        OBM1_IE:
+          desc: "OBM-1 break trigger event detect interrupt enable"
+          bits: 9
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM0_IE:
+          desc: "OBM-0 break trigger event detect interrupt enable"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IEA:
+          desc: "APB interrupt all enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    CR0:
+      desc: APB global control register 0
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        GPR:
+          desc: "General purpose data register bits"
+          bits: 23-16
+        IRDAT_MUX:
+          desc: "IR data envelope signal source select"
+          bits: 14-12
+          enum:
+            'DAT0':
+              desc: "Output 0"
+              val: 0
+            'DAT1':
+              desc: ""
+              val: 1
+            'DAT2':
+              desc: ""
+              val: 2
+            'DAT3':
+              desc: ""
+              val: 3
+            'DAT4':
+              desc: ""
+              val: 4
+            'DAT5':
+              desc: ""
+              val: 5
+            'DAT6':
+              desc: ""
+              val: 6
+            'DAT7':
+              desc: ""
+              val: 7
+        IRCLK_MUX:
+          desc: "IR carrier clock source select"
+          bits: 10-8
+          enum:
+            'CLK0':
+              desc: "Output 0"
+              val: 0
+            'CLK1':
+              desc: ""
+              val: 1
+            'CLK2':
+              desc: ""
+              val: 2
+            'CLK3':
+              desc: ""
+              val: 3
+            'CLK4':
+              desc: ""
+              val: 4
+            'CLK5':
+              desc: ""
+              val: 5
+            'CLK6':
+              desc: ""
+              val: 6
+            'CLK7':
+              desc: ""
+              val: 7
+        IRDAT_INV:
+          desc: "IR data envelope signal inverse enable bit"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IRCLK_INV:
+          desc: "IR clock signal inverse enable bit"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    CR1:
+      desc: APB global control register 1
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        TM36_EN2:
+          desc: "TM36 2nd Timer/Counter enable bit"
+          bits: 31
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM16_EN2:
+          desc: "TM16 2nd Timer/Counter enable bit"
+          bits: 23
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM10_EN2:
+          desc: "TM10 2nd Timer/Counter enable bit"
+          bits: 20
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM01_EN2:
+          desc: "TM01 2nd Timer/Counter enable bit"
+          bits: 17
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM00_EN2:
+          desc: "TM00 2nd Timer/Counter enable bit"
+          bits: 16
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM36_EN:
+          desc: "TM36 main Timer/Counter enable bit"
+          bits: 15
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM16_EN:
+          desc: "TM16 main Timer/Counter enable bit"
+          bits: 7
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM10_EN:
+          desc: "TM10 main Timer/Counter enable bit"
+          bits: 4
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM01_EN:
+          desc: "TM01 main Timer/Counter enable bit"
+          bits: 1
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM00_EN:
+          desc: "TM00 main Timer/Counter enable bit"
+          bits: 0
+          enum:
+            'NO':
+              desc: "No effect"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    CR2:
+      desc: APB global control register 2
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        ITR7_MUX:
+          desc: "Timer internal common trigger source ITR7 source select"
+          bits: 7-4
+          enum:
+            'TRG0':
+              desc: ""
+              val: 0
+            'TRG1':
+              desc: ""
+              val: 1
+            'TRG2':
+              desc: ""
+              val: 2
+            'TRG3':
+              desc: ""
+              val: 3
+            'TRG4':
+              desc: ""
+              val: 4
+            'TRG5':
+              desc: ""
+              val: 5
+            'TRG6':
+              desc: ""
+              val: 6
+            'TRG7':
+              desc: ""
+              val: 7
+            'TRG8':
+              desc: ""
+              val: 8
+            'TRG9':
+              desc: ""
+              val: 9
+            'TRG10':
+              desc: ""
+              val: 10
+        ITR6_MUX:
+          desc: "Timer internal common trigger source ITR6 source select"
+          bits: 2-0
+          enum:
+            'TRG0':
+              desc: ""
+              val: 0
+            'TRG1':
+              desc: ""
+              val: 1
+            'TRG2':
+              desc: ""
+              val: 2
+            'TRG3':
+              desc: ""
+              val: 3
+            'TRG4':
+              desc: ""
+              val: 4
+            'TRG5':
+              desc: ""
+              val: 5
+            'TRG6':
+              desc: ""
+              val: 6
+            'TRG7':
+              desc: ""
+              val: 7
+    OBM00:
+      desc: APB OBM0 control register-0
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        OBM0_BKS2:
+          desc: "OBM0 break signal source channel-2 select"
+          bits: 27-24
+          enum:
+            'BK0':
+              desc: "Output 1"
+              val: 0
+            'BK1':
+              desc: ""
+              val: 1
+            'BK2':
+              desc: ""
+              val: 2
+            'BK3':
+              desc: ""
+              val: 3
+            'BK4':
+              desc: ""
+              val: 4
+            'BK5':
+              desc: ""
+              val: 5
+            'BK6':
+              desc: ""
+              val: 6
+            'BK7':
+              desc: ""
+              val: 7
+            'BK8':
+              desc: ""
+              val: 8
+            'BK9':
+              desc: ""
+              val: 9
+            'BK10':
+              desc: ""
+              val: 10
+            'BK11':
+              desc: ""
+              val: 11
+            'BK12':
+              desc: ""
+              val: 12
+            'BK13':
+              desc: ""
+              val: 13
+            'BK14':
+              desc: ""
+              val: 14
+            'BK15':
+              desc: ""
+              val: 15
+        OBM0_BKS1:
+          desc: "OBM0 break signal source channel-1 select"
+          bits: 23-20
+          enum:
+            'BK0':
+              desc: "Output 1"
+              val: 0
+            'BK1':
+              desc: ""
+              val: 1
+            'BK2':
+              desc: ""
+              val: 2
+            'BK3':
+              desc: ""
+              val: 3
+            'BK4':
+              desc: ""
+              val: 4
+            'BK5':
+              desc: ""
+              val: 5
+            'BK6':
+              desc: ""
+              val: 6
+            'BK7':
+              desc: ""
+              val: 7
+            'BK8':
+              desc: ""
+              val: 8
+            'BK9':
+              desc: ""
+              val: 9
+            'BK10':
+              desc: ""
+              val: 10
+            'BK11':
+              desc: ""
+              val: 11
+            'BK12':
+              desc: ""
+              val: 12
+            'BK13':
+              desc: ""
+              val: 13
+            'BK14':
+              desc: ""
+              val: 14
+            'BK15':
+              desc: ""
+              val: 15
+        OBM0_BKS0:
+          desc: "OBM0 break signal source channel-0 select"
+          bits: 19-16
+          enum:
+            'BK0':
+              desc: "Output 1"
+              val: 0
+            'BK1':
+              desc: ""
+              val: 1
+            'BK2':
+              desc: ""
+              val: 2
+            'BK3':
+              desc: ""
+              val: 3
+            'BK4':
+              desc: ""
+              val: 4
+            'BK5':
+              desc: ""
+              val: 5
+            'BK6':
+              desc: ""
+              val: 6
+            'BK7':
+              desc: ""
+              val: 7
+            'BK8':
+              desc: ""
+              val: 8
+            'BK9':
+              desc: ""
+              val: 9
+            'BK10':
+              desc: ""
+              val: 10
+            'BK11':
+              desc: ""
+              val: 11
+            'BK12':
+              desc: ""
+              val: 12
+            'BK13':
+              desc: ""
+              val: 13
+            'BK14':
+              desc: ""
+              val: 14
+            'BK15':
+              desc: ""
+              val: 15
+        OBM0_BKN2:
+          desc: "OBM0 break source-2 signal inverse enable bit"
+          bits: 10
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM0_BKN1:
+          desc: "OBM0 break source-1 signal inverse enable bit"
+          bits: 9
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM0_BKN0:
+          desc: "OBM0 break source-0 signal inverse enable bit"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM0_LCK:
+          desc: "OBM0 break switching signal initial state write control"
+          bits: 5
+          enum:
+            'LOCKED':
+              desc: ""
+              val: 0
+            'UN_LOCKED':
+              desc: ""
+              val: 1
+        OBM0_STA:
+          desc: "OBM0 break switching signal initial state"
+          bits: 4
+          enum:
+            '0':
+              desc: "Output 0"
+              val: 0
+            '1':
+              desc: "Output 1"
+              val: 1
+        OBM0_MDS:
+          desc: "OBM0 break operation mode select"
+          bits: 1-0
+          enum:
+            'AND':
+              desc: "AND signal of all break channels' output"
+              val: 0
+            'CLR':
+              desc: "STA bit is cleared by falling edge of OR signal"
+              val: 1
+            'SET':
+              desc: "STA bit is set by falling edge of OR signal"
+              val: 2
+            'TOGGLE':
+              desc: "STA bit is toggle by falling edge of OR signal"
+              val: 3
+    OBM01:
+      desc: APB OBM0 control register-1
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        OBM0_MUX1:
+          desc: "OBM0 output source channel-1 signal select"
+          bits: 23-20
+          enum:
+            'SR0':
+              desc: "Output 0"
+              val: 0
+            'SR1':
+              desc: ""
+              val: 1
+            'SR2':
+              desc: ""
+              val: 2
+            'SR3':
+              desc: ""
+              val: 3
+            'SR4':
+              desc: ""
+              val: 4
+            'SR5':
+              desc: ""
+              val: 5
+            'SR6':
+              desc: ""
+              val: 6
+            'SR7':
+              desc: ""
+              val: 7
+            'SR8':
+              desc: ""
+              val: 8
+            'SR9':
+              desc: ""
+              val: 9
+            'SR10':
+              desc: ""
+              val: 10
+            'SR11':
+              desc: ""
+              val: 11
+            'SR12':
+              desc: ""
+              val: 12
+            'SR13':
+              desc: ""
+              val: 13
+            'SR14':
+              desc: ""
+              val: 14
+            'SR15':
+              desc: ""
+              val: 15
+        OBM0_MUX0:
+          desc: "OBM0 output source channel-0 signal select"
+          bits: 19-16
+          enum:
+            'SR0':
+              desc: "Output 0"
+              val: 0
+            'SR1':
+              desc: ""
+              val: 1
+            'SR2':
+              desc: ""
+              val: 2
+            'SR3':
+              desc: ""
+              val: 3
+            'SR4':
+              desc: ""
+              val: 4
+            'SR5':
+              desc: ""
+              val: 5
+            'SR6':
+              desc: ""
+              val: 6
+            'SR7':
+              desc: ""
+              val: 7
+            'SR8':
+              desc: ""
+              val: 8
+            'SR9':
+              desc: ""
+              val: 9
+            'SR10':
+              desc: ""
+              val: 10
+            'SR11':
+              desc: ""
+              val: 11
+            'SR12':
+              desc: ""
+              val: 12
+            'SR13':
+              desc: ""
+              val: 13
+            'SR14':
+              desc: ""
+              val: 14
+            'SR15':
+              desc: ""
+              val: 15
+        OBM0_FCKS:
+          desc: "OBM0 output deglitch filter clock source select"
+          bits: 5-4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'APB':
+              desc: "CLK_APB"
+              val: 1
+            'APB_DIV8':
+              desc: "CLK_APB divide by 8"
+              val: 2
+            'TM00_TRGO':
+              desc: ""
+              val: 3
+        OBM0_POL:
+          desc: "OBM0 output signal inverse enable bit"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM0_INV1:
+          desc: "OBM0 source channel-1 signal inverse enable bit"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM0_INV0:
+          desc: "OBM0 source channel-0 signal inverse enable bit"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    OBM10:
+      desc: APB OBM1 control register-0
+      offset: 0x28
+      reset_val: 0x0
+      fields:
+        OBM1_BKS2:
+          desc: "OBM1 break signal source channel-2 select"
+          bits: 27-24
+          enum:
+            'BK0':
+              desc: "Output 1"
+              val: 0
+            'BK1':
+              desc: ""
+              val: 1
+            'BK2':
+              desc: ""
+              val: 2
+            'BK3':
+              desc: ""
+              val: 3
+            'BK4':
+              desc: ""
+              val: 4
+            'BK5':
+              desc: ""
+              val: 5
+            'BK6':
+              desc: ""
+              val: 6
+            'BK7':
+              desc: ""
+              val: 7
+            'BK8':
+              desc: ""
+              val: 8
+            'BK9':
+              desc: ""
+              val: 9
+            'BK10':
+              desc: ""
+              val: 10
+            'BK11':
+              desc: ""
+              val: 11
+            'BK12':
+              desc: ""
+              val: 12
+            'BK13':
+              desc: ""
+              val: 13
+            'BK14':
+              desc: ""
+              val: 14
+            'BK15':
+              desc: ""
+              val: 15
+        OBM1_BKS1:
+          desc: "OBM1 break signal source channel-1 select"
+          bits: 23-20
+          enum:
+            'BK0':
+              desc: "Output 1"
+              val: 0
+            'BK1':
+              desc: ""
+              val: 1
+            'BK2':
+              desc: ""
+              val: 2
+            'BK3':
+              desc: ""
+              val: 3
+            'BK4':
+              desc: ""
+              val: 4
+            'BK5':
+              desc: ""
+              val: 5
+            'BK6':
+              desc: ""
+              val: 6
+            'BK7':
+              desc: ""
+              val: 7
+            'BK8':
+              desc: ""
+              val: 8
+            'BK9':
+              desc: ""
+              val: 9
+            'BK10':
+              desc: ""
+              val: 10
+            'BK11':
+              desc: ""
+              val: 11
+            'BK12':
+              desc: ""
+              val: 12
+            'BK13':
+              desc: ""
+              val: 13
+            'BK14':
+              desc: ""
+              val: 14
+            'BK15':
+              desc: ""
+              val: 15
+        OBM1_BKS0:
+          desc: "OBM1 break signal source channel-0 select"
+          bits: 19-16
+          enum:
+            'BK0':
+              desc: "Output 1"
+              val: 0
+            'BK1':
+              desc: ""
+              val: 1
+            'BK2':
+              desc: ""
+              val: 2
+            'BK3':
+              desc: ""
+              val: 3
+            'BK4':
+              desc: ""
+              val: 4
+            'BK5':
+              desc: ""
+              val: 5
+            'BK6':
+              desc: ""
+              val: 6
+            'BK7':
+              desc: ""
+              val: 7
+            'BK8':
+              desc: ""
+              val: 8
+            'BK9':
+              desc: ""
+              val: 9
+            'BK10':
+              desc: ""
+              val: 10
+            'BK11':
+              desc: ""
+              val: 11
+            'BK12':
+              desc: ""
+              val: 12
+            'BK13':
+              desc: ""
+              val: 13
+            'BK14':
+              desc: ""
+              val: 14
+            'BK15':
+              desc: ""
+              val: 15
+        OBM1_BKN2:
+          desc: "OBM1 break source-2 signal inverse enable bit"
+          bits: 10
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM1_BKN1:
+          desc: "OBM1 break source-1 signal inverse enable bit"
+          bits: 9
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM1_BKN0:
+          desc: "OBM1 break source-0 signal inverse enable bit"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM1_LCK:
+          desc: "OBM1 break switching signal initial state write control"
+          bits: 5
+          enum:
+            'LOCKED':
+              desc: ""
+              val: 0
+            'UN_LOCKED':
+              desc: ""
+              val: 1
+        OBM1_STA:
+          desc: "OBM1 break switching signal initial state"
+          bits: 4
+          enum:
+            '0':
+              desc: "Output 0"
+              val: 0
+            '1':
+              desc: "Output 1"
+              val: 1
+        OBM1_MDS:
+          desc: "OBM1 break operation mode select"
+          bits: 1-0
+          enum:
+            'AND':
+              desc: "AND signal of all break channels' output"
+              val: 0
+            'CLR':
+              desc: "STA bit is cleared by falling edge of OR signal"
+              val: 1
+            'SET':
+              desc: "STA bit is set by falling edge of OR signal"
+              val: 2
+            'TOGGLE':
+              desc: "STA bit is toggle by falling edge of OR signal"
+              val: 3
+    OBM11:
+      desc: APB OBM1 control register-1
+      offset: 0x2c
+      reset_val: 0x0
+      fields:
+        OBM1_MUX1:
+          desc: "OBM1 output source channel-1 signal select"
+          bits: 23-20
+          enum:
+            'SR0':
+              desc: "Output 0"
+              val: 0
+            'SR1':
+              desc: ""
+              val: 1
+            'SR2':
+              desc: ""
+              val: 2
+            'SR3':
+              desc: ""
+              val: 3
+            'SR4':
+              desc: ""
+              val: 4
+            'SR5':
+              desc: ""
+              val: 5
+            'SR6':
+              desc: ""
+              val: 6
+            'SR7':
+              desc: ""
+              val: 7
+            'SR8':
+              desc: ""
+              val: 8
+            'SR9':
+              desc: ""
+              val: 9
+            'SR10':
+              desc: ""
+              val: 10
+            'SR11':
+              desc: ""
+              val: 11
+            'SR12':
+              desc: ""
+              val: 12
+            'SR13':
+              desc: ""
+              val: 13
+            'SR14':
+              desc: ""
+              val: 14
+            'SR15':
+              desc: ""
+              val: 15
+        OBM1_MUX0:
+          desc: "OBM1 output source channel-0 signal select"
+          bits: 19-16
+          enum:
+            'SR0':
+              desc: "Output 0"
+              val: 0
+            'SR1':
+              desc: ""
+              val: 1
+            'SR2':
+              desc: ""
+              val: 2
+            'SR3':
+              desc: ""
+              val: 3
+            'SR4':
+              desc: ""
+              val: 4
+            'SR5':
+              desc: ""
+              val: 5
+            'SR6':
+              desc: ""
+              val: 6
+            'SR7':
+              desc: ""
+              val: 7
+            'SR8':
+              desc: ""
+              val: 8
+            'SR9':
+              desc: ""
+              val: 9
+            'SR10':
+              desc: ""
+              val: 10
+            'SR11':
+              desc: ""
+              val: 11
+            'SR12':
+              desc: ""
+              val: 12
+            'SR13':
+              desc: ""
+              val: 13
+            'SR14':
+              desc: ""
+              val: 14
+            'SR15':
+              desc: ""
+              val: 15
+        OBM1_FCKS:
+          desc: "OBM1 output deglitch filter clock source select"
+          bits: 5-4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'APB':
+              desc: "CLK_APB"
+              val: 1
+            'APB_DIV8':
+              desc: "CLK_APB divide by 8"
+              val: 2
+            'TM00_TRGO':
+              desc: ""
+              val: 3
+        OBM1_POL:
+          desc: "OBM1 output signal inverse enable bit"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM1_INV1:
+          desc: "OBM1 source channel-1 signal inverse enable bit"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OBM1_INV0:
+          desc: "OBM1 source channel-0 signal inverse enable bit"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1

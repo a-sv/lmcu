@@ -1,0 +1,1040 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: Clock Source Controller
+  ver: 1
+  registers:
+    STA:
+      desc: CSC status register
+      offset: 0x0
+      reset_val: 0x20000
+      fields:
+        PLL_STA:
+          desc: "PLL clock stable and ready status after PLL enabled"
+          bits: 31
+          enum:
+            'UNREADY':
+              desc: ""
+              val: 0
+            'READY':
+              desc: ""
+              val: 1
+        IHRCO_STA:
+          desc: "IHRCO clock stable and ready status after IHRCO enabled"
+          bits: 30
+          enum:
+            'UNREADY':
+              desc: ""
+              val: 0
+            'READY':
+              desc: ""
+              val: 1
+        ILRCO_STA:
+          desc: "ILRCO clock stable and ready status after ILRCO enabled"
+          bits: 29
+          enum:
+            'UNREADY':
+              desc: ""
+              val: 0
+            'READY':
+              desc: ""
+              val: 1
+        XOSC_STA:
+          desc: "XOSC clock stable and ready status after XOSC enabled"
+          bits: 28
+          enum:
+            'UNREADY':
+              desc: ""
+              val: 0
+            'READY':
+              desc: ""
+              val: 1
+        MAIN_STA:
+          desc: "System main clock source select MUX switching status"
+          bits: 26-24
+          enum:
+            'SWITCHING':
+              desc: "MUX is switching and clock is not yet stable"
+              val: 0
+            'CK_HS':
+              desc: "MUX has switched and clock is ready"
+              val: 1
+            'CK_PLLI':
+              desc: "MUX has switched and clock is ready"
+              val: 2
+            'CK_PLLO':
+              desc: "MUX has switched and clock is ready"
+              val: 4
+        HS_STA:
+          desc: "Input high speed clock source select MUX switching status"
+          bits: 23-20
+          enum:
+            'SWITCHING':
+              desc: "MUX is switching and clock is not yet stable"
+              val: 0
+            'IHRCO':
+              desc: ""
+              val: 1
+            'XOSC':
+              desc: ""
+              val: 2
+            'ILRCO':
+              desc: ""
+              val: 4
+            'CK_EXT':
+              desc: ""
+              val: 8
+        LS_STA:
+          desc: "Input low speed clock source select MUX switching status"
+          bits: 19-16
+          enum:
+            'SWITCHING':
+              desc: "MUX is switching and clock is not yet stable"
+              val: 0
+            'XOSC':
+              desc: ""
+              val: 2
+            'ILRCO':
+              desc: ""
+              val: 4
+            'CK_EXT':
+              desc: ""
+              val: 8
+        MCDF:
+          desc: "XOSC missing clock detect failure event flag"
+          bits: 7
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        PLLF:
+          desc: "PLL clock stable and ready detect flag"
+          bits: 6
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        IHRCOF:
+          desc: "IHRCO clock stable and ready detect flag"
+          bits: 5
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        ILRCOF:
+          desc: "ILRCO clock stable and ready detect flag"
+          bits: 4
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        XOSCF:
+          desc: "XOSC clock stable and ready detect flag"
+          bits: 1
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+    INT:
+      desc: CSC interrupt enable register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        MCD_IE:
+          desc: "XOSC missing clock detect failure event interrupt enable"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        PLL_IE:
+          desc: "PLL clock stable interrupt enable"
+          bits: 6
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IHRCO_IE:
+          desc: "IHRCO clock stable interrupt enable"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ILRCO_IE:
+          desc: "ILRCO clock stable interrupt enable"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        XOSC_IE:
+          desc: "XOSC clock stable interrupt enable"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IEA:
+          desc: "CSC interrupt all enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    PLL:
+      desc: CSC OSC and PLL control register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        XOSC_GN:
+          desc: "Gain control bits of XOSC. (The default value is loaded from CFG OR after Warm reset)"
+          bits: 17-16
+          enum:
+            '32K_NORMAL':
+              desc: "for 32KHz crystal"
+              val: 0
+            'MEDIUM':
+              desc: ""
+              val: 1
+            '32K_LOWEST':
+              desc: "for 32KHz crystal"
+              val: 2
+        PLL_MUL:
+          desc: "CSC PLL multiplication factor select"
+          bits: 8
+          enum:
+            '16':
+              desc: "PLL input clock x 16"
+              val: 0
+            '24':
+              desc: "PLL input clock x 24"
+              val: 1
+    KEY:
+      desc: CSC write protected Key register
+      offset: 0xc
+      reset_val: 0x1
+      fields:
+        KEY:
+          desc: "CSC key register"
+          bits: 15-0
+    CR0:
+      desc: CSC clock source control register 0
+      offset: 0x10
+      reset_val: 0x200
+      fields:
+        MCD_SEL:
+          desc: "Missing clock detection duration select"
+          bits: 23-22
+          enum:
+            '125US':
+              desc: ""
+              val: 0
+            '250US':
+              desc: ""
+              val: 1
+            '500US':
+              desc: ""
+              val: 2
+            '1MS':
+              desc: ""
+              val: 3
+        IHRCO_SEL:
+          desc: "IHRCO clock frequency trimming set select"
+          bits: 18
+          enum:
+            '12':
+              desc: "12MHz from trimming set 0"
+              val: 0
+            '11':
+              desc: "11.059MHz from trimming set 1"
+              val: 1
+        ST_SEL:
+          desc: "System tick timer external clock source select"
+          bits: 16
+          enum:
+            'HCLK8':
+              desc: "HCLK divided by 8"
+              val: 0
+            'CK_LS2':
+              desc: "CK_LS divided by 2"
+              val: 1
+        MAIN_SEL:
+          desc: "System main clock source select"
+          bits: 15-14
+          enum:
+            'CK_HS':
+              desc: ""
+              val: 0
+            'CK_PLLI':
+              desc: ""
+              val: 1
+            'CK_PLLO':
+              desc: ""
+              val: 2
+        HS_SEL:
+          desc: "Input high speed clock source select"
+          bits: 11-10
+          enum:
+            'IHRCO':
+              desc: ""
+              val: 0
+            'XOSC':
+              desc: ""
+              val: 1
+            'ILRCO':
+              desc: ""
+              val: 2
+            'CK_EXT':
+              desc: ""
+              val: 3
+        LS_SEL:
+          desc: "Input low speed clock source select"
+          bits: 9-8
+          enum:
+            'XOSC':
+              desc: ""
+              val: 1
+            'ILRCO':
+              desc: ""
+              val: 2
+            'CK_EXT':
+              desc: ""
+              val: 3
+        PLL_EN:
+          desc: "PLL circuit enable"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        MCD_DIS:
+          desc: "MCD missing clock detector circuit disable"
+          bits: 4
+          enum:
+            'ENABLE':
+              desc: ""
+              val: 0
+            'DISABLE':
+              desc: ""
+              val: 1
+        IHRCO_EN:
+          desc: "IHRCO circuit enable"
+          bits: 3
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    DIV:
+      desc: CSC clock  divider register
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        UT_DIV:
+          desc: "Unit time clock source divider"
+          bits: 27-26
+          enum:
+            'DIV32':
+              desc: "divided by 32"
+              val: 0
+            'DIV8':
+              desc: "divided by 8"
+              val: 1
+            'DIV16':
+              desc: "divided by 16"
+              val: 2
+            'DIV128':
+              desc: "divided by 128"
+              val: 3
+        APB_DIV:
+          desc: "APB clock source divider. Value 0~4 mean to divide by 1,2,4,8,16"
+          bits: 18-16
+          enum:
+            'DIV1':
+              desc: "divided by 1"
+              val: 0
+            'DIV2':
+              desc: "divided by 2"
+              val: 1
+            'DIV4':
+              desc: "divided by 4"
+              val: 2
+            'DIV8':
+              desc: "divided by 8"
+              val: 3
+            'DIV16':
+              desc: "divided by 16"
+              val: 4
+        AHB_DIV:
+          desc: "AHB clock source divider. Value 0~9 mean to divide by 1,2,4,8,16,32,64,128,256,512"
+          bits: 11-8
+          enum:
+            'DIV1':
+              desc: "divided by 1"
+              val: 0
+            'DIV2':
+              desc: "divided by 2"
+              val: 1
+            'DIV4':
+              desc: "divided by 4"
+              val: 2
+            'DIV8':
+              desc: "divided by 8"
+              val: 3
+            'DIV16':
+              desc: "divided by 16"
+              val: 4
+            'DIV32':
+              desc: "divided by 32"
+              val: 5
+            'DIV64':
+              desc: "divided by 64"
+              val: 6
+            'DIV128':
+              desc: "divided by 128"
+              val: 7
+            'DIV256':
+              desc: "divided by 256"
+              val: 8
+            'DIV512':
+              desc: "divided by 512"
+              val: 9
+        PLLO_DIV:
+          desc: "PLL output clock source divider"
+          bits: 5-4
+          enum:
+            'DIV4':
+              desc: "divided by 4"
+              val: 0
+            'DIV3':
+              desc: "divided by 3"
+              val: 1
+            'DIV2':
+              desc: "divided by 2"
+              val: 2
+            'DIV1':
+              desc: "divided by 1"
+              val: 3
+        PLLI_DIV:
+          desc: "PLL input clock source divider"
+          bits: 1-0
+          enum:
+            'DIV1':
+              desc: "divided by 1"
+              val: 0
+            'DIV2':
+              desc: "divided by 2"
+              val: 1
+            'DIV4':
+              desc: "divided by 4"
+              val: 2
+            'DIV6':
+              desc: "divided by 6"
+              val: 3
+    CKO:
+      desc: CSC internal clock output control register
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        CKO_SEL:
+          desc: "Internal clock output source select"
+          bits: 6-4
+          enum:
+            'CK_MAIN':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+            'CK_APB':
+              desc: ""
+              val: 2
+            'CK_HS':
+              desc: ""
+              val: 3
+            'CK_LS':
+              desc: ""
+              val: 4
+            'CK_XOSC':
+              desc: ""
+              val: 5
+        CKO_DIV:
+          desc: "Internal clock output divider"
+          bits: 3-2
+          enum:
+            'DIV1':
+              desc: "divided by 1"
+              val: 0
+            'DIV2':
+              desc: "divided by 2"
+              val: 1
+            'DIV4':
+              desc: "divided by 4"
+              val: 2
+            'DIV8':
+              desc: "divided by 8"
+              val: 3
+        CKO_EN:
+          desc: "Internal clock output enable. When enables, it will reset the output divider"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    AHB:
+      desc: CSC AHB clock control register
+      offset: 0x1c
+      reset_val: 0x0
+      fields:
+        DMA_EN:
+          desc: "DMA clock source enable"
+          bits: 15
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        GPL_EN:
+          desc: "GPL clock source enable"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IOPD_EN:
+          desc: "IO Port D clock source enable"
+          bits: 3
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IOPC_EN:
+          desc: "IO Port C clock source enable"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IOPB_EN:
+          desc: "IO Port B clock source enable"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IOPA_EN:
+          desc: "IO Port A clock source enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    APB0:
+      desc: CSC APB clock control register 0
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        URT1_EN:
+          desc: "URT1 UART module clock source enable"
+          bits: 17
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        URT0_EN:
+          desc: "URT0 UART module clock source enable"
+          bits: 16
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SPI0_EN:
+          desc: "SPI0 module clock source enable"
+          bits: 12
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        I2C0_EN:
+          desc: "I2C0 module clock source enable"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        WWDT_EN:
+          desc: "WWDT module clock source enable. (This register is reset only by Cold reset.)"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IWDT_EN:
+          desc: "IWDT module clock source enable"
+          bits: 6
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RTC_EN:
+          desc: "RTC module clock source enable"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        CMP_EN:
+          desc: "CMP module clock source enable"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ADC0_EN:
+          desc: "ADC module clock source enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    APB1:
+      desc: CSC APB clock control register 1
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        TM36_EN:
+          desc: "TM36 module clock source enable"
+          bits: 15
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM16_EN:
+          desc: "TM11 module clock source enable"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM10_EN:
+          desc: "TM10 module clock source enable"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM01_EN:
+          desc: "TM01 module clock source enable"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TM00_EN:
+          desc: "TM00 module clock source enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    SLP0:
+      desc: CSC SLEEP mode clock enable register 0
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        SLP_URT1:
+          desc: "URT1 UART module clock enable in SLEEP mode"
+          bits: 17
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_URT0:
+          desc: "URT0 UART module clock enable in SLEEP mode"
+          bits: 16
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_SPI0:
+          desc: "SPI0 module clock enable in SLEEP mode"
+          bits: 12
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_I2C0:
+          desc: "I2C0 module clock enable in SLEEP mode"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_WWDT:
+          desc: "WWDT module clock enable in SLEEP mode"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_IWDT:
+          desc: "IWDT module clock enable in SLEEP mode"
+          bits: 6
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_RTC:
+          desc: "IWDT module clock enable in SLEEP mode"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_CMP:
+          desc: "CMP module clock enable in SLEEP mode"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_ADC0:
+          desc: "ADC module clock enable in SLEEP mode"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    SLP1:
+      desc: CSC SLEEP mode clock enable register 1
+      offset: 0x34
+      reset_val: 0x0
+      fields:
+        SLP_TM36:
+          desc: "TM36 module clock enable in SLEEP mode"
+          bits: 15
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_TM16:
+          desc: "TM11 module clock enable in SLEEP mode"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_TM10:
+          desc: "TM10 module clock enable in SLEEP mode"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_TM01:
+          desc: "TM01 module clock enable in SLEEP mode"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SLP_TM00:
+          desc: "TM00 module clock enable in SLEEP mode"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    STP0:
+      desc: CSC STOP mode clock enable register 0
+      offset: 0x38
+      reset_val: 0x0
+      fields:
+        STP_IWDT:
+          desc: "IWDT module clock enable in STOP mode"
+          bits: 6
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        STP_RTC:
+          desc: "IWDT module clock enable in STOP mode"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    CKS0:
+      desc: CSC clock source select register 0
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        CMP_CKS:
+          desc: "CMP process clock source select"
+          bits: 4
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+        ADC0_CKS:
+          desc: "ADC0 process clock source select"
+          bits: 0
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+    CKS1:
+      desc: CSC clock source select register 1
+      offset: 0x44
+      reset_val: 0x0
+      fields:
+        URT1_CKS:
+          desc: "URT1 process clock source select"
+          bits: 18
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+        URT0_CKS:
+          desc: "URT0 process clock source select"
+          bits: 16
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+        SPI0_CKS:
+          desc: "SPI0 process clock source select"
+          bits: 8
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+        I2C0_CKS:
+          desc: "I2C0 process clock source select"
+          bits: 0
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+    CKS2:
+      desc: CSC clock source select register 2
+      offset: 0x48
+      reset_val: 0x0
+      fields:
+        TM36_CKS:
+          desc: "TM36 process clock source select"
+          bits: 30
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+        TM16_CKS:
+          desc: "TM11 process clock source select"
+          bits: 14
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+        TM10_CKS:
+          desc: "TM10 process clock source select"
+          bits: 8
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+        TM01_CKS:
+          desc: "TM01 process clock source select"
+          bits: 2
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1
+        TM00_CKS:
+          desc: "TM00 process clock source select"
+          bits: 0
+          enum:
+            'CK_APB':
+              desc: ""
+              val: 0
+            'CK_AHB':
+              desc: ""
+              val: 1

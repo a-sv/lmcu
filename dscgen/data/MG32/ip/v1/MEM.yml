@@ -1,0 +1,396 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: Internal Memory Controller
+  ver: 1
+  registers:
+    STA:
+      desc: MEM status register
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        IAPSEF:
+          desc: "IAP Flash memory size setting error flag"
+          bits: 16
+          enum:
+            'NORMAL':
+              desc: "Not busy"
+              val: 0
+            'ERR':
+              desc: "Size over maximum value error"
+              val: 1
+        RPEF:
+          desc: "Flash memory read protect error detection flag"
+          bits: 6
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "reset event happened"
+              val: 1
+        WPEF:
+          desc: "Flash memory write protect error detection flag"
+          bits: 5
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "reset event happened"
+              val: 1
+        IAEF:
+          desc: "Memory code execution illegal address error detection flag"
+          bits: 4
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "reset event happened"
+              val: 1
+        EOPF:
+          desc: "Flash memory end of processing flag"
+          bits: 1
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "reset event happened"
+              val: 1
+        FBUSYF:
+          desc: "Flash memory access busy flag"
+          bits: 0
+          enum:
+            'NORMAL':
+              desc: "Not busy"
+              val: 0
+            'BUSY':
+              desc: ""
+              val: 1
+    INT:
+      desc: MEM interrupt enable register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        RPE_RE:
+          desc: "Flash memory read protect error detection reset enable"
+          bits: 22
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        WPE_RE:
+          desc: "Flash memory write protect error detection reset enable"
+          bits: 21
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IAE_RE:
+          desc: "Memory code execution illegal address detection reset enable"
+          bits: 20
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RPE_IE:
+          desc: "Flash memory read protect error detection interrupt enable"
+          bits: 6
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        WPE_IE:
+          desc: "Flash memory write protect error detection interrupt enable"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IAE_IE:
+          desc: "Memory code execution illegal address error detection interrupt enable"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        EOP_IE:
+          desc: "Flash memory end of processing interrupt enable"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IEA:
+          desc: "Memory controller interrupt all enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    KEY:
+      desc: MEM write protected key register
+      offset: 0xc
+      reset_val: 0x10001
+      fields:
+        KEY2:
+          desc: "Reset key register-2"
+          bits: 31-16
+        KEY:
+          desc: "Reset key register"
+          bits: 15-0
+    CR0:
+      desc: MEM control register 0
+      offset: 0x10
+      reset_val: 0x200002
+      fields:
+        IAP_AEN:
+          desc: "IAP memory size MEM_IAP_SIZE register access enable"
+          bits: 21
+          enum:
+            'DISABLE':
+              desc: "Register access lock"
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        HSP_EN:
+          desc: "Flash memory read high speed mode enable during reset"
+          bits: 20
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        BOOT_MS:
+          desc: "System reset memory select and memory is mapped at 0x0000 0000"
+          bits: 17-16
+          enum:
+            'APPLICATION_FLASH':
+              desc: ""
+              val: 0
+            'BOOT_FLASH':
+              desc: ""
+              val: 1
+            'EMBEDDED_SRAM':
+              desc: ""
+              val: 2
+        FWAIT:
+          desc: "Flash memory read access wait state selection"
+          bits: 13-12
+          enum:
+            'ZERO':
+              desc: "Zero wait state if  25 MHz > CK_AHB"
+              val: 0
+            'ONE':
+              desc: "One wait state if 50MHz >CK_AHB> 25 MHz"
+              val: 1
+            'TWO':
+              desc: "Two wait state if 75MHz >CK_AHB> 50 MHz"
+              val: 3
+        MDS:
+          desc: "AP/IAP flash memory access mode select"
+          bits: 7-4
+          enum:
+            'NO':
+              desc: "No Operation"
+              val: 0
+            'WRITE':
+              desc: "Write AP/IAP/ISPD Flash"
+              val: 1
+            'ERASE':
+              desc: "Erase a page of AP/IAP/ISPD Flash"
+              val: 2
+        HOLD:
+          desc: "CPU hold control under flash memory access"
+          bits: 2
+          enum:
+            'HOLD':
+              desc: ""
+              val: 0
+            'NORMAL':
+              desc: ""
+              val: 1
+        HF_EN:
+          desc: "Flash memory data access error HardFault enable"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        EN:
+          desc: "Memory controller enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    CR1:
+      desc: MEM control register 1
+      offset: 0x14
+      reset_val: 0x10
+      fields:
+        OB_WEN:
+          desc: "Flash OB0 Option-Byte memory write enable"
+          bits: 11
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ISP_REN:
+          desc: "Flash ISP Boot memory read enable for AP program"
+          bits: 9
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ISP_WEN:
+          desc: "Flash ISP Boot memory write enable"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IAP_EXEC:
+          desc: "Flash IAP data memory code execution function enable"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ISPD_REN:
+          desc: "Flash ISP data memory read enable for ISP program"
+          bits: 3
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ISPD_WEN:
+          desc: "Flash ISP data memory write enable for ISP program"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IAP_WEN:
+          desc: "Flash IAP memory write enable"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        AP_WEN:
+          desc: "Flash AP memory write enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    SKEY:
+      desc: MEM Flash memory protected key register
+      offset: 0x1c
+      reset_val: 0x7
+      fields:
+        SKEY2:
+          desc: "Reserved. for internal using"
+          bits: 31-16
+        SKEY:
+          desc: "MEM sequential key register for AP/IAP/ISPD flash"
+          bits: 7-0
+    FADR:
+      desc: MEM Flash memory address register
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        FADR:
+          desc: "Flash memory access address register"
+          bits: 31-0
+    FDAT:
+      desc: MEM Flash memory data register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        FDAT:
+          desc: "Flash memory access data register"
+          bits: 31-0
+    IAPSZ:
+      desc: MEM Flash memory IAP size register
+      offset: 0x28
+      reset_val: 0x0
+      fields:
+        IAP_SIZE:
+          desc: "IAP memory size select"
+          bits: 15-8
+    MCR:
+      desc: MEM manufacturer control register
+      offset: 0x2c
+      reset_val: 0x0
+      fields:
+        OB1_WEN:
+          desc: "Flash OB1 Option-Byte memory write enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1

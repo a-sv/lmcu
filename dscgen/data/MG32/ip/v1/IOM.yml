@@ -1,0 +1,141 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: IO Mode/AFS Setting
+  ver: 1
+  registers:
+    CR:
+      desc: PIN IO control register
+      offset: 0x0
+      count: 15
+      size: 32
+      reset_val: 0x0
+      fields:
+        AFS:
+          desc: "Pin alternate function select. Refer the GPIO AFS table for detail information"
+          bits: 15-12
+          enum:
+            'AF0':
+              val: 0
+            'AF1':
+              val: 1
+            'AF2':
+              val: 2
+            'AF3':
+              val: 3
+            'AF4':
+              val: 4
+            'AF5':
+              val: 5
+            'AF6':
+              val: 6
+            'AF7':
+              val: 7
+            'AF8':
+              val: 8
+            'AF9':
+              val: 9
+            'AF10':
+              val: 10
+        FDIV:
+          desc: "Pin input deglitch filter clock divider select"
+          bits: 11-10
+          enum:
+            'BYPASS':
+              desc: "Bypass filter"
+              val: 0
+            'DIV1':
+              desc: "Divided by 1"
+              val: 1
+            'DIV4':
+              desc: "Divided by 4"
+              val: 2
+            'DIV16':
+              desc: "Divided by 16"
+              val: 3
+        ODC:
+          desc: "Pin output drive strength select"
+          bits: 9-8
+          enum:
+            'LEVEL0':
+              desc: "Drive strength-full"
+              val: 0
+            'LEVEL1':
+              desc: "Drive strength-1/2"
+              val: 1
+            'LEVEL2':
+              desc: "Drive strength-1/4"
+              val: 2
+            'LEVEL3':
+              desc: "Drive strength-1/8"
+              val: 3
+        INV:
+          desc: "Pin input inverse enable bit"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        PU:
+          desc: "Pin pull-up resister enable bit"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        HS:
+          desc: "Pin output high speed mode enable bit"
+          bits: 3
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IOM:
+          desc: "Pin IO mode control bits"
+          bits: 2-0
+          enum:
+            'AIO':
+              desc: "analog IO"
+              val: 0
+            'ODO':
+              desc: "open drain output"
+              val: 1
+            'PPO':
+              desc: "push pull output"
+              val: 2
+            'DIN':
+              desc: "Digital input"
+              val: 3
+    FLT:
+      desc: Port input filter control register
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        FCKS:
+          desc: "Port input deglitch filter clock source select for all pins of the port"
+          bits: 2-0
+          enum:
+            'CLK_AHB':
+              desc: ""
+              val: 0
+            'CLK_AHB_DIV8':
+              desc: "CLK_AHB divide by 8"
+              val: 1
+            'CLK_ILRCO':
+              desc: ""
+              val: 2
+            'TM00_TRGO':
+              desc: ""
+              val: 3
+            'CK_UT':
+              desc: ""
+              val: 4

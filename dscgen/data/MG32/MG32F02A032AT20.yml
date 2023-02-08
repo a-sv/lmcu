@@ -1,0 +1,8 @@
+device:
+  $extends: F0/device.inc | device
+  rom_size: 32768
+  ram_size: 4096
+  pins: 20
+
+nvic_irq:
+  $extends: F0/nvic_irqn_f0.inc | nvic_irqn

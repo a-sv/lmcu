@@ -1,0 +1,1773 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: UART Control Module
+  ver: 1
+  registers:
+    STA:
+      desc: URT status register 1
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        CALTMOF:
+          desc: "UART auto baud-rate calibration sync field receive time-out time out flag"
+          bits: 30
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        BKTMOF:
+          desc: "UART break receive time out flag.  (set by hardware and clear by software writing 1)"
+          bits: 29
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        IDTMOF:
+          desc: "UART idle state time out flag.  (set by hardware and clear by software writing 1)"
+          bits: 28
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        RXTMOF:
+          desc: "UART receive time out flag.  (set by hardware and clear by software writing 1)"
+          bits: 27
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        TXEF:
+          desc: "UART TX error detect flag"
+          bits: 24
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        ROVRF:
+          desc: "UART receive overrun error flag"
+          bits: 23
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        NCEF:
+          desc: "UART receive noised character error flag"
+          bits: 22
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        FEF:
+          desc: "UART frame error flag.  (set by hardware and clear by software writing 1)"
+          bits: 21
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        PEF:
+          desc: "UART parity error flag"
+          bits: 20
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        CTSF:
+          desc: "UART CTS change detect interrupt flag"
+          bits: 18
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        IDLF:
+          desc: "UART idle line detect flag. (set by hardware and clear by software writing 1)"
+          bits: 17
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        BKF:
+          desc: "UART break condition detect flag. (set by hardware and clear by software writing 1)"
+          bits: 16
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        CALOVF:
+          desc: "UART auto baud-rate calibration overflow status flag"
+          bits: 15
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        CALUDF:
+          desc: "UART auto baud-rate calibration underflow status flag"
+          bits: 14
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        CALCF:
+          desc: "UART auto baud-rate calibration complete flag"
+          bits: 13
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        TMOF:
+          desc: "UART timeout timer timeout flag. (set by hardware and clear by software writing 1)"
+          bits: 12
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        BRTF:
+          desc: "UART baud-rate generator timer timeout flag"
+          bits: 11
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        SADRF:
+          desc: "UART slave address matched flag. (set by hardware and clear by software writing 1)"
+          bits: 10
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        TXF:
+          desc: "UART transmit data register empty"
+          bits: 7
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        RXF:
+          desc: "UART receive data register not empty"
+          bits: 6
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        RXDF:
+          desc: "UART received data byte number is different from previous received data byte number f"
+          bits: 5
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        LSF:
+          desc: "UART line statue flag for break condition, idle line, CTS detect"
+          bits: 4
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        ERRF:
+          desc: "UART error interrupt flag for parity error, frame error, overrun error, receive time"
+          bits: 3
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        TCF:
+          desc: "UART transmission complete flag"
+          bits: 2
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        UGF:
+          desc: "UART general event flag"
+          bits: 1
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        RHF:
+          desc: "UART receive hold flag"
+          bits: 0
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+    INT:
+      desc: URT interrupt enable register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        CALTMO_IE:
+          desc: "UART auto baud-rate calibration sync field receive time-out time out interrupt enable"
+          bits: 30
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        BKTMO_IE:
+          desc: "UART break receive time out interrupt enable"
+          bits: 29
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IDTMO_IE:
+          desc: "UART idle state time out interrupt enable"
+          bits: 28
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RXTMO_IE:
+          desc: "UART receive time out interrupt enable"
+          bits: 27
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TXE_IE:
+          desc: "UART TX error detect interrupt enable. Refer to URTx_TXE_MDS for detail"
+          bits: 24
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ROVR_IE:
+          desc: "UART receive overrun error interrupt enable. Refer to URTx_ROVRF for the detail"
+          bits: 23
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        NCE_IE:
+          desc: "UART receive noised character interrupt enable"
+          bits: 22
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        FE_IE:
+          desc: "UART frame error interrupt enable"
+          bits: 21
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        PE_IE:
+          desc: "UART parity error interrupt enable"
+          bits: 20
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        CTS_IE:
+          desc: "UART CTS change detect interrupt enable"
+          bits: 18
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IDL_IE:
+          desc: "UART idle line detect interrupt enable"
+          bits: 17
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        BK_IE:
+          desc: "UART break condition detect interrupt enable"
+          bits: 16
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        CALC_IE:
+          desc: "UART auto baud-rate calibration complete interrupt enable"
+          bits: 13
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TMO_IE:
+          desc: "UART timeout timer timeout interrupt enable"
+          bits: 12
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        BRT_IE:
+          desc: "UART baud-rate generator timer timeout interrupt enable"
+          bits: 11
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        SADR_IE:
+          desc: "UART slave address matched interrupt enable"
+          bits: 10
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TX_IE:
+          desc: "UART transmit data register empty interrupt enable. Refer to URTx_TXF for the detail"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RX_IE:
+          desc: "UART receive data register not empty interrupt enable"
+          bits: 6
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        LS_IE:
+          desc: "UART line statue flag for break condition, idle line, CTS detect"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ERR_IE:
+          desc: "UART error interrupt enable for parity error, frame error, overrun error, receive tim"
+          bits: 3
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TC_IE:
+          desc: "UART transmission complete interrupt enable"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        UG_IE:
+          desc: "UART general event interrupt enable for URTx_SADRF , URTx_TF , URTx_RCNTF or URTx_TCN"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IEA:
+          desc: "UART interrupt all enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    CLK:
+      desc: URT clock source register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        CKO_LCK:
+          desc: "UART PSC clock output signal initial state control"
+          bits: 29
+          enum:
+            'LOCKED':
+              desc: ""
+              val: 0
+            'UN_LOCKED':
+              desc: ""
+              val: 1
+        CKO_STA:
+          desc: "UART PSC clock output signal initial state"
+          bits: 28
+          enum:
+            '0':
+              desc: "Output 0"
+              val: 0
+            '1':
+              desc: "Output 1"
+              val: 1
+        BRO_LCK:
+          desc: "UART baud-rate timer timeout signal initial state control"
+          bits: 27
+          enum:
+            'LOCKED':
+              desc: ""
+              val: 0
+            'UN_LOCKED':
+              desc: ""
+              val: 1
+        BRO_STA:
+          desc: "UART baud-rate timer timeout signal initial state"
+          bits: 26
+          enum:
+            '0':
+              desc: "Output 0"
+              val: 0
+            '1':
+              desc: "Output 1"
+              val: 1
+        BR_MDS:
+          desc: "UART baud-rate timer mode select"
+          bits: 25
+          enum:
+            'SEPARATED':
+              desc: "Separated PSC and CNT counters for UART baud-rate generator"
+              val: 0
+            'COMBINED':
+              desc: "Combine to a linear counter for general using timer"
+              val: 1
+        BR_EN:
+          desc: "UART baud-rate timer enable. When enables, the baud-rate timer"
+          bits: 24
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TX_CKS:
+          desc: "UART transmission clock source select"
+          bits: 21-20
+          enum:
+            'INTERNAL':
+              desc: "UART internal clock source CK_URTx_INT"
+              val: 0
+            'TM01_TRGO':
+              desc: ""
+              val: 1
+            'TM10_TRGO':
+              desc: ""
+              val: 2
+            'EXT_CLK':
+              desc: "external clock from URTx_CLK pin"
+              val: 3
+        RX_CKS:
+          desc: "UART receive clock source select"
+          bits: 17-16
+          enum:
+            'INTERNAL':
+              desc: "UART internal clock source CK_URTx_INT"
+              val: 0
+            'TM01_TRGO':
+              desc: ""
+              val: 1
+            'TM10_TRGO':
+              desc: ""
+              val: 2
+            'EXT_CLK':
+              desc: "external clock from URTx_CLK pin"
+              val: 3
+        ECK_CKS:
+          desc: "UART external clock input select"
+          bits: 7
+          enum:
+            'CLK':
+              desc: "URTx_CLK pin"
+              val: 0
+            'RX':
+              desc: "receiving signal"
+              val: 1
+        CLK_CKS:
+          desc: "UART external clock output source select"
+          bits: 5
+          enum:
+            'OUT':
+              desc: "CK_URTx_OUT from clock output divider"
+              val: 0
+            'SC':
+              desc: "CK_URTx_SC from clock  input prescaler"
+              val: 1
+        CLK_EN:
+          desc: "URTx_CLK signal output enable"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        CK_SEL:
+          desc: "UART internal clock CK_UART source select"
+          bits: 3-1
+          enum:
+            'PROC':
+              desc: "CK_URTx_PR process clock from CSC"
+              val: 0
+            'CK_LS':
+              desc: ""
+              val: 2
+            'TM00_TRGO':
+              desc: ""
+              val: 3
+            'EXT_CLK':
+              desc: "external clock from URTx_ECK signal"
+              val: 4
+    STA2:
+      desc: URT status register 2
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        TX_LVL:
+          desc: "UART data buffer transmission remained level indications"
+          bits: 30-28
+          enum:
+            '0':
+              desc: "0-byte,empty"
+              val: 0
+            '1':
+              desc: "1-byte"
+              val: 1
+            '2':
+              desc: "2-byte"
+              val: 2
+            '3':
+              desc: "3-byte"
+              val: 3
+            '4':
+              desc: "4-byte"
+              val: 4
+        RX_LVL:
+          desc: "UART data buffer received level indications"
+          bits: 26-24
+          enum:
+            '0':
+              desc: "0-byte,empty"
+              val: 0
+            '1':
+              desc: "1-byte"
+              val: 1
+            '2':
+              desc: "2-byte"
+              val: 2
+            '3':
+              desc: "3-byte"
+              val: 3
+            '4':
+              desc: "4-byte"
+              val: 4
+        CTS:
+          desc: "UART CTS line status bit"
+          bits: 12
+        IR_BUSYF:
+          desc: "UART IrDA data received busy flag"
+          bits: 7
+          enum:
+            'NO':
+              desc: "No IrDA signal detect"
+              val: 0
+            'BUSY':
+              desc: "detect some IrDA signal"
+              val: 1
+        BKBF:
+          desc: "UART send break busy flag.  (set and clear by hardware)"
+          bits: 6
+          enum:
+            'NORMAL':
+              desc: "No break transmitted or transmit finished"
+              val: 0
+            'BUSY':
+              desc: "Event happened"
+              val: 1
+        NCF:
+          desc: "UART receive noised character flag.  (set and clear by hardware)"
+          bits: 5
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'HAPPENED':
+              desc: "Event happened"
+              val: 1
+        ADR:
+          desc: "UART data receive slave address bit of shift buffer"
+          bits: 2
+        PAR:
+          desc: "UART data receive parity bit of shift buffer"
+          bits: 1
+        BUSYF:
+          desc: "UART RX busy flag"
+          bits: 0
+          enum:
+            'NORMAL':
+              desc: "No event occurred"
+              val: 0
+            'BUSY':
+              desc: "Event happened"
+              val: 1
+    CR0:
+      desc: URT control register 0
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        DMA_TXEN:
+          desc: "Direct memory access enable to transmit"
+          bits: 31
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        DMA_RXEN:
+          desc: "Direct memory access enable to receive"
+          bits: 30
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        DDTX_EN:
+          desc: "Hardware force to disable DMA TX function enable bit when detects a break condition"
+          bits: 29
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        LBM_EN:
+          desc: "UART loop back mode enable bit"
+          bits: 23
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        NCHAR_DIS:
+          desc: "UART receiving noised character disable bit"
+          bits: 22
+          enum:
+            'ENABLE':
+              desc: "Accept noised character"
+              val: 0
+            'DISABLE':
+              desc: "Skip noised character"
+              val: 1
+        NCHAR_HE:
+          desc: "UART receiving hold enable bit if receives a noised character"
+          bits: 21
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IDL_MDS:
+          desc: "UART idle line detect management mode select"
+          bits: 20
+          enum:
+            'NO':
+              desc: "No operation"
+              val: 0
+            'LOAD':
+              desc: "Force to load shadow buffer"
+              val: 1
+        RX_TH:
+          desc: "UART data buffer high threshold for received access"
+          bits: 17-16
+          enum:
+            '1BYTE':
+              desc: "default"
+              val: 0
+            '2BYTE':
+              desc: ""
+              val: 1
+            '3BYTE':
+              desc: ""
+              val: 2
+            '4BYTE':
+              desc: ""
+              val: 3
+        DE_GT:
+          desc: "URTx_DE signal output guard time select by unit of bit time"
+          bits: 15-14
+          enum:
+            '1_4':
+              desc: ""
+              val: 0
+            '1_2':
+              desc: ""
+              val: 1
+            '1':
+              desc: ""
+              val: 2
+            '2':
+              desc: ""
+              val: 3
+        DE_INV:
+          desc: "URTx_DE signal inverse enable. The hardware DE output default is low level"
+          bits: 13
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        DE_EN:
+          desc: "URTx_DE signal output enable"
+          bits: 12
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TX_INV:
+          desc: "URTx_TX output signal inverse enable"
+          bits: 11
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RX_INV:
+          desc: "URTx_RX input signal inverse enable"
+          bits: 10
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IO_SWP:
+          desc: "URTx_RX/URTx_TX swap enable bit"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        GSA_EN:
+          desc: "UART multi-processor global slave address enable"
+          bits: 7
+        MDS:
+          desc: "UART mode select"
+          bits: 6-4
+          enum:
+            'UART':
+              desc: "UART mode"
+              val: 0
+            'SYNC':
+              desc: "Synchronous/Shift-Register mode"
+              val: 1
+            'IDLE':
+              desc: "Idle-line mode for multi-processor"
+              val: 2
+            'ADR':
+              desc: "Address-bit mode for multi-processor"
+              val: 3
+        DAT_LINE:
+          desc: "UART communication data line select"
+          bits: 3
+          enum:
+            '2':
+              desc: "2-lines separated ~ URTx_RX , URTx_TX"
+              val: 0
+            '1':
+              desc: "1-line Bidirectional ~URTx_TX only"
+              val: 1
+        HDX_EN:
+          desc: "UART Half-duplex mode enable"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        OS_MDS:
+          desc: "UART RX data oversampling majority vote select"
+          bits: 1
+          enum:
+            'THREE':
+              desc: "Three sample bits method"
+              val: 0
+            'ONE':
+              desc: "One sample bit method and noise free"
+              val: 1
+        EN:
+          desc: "UART function enable bit"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    CR1:
+      desc: URT control register 1
+      offset: 0x14
+      reset_val: 0xf400f40
+      fields:
+        TXOS_NUM:
+          desc: "UARTTX data oversampling samples select"
+          bits: 28-24
+        TXSTP_LEN:
+          desc: "UART TX stop bit length select"
+          bits: 23-22
+          enum:
+            '0_5BIT':
+              desc: ""
+              val: 0
+            '1BIT':
+              desc: ""
+              val: 1
+            '1_5BIT':
+              desc: ""
+              val: 2
+            '2BIT':
+              desc: ""
+              val: 3
+        TXMSB_EN:
+          desc: "UART TX data order Msb first enable"
+          bits: 21
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TXPAR_STK:
+          desc: "UART stuck parity bit output enable"
+          bits: 20
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TXPAR_POL:
+          desc: "UART TX parity bit polarity. This bit is no effect for SPI and SYNC mods"
+          bits: 19
+          enum:
+            'EVEN':
+              desc: ""
+              val: 0
+            'ODD':
+              desc: ""
+              val: 1
+        TXPAR_EN:
+          desc: "UART TX parity bit enable"
+          bits: 18
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TXDSIZE:
+          desc: "UART TX data bit length"
+          bits: 17-16
+          enum:
+            '8BIT':
+              desc: ""
+              val: 0
+            '7BIT':
+              desc: ""
+              val: 1
+        RXOS_NUM:
+          desc: "UART RX data oversampling samples select"
+          bits: 12-8
+        RXSTP_LEN:
+          desc: "UART RX stop bit length select"
+          bits: 7-6
+          enum:
+            '0_5BIT':
+              desc: ""
+              val: 0
+            '1BIT':
+              desc: ""
+              val: 1
+            '1_5BIT':
+              desc: ""
+              val: 2
+            '2BIT':
+              desc: ""
+              val: 3
+        RXMSB_EN:
+          desc: "UART RX data order Msb first enable"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RXPAR_STK:
+          desc: "UART stuck parity bit input enable"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RXPAR_POL:
+          desc: "UART RX parity bit polarity. This bit is no effect for SYNC mods"
+          bits: 3
+          enum:
+            'EVEN':
+              desc: ""
+              val: 0
+            'ODD':
+              desc: ""
+              val: 1
+        RXPAR_EN:
+          desc: "UART RX parity bit enable"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RXDSIZE:
+          desc: "UART RX data bit length"
+          bits: 1-0
+          enum:
+            '8BIT':
+              desc: ""
+              val: 0
+            '7BIT':
+              desc: ""
+              val: 1
+    CR2:
+      desc: URT control register 2
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        NSS_SWEN:
+          desc: "UART NSS signal output use software control bit enable"
+          bits: 26
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        NSS_INV:
+          desc: "UART NSS output signal inverse enable"
+          bits: 25
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        NSS_SWO:
+          desc: "UART NSS signal software output control bit when URTx_NSS_SWEN is disable"
+          bits: 16
+        TX_HALT:
+          desc: "UART transmitter halt enable"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TX_EN:
+          desc: "UART transmitter enable"
+          bits: 3
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RX_EN:
+          desc: "UART receiver enable"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        ADR_TX:
+          desc: "UART slave address for next data transmitted"
+          bits: 1
+          enum:
+            'NORMAL':
+              desc: ""
+              val: 0
+            'SEND':
+              desc: "Send Address"
+              val: 1
+        BK_TX:
+          desc: "UART break condition for next data transmitted"
+          bits: 0
+          enum:
+            'NORMAL':
+              desc: ""
+              val: 0
+            'SEND':
+              desc: "Send Break"
+              val: 1
+    CR3:
+      desc: URT control register 3
+      offset: 0x1c
+      reset_val: 0xa00
+      fields:
+        TXGT_LEN:
+          desc: "UART TX guard time or idle-line length"
+          bits: 23-16
+        DET_IDL:
+          desc: "UART idle line detect threshold value by using receive bit time"
+          bits: 15-8
+        DET_BK:
+          desc: "UART bit time select for break detection or transmission"
+          bits: 4
+          enum:
+            '1BIT':
+              desc: ""
+              val: 0
+            '3BIT':
+              desc: ""
+              val: 1
+        CPHA:
+          desc: "UART clock phase select"
+          bits: 2
+          enum:
+            'LEADING_EDGE':
+              desc: ""
+              val: 0
+            'TRAILING_EDGE':
+              desc: ""
+              val: 1
+        CPOL:
+          desc: "UART clock polarity select. It is used to select the SPI clock level in idle state"
+          bits: 1
+          enum:
+            'LOW':
+              desc: ""
+              val: 0
+            'HIGH':
+              desc: ""
+              val: 1
+    CR4:
+      desc: URT control register 4
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        TNUM:
+          desc: "UART remained data byte number in data register. Value 0~4 is valid only"
+          bits: 14-12
+          enum:
+            '0':
+              desc: "0-byte"
+              val: 0
+            '1':
+              desc: "1-byte"
+              val: 1
+            '2':
+              desc: "2-byte"
+              val: 2
+            '3':
+              desc: "3-byte"
+              val: 3
+            '4':
+              desc: "4-byte"
+              val: 4
+        RNUM:
+          desc: "UART received data byte number when data shadow buffer last transfer to URTx_RDAT reg"
+          bits: 10-8
+          enum:
+            '0':
+              desc: "0-byte"
+              val: 0
+            '1':
+              desc: "1-byte"
+              val: 1
+            '2':
+              desc: "2-byte"
+              val: 2
+            '3':
+              desc: "3-byte"
+              val: 3
+            '4':
+              desc: "4-byte"
+              val: 4
+        TDAT_CLR:
+          desc: "UART  transmitted data clear enable"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RDAT_CLR:
+          desc: "UART  received data clear enable"
+          bits: 6
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TDAT_INV:
+          desc: "UART inverse transmitted data enable"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RDAT_INV:
+          desc: "UART inverse received data enable"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    RLR:
+      desc: URT baud-rate clock counter reload register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        PSR:
+          desc: "UART baud-rate clock prescaler reload register"
+          bits: 11-8
+        RLR:
+          desc: "UART baud-rate clock counter reload register"
+          bits: 7-0
+    CNT:
+      desc: URT1 baud-rate clock counter register
+      offset: 0x28
+      reset_val: 0x0
+      fields:
+        PSC:
+          desc: "UART baud-rate clock prescaler value register"
+          bits: 11-8
+        CNT:
+          desc: "UART baud-rate clock counter value register"
+          bits: 7-0
+    RCAP:
+      desc: URT RX data capture register
+      offset: 0x2c
+      reset_val: 0x0
+      fields:
+        RCAP_ADR:
+          desc: "UART capture address bit from RX shift buffer"
+          bits: 10
+        RCAP_PAR:
+          desc: "UART capture parity bit from RX shift buffer"
+          bits: 9
+        RCAP_STP:
+          desc: "UART capture stop bit from RX shift buffer"
+          bits: 8
+        RCAP_DAT:
+          desc: "UART capture data from RX shift buffer for Parity error / Frame error / Break detect"
+          bits: 7-0
+    RDAT:
+      desc: URT1 RX data register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        RDAT:
+          desc: "UART received data register"
+          bits: 31-0
+    TDAT8:
+      desc: URT TX data register
+      offset: 0x34
+      size: 8
+      reset_val: 0x0
+      fields:
+        TDAT:
+          desc: "UART transmitted data register (1 byte)"
+          bits: 7-0
+    TDAT16:
+      desc: URT TX data register
+      offset: 0x34
+      size: 16
+      reset_val: 0x0
+      fields:
+        TDAT:
+          desc: "UART transmitted data register (2 bytes)"
+          bits: 15-0
+    TDAT32:
+      desc: URT TX data register
+      offset: 0x34
+      reset_val: 0x0
+      fields:
+        TDAT:
+          desc: "UART transmitted data register (4 bytes)"
+          bits: 31-0
+    TDAT3:
+      desc: URT TX data 3-byte register
+      offset: 0x38
+      reset_val: 0x0
+      fields:
+        TDAT3:
+          desc: "UART transmitted data register for 3-byte data write only"
+          bits: 23-0
+    SBUF:
+      desc: URT data shift buffer register
+      offset: 0x3c
+      reset_val: 0x0
+      fields:
+        TSBUF:
+          desc: "UART TX data shift buffer register"
+          bits: 15-8
+        RSBUF:
+          desc: "UART RX data shift buffer register"
+          bits: 7-0
+    TMOUT:
+      desc: URT timeout control register
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        CALTMO_TH:
+          desc: "UART calibration timeout detect threshold value for TMO counter value comparison"
+          bits: 31-28
+        BKTMO_TH:
+          desc: "UART receive Break timeout detect threshold value by using receive bit time"
+          bits: 27-24
+        RXTMO_TH:
+          desc: "UART RX data buffer timeout detect threshold value by using receive bit time"
+          bits: 23-16
+        TMO_LCK:
+          desc: "UART timeout timer timeout signal initial state control"
+          bits: 15
+          enum:
+            'LOCKED':
+              desc: ""
+              val: 0
+            'UN_LOCKED':
+              desc: ""
+              val: 1
+        TMO_STA:
+          desc: "UART timeout timer timeout signal initial state"
+          bits: 14
+          enum:
+            '0':
+              desc: "Output 0"
+              val: 0
+            '1':
+              desc: "Output 1"
+              val: 1
+        TMO_CKS:
+          desc: "UART timeout timer clock source select"
+          bits: 10-8
+          enum:
+            'UART':
+              desc: "CK_URTx_BIT clock"
+              val: 0
+            'INPUT':
+              desc: "CK_UART clock input)"
+              val: 1
+            'NOISE':
+              desc: "Noise bit receive event"
+              val: 2
+        CALTMO_EN:
+          desc: "UART Calibration timeout detection enable bit"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        BKTMO_EN:
+          desc: "UART Break timeout detection enable bit"
+          bits: 6
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RXTMO_EN:
+          desc: "UART RX timeout enable bit for shadow buffer data loading into URTx_RDAT"
+          bits: 5
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        IDTMO_EN:
+          desc: "UART Idle timeout detection enable bit"
+          bits: 4
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TMO_MDS:
+          desc: "UART timeout timer mode select"
+          bits: 3-2
+          enum:
+            'UART':
+              desc: "UART timeout timer"
+              val: 0
+            'GENERAL':
+              desc: "general timer"
+              val: 1
+        TMO_RST:
+          desc: "UART timeout timer force reset enable. (set by software and clear by hardware)"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        TMO_EN:
+          desc: "UART timeout timer enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    TMOUT2:
+      desc: URT timeout control register 2
+      offset: 0x44
+      reset_val: 0x0
+      fields:
+        TMO_CNT:
+          desc: "UART timeout counter value"
+          bits: 31-16
+        IDTMO_TH:
+          desc: "UART receive idle timeout detect threshold value by using receive bit time"
+          bits: 15-0
+    SC:
+      desc: URT SmartCard control register
+      offset: 0x48
+      reset_val: 0x0
+      fields:
+        RXE_NUM:
+          desc: "UART RX parity error detect and NACK transmission retry maximum number"
+          bits: 14-12
+        TXE_NUM:
+          desc: "UART TX error detect and data resend maximum number"
+          bits: 10-8
+        RXE_LEN:
+          desc: "UART RX parity error detect and NACK transmission"
+          bits: 4
+          enum:
+            '1BIT':
+              desc: ""
+              val: 0
+            '2BIT':
+              desc: ""
+              val: 1
+        TXE_MDS:
+          desc: "UART TX error detect mode select"
+          bits: 3-2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'CHK_LOW':
+              desc: "check asserted low by RX device (for SmartCard)"
+              val: 1
+            'CHK_TX':
+              desc: "check TX data by RX input data (for LIN mode)"
+              val: 2
+        RXE_MDS:
+          desc: "UART RX parity error detect control mode select"
+          bits: 1-0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: "hardware RX auto retry number by setting URTx_RXE_NUM"
+              val: 1
+            'AUTO':
+              desc: "hardware RX auto retry always unless receiving parity correct character"
+              val: 2
+    SADR:
+      desc: URT slave address detect register
+      offset: 0x4c
+      reset_val: 0x0
+      fields:
+        SA_MSK:
+          desc: "UART multi-processor slave address mask register"
+          bits: 15-8
+        SA_RX:
+          desc: "UART multi-processor mode received slave address"
+          bits: 7-0
+    CAL:
+      desc: URT calibration control register
+      offset: 0x50
+      reset_val: 0x0
+      fields:
+        CALC_HE:
+          desc: "UART auto baud-rate calibration complete data receive hold enable"
+          bits: 7
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        CAL_MDS:
+          desc: "UART auto baud-rate calibration mode select"
+          bits: 3-2
+          enum:
+            'START':
+              desc: "measure the start bit"
+              val: 0
+            'EDGE':
+              desc: "measure start falling edge to next falling edge"
+              val: 1
+        CAL_AUTO:
+          desc: "UART Break detection and auto baud-rate calibration enable"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        CAL_EN:
+          desc: "UART baud-rate calibration enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    IRDA:
+      desc: URT IrDA control register
+      offset: 0x54
+      reset_val: 0x300
+      fields:
+        IR_PW:
+          desc: "UART IrDA output pulse width select"
+          bits: 11-8
+        IR_MDS:
+          desc: "UART IrDA data received mode select"
+          bits: 1
+          enum:
+            'NORMAL':
+              desc: ""
+              val: 0
+            'WIDE':
+              desc: ""
+              val: 1
+        IR_EN:
+          desc: "UART IrDA data format enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    HFC:
+      desc: URT hardware flow control register
+      offset: 0x58
+      reset_val: 0x0
+      fields:
+        RTS_OUT:
+          desc: "URTx_RTS output control data bit. This bit is no effect when URTx_RTS_EN is set"
+          bits: 4
+          enum:
+            '0':
+              desc: "Output 0"
+              val: 0
+            '1':
+              desc: "Output 1"
+              val: 1
+        RTS_INV:
+          desc: "URTx_RTS output inverse enable"
+          bits: 3
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        CTS_INV:
+          desc: "URTx_CTS input inverse enable"
+          bits: 2
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        RTS_EN:
+          desc: "UART RTS hardware flow control enable"
+          bits: 1
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        CTS_EN:
+          desc: "UART CTS hardware flow control enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+    MUTE:
+      desc: URT mute control register
+      offset: 0x5c
+      reset_val: 0x10100
+      fields:
+        MUTE_AEX2:
+          desc: "UART auto exit mute mode and receive data by  idle line detection enable bit"
+          bits: 18
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        MUTE_AEX1:
+          desc: "UART auto exit mute mode and receive data by Break condition detection enable bit"
+          bits: 17
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        MUTE_AEX0:
+          desc: "UART auto exit mute mode and receive data by multi-processor slave address matched co"
+          bits: 16
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        MUTE_AEN1:
+          desc: "UART mute mode auto enter by idle line detection enable bit"
+          bits: 9
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        MUTE_AEN0:
+          desc: "UART mute mode auto enter by multi-processor slave address unmatched condition enable"
+          bits: 8
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1
+        MUTE_EN:
+          desc: "UART mute mode enable"
+          bits: 0
+          enum:
+            'DISABLE':
+              desc: ""
+              val: 0
+            'ENABLE':
+              desc: ""
+              val: 1

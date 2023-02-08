@@ -1,0 +1,272 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: General Purpose IO Port Control
+  ver: 1
+  registers:
+    OUT:
+      desc: Output data register
+      offset: 0x0
+      reset_val: 0xFFFFFFFF
+      fields:
+        OUT15:
+          desc: "IO pin 15 output data bit"
+          bits: 15
+        OUT14:
+          desc: "IO pin 14 output data bit"
+          bits: 14
+        OUT13:
+          desc: "IO pin 13 output data bit"
+          bits: 13
+        OUT12:
+          desc: "IO pin 12 output data bit"
+          bits: 12
+        OUT11:
+          desc: "IO pin 11 output data bit"
+          bits: 11
+        OUT10:
+          desc: "IO pin 10 output data bit"
+          bits: 10
+        OUT9:
+          desc: "IO pin 9 output data bit"
+          bits: 9
+        OUT8:
+          desc: "IO pin 8 output data bit"
+          bits: 8
+        OUT7:
+          desc: "IO pin 7 output data bit"
+          bits: 7
+        OUT6:
+          desc: "IO pin 6 output data bit"
+          bits: 6
+        OUT5:
+          desc: "IO pin 5 output data bit"
+          bits: 5
+        OUT4:
+          desc: "IO pin 4 output data bit"
+          bits: 4
+        OUT3:
+          desc: "IO pin 3 output data bit"
+          bits: 3
+        OUT2:
+          desc: "IO pin 2 output data bit"
+          bits: 2
+        OUT1:
+          desc: "IO pin 1 output data bit"
+          bits: 1
+        OUT0:
+          desc: "IO pin 0 output data bit"
+          bits: 0
+    IN:
+      desc: Input data register
+      offset: 0x04
+      reset_val: 0x000000F0
+      fields:
+        IN15:
+          desc: "IO pin 15 input pin status"
+          bits: 15
+        IN14:
+          desc: "IO pin 14 input pin status"
+          bits: 14
+        IN13:
+          desc: "IO pin 13 input pin status"
+          bits: 13
+        IN12:
+          desc: "IO pin 12 input pin status"
+          bits: 12
+        IN11:
+          desc: "IO pin 11 input pin status"
+          bits: 11
+        IN10:
+          desc: "IO pin 10 input pin status"
+          bits: 10
+        IN9:
+          desc: "IO pin 9 input pin status"
+          bits: 9
+        IN8:
+          desc: "IO pin 8 input pin status"
+          bits: 8
+        IN7:
+          desc: "IO pin 7 input pin status"
+          bits: 7
+        IN6:
+          desc: "IO pin 6 input pin status"
+          bits: 6
+        IN5:
+          desc: "IO pin 5 input pin status"
+          bits: 5
+        IN4:
+          desc: "IO pin 4 input pin status"
+          bits: 4
+        IN3:
+          desc: "IO pin 3 input pin status"
+          bits: 3
+        IN2:
+          desc: "IO pin 2 input pin status"
+          bits: 2
+        IN1:
+          desc: "IO pin 1 input pin status"
+          bits: 1
+        IN0:
+          desc: "IO pin 0 input pin status"
+          bits: 0
+    SC:
+      desc: Port set / clear register
+      offset: 0x08
+      reset_val: 0x0
+      fields:
+        CLR15:
+          desc: "IO pin 15 clear data bit. This bit is no effect for writing 0"
+          bits: 31
+        CLR14:
+          desc: "IO pin 14 clear data bit. This bit is no effect for writing 0"
+          bits: 30
+        CLR13:
+          desc: "IO pin 13 clear data bit. This bit is no effect for writing 0"
+          bits: 29
+        CLR12:
+          desc: "IO pin 12 clear data bit. This bit is no effect for writing 0"
+          bits: 28
+        CLR11:
+          desc: "IO pin 11 clear data bit. This bit is no effect for writing 0"
+          bits: 27
+        CLR10:
+          desc: "IO pin 10 clear data bit. This bit is no effect for writing 0"
+          bits: 26
+        CLR9:
+          desc: "IO pin 9 clear data bit. This bit is no effect for writing 0"
+          bits: 25
+        CLR8:
+          desc: "IO pin 8 clear data bit. This bit is no effect for writing 0"
+          bits: 24
+        CLR7:
+          desc: "IO pin 7 clear data bit. This bit is no effect for writing 0"
+          bits: 23
+        CLR6:
+          desc: "IO pin 6 clear data bit. This bit is no effect for writing 0"
+          bits: 22
+        CLR5:
+          desc: "IO pin 5 clear data bit. This bit is no effect for writing 0"
+          bits: 21
+        CLR4:
+          desc: "IO pin 4 clear data bit. This bit is no effect for writing 0"
+          bits: 20
+        CLR3:
+          desc: "IO pin 3 clear data bit. This bit is no effect for writing 0"
+          bits: 19
+        CLR2:
+          desc: "IO pin 2 clear data bit. This bit is no effect for writing 0"
+          bits: 18
+        CLR1:
+          desc: "IO pin 1 clear data bit. This bit is no effect for writing 0"
+          bits: 17
+        CLR0:
+          desc: "IO pin 0 clear data bit. This bit is no effect for writing 0"
+          bits: 16
+        SET15:
+          desc: "IO pin 15 set data bit. This bit is no effect for writing 0"
+          bits: 15
+        SET14:
+          desc: "IO pin 14 set data bit. This bit is no effect for writing 0"
+          bits: 14
+        SET13:
+          desc: "IO pin 13 set data bit. This bit is no effect for writing 0"
+          bits: 13
+        SET12:
+          desc: "IO pin 12 set data bit. This bit is no effect for writing 0"
+          bits: 12
+        SET11:
+          desc: "IO pin 11 set data bit. This bit is no effect for writing 0"
+          bits: 11
+        SET10:
+          desc: "IO pin 10 set data bit. This bit is no effect for writing 0"
+          bits: 10
+        SET9:
+          desc: "IO pin 9 set data bit. This bit is no effect for writing 0"
+          bits: 9
+        SET8:
+          desc: "IO pin 8 set data bit. This bit is no effect for writing 0"
+          bits: 8
+        SET7:
+          desc: "IO pin 7 set data bit. This bit is no effect for writing 0"
+          bits: 7
+        SET6:
+          desc: "IO pin 6 set data bit. This bit is no effect for writing 0"
+          bits: 6
+        SET5:
+          desc: "IO pin 5 set data bit. This bit is no effect for writing 0"
+          bits: 5
+        SET4:
+          desc: "IO pin 4 set data bit. This bit is no effect for writing 0"
+          bits: 4
+        SET3:
+          desc: "IO pin 3 set data bit. This bit is no effect for writing 0"
+          bits: 3
+        SET2:
+          desc: "IO pin 2 set data bit. This bit is no effect for writing 0"
+          bits: 2
+        SET1:
+          desc: "IO pin 1 set data bit. This bit is no effect for writing 0"
+          bits: 1
+        SET0:
+          desc: "IO pin 0 set data bit. This bit is no effect for writing 0"
+          bits: 0
+    SCR0:
+      desc: Port set and clear register 0
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        SC3:
+          desc: "GPIO Port set or clear bit for P3"
+          bits: 24
+        SC2:
+          desc: "GPIO Port set or clear bit for P2"
+          bits: 16
+        SC1:
+          desc: "GPIO Port set or clear bit for P1"
+          bits: 8
+        SC0:
+          desc: "GPIO Port set or clear bit for P0"
+          bits: 0
+    SCR1:
+      desc: Port set and clear register 1
+      offset: 0x14
+      fields:
+        SC6:
+          desc: "GPIO Port set or clear bit for P6"
+          bits: 16
+        SC5:
+          desc: "GPIO Port set or clear bit for P5"
+          bits: 8
+        SC4:
+          desc: "GPIO Port set or clear bit for P4"
+          bits: 0
+    SCR2:
+      desc: Port set and clear register 2
+      offset: 0x18
+      fields:
+        SC11:
+          desc: "GPIO Port set or clear bit for P11"
+          bits: 24
+        SC10:
+          desc: "GPIO Port set or clear bit for P10"
+          bits: 16
+        SC9:
+          desc: "GPIO Port set or clear bit for P9"
+          bits: 8
+        SC8:
+          desc: "GPIO Port set or clear bit for P8"
+          bits: 0
+    SCR3:
+      desc: Port set and clear register 3
+      offset: 0x1C
+      fields:
+        SC14:
+          desc: "GPIO Port set or clear bit for P14"
+          bits: 16
+        SC13:
+          desc: "GPIO Port set or clear bit for P13"
+          bits: 8
+        SC12:
+          desc: "GPIO Port set or clear bit for P12"
+          bits: 0

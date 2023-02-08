@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/IOM
+  base: 0x44030000

@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/URT
+  base: 0x52010000

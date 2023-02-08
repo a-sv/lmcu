@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/MEM
+  base: 0x4d000000
