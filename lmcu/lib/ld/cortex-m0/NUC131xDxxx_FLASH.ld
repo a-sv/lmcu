@@ -1,0 +1,6 @@
+MEMORY {
+  FLASH (rx) : ORIGIN = 0x0, LENGTH = 0x11000 /* 69K */
+  RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 8192
+}
+
+INCLUDE cortex-m0.ld
