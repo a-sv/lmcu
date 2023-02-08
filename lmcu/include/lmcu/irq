@@ -6,6 +6,8 @@
 
 #if defined(LMCU_STM32F1)
   #include "../../lib/STM32/F1/isr.h"
+#elif defined(LMCU_NUC131)
+  #include "../../lib/Nuvoton/NUC131/isr.h"
 #else
   #error "device not supported"
 #endif

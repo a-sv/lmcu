@@ -2,6 +2,8 @@
 
 #include "../../lib/delay/timer.h"
 
-#if defined(LMCU_CORTEX)
+#if defined(LMCU_CORTEX_M0)
+
+#else
   #include "../../lib/cortex/dwt_delay.h"
 #endif

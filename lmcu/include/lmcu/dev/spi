@@ -1,0 +1,5 @@
+#pragma once
+
+#if defined(LMCU_NUC131)
+  #include "../../../lib/regs/NUC131/periph/SPI0.h"
+#endif

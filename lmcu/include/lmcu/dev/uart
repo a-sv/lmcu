@@ -1,0 +1,10 @@
+#pragma once
+
+#if defined(LMCU_NUC131)
+  #include "../../../lib/regs/NUC131/periph/UART0.h"
+  #include "../../../lib/regs/NUC131/periph/UART1.h"
+  #include "../../../lib/regs/NUC131/periph/UART2.h"
+  #include "../../../lib/regs/NUC131/periph/UART3.h"
+  #include "../../../lib/regs/NUC131/periph/UART4.h"
+  #include "../../../lib/regs/NUC131/periph/UART5.h"
+#endif

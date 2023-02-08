@@ -194,6 +194,14 @@
   #include "../../../lib/regs/STM32/STM32F107VB.h"
 #elif defined(LMCU_STM32F107VC)
   #include "../../../lib/regs/STM32/STM32F107VC.h"
+#elif defined(LMCU_NUC131LC2AE)
+  #include "../../../lib/regs/NUC131/NUC131LC2AE.h"
+#elif defined(LMCU_NUC131LD2AE)
+  #include "../../../lib/regs/NUC131/NUC131LD2AE.h"
+#elif defined(LMCU_NUC131SC2AE)
+  #include "../../../lib/regs/NUC131/NUC131SC2AE.h"
+#elif defined(LMCU_NUC131SD2AE)
+  #include "../../../lib/regs/NUC131/NUC131SD2AE.h"
 #endif
 
 // Low-density value line devices are STM32F100xx microcontrollers where the Flash memory density
