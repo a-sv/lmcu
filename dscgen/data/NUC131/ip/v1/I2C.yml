@@ -1,0 +1,182 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: I2C Register Map
+  ver: 1
+  registers:
+    I2CON:
+      desc: I2C Control Register
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        AA:
+          desc: "Assert Acknowledge Control\n"
+          bits: 2
+        SI:
+          desc: "I2C Interrupt Flag\nWhen a new I2C state is present in the I2CSTATUS register, the SI flag is set by hardware, and if bit EI (I2CON [7]) is set, the I2C interrupt is requested. SI must be cleared by software. Clear SI by writing 1 to this bit."
+          bits: 3
+        STO:
+          desc: "I2C STOP Control\nIn Master mode, setting STO to transmit a STOP condition to bus then I2C hardware will check the bus condition if a STOP condition is detected this bit will be cleared by hardware automatically. In a slave mode, setting STO resets I2C hardware to the defined <not addressed> slave mode. This means it is NO LONGER in the slave receiver mode to receive data from the master transmit device."
+          bits: 4
+        STA:
+          desc: "I2C START Control\nSetting STA to logic 1 to enter Master mode, the I2C hardware sends a START or repeat START condition to bus when the bus is free."
+          bits: 5
+        ENS1:
+          desc: "I2C Controller Enable Control\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "Disabled"
+              val: 0
+            '1':
+              desc: "Enabled"
+              val: 1
+        EI:
+          desc: "Interrupt Enable Control\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "I2C interrupt Disabled"
+              val: 0
+            '1':
+              desc: "I2C interrupt Enabled"
+              val: 1
+    I2CADDR0:
+      desc: I2C Slave Address Register0
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        GC:
+          desc: "General Call Function\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "General Call Function Disabled"
+              val: 0
+            '1':
+              desc: "General Call Function Enabled"
+              val: 1
+        I2CADDR:
+          desc: "I2C Address Register\nThe content of this register is irrelevant when I2C is in Master mode. In the slave mode, the seven most significant bits must be loaded with the chip's own address. The I2C hardware will react if either of the address is matched."
+          bits: 7-1
+    I2CDAT:
+      desc: I2C Data Register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        I2CDAT:
+          desc: "I2C Data Register\nThis field is located with the 8-bit transferred data of I2C serial port."
+          bits: 7-0
+    I2CSTATUS:
+      desc: I2C Status Register
+      offset: 0xc
+      reset_val: 0xf8
+      fields:
+        I2CSTATUS:
+          desc: "I2C Status Register\nThere are 26 possible status codes. \nWhen I2CSTATUS contains 0xF8, no serial interrupt is requested. \nIn addition, states 0x00 stands for a Bus Error. A Bus Error occurs when a START or STOP condition is present at an illegal position in the formation frame. Example of illegal position are during the serial transfer of an address byte, a data byte or an acknowledge bit."
+          bits: 7-0
+    I2CLK:
+      desc: I2C Clock Divided Register
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        I2CLK:
+          desc: "I2C Clock Divided Register\nNote: The minimum value of I2CLK is 4."
+          bits: 7-0
+    I2CTOC:
+      desc: I2C Time-out Counter Register
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        TIF:
+          desc: "Time-Out Flag\nThis bit is set by hardware when I2C time-out happened and it can interrupt CPU if I2C interrupt enable bit EI (I2CON[7]) is set to 1.\nNote: Write 1 to clear this bit."
+          bits: 0
+        DIV4:
+          desc: "Time-Out Counter Input Clock Divided By 4\nWhen Enabled, The time-out period is extend 4 times."
+          bits: 1
+          enum:
+            '0':
+              desc: "Disabled"
+              val: 0
+            '1':
+              desc: "Enabled"
+              val: 1
+        ENTI:
+          desc: "Time-Out Counter Enable Control \nWhen Enabled, the 14-bit time-out counter will start counting when SI (I2CON[3]) is clear. Setting flag SI SI(I2CON[3]) to high will reset counter and re-start up counting after SI SI(I2CON[3]) is cleared."
+          bits: 2
+          enum:
+            '0':
+              desc: "Disabled"
+              val: 0
+            '1':
+              desc: "Enabled"
+              val: 1
+    I2CADDR1:
+      desc: I2C Slave Address Register1
+      offset: 0x18
+      reset_val: 0x0
+    I2CADDR2:
+      desc: I2C Slave Address Register2
+      offset: 0x1c
+      reset_val: 0x0
+    I2CADDR3:
+      desc: I2C Slave Address Register3
+      offset: 0x20
+      reset_val: 0x0
+    I2CADM0:
+      desc: I2C Slave Address Mask Register0
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        I2CADM:
+          desc: "I2C Address Mask Register\nI2C bus controllers support multiple address recognition with four address mask register. When the bit in the address mask register is set to one, it means the received corresponding address bit is don't-care. If the bit is set to zero, that means the received corresponding register bit should be exact the same as address register."
+          bits: 7-1
+          enum:
+            '0':
+              desc: "Mask Disabled (the received corresponding register bit should be exact the same as address register.)"
+              val: 0
+            '1':
+              desc: "Mask Enabled (the received corresponding address bit is don't care.)"
+              val: 1
+    I2CADM1:
+      desc: I2C Slave Address Mask Register1
+      offset: 0x28
+      reset_val: 0x0
+    I2CADM2:
+      desc: I2C Slave Address Mask Register2
+      offset: 0x2c
+      reset_val: 0x0
+    I2CADM3:
+      desc: I2C Slave Address Mask Register3
+      offset: 0x30
+      reset_val: 0x0
+    I2CWKUPCON:
+      desc: I2C Wake-up Control Register
+      offset: 0x3c
+      reset_val: 0x0
+      fields:
+        WKUPEN:
+          desc: "I2C Wake-Up Enable Control\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "I2C wake-up function Disabled"
+              val: 0
+            '1':
+              desc: "I2C wake-up function Enabled"
+              val: 1
+    I2CWKUPSTS:
+      desc: I2C Wake-up Status Register
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        WKUPIF:
+          desc: "I2C Wake-Up Flag\nNote: Software can write 1 to clear this bit."
+          bits: 0
+          enum:
+            '0':
+              desc: "Chip is not woken-up from Power-down mode by I2C"
+              val: 0
+            '1':
+              desc: "Chip is woken-up from Power-down mode by I2C"
+              val: 1

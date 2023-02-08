@@ -1,0 +1,823 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: CLK Register Map
+  ver: 1
+  registers:
+    PWRCON:
+      desc: System Power-down Control Register
+      offset: 0x0
+      reset_val: 0x10
+      fields:
+        XTL12M_EN:
+          desc: "4~24 MHz External High Speed Crystal Oscillator (HXT) Enable Control (Write Protect)\nThe bit default value is set by flash controller user configuration register CONFIG0 [26:24]. When the default clock source is from 4~24 MHz external high speed crystal oscillator, this  bit is set to 1 automatically.\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 0
+          enum:
+            '0':
+              desc: "4 ~ 24 MHz external high speed crystal oscillator (HXT) Disabled"
+              val: 0
+            '1':
+              desc: "4 ~ 24 MHz external high speed crystal oscillator (HXT) Enabled"
+              val: 1
+        OSC22M_EN:
+          desc: "22.1184 MHz Internal High Speed RC Oscillator (HIRC) Enable Control (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 2
+          enum:
+            '0':
+              desc: "22.1184 MHz internal high speed RC oscillator (HIRC) Disabled"
+              val: 0
+            '1':
+              desc: "22.1184 MHz internal high speed RC oscillator (HIRC) Enabled"
+              val: 1
+        OSC10K_EN:
+          desc: "10 KHz Internal Low Speed RC Oscillator (LIRC) Enable Control (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 3
+          enum:
+            '0':
+              desc: "10 kHz internal low speed RC oscillator (LIRC) Disabled"
+              val: 0
+            '1':
+              desc: "10 kHz internal low speed RC oscillator (LIRC) Enabled"
+              val: 1
+        PD_WU_DLY:
+          desc: "Wake-Up Delay Counter Enable Control (Write Protect)\nWhen the chip wakes up from Power-down mode, the clock control will delay certain clock cycles to wait system clock stable.\nThe delayed clock cycle is 4096 clock cycles when chip works at 4~24 MHz external high speed crystal oscillator (HXT), and 256 clock cycles when chip works at 22.1184 MHz internal high speed oscillator (HIRC).\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 4
+          enum:
+            '0':
+              desc: "Clock cycles delay Disabled"
+              val: 0
+            '1':
+              desc: "Clock cycles delay Enabled"
+              val: 1
+        PD_WU_INT_EN:
+          desc: "Power-Down Mode Wake-Up Interrupt Enable Control (Write Protect)\nNote1: The interrupt will occur when both PD_WU_STS and PD_WU_INT_EN are high.\nNote2: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 5
+          enum:
+            '0':
+              desc: "Power-down mode wake-up interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Power-down mode wake-up interrupt Enabled"
+              val: 1
+        PD_WU_STS:
+          desc: "Power-Down Mode Wake-Up Interrupt Status\nSet by <Power-down wake-up event>, it indicates that resume from Power-down mode.\nThe flag is set if the GPIO, UART, WDT, I2C, TIMER, CAN, or BOD wake-up occurred.\nWrite 1 to clear the bit to 0.\nNote: This bit is working only if PD_WU_INT_EN (PWRCON[5]) set to 1."
+          bits: 6
+        PWR_DOWN_EN:
+          desc: "System Power-Down Enable Control (Write Protect)\nWhen this bit is set to 1, Power-down mode is enabled and chip Power-down behavior will depends on the PD_WAIT_CPU bit\n(a) If the PD_WAIT_CPU is 0, the chip enters Power-down mode immediately after the PWR_DOWN_EN bit set.\n(b) if the PD_WAIT_CPU is 1, the chip keeps active till the CPU sleep mode is also active and then the chip enters Power-down mode (recommend)\nWhen chip wakes up from Power-down mode, this bit is cleared by hardware. User needs to set this bit again for next Power-down.\nIn Power-down mode, 4~24 MHz external high speed crystal oscillator (HXT) and the 22.1184 MHz internal high speed RC oscillator (HIRC) will be disabled in this mode, but the 10 kHz internal low speed RC oscillator (LIRC) is not controlled by Power-down mode.\nIn Power- down mode, the PLL and system clock are disabled, and ignored the clock source selection. The clocks of peripheral are not controlled by Power-down mode, if the peripheral clock source is from the 10 kHz internal low speed RC oscillator (LIRC).\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 7
+          enum:
+            '0':
+              desc: "Chip operating normally or chip in Idle mode because of WFI command"
+              val: 0
+            '1':
+              desc: "Chip enters Power-down mode instantly or waits CPU sleep command WFI"
+              val: 1
+        PD_WAIT_CPU:
+          desc: "Power-Down Entry Condition Control (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 8
+          enum:
+            '0':
+              desc: "Chip enters Power-down mode when the PWR_DOWN_EN bit is set to 1"
+              val: 0
+            '1':
+              desc: "Chip enters Power- down mode when the both PD_WAIT_CPU and PWR_DOWN_EN bits are set to 1 and CPU runs WFI instruction"
+              val: 1
+    AHBCLK:
+      desc: AHB Devices Clock Enable Control Register
+      offset: 0x4
+      reset_val: 0x5
+      fields:
+        ISP_EN:
+          desc: "Flash ISP Controller Clock Enable Control\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Flash ISP peripherial clock Disabled"
+              val: 0
+            '1':
+              desc: "Flash ISP peripherial clock Enabled"
+              val: 1
+    APBCLK:
+      desc: APB Devices Clock Enable Control Register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        WDT_EN:
+          desc: "Watchdog Timer Clock Enable Control (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 0
+          enum:
+            '0':
+              desc: "Watchdog Timer clock Disabled"
+              val: 0
+            '1':
+              desc: "Watchdog Timer clock Enabled"
+              val: 1
+        TMR0_EN:
+          desc: "Timer0 Clock Enable Control\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Timer0 clock Disabled"
+              val: 0
+            '1':
+              desc: "Timer0 clock Enabled"
+              val: 1
+        TMR1_EN:
+          desc: "Timer1 Clock Enable Control\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Timer1 clock Disabled"
+              val: 0
+            '1':
+              desc: "Timer1 clock Enabled"
+              val: 1
+        TMR2_EN:
+          desc: "Timer2 Clock Enable Control\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Timer2 clock Disabled"
+              val: 0
+            '1':
+              desc: "Timer2 clock Enabled"
+              val: 1
+        TMR3_EN:
+          desc: "Timer3 Clock Enable Control\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "Timer3 clock Disabled"
+              val: 0
+            '1':
+              desc: "Timer3 clock Enabled"
+              val: 1
+        FDIV_EN:
+          desc: "Frequency Divider Output Clock Enable Control\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "FDIV clock Disabled"
+              val: 0
+            '1':
+              desc: "FDIV clock Enabled"
+              val: 1
+        I2C0_EN:
+          desc: "I2C0 Clock Enable Control\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "I2C0 clock Disabled"
+              val: 0
+            '1':
+              desc: "I2C0 clock Enabled"
+              val: 1
+        I2C1_EN:
+          desc: "I2C1 Clock Enable Control\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "I2C1 clock Disabled"
+              val: 0
+            '1':
+              desc: "I2C1 clock Enabled"
+              val: 1
+        SPI0_EN:
+          desc: "SPI0 Clock Enable Control\n"
+          bits: 12
+          enum:
+            '0':
+              desc: "SPI0 clock Disabled"
+              val: 0
+            '1':
+              desc: "SPI0 clock Enabled"
+              val: 1
+        UART0_EN:
+          desc: "UART0 Clock Enable Control\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "UART0 clock Disabled"
+              val: 0
+            '1':
+              desc: "UART0 clock Enabled"
+              val: 1
+        UART1_EN:
+          desc: "UART1 Clock Enable Control\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "UART1 clock Disabled"
+              val: 0
+            '1':
+              desc: "UART1 clock Enabled"
+              val: 1
+        UART2_EN:
+          desc: "UART2 Clock Enable Control\n"
+          bits: 18
+          enum:
+            '0':
+              desc: "UART2 clock Disabled"
+              val: 0
+            '1':
+              desc: "UART2 clock Enabled"
+              val: 1
+        CAN0_EN:
+          desc: "CAN Bus Controller-0 Clock Enable Control\n"
+          bits: 24
+          enum:
+            '0':
+              desc: "CAN0 clock Disabled"
+              val: 0
+            '1':
+              desc: "CAN0 clock Enabled"
+              val: 1
+        ADC_EN:
+          desc: "Analog-Digital-Converter (ADC) Clock Enable Control\n"
+          bits: 28
+          enum:
+            '0':
+              desc: "ADC clock Disabled"
+              val: 0
+            '1':
+              desc: "ADC clock Enabled"
+              val: 1
+    CLKSTATUS:
+      desc: Clock Status Monitor Register
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        XTL12M_STB:
+          desc: "4~24 MHz External High Speed Crystal Oscillator (HXT) Clock Source Stable Flag (Read Only)\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "4~24 MHz external high speed crystal oscillator (HXT) clock is not stable or disabled"
+              val: 0
+            '1':
+              desc: "4~24 MHz external high speed crystal oscillator (HXT) clock is stable and enabled"
+              val: 1
+        PLL_STB:
+          desc: "Internal PLL Clock Source Stable Flag (Read Only)\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Internal PLL clock is not stable or disabled"
+              val: 0
+            '1':
+              desc: "Internal PLL clock is stable in normal mode"
+              val: 1
+        OSC10K_STB:
+          desc: "Internal 10 KHz Low Speed Oscillator (LIRC) Clock Source Stable Flag (Read Only)\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "10 kHz internal low speed RC oscillator (LIRC) clock is not stable or disabled"
+              val: 0
+            '1':
+              desc: "10 kHz internal low speed RC oscillator (LIRC) clock is stable and enabled"
+              val: 1
+        OSC22M_STB:
+          desc: "22.1184 MHz Internal High Speed RC Oscillator (HIRC) Clock Source Stable Flag (Read Only)\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "22.1184 MHz internal high speed RC oscillator (HIRC) clock is not stable or disabled"
+              val: 0
+            '1':
+              desc: "22.1184 MHz internal high speed RC oscillator (HIRC) clock is stable and enabled"
+              val: 1
+        CLK_SW_FAIL:
+          desc: "Clock Switching Fail Flag (Read Only)\nThis bit is an index that if current system clock source is match as user defined at HCLK_S (CLKSEL[2:0]). When user switchs system clock, the system clock source will keep old clock until the new clock is stable. During the period that waiting new clock stable, this bit will be an index shows system clock source is not match as user wanted."
+          bits: 7
+          enum:
+            '0':
+              desc: "Clock switching success"
+              val: 0
+            '1':
+              desc: "Clock switching failure"
+              val: 1
+    CLKSEL0:
+      desc: Clock Source Select Control Register 0
+      offset: 0x10
+      reset_val: 0x30
+      fields:
+        HCLK_S:
+          desc: "HCLK Clock Source Select (Write Protect)\nBefore clock switching, the related clock sources (both pre-select and new-select) must be enabled\nThe 3-bit default value is reloaded from the value of CFOSC (CONFIG0[26:24]) in user configuration register of Flash controller by any reset. Therefore the default value is either 000b or 111b.\nThese bits are protected bit. It means programming this bit needs to write <59h>, <16h>, <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100.\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 2-0
+          enum:
+            '0':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator (HXT)"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Clock source from PLL"
+              val: 2
+            '3':
+              desc: "Clock source from 10 kHz internal low speed RC oscillator (LIRC)"
+              val: 3
+            '7':
+              desc: "Clock source from 22.1184 MHz internalhigh speed RC oscillator (HIRC)"
+              val: 7
+        STCLK_S:
+          desc: "Cortex-M0 SysTick Clock Source Select (Write Protect)\n"
+          bits: 5-3
+          enum:
+            '0':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator (HXT)"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator (HXT)/2"
+              val: 2
+            '3':
+              desc: "Clock source from HCLK/2"
+              val: 3
+            '7':
+              desc: "Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC)/2"
+              val: 7
+    CLKSEL1:
+      desc: Clock Source Select Control Register 1
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        WDT_S:
+          desc: "Watchdog Timer Clock Source Select (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 1-0
+          enum:
+            '0':
+              desc: "Reserved"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Clock source from HCLK/2048"
+              val: 2
+            '3':
+              desc: "Clock source from 10 kHz internal low speed RC oscillator (LIRC)"
+              val: 3
+        ADC_S:
+          desc: "ADC Clock Source Select\n"
+          bits: 3-2
+          enum:
+            '0':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator (HXT)"
+              val: 0
+            '1':
+              desc: "Clock source from PLL"
+              val: 1
+            '2':
+              desc: "Clock source from HCLK"
+              val: 2
+            '3':
+              desc: "Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC)"
+              val: 3
+        SPI0_S:
+          desc: "SPI0 Clock Source Selection\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Clock source from PLL"
+              val: 0
+            '1':
+              desc: "Clock source from HCLK"
+              val: 1
+        TMR0_S:
+          desc: "TIMER0 Clock Source Selection\n"
+          bits: 10-8
+          enum:
+            '0':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator (HXT)"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Clock source from HCLK"
+              val: 2
+            '3':
+              desc: "Clock source from external trigger"
+              val: 3
+            '5':
+              desc: "Clock source from 10 kHz internal low speed RC oscillator (LIRC)"
+              val: 5
+            '7':
+              desc: "Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC)"
+              val: 7
+        TMR1_S:
+          desc: "TIMER1 Clock Source Selection\n"
+          bits: 14-12
+          enum:
+            '0':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator (HXT)"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Clock source from HCLK"
+              val: 2
+            '3':
+              desc: "Clock source from external trigger"
+              val: 3
+            '5':
+              desc: "Clock source from 10 kHz internal low speed RC oscillator (LIRC)"
+              val: 5
+            '7':
+              desc: "Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC)"
+              val: 7
+        TMR2_S:
+          desc: "TIMER2 Clock Source Selection\n"
+          bits: 18-16
+          enum:
+            '0':
+              desc: "Clock source from external 4~24 MHz high speed crystal oscillator (HXT)"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Clock source from HCLK"
+              val: 2
+            '3':
+              desc: "Clock source from external trigger"
+              val: 3
+            '5':
+              desc: "Clock source from 10 kHz internal low speed RC oscillator (LIRC)"
+              val: 5
+            '7':
+              desc: "Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC)"
+              val: 7
+        TMR3_S:
+          desc: "TIMER3 Clock Source Selection\n"
+          bits: 22-20
+          enum:
+            '0':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator (HXT)"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Clock source from HCLK"
+              val: 2
+            '3':
+              desc: "Clock source from external trigger"
+              val: 3
+            '5':
+              desc: "Clock source from 10 kHz internal low speed RC oscillator (LIRC)"
+              val: 5
+            '7':
+              desc: "Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC)"
+              val: 7
+        UART_S:
+          desc: "UART Clock Source Selection\n"
+          bits: 25-24
+          enum:
+            '0':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator (HXT)"
+              val: 0
+            '1':
+              desc: "Clock source from PLL"
+              val: 1
+            '3':
+              desc: "Clock source from 22.1184 MHz internal high speed RC oscillator (HIRC)"
+              val: 3
+    CLKDIV:
+      desc: Clock Divider Number Register
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        HCLK_N:
+          desc: "HCLK Clock Divide Number From HCLK Clock Source\n"
+          bits: 3-0
+        UART_N:
+          desc: "UART Clock Divide Number From UART Clock Source\n"
+          bits: 11-8
+        ADC_N:
+          desc: "ADC Clock Divide Number From ADC Clock Source\n"
+          bits: 23-16
+    CLKSEL2:
+      desc: Clock Source Select Control Register 2
+      offset: 0x1c
+      reset_val: 0x200ff
+      fields:
+        FRQDIV_S:
+          desc: "Clock Divider Clock Source Selection\n"
+          bits: 3-2
+          enum:
+            '0':
+              desc: "Clock source from 4~24 MHz external high speed crystal oscillator clock"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Clock source from HCLK"
+              val: 2
+            '3':
+              desc: "Clock source from 22.1184 MHz internal high speed RC oscillator clock"
+              val: 3
+        WWDT_S:
+          desc: "Window Watchdog Timer Clock Source Selection\n"
+          bits: 17-16
+          enum:
+            '2':
+              desc: "Clock source from HCLK/2048 clock"
+              val: 2
+            '3':
+              desc: "Clock source from 10 kHz internal low speed RC oscillator clock"
+              val: 3
+    PLLCON:
+      desc: PLL Control Register
+      offset: 0x20
+      reset_val: 0x5c22e
+      fields:
+        FB_DV:
+          desc: "PLL Feedback Divider Control Bits\nRefer to the formulas below the table."
+          bits: 8-0
+        IN_DV:
+          desc: "PLL Input Divider Control Bits\nRefer to the formulas below the table."
+          bits: 13-9
+        OUT_DV:
+          desc: "PLL Output Divider Control Bits\nRefer to the formulas below the table."
+          bits: 15-14
+        PD:
+          desc: "Power-Down Mode\nIf the PWR_DOWN_EN bit is set to 1 in PWRCON register, the PLL will enter Power-down mode too.\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "PLL is in Normal mode"
+              val: 0
+            '1':
+              desc: "PLL is in Power-down mode (default)"
+              val: 1
+        BP:
+          desc: "PLL Bypass Control\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "PLL is in Normal mode (default)"
+              val: 0
+            '1':
+              desc: "PLL clock output is same as PLL source clock input"
+              val: 1
+        OE:
+          desc: "PLL OE (FOUT Enable) Pin Control\n"
+          bits: 18
+          enum:
+            '0':
+              desc: "PLL FOUT Enabled"
+              val: 0
+            '1':
+              desc: "PLL FOUT is fixed low"
+              val: 1
+        PLL_SRC:
+          desc: "PLL Source Clock Selection\n"
+          bits: 19
+          enum:
+            '0':
+              desc: "PLL source clock from 4~24 MHz external high speed crystal oscillator"
+              val: 0
+            '1':
+              desc: "PLL source clock from 22.1184 MHz internal high speed RC oscillator"
+              val: 1
+    FRQDIV:
+      desc: Frequency Divider Control Register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        FSEL:
+          desc: "Divider Output Frequency Selection Bits\nThe formula of output frequency is\nFin is the input clock frequency.\nFout is the frequency of divider output clock.\nN is the 4-bit value of FSEL[3:0]."
+          bits: 3-0
+        DIVIDER_EN:
+          desc: "Frequency Divider Enable Control\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Frequency divider function Disabled"
+              val: 0
+            '1':
+              desc: "Frequency divider function Enabled"
+              val: 1
+        DIVIDER1:
+          desc: "Frequency Divider One Enable Control\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "Frequency divider will output clock with source frequency divided by FSEL"
+              val: 0
+            '1':
+              desc: "Frequency divider will output clock with source frequency"
+              val: 1
+    APBCLK1:
+      desc: APB Devices Clock Enable Control Register 1
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        UART3_EN:
+          desc: "UART3 Clock Enable Control\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "UART3 clock Disabled"
+              val: 0
+            '1':
+              desc: "UART3 clock Enabled"
+              val: 1
+        UART4_EN:
+          desc: "UART4 Clock Enable Control\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "UART4 clock Disabled"
+              val: 0
+            '1':
+              desc: "UART4 clock Enabled"
+              val: 1
+        UART5_EN:
+          desc: "UART5 Clock Enable Control\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "UART5 clock Disabled"
+              val: 0
+            '1':
+              desc: "UART5 clock Enabled"
+              val: 1
+        PWM0_EN:
+          desc: "PWM0 Clock Enable Control\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "PWM0 clock Disabled"
+              val: 0
+            '1':
+              desc: "PWM0 clock Enabled"
+              val: 1
+        PWM1_EN:
+          desc: "PWM1 Clock Enable Control\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "PWM1 clock Disabled"
+              val: 0
+            '1':
+              desc: "PWM1 clock Enabled"
+              val: 1
+        BPWM0_EN:
+          desc: "BPWM0 Clock Enable Control\n"
+          bits: 18
+          enum:
+            '0':
+              desc: "BPWM0 clock Disabled"
+              val: 0
+            '1':
+              desc: "BPWM0 clock Enabled"
+              val: 1
+        BPWM1_EN:
+          desc: "BPWM1 Clock Enable Control\n"
+          bits: 19
+          enum:
+            '0':
+              desc: "BPWM1 clock Disabled"
+              val: 0
+            '1':
+              desc: "BPWM1 clock Enabled"
+              val: 1
+    CLKSEL3:
+      desc: Clock Source Select Control Register 3
+      offset: 0x34
+      reset_val: 0xf003f
+      fields:
+        PWM0_S:
+          desc: "PWM0 Clock Source Selection\nThe Engine clock source of PWM0 is defined by PWM0_S.\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "Clock source from PLL"
+              val: 0
+            '1':
+              desc: "Clock source from PCLK"
+              val: 1
+        PWM1_S:
+          desc: "PWM1 Clock Source Selection\nThe Engine clock source of PWM1 is defined by PWM1_S.\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "Clock source from PLL"
+              val: 0
+            '1':
+              desc: "Clock source from PCLK"
+              val: 1
+        BPWM0_S:
+          desc: "BPWM0 Clock Source Selection\nThe Engine clock source of BPWM0 is defined by BPWM0_S.\n"
+          bits: 18
+          enum:
+            '0':
+              desc: "Clock source from PLL"
+              val: 0
+            '1':
+              desc: "Clock source from PCLK"
+              val: 1
+        BPWM1_S:
+          desc: "BPWM1 Clock Source Selection\nThe Engine clock source of BPWM1 is defined by BPWM1_S.\n"
+          bits: 19
+          enum:
+            '0':
+              desc: "Clock source from PLL"
+              val: 0
+            '1':
+              desc: "Clock source from PCLK"
+              val: 1
+    CLKDCTL:
+      desc: Clock Fail Detector Control Register
+      offset: 0x70
+      reset_val: 0x0
+      fields:
+        HXTFDEN:
+          desc: "HXT Clock Fail Detector Enable Control\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "HXT clock Fail detector Disabled"
+              val: 0
+            '1':
+              desc: "HXT clock Fail detector Enabled"
+              val: 1
+        HXTFIEN:
+          desc: "HXT Clock Fail Interrupt Enable Control\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "HXT clock Fail interrupt Disabled"
+              val: 0
+            '1':
+              desc: "HXT clock Fail interrupt Enabled"
+              val: 1
+        HXTFQDEN:
+          desc: "HXT Clock Frequency Monitor Enable Control\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "HXT clock frequency monitor Disabled"
+              val: 0
+            '1':
+              desc: "HXT clock frequency monitor Enabled"
+              val: 1
+        HXTFQIEN:
+          desc: "HXT Clock Frequency Monitor Interrupt Enable Control\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "HXT clock frequency monitor fail interrupt Disabled"
+              val: 0
+            '1':
+              desc: "HXT clock frequency monitor fail interrupt Enabled"
+              val: 1
+    CLKDSTS:
+      desc: Clock Fail Detector Status Register
+      offset: 0x74
+      reset_val: 0x0
+      fields:
+        HXTFIF:
+          desc: "HXT Clock Fail Interrupt Flag\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "HXT clock normal"
+              val: 0
+            '1':
+              desc: "HXT clock stop (write <1> to clear)"
+              val: 1
+        HXTFQIF:
+          desc: "HXT Clock Frequency Monitor Interrupt Flag\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "HXT clock normal"
+              val: 0
+            '1':
+              desc: "HXT clock frequency abnormal (write <1> to clear)"
+              val: 1
+    CDUPB:
+      desc: Clock Frequency Detector Upper Boundary Register
+      offset: 0x78
+      reset_val: 0x0
+      fields:
+        UPERBD:
+          desc: "HXT Clock Frequency Detector Upper Boundary\nThe bits define the high value of frequency monitor window.\nWhen HXT frequency monitor value higher than this register, the HXT frequency detect fail interrupt flag will set to 1."
+          bits: 9-0
+    CDLOWB:
+      desc: Clock Frequency Detector Lower Boundary Register
+      offset: 0x7c
+      reset_val: 0x0
+      fields:
+        LOWERBD:
+          desc: "HXT Clock Frequency Detector Lower Boundary\nThe bits define the low value of frequency monitor window.\nWhen HXT frequency monitor values lower than this register, the HXT frequency detect fail interrupt flag will set to 1."
+          bits: 9-0

@@ -1,0 +1,179 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: INT Register Map
+  ver: 1
+  registers:
+    SRC:
+      desc: IRQ0 (BOD) Interrupt Source Identity
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        INT_SRC:
+          desc: "Interrupt Source\nDefine the interrupt sources for interrupt event."
+          bits: 3-0
+    SRC:
+      desc: IRQ1 (WDT) Interrupt Source Identity
+      offset: 0x4
+      reset_val: 0x0
+    SRC:
+      desc: IRQ2 (EINT0) Interrupt Source Identity
+      offset: 0x8
+      reset_val: 0x0
+    SRC:
+      desc: IRQ3 (EINT1) Interrupt Source Identity
+      offset: 0xc
+      reset_val: 0x0
+    SRC:
+      desc: IRQ4 (GPA/B) Interrupt Source Identity
+      offset: 0x10
+      reset_val: 0x0
+    SRC:
+      desc: IRQ5 (GPC/D/E/F) Interrupt Source Identity
+      offset: 0x14
+      reset_val: 0x0
+    SRC:
+      desc: Reserved
+      offset: 0x18
+      reset_val: 0x0
+    SRC:
+      desc: Reserved
+      offset: 0x1c
+      reset_val: 0x0
+    SRC:
+      desc: IRQ8 (TMR0) Interrupt Source Identity
+      offset: 0x20
+      reset_val: 0x0
+    SRC:
+      desc: IRQ9 (TMR1) Interrupt Source Identity
+      offset: 0x24
+      reset_val: 0x0
+    SRC:
+      desc: IRQ10 (TMR2) Interrupt Source Identity
+      offset: 0x28
+      reset_val: 0x0
+    SRC:
+      desc: IRQ11 (TMR3) Interrupt Source Identity
+      offset: 0x2c
+      reset_val: 0x0
+    SRC:
+      desc: IRQ12 (UART0/2) Interrupt Source Identity
+      offset: 0x30
+      reset_val: 0x0
+    SRC:
+      desc: IRQ13 (UART1) Interrupt Source Identity
+      offset: 0x34
+      reset_val: 0x0
+    SRC:
+      desc: IRQ14 (SPI0) Interrupt Source Identity
+      offset: 0x38
+      reset_val: 0x0
+    SRC:
+      desc: IRQ15 (UART3) Interrupt Source Identity
+      offset: 0x3c
+      reset_val: 0x0
+    SRC:
+      desc: IRQ16 (UART4) Interrupt Source Identity
+      offset: 0x40
+      reset_val: 0x0
+    SRC:
+      desc: IRQ17 (UART5) Interrupt Source Identity
+      offset: 0x44
+      reset_val: 0x0
+    SRC:
+      desc: IRQ18 (I2C0) Interrupt Source Identity
+      offset: 0x48
+      reset_val: 0x0
+    SRC:
+      desc: IRQ19 (I2C1) Interrupt Source Identity
+      offset: 0x4c
+      reset_val: 0x0
+    SRC:
+      desc: IRQ20 (CAN0) Interrupt Source Identity
+      offset: 0x50
+      reset_val: 0x0
+    SRC:
+      desc: Reserved
+      offset: 0x54
+      reset_val: 0x0
+    SRC:
+      desc: IRQ22 (PWM0) Interrupt Source Identity
+      offset: 0x58
+      reset_val: 0x0
+    SRC:
+      desc: IRQ23 (PWM1) Interrupt Source Identity
+      offset: 0x5c
+      reset_val: 0x0
+    SRC:
+      desc: IRQ24 (BPWM0) Interrupt Source Identity
+      offset: 0x60
+      reset_val: 0x0
+    SRC:
+      desc: IRQ25 (BPWM1) Interrupt Source Identity
+      offset: 0x64
+      reset_val: 0x0
+    SRC:
+      desc: IRQ26 (BRAKE0) Interrupt Source Identity
+      offset: 0x68
+      reset_val: 0x0
+    SRC:
+      desc: IRQ27 (BRAKE1) Interrupt Source Identity
+      offset: 0x6c
+      reset_val: 0x0
+    SRC:
+      desc: IRQ28 (PWRWU) Interrupt Source Identity
+      offset: 0x70
+      reset_val: 0x0
+    SRC:
+      desc: IRQ29 (ADC) Interrupt Source Identity
+      offset: 0x74
+      reset_val: 0x0
+    SRC:
+      desc: IRQ30 (CKD) Interrupt Source Identity
+      offset: 0x78
+      reset_val: 0x0
+    SRC:
+      desc: Reserved
+      offset: 0x7c
+      reset_val: 0x0
+    SEL:
+      desc: NMI Source Interrupt Select Control Register
+      offset: 0x80
+      reset_val: 0x0
+      fields:
+        NMI_SEL:
+          desc: "NMI Interrupt Source Selection\nThe NMI interrupt to Cortex-M0 can be selected from one of the peripheral interrupt by setting NMI_SEL."
+          bits: 4-0
+        NMI_EN:
+          desc: "NMI Interrupt Enable Control (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write <59h>, <16h>, and <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 8
+          enum:
+            '0':
+              desc: "NMI interrupt Disabled"
+              val: 0
+            '1':
+              desc: "NMI interrupt Enabled"
+              val: 1
+    IRQ:
+      desc: MCU Interrupt Request Source Register
+      offset: 0x84
+      reset_val: 0x0
+      fields:
+        MCU_IRQ:
+          desc: "MCU IRQ Source Register\nThe MCU_IRQ collects all the interrupts from the peripherals and generates the synchronous interrupt to Cortex-M0. There are two modes to generate interrupt to Cortex-M0, the normal mode and test mode.\nThe MCU_IRQ collects all interrupts from each peripheral and synchronizes them and interrupts the Cortex-M0.\nWhen the MCU_IRQ[n] is 0: Set MCU_IRQ[n] 1 will generate an interrupt to Cortex-M0 NVIC[n].\nWhen the MCU_IRQ[n] is 1 (mean an interrupt is assert), setting 1 to the MCU_IRQ[n] 1 will clear the interrupt and setting MCU_IRQ[n] 0: has no effect."
+          bits: 31-0
+    IRQCR:
+      desc: MCU Interrupt Request Control Register
+      offset: 0x88
+      reset_val: 0x0
+      fields:
+        FAST_IRQ:
+          desc: "Fast IRQ Latency Enable Control\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "MCU IRQ latency is fixed at 13 clock cycles of HCLK, MCU will enter IRQ handler after this fixed latency when interrupt happened"
+              val: 0
+            '1':
+              desc: "MCU IRQ latency will not fixed, MCU will enter IRQ handler as soon as possible when interrupt happened"
+              val: 1

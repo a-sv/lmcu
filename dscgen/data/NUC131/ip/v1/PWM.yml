@@ -1,0 +1,1754 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: PWM Register Map
+  ver: 1
+  registers:
+    CTL0:
+      desc: PWM Control Register 0
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        CTRLDn:
+          desc: "Center Re-Load\nEach bit n controls the corresponding PWM channel n.\nIn up-down counter type, PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the center point of a period."
+          bits: 5-0
+        IMMLDENn:
+          desc: "Immediately Load Enable control\nEach bit n controls the corresponding PWM channel n.\nNote: If IMMLDENn is enabled, WINLDENn and CTRLDn will be invalid."
+          bits: 21-16
+          enum:
+            '0':
+              desc: "PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the end point or center point of each period by setting CTRLD bit"
+              val: 0
+            '1':
+              desc: "PERIOD/CMPDAT will load to PBUF and CMPBUF immediately when software update PERIOD/CMPDAT"
+              val: 1
+        DBGHALT:
+          desc: "ICE Debug Mode Counter Halt (Write Protect)\nIf counter halt is enabled, PWM all counters will keep current value until exit ICE debug mode. \nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 30
+          enum:
+            '0':
+              desc: "ICE debug mode counter halt Disabled"
+              val: 0
+            '1':
+              desc: "ICE debug mode counter halt Enabled"
+              val: 1
+        DBGTRIOFF:
+          desc: "ICE Debug Mode Acknowledge Disable (Write Protect)\nPWM pin will keep output no matter ICE debug mode acknowledged or not.\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 31
+          enum:
+            '0':
+              desc: "ICE debug mode acknowledgement effects PWM output"
+              val: 0
+            '1':
+              desc: "ICE debug mode acknowledgement Disabled"
+              val: 1
+    CTL1:
+      desc: PWM Control Register 1
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        CNTTYPE0:
+          desc: "PWM Counter Behavior Type 0\nEach bit n controls corresponding PWM channel n.\n"
+          bits: 1-0
+          enum:
+            '0':
+              desc: "Up counter type (supports in capture mode)"
+              val: 0
+            '1':
+              desc: "Down count type (supports in capture mode)"
+              val: 1
+            '2':
+              desc: "Up-down counter type"
+              val: 2
+            '3':
+              desc: "Reserved"
+              val: 3
+        CNTTYPE2:
+          desc: "PWM Counter Behavior Type 2\nEach bit n controls corresponding PWM channel n.\n"
+          bits: 5-4
+          enum:
+            '0':
+              desc: "Up counter type (supports in capture mode)"
+              val: 0
+            '1':
+              desc: "Down count type (supports in capture mode)"
+              val: 1
+            '2':
+              desc: "Up-down counter type"
+              val: 2
+            '3':
+              desc: "Reserved"
+              val: 3
+        CNTTYPE4:
+          desc: "PWM Counter Behavior Type 4\nEach bit n controls corresponding PWM channel n.\n"
+          bits: 9-8
+          enum:
+            '0':
+              desc: "Up counter type (supports in capture mode)"
+              val: 0
+            '1':
+              desc: "Down count type (supports in capture mode)"
+              val: 1
+            '2':
+              desc: "Up-down counter type"
+              val: 2
+            '3':
+              desc: "Reserved"
+              val: 3
+        PWMMODEn:
+          desc: "PWM Mode\nEach bit n controls the corresponding PWM channel n.\nNote: When operating in group function, these bits must all set to the same mode."
+          bits: 26-24
+          enum:
+            '0':
+              desc: "PWM independent mode"
+              val: 0
+            '1':
+              desc: "PWM complementary mode"
+              val: 1
+    CLKSRC:
+      desc: PWM Clock Source Register
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        ECLKSRC0:
+          desc: "PWM_CH01 External Clock Source Select\n"
+          bits: 2-0
+          enum:
+            '0':
+              desc: "PWMx_CLK, x denotes 0 or 1"
+              val: 0
+            '1':
+              desc: "TIMER0 overflow"
+              val: 1
+            '2':
+              desc: "TIMER1 overflow"
+              val: 2
+            '3':
+              desc: "TIMER2 overflow"
+              val: 3
+            '4':
+              desc: "TIMER3 overflow"
+              val: 4
+        ECLKSRC2:
+          desc: "PWM_CH23 External Clock Source Select\n"
+          bits: 10-8
+          enum:
+            '0':
+              desc: "PWMx_CLK, x denotes 0 or 1"
+              val: 0
+            '1':
+              desc: "TIMER0 overflow"
+              val: 1
+            '2':
+              desc: "TIMER1 overflow"
+              val: 2
+            '3':
+              desc: "TIMER2 overflow"
+              val: 3
+            '4':
+              desc: "TIMER3 overflow"
+              val: 4
+        ECLKSRC4:
+          desc: "PWM_CH45 External Clock Source Select\n"
+          bits: 18-16
+          enum:
+            '0':
+              desc: "PWMx_CLK, x denotes 0 or 1"
+              val: 0
+            '1':
+              desc: "TIMER0 overflow"
+              val: 1
+            '2':
+              desc: "TIMER1 overflow"
+              val: 2
+            '3':
+              desc: "TIMER2 overflow"
+              val: 3
+            '4':
+              desc: "TIMER3 overflow"
+              val: 4
+    CLKPSC0_1:
+      desc: PWM Clock Pre-scale Register 0_1
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        CLKPSC:
+          desc: "PWM Counter Clock Pre-Scale \nThe clock of PWM counter is decided by clock prescaler. Each PWM pair share one PWM counter clock prescaler. The clock of PWM counter is divided by (CLKPSC+ 1)."
+          bits: 11-0
+    CLKPSC2_3:
+      desc: PWM Clock Pre-scale Register 2_3
+      offset: 0x18
+      reset_val: 0x0
+    CLKPSC4_5:
+      desc: PWM Clock Pre-scale Register 4_5
+      offset: 0x1c
+      reset_val: 0x0
+    CNTEN:
+      desc: PWM Counter Enable Register
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        CNTEN0:
+          desc: "PWM Counter Enable 0\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "PWM Counter and clock prescaler Stop Running"
+              val: 0
+            '1':
+              desc: "PWM Counter and clock prescaler Start Running"
+              val: 1
+        CNTEN2:
+          desc: "PWM Counter Enable 2\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "PWM Counter and clock prescaler Stop Running"
+              val: 0
+            '1':
+              desc: "PWM Counter and clock prescaler Start Running"
+              val: 1
+        CNTEN4:
+          desc: "PWM Counter Enable 4\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "PWM Counter and clock prescaler Stop Running"
+              val: 0
+            '1':
+              desc: "PWM Counter and clock prescaler Start Running"
+              val: 1
+    CNTCLR:
+      desc: PWM Clear Counter Register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        CNTCLR0:
+          desc: "Clear PWM Counter Control Bit 0\nIt is automatically cleared by hardware.\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Clear 16-bit PWM counter to 0000H"
+              val: 1
+        CNTCLR2:
+          desc: "Clear PWM Counter Control Bit 2\nIt is automatically cleared by hardware.\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Clear 16-bit PWM counter to 0000H"
+              val: 1
+        CNTCLR4:
+          desc: "Clear PWM Counter Control Bit 4\nIt is automatically cleared by hardware.\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Clear 16-bit PWM counter to 0000H"
+              val: 1
+    PERIOD0:
+      desc: PWM Period Register 0
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        PERIOD:
+          desc: "PWM Period Register\nUp-Count mode: In this mode, PWM counter counts from 0 to PERIOD, and restarts from 0.\nDown-Count mode: In this mode, PWM counter counts from PERIOD to 0, and restarts from PERIOD.\n"
+          bits: 15-0
+    PERIOD2:
+      desc: PWM Period Register 2
+      offset: 0x38
+      reset_val: 0x0
+    PERIOD4:
+      desc: PWM Period Register 4
+      offset: 0x40
+      reset_val: 0x0
+    CMPDAT0:
+      desc: PWM Comparator Register 0
+      offset: 0x50
+      reset_val: 0x0
+      fields:
+        CMP:
+          desc: "PWM Comparator Register\nCMP use to compare with CNT to generate PWM waveform, interrupt and trigger ADC.\nIn independent mode, PWM_CMPDAT0~5 denote as 6 independent PWM_CH0~5 compared point.\nIn complementary mode, PWM_CMPDAT0, 2, 4 denote as first compared point, and PWM_CMPDAT1, 3, 5 denote as second compared point for the corresponding 3 complementary pairs PWM_CH0 and PWM_CH1, PWM_CH2 and PWM_CH3, PWM_CH4 and PWM_CH5."
+          bits: 15-0
+    CMPDAT1:
+      desc: PWM Comparator Register 1
+      offset: 0x54
+      reset_val: 0x0
+    CMPDAT2:
+      desc: PWM Comparator Register 2
+      offset: 0x58
+      reset_val: 0x0
+    CMPDAT3:
+      desc: PWM Comparator Register 3
+      offset: 0x5c
+      reset_val: 0x0
+    CMPDAT4:
+      desc: PWM Comparator Register 4
+      offset: 0x60
+      reset_val: 0x0
+    CMPDAT5:
+      desc: PWM Comparator Register 5
+      offset: 0x64
+      reset_val: 0x0
+    DTCTL0_1:
+      desc: PWM Dead-time Control Register 0_1
+      offset: 0x70
+      reset_val: 0x0
+      fields:
+        DTCNT:
+          desc: "Dead-Time Counter (Write Protect)\nThe dead-time can be calculated from the following formula: \nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 11-0
+        DTEN:
+          desc: "Enable Dead-Time Insertion For PWM Pair (PWM_CH0, PWM_CH1) (PWM_CH2, PWM_CH3) (PWM_CH4, PWM_CH5) (Write Protect)\nDead-time insertion is only active when this pair of complementary PWM is enabled. If dead- time insertion is inactive, the outputs of pin pair are complementary without any delay.\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 16
+          enum:
+            '0':
+              desc: "Dead-time insertion Disabled on the pin pair"
+              val: 0
+            '1':
+              desc: "Dead-time insertion Enabled on the pin pair"
+              val: 1
+        DTCKSEL:
+          desc: "Dead-Time Clock Select (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 24
+          enum:
+            '0':
+              desc: "Dead-time clock source from PWM_CLK"
+              val: 0
+            '1':
+              desc: "Dead-time clock source from prescaler output"
+              val: 1
+    DTCTL2_3:
+      desc: PWM Dead-time Control Register 2_3
+      offset: 0x74
+      reset_val: 0x0
+    DTCTL4_5:
+      desc: PWM Dead-time Control Register 4_5
+      offset: 0x78
+      reset_val: 0x0
+    CNT0:
+      desc: PWM Counter Register 0
+      offset: 0x90
+      reset_val: 0x0
+      fields:
+        CNT:
+          desc: "PWM Data Register (Read Only)\nUser can monitor CNT to know the current value in 16-bit period counter."
+          bits: 15-0
+        DIRF:
+          desc: "PWM Direction Indicator Flag (Read Only)\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "Counter is Down count"
+              val: 0
+            '1':
+              desc: "Counter is UP count"
+              val: 1
+    CNT2:
+      desc: PWM Counter Register 2
+      offset: 0x98
+      reset_val: 0x0
+    CNT4:
+      desc: PWM Counter Register 4
+      offset: 0xa0
+      reset_val: 0x0
+    WGCTL0:
+      desc: PWM Generation Register 0
+      offset: 0xb0
+      reset_val: 0x0
+      fields:
+        ZPCTLn:
+          desc: "PWM Zero Point Control\nEach bit n controls the corresponding PWM channel n.\nPWM can control output level when PWM counter count to zero."
+          bits: 11-0
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "PWM zero point output Low"
+              val: 1
+            '10':
+              desc: "PWM zero point output High"
+              val: 10
+            '11':
+              desc: "PWM zero point output Toggle"
+              val: 11
+        PRDPCTLn:
+          desc: "PWM Period (Center) Point Control\nEach bit n controls the corresponding PWM channel n.\nPWM can control output level when PWM counter count to (PERIODn+1).\nNote: This bit is center point control when PWM counter operating in up-down counter type."
+          bits: 27-16
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "PWM period (center) point output Low"
+              val: 1
+            '10':
+              desc: "PWM period (center) point output High"
+              val: 10
+            '11':
+              desc: "PWM period (center) point output Toggle"
+              val: 11
+    WGCTL1:
+      desc: PWM Generation Register 1
+      offset: 0xb4
+      reset_val: 0x0
+      fields:
+        CMPUCTLn:
+          desc: "PWM Compare Up Point Control\nEach bit n controls the corresponding PWM channel n.\nPWM can control output level when PWM counter up count to CMPDAT.\nNote: In complementary mode, CMPUCTL1, 3, 5 use as another CMPUCTL for channel 0, 2, 4."
+          bits: 11-0
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "PWM compare up point output Low"
+              val: 1
+            '10':
+              desc: "PWM compare up point output High"
+              val: 10
+            '11':
+              desc: "PWM compare up point output Toggle"
+              val: 11
+        CMPDCTLn:
+          desc: "PWM Compare Down Point Control\nEach bit n controls the corresponding PWM channel n.\nPWM can control output level when PWM counter down count to CMPDAT.\nNote: In complementary mode, CMPDCTL1, 3, 5 use as another CMPDCTL for channel 0, 2, 4."
+          bits: 27-16
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "PWM compare down point output Low"
+              val: 1
+            '10':
+              desc: "PWM compare down point output High"
+              val: 10
+            '11':
+              desc: "PWM compare down point output Toggle"
+              val: 11
+    MSKEN:
+      desc: PWM Mask Enable Register
+      offset: 0xb8
+      reset_val: 0x0
+      fields:
+        MSKENn:
+          desc: "PWM Mask Enable Control\nEach bit n controls the corresponding PWM channel n.\nThe PWM output signal will be masked when this bit is enabled. The corresponding PWM channel n will output MSKDATn (PWM_MSK[5:0]) data. \n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "PWM output signal is non-masked"
+              val: 0
+            '1':
+              desc: "PWM output signal is masked and output MSKDATn data"
+              val: 1
+    MSK:
+      desc: PWM Mask Data Register
+      offset: 0xbc
+      reset_val: 0x0
+      fields:
+        MSKDATn:
+          desc: "PWM Mask Data Bit\nThis data bit control the state of PWMn output pin, if corresponding mask function is enabled. Each bit n controls the corresponding PWM channel n.\n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "Output logic low to PWMn"
+              val: 0
+            '1':
+              desc: "Output logic high to PWMn"
+              val: 1
+    BNF:
+      desc: PWM Brake Noise Filter Register
+      offset: 0xc0
+      reset_val: 0x0
+      fields:
+        BRK0FEN:
+          desc: "PWM Brake 0 Noise Filter Enable Control\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "Noise filter of PWM Brake 0 Disabled"
+              val: 0
+            '1':
+              desc: "Noise filter of PWM Brake 0 Enabled"
+              val: 1
+        BRK0FCS:
+          desc: "Brake 0 Edge Detector Filter Clock Selection\n"
+          bits: 3-1
+          enum:
+            '0':
+              desc: "Filter clock is HCLK"
+              val: 0
+            '1':
+              desc: "Filter clock is HCLK/2"
+              val: 1
+            '2':
+              desc: "Filter clock is HCLK/4"
+              val: 2
+            '3':
+              desc: "Filter clock is HCLK/8"
+              val: 3
+            '4':
+              desc: "Filter clock is HCLK/16"
+              val: 4
+            '5':
+              desc: "Filter clock is HCLK/32"
+              val: 5
+            '6':
+              desc: "Filter clock is HCLK/64"
+              val: 6
+            '7':
+              desc: "Filter clock is HCLK/128"
+              val: 7
+        BRK0FCNT:
+          desc: "Brake 0 Edge Detector Filter Count\nThe register bits control the Brake0 filter counter to count from 0 to BRK1FCNT."
+          bits: 6-4
+        BRK0PINV:
+          desc: "Brake 0 Pin Inverse\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "The state of pin PWMx_BRAKE0 is passed to the negative edge detector"
+              val: 0
+            '1':
+              desc: "The inversed state of pin PWMx_BRAKE10 is passed to the negative edge detector"
+              val: 1
+        BRK1FEN:
+          desc: "PWM Brake 1 Noise Filter Enable Control\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "Noise filter of PWM Brake 1 Disabled"
+              val: 0
+            '1':
+              desc: "Noise filter of PWM Brake 1 Enabled"
+              val: 1
+        BRK1FCS:
+          desc: "Brake 1 Edge Detector Filter Clock Selection\n"
+          bits: 11-9
+          enum:
+            '0':
+              desc: "Filter clock = HCLK"
+              val: 0
+            '1':
+              desc: "Filter clock = HCLK/2"
+              val: 1
+            '2':
+              desc: "Filter clock = HCLK/4"
+              val: 2
+            '3':
+              desc: "Filter clock = HCLK/8"
+              val: 3
+            '4':
+              desc: "Filter clock = HCLK/16"
+              val: 4
+            '5':
+              desc: "Filter clock = HCLK/32"
+              val: 5
+            '6':
+              desc: "Filter clock = HCLK/64"
+              val: 6
+            '7':
+              desc: "Filter clock = HCLK/128"
+              val: 7
+        BRK1FCNT:
+          desc: "Brake 1 Edge Detector Filter Count\nThe register bits control the Brake1 filter counter to count from 0 to BRK1FCNT."
+          bits: 14-12
+        BRK1PINV:
+          desc: "Brake 1 Pin Inverse\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "The state of pin PWMx_BRAKE1 is passed to the negative edge detector"
+              val: 0
+            '1':
+              desc: "The inversed state of pin PWMx_BRAKE1 is passed to the negative edge detector"
+              val: 1
+        BK0SRC:
+          desc: "Brake 0 Pin Source Select\nFor PWM0 setting:\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "Brake 0 pin source come from PWM0_BRAKE0.\nBrake 0 pin source come from PWM1_BRAKE0"
+              val: 0
+            '1':
+              desc: "Brake 0 pin source come from PWM1_BRAKE0.\nBrake 0 pin source come from PWM0_BRAKE0"
+              val: 1
+        BK1SRC:
+          desc: "Brake 1 Pin Source Select\nFor PWM0 setting:\n"
+          bits: 24
+          enum:
+            '0':
+              desc: "Brake 1 pin source come from PWM0_BRAKE1.\nBrake 1 pin source come from PWM1_BRAKE1"
+              val: 0
+            '1':
+              desc: "Brake 1 pin source come from PWM1_BRAKE1.\nBrake 1 pin source come from PWM0_BRAKE1"
+              val: 1
+    FAILBRK:
+      desc: PWM System Fail Brake Control Register
+      offset: 0xc4
+      reset_val: 0x0
+      fields:
+        CSSBRKEN:
+          desc: "Clock Security System Detection Trigger PWM Brake Function 0 Enable Control\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "Brake Function triggered by CSS detection Disabled"
+              val: 0
+            '1':
+              desc: "Brake Function triggered by CSS detection Enabled"
+              val: 1
+        BODBRKEN:
+          desc: "Brown-Out Detection Trigger PWM Brake Function 0 Enable Control\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "Brake Function triggered by BOD Disabled"
+              val: 0
+            '1':
+              desc: "Brake Function triggered by BOD Enabled"
+              val: 1
+        CORBRKEN:
+          desc: "Core Lockup Detection Trigger PWM Brake Function 0 Enable Control\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Brake Function triggered by Core lockup detection Disabled"
+              val: 0
+            '1':
+              desc: "Brake Function triggered by Core lockup detection Enabled"
+              val: 1
+    BRKCTL0_1:
+      desc: PWM Brake Edge Detect Control Register 0_1
+      offset: 0xc8
+      reset_val: 0x0
+      fields:
+        BRKP0EEN:
+          desc: "Enable PWMx_BRAKE0 Pin As Edge-Detect Brake Source (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 4
+          enum:
+            '0':
+              desc: "BKP0 pin as edge-detect brake source Disabled"
+              val: 0
+            '1':
+              desc: "BKP0 pin as edge-detect brake source Enabled"
+              val: 1
+        BRKP1EEN:
+          desc: "Enable PWMx_BRAKE1 Pin As Edge-Detect Brake Source (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 5
+          enum:
+            '0':
+              desc: "BKP1 pin as edge-detect brake source Disabled"
+              val: 0
+            '1':
+              desc: "BKP1 pin as edge-detect brake source Enabled"
+              val: 1
+        SYSEEN:
+          desc: "Enable System Fail As Edge-Detect Brake Source (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 7
+          enum:
+            '0':
+              desc: "System Fail condition as edge-detect brake source Disabled"
+              val: 0
+            '1':
+              desc: "System Fail condition as edge-detect brake source Enabled"
+              val: 1
+        BRKP0LEN:
+          desc: "Enable BKP0 Pin As Level-Detect Brake Source (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 12
+          enum:
+            '0':
+              desc: "PWMx_BRAKE0 pin as level-detect brake source Disabled"
+              val: 0
+            '1':
+              desc: "PWMx_BRAKE0 pin as level-detect brake source Enabled"
+              val: 1
+        BRKP1LEN:
+          desc: "Enable BKP1 Pin As Level-Detect Brake Source (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 13
+          enum:
+            '0':
+              desc: "PWMx_BRAKE1 pin as level-detect brake source Disabled"
+              val: 0
+            '1':
+              desc: "PWMx_BRAKE1 pin as level-detect brake source Enabled"
+              val: 1
+        SYSLEN:
+          desc: "Enable System Fail As Level-Detect Brake Source (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 15
+          enum:
+            '0':
+              desc: "System Fail condition as level-detect brake source Disabled"
+              val: 0
+            '1':
+              desc: "System Fail condition as level-detect brake source Enabled"
+              val: 1
+        BRKAEVEN:
+          desc: "PWM Brake Action Select For Even Channel (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 17-16
+          enum:
+            '0':
+              desc: "PWM even channel level-detect brake function not affect channel output"
+              val: 0
+            '1':
+              desc: "PWM even channel output tri-state when level-detect brake happened"
+              val: 1
+            '2':
+              desc: "PWM even channel output low level when level-detect brake happened"
+              val: 2
+            '3':
+              desc: "PWM even channel output high level when level-detect brake happened"
+              val: 3
+        BRKAODD:
+          desc: "PWM Brake Action Select For Odd Channel (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 19-18
+          enum:
+            '0':
+              desc: "PWM odd channel level-detect brake function not affect channel output"
+              val: 0
+            '1':
+              desc: "PWM odd channel output tri-state when level-detect brake happened"
+              val: 1
+            '2':
+              desc: "PWM odd channel output low level when level-detect brake happened"
+              val: 2
+            '3':
+              desc: "PWM odd channel output high level when level-detect brake happened"
+              val: 3
+    BRKCTL2_3:
+      desc: PWM Brake Edge Detect Control Register 2_3
+      offset: 0xcc
+      reset_val: 0x0
+    BRKCTL4_5:
+      desc: PWM Brake Edge Detect Control Register 4_5
+      offset: 0xd0
+      reset_val: 0x0
+    POLCTL:
+      desc: PWM Pin Polar Inverse Register
+      offset: 0xd4
+      reset_val: 0x0
+      fields:
+        PINVn:
+          desc: "PWM PIN Polar Inverse Control\nThe register controls polarity state of PWM output. Each bit n controls the corresponding PWM channel n.\n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "PWM output polar inverse Disabled"
+              val: 0
+            '1':
+              desc: "PWM output polar inverse Enabled"
+              val: 1
+    POEN:
+      desc: PWM Output Enable Register
+      offset: 0xd8
+      reset_val: 0x0
+      fields:
+        POENn:
+          desc: "PWM Pin Output Enable Control\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "PWM pin at tri-state"
+              val: 0
+            '1':
+              desc: "PWM pin in output mode"
+              val: 1
+    SWBRK:
+      desc: PWM Software Brake Control Register
+      offset: 0xdc
+      reset_val: 0x0
+      fields:
+        BRKETRGn:
+          desc: "PWM Edge Brake Software Trigger (Write Only) (Write Protect)\nEach bit n controls the corresponding PWM pair n.\nWrite 1 to this bit will trigger Edge brake, and set BRKEIFn to 1 in PWM_INTSTS1 register. \nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 2-0
+        BRKLTRGn:
+          desc: "PWM Level Brake Software Trigger (Write Only) (Write Protect)\nEach bit n controls the corresponding PWM pair n.\nWrite 1 to this bit will trigger level brake, and set BRKLIFn to 1 in PWM_INTSTS1 register. \nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 10-8
+    INTEN0:
+      desc: PWM Interrupt Enable Register 0
+      offset: 0xe0
+      reset_val: 0x0
+      fields:
+        ZIEN0:
+          desc: "PWM Zero Point Interrupt Enable 0\nNote: Odd channels will read always 0 at complementary mode."
+          bits: 0
+          enum:
+            '0':
+              desc: "Zero point interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Zero point interrupt Enabled"
+              val: 1
+        ZIEN2:
+          desc: "PWM Zero Point Interrupt Enable 2\nNote: Odd channels will read always 0 at complementary mode."
+          bits: 2
+          enum:
+            '0':
+              desc: "Zero point interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Zero point interrupt Enabled"
+              val: 1
+        ZIEN4:
+          desc: "PWM Zero Point Interrupt Enable 4\nNote: Odd channels will read always 0 at complementary mode."
+          bits: 4
+          enum:
+            '0':
+              desc: "Zero point interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Zero point interrupt Enabled"
+              val: 1
+        PIEN0:
+          desc: "PWM Period Point Interrupt Enable 0\nNote: When up-down counter type period point means center point."
+          bits: 8
+          enum:
+            '0':
+              desc: "Period point interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Period point interrupt Enabled"
+              val: 1
+        PIEN2:
+          desc: "PWM Period Point Interrupt Enable 2\nNote: When up-down counter type period point means center point."
+          bits: 10
+          enum:
+            '0':
+              desc: "Period point interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Period point interrupt Enabled"
+              val: 1
+        PIEN4:
+          desc: "PWM Period Point Interrupt Enable 4\nNote: When up-down counter type period point means center point."
+          bits: 12
+          enum:
+            '0':
+              desc: "Period point interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Period point interrupt Enabled"
+              val: 1
+        CMPUIENn:
+          desc: "PWM Compare Up Count Interrupt Enable Control\nEach bit n controls the corresponding PWM channel n.\nNote: In complementary mode, CMPUIEN1, 3, 5 use as another CMPUIEN for channel 0, 2, 4."
+          bits: 21-16
+          enum:
+            '0':
+              desc: "Compare up count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare up count interrupt Enabled"
+              val: 1
+        CMPDIENn:
+          desc: "PWM Compare Down Count Interrupt Enable Control\nEach bit n controls the corresponding PWM channel n.\nNote: In complementary mode, CMPDIEN1, 3, 5 use as another CMPDIEN for channel 0, 2, 4."
+          bits: 29-24
+          enum:
+            '0':
+              desc: "Compare down count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare down count interrupt Enabled"
+              val: 1
+    INTEN1:
+      desc: PWM Interrupt Enable Register 1
+      offset: 0xe4
+      reset_val: 0x0
+      fields:
+        BRKEIEN0_1:
+          desc: "PWM Edge-Detect Brake Interrupt Enable For Channel0/1 (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 0
+          enum:
+            '0':
+              desc: "Edge-detect Brake interrupt for channel0/1 Disabled"
+              val: 0
+            '1':
+              desc: "Edge-detect Brake interrupt for channel0/1 Enabled"
+              val: 1
+        BRKEIEN2_3:
+          desc: "PWM Edge-Detect Brake Interrupt Enable For Channel2/3 (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 1
+          enum:
+            '0':
+              desc: "Edge-detect Brake interrupt for channel2/3 Disabled"
+              val: 0
+            '1':
+              desc: "Edge-detect Brake interrupt for channel2/3 Enabled"
+              val: 1
+        BRKEIEN4_5:
+          desc: "PWM Edge-Detect Brake Interrupt Enable For Channel4/5 (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 2
+          enum:
+            '0':
+              desc: "Edge-detect Brake interrupt for channel4/5 Disabled"
+              val: 0
+            '1':
+              desc: "Edge-detect Brake interrupt for channel4/5 Enabled"
+              val: 1
+        BRKLIEN0_1:
+          desc: "PWM Level-Detect Brake Interrupt Enable For Channel0/1 (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 8
+          enum:
+            '0':
+              desc: "Level-detect Brake interrupt for channel0/1 Disabled"
+              val: 0
+            '1':
+              desc: "Level-detect Brake interrupt for channel0/1 Enabled"
+              val: 1
+        BRKLIEN2_3:
+          desc: "PWM Level-Detect Brake Interrupt Enable For Channel2/3 (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 9
+          enum:
+            '0':
+              desc: "Level-detect Brake interrupt for channel2/3 Disabled"
+              val: 0
+            '1':
+              desc: "Level-detect Brake interrupt for channel2/3 Enabled"
+              val: 1
+        BRKLIEN4_5:
+          desc: "PWM Level-Detect Brake Interrupt Enable For Channel4/5 (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 10
+          enum:
+            '0':
+              desc: "Level-detect Brake interrupt for channel4/5 Disabled"
+              val: 0
+            '1':
+              desc: "Level-detect Brake interrupt for channel4/5 Enabled"
+              val: 1
+    INTSTS0:
+      desc: PWM Interrupt Flag Register 0
+      offset: 0xe8
+      reset_val: 0x0
+      fields:
+        ZIF0:
+          desc: "PWM Zero Point Interrupt Flag 0\nThis bit is set by hardware when PWM_CH0 counter reaches zero, software can write 1 to clear this bit to zero."
+          bits: 0
+        ZIF2:
+          desc: "PWM Zero Point Interrupt Flag 2\nThis bit is set by hardware when PWM_CH2 counter reaches zero, software can write 1 to clear this bit to zero."
+          bits: 2
+        ZIF4:
+          desc: "PWM Zero Point Interrupt Flag 4\nThis bit is set by hardware when PWM_CH4 counter reaches zero, software can write 1 to clear this bit to zero."
+          bits: 4
+        PIF0:
+          desc: "PWM Period Point Interrupt Flag 0\nThis bit is set by hardware when PWM_CH0 counter reaches PWM_PERIOD0, software can write 1 to clear this bit to zero."
+          bits: 8
+        PIF2:
+          desc: "PWM Period Point Interrupt Flag 2\nThis bit is set by hardware when PWM_CH2 counter reaches PWM_PERIOD2, software can write 1 to clear this bit to zero."
+          bits: 10
+        PIF4:
+          desc: "PWM Period Point Interrupt Flag 4\nThis bit is set by hardware when PWM_CH4 counter reaches PWM_PERIOD4, software can write 1 to clear this bit to zero."
+          bits: 12
+        CMPUIFn:
+          desc: "PWM Compare Up Count Interrupt Flag\nFlag is set by hardware when PWM counter up count and reaches PWM_CMPDATn, software can clear this bit by writing 1 to it. Each bit n controls the corresponding PWM channel n.\nNote1: If CMPDAT equal to PERIOD, this flag is not working in up counter type selection.\nNote2: In complementary mode, CMPUIF1, 3, 5 use as another CMPUIF for channel 0, 2, 4."
+          bits: 21-16
+        CMPDIFn:
+          desc: "PWM Compare Down Count Interrupt Flag\nEach bit n controls the corresponding PWM channel n.\nFlag is set by hardware when PWM counter down count and reaches PWM_CMPDATn, software can clear this bit by writing 1 to it.\nNote1: If CMPDAT equal to PERIOD, this flag is not working in down counter type selection.\nNote2: In complementary mode, CMPDIF1, 3, 5 use as another CMPDIF for channel 0, 2, 4."
+          bits: 29-24
+    INTSTS1:
+      desc: PWM Interrupt Flag Register 1
+      offset: 0xec
+      reset_val: 0x0
+      fields:
+        BRKEIF0:
+          desc: "PWM Channel0 Edge-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 0
+          enum:
+            '0':
+              desc: "PWM channel0 edge-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel0 edge-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKEIF1:
+          desc: "PWM Channel1 Edge-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 1
+          enum:
+            '0':
+              desc: "PWM channel1 edge-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel1 edge-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKEIF2:
+          desc: "PWM Channel2 Edge-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 2
+          enum:
+            '0':
+              desc: "PWM channel2 edge-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel2 edge-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKEIF3:
+          desc: "PWM Channel3 Edge-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 3
+          enum:
+            '0':
+              desc: "PWM channel3 edge-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel3 edge-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKEIF4:
+          desc: "PWM Channel4 Edge-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 4
+          enum:
+            '0':
+              desc: "PWM channel4 edge-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel4 edge-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKEIF5:
+          desc: "PWM Channel5 Edge-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 5
+          enum:
+            '0':
+              desc: "PWM channel5 edge-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel5 edge-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKLIF0:
+          desc: "PWM Channel0 Level-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 8
+          enum:
+            '0':
+              desc: "PWM channel0 level-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel0 level-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKLIF1:
+          desc: "PWM Channel1 Level-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 9
+          enum:
+            '0':
+              desc: "PWM channel1 level-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel1 level-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKLIF2:
+          desc: "PWM Channel2 Level-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 10
+          enum:
+            '0':
+              desc: "PWM channel2 level-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel2 level-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKLIF3:
+          desc: "PWM Channel3 Level-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 11
+          enum:
+            '0':
+              desc: "PWM channel3 level-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel3 level-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKLIF4:
+          desc: "PWM Channel4 Level-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 12
+          enum:
+            '0':
+              desc: "PWM channel4 level-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel4 level-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKLIF5:
+          desc: "PWM Channel5 Level-Detect Brake Interrupt Flag (Write Protect)\nNote: This register is write protected. Refer to REGWRPROT register."
+          bits: 13
+          enum:
+            '0':
+              desc: "PWM channel5 level-detect brake event do not happened"
+              val: 0
+            '1':
+              desc: "When PWM channel5 level-detect brake event happened, this bit is set to 1, writing 1 to clear"
+              val: 1
+        BRKESTS0:
+          desc: "PWM Channel0 Edge-Detect Brake Status\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "PWM channel0 edge-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel0 edge-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel0 at brake state, writing 1 to clear"
+              val: 1
+        BRKESTS1:
+          desc: "PWM Channel1 Edge-Detect Brake Status\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "PWM channel1 edge-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel1 edge-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel1 at brake state, writing 1 to clear"
+              val: 1
+        BRKESTS2:
+          desc: "PWM Channel2 Edge-Detect Brake Status\n"
+          bits: 18
+          enum:
+            '0':
+              desc: "PWM channel2 edge-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel2 edge-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel2 at brake state, writing 1 to clear"
+              val: 1
+        BRKESTS3:
+          desc: "PWM Channel3 Edge-Detect Brake Status\n"
+          bits: 19
+          enum:
+            '0':
+              desc: "PWM channel3 edge-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel3 edge-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel3 at brake state, writing 1 to clear"
+              val: 1
+        BRKESTS4:
+          desc: "PWM Channel4 Edge-Detect Brake Status\n"
+          bits: 20
+          enum:
+            '0':
+              desc: "PWM channel4 edge-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel4 edge-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel4 at brake state, writing 1 to clear"
+              val: 1
+        BRKESTS5:
+          desc: "PWM Channel5 Edge-Detect Brake Status\n"
+          bits: 21
+          enum:
+            '0':
+              desc: "PWM channel5 edge-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel5 edge-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel5 at brake state, writing 1 to clear"
+              val: 1
+        BRKLSTS0:
+          desc: "PWM Channel0 Level-Detect Brake Status (Read Only)\nNote: This bit is read only and auto cleared by hardware. When enabled brake source return to high level, PWM will release brake state until current PWM period finished. The PWM waveform will start output from next full PWM period."
+          bits: 24
+          enum:
+            '0':
+              desc: "PWM channel0 level-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel0 level-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel0 at brake state"
+              val: 1
+        BRKLSTS1:
+          desc: "PWM Channel1 Level-Detect Brake Status (Read Only)\nNote: This bit is read only and auto cleared by hardware. When enabled brake source return to high level, PWM will release brake state until current PWM period finished. The PWM waveform will start output from next full PWM period."
+          bits: 25
+          enum:
+            '0':
+              desc: "PWM channel1 level-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel1 level-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel1 at brake state"
+              val: 1
+        BRKLSTS2:
+          desc: "PWM Channel2 Level-Detect Brake Status (Read Only)\nNote: This bit is read only and auto cleared by hardware. When enabled brake source return to high level, PWM will release brake state until current PWM period finished. The PWM waveform will start output from next full PWM period."
+          bits: 26
+          enum:
+            '0':
+              desc: "PWM channel2 level-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel2 level-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel2 at brake state"
+              val: 1
+        BRKLSTS3:
+          desc: "PWM Channel3 Level-Detect Brake Status (Read Only)\nNote: This bit is read only and auto cleared by hardware. When enabled brake source return to high level, PWM will release brake state until current PWM period finished. The PWM waveform will start output from next full PWM period."
+          bits: 27
+          enum:
+            '0':
+              desc: "PWM channel3 level-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel3 level-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel3 at brake state"
+              val: 1
+        BRKLSTS4:
+          desc: "PWM Channel4 Level-Detect Brake Status (Read Only)\nNote: This bit is read only and auto cleared by hardware. When enabled brake source return to high level, PWM will release brake state until current PWM period finished. The PWM waveform will start output from next full PWM period."
+          bits: 28
+          enum:
+            '0':
+              desc: "PWM channel4 level-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel4 level-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel4 at brake state"
+              val: 1
+        BRKLSTS5:
+          desc: "PWM Channel5 Level-Detect Brake Status (Read Only)\nNote: This bit is read only and auto cleared by hardware. When enabled brake source return to high level, PWM will release brake state until current PWM period finished. The PWM waveform will start output from next full PWM period."
+          bits: 29
+          enum:
+            '0':
+              desc: "PWM channel5 level-detect brake state is released"
+              val: 0
+            '1':
+              desc: "When PWM channel5 level-detect brake detects a falling edge of any enabled brake source; this flag will be set to indicate the PWM channel5 at brake state"
+              val: 1
+    ADCTS0:
+      desc: PWM Trigger ADC Source Select Register 0
+      offset: 0xf8
+      reset_val: 0x0
+      fields:
+        TRGSEL0:
+          desc: "PWM_CH0 Trigger ADC Source Select\n"
+          bits: 3-0
+          enum:
+            '0':
+              desc: "PWM_CH0 zero point"
+              val: 0
+            '1':
+              desc: "PWM_CH0 period point"
+              val: 1
+            '2':
+              desc: "PWM_CH0 zero or period point"
+              val: 2
+            '3':
+              desc: "PWM_CH0 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "PWM_CH0 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved"
+              val: 5
+            '6':
+              desc: "Reserved"
+              val: 6
+            '7':
+              desc: "Reserved"
+              val: 7
+            '8':
+              desc: "PWM_CH1 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "PWM_CH1 down-count CMPDAT point"
+              val: 9
+        TRGEN0:
+          desc: "PWM_CH0 Trigger ADC Enable Control"
+          bits: 7
+        TRGSEL1:
+          desc: "PWM_CH1 Trigger ADC Source Select\n"
+          bits: 11-8
+          enum:
+            '0':
+              desc: "PWM_CH0 zero point"
+              val: 0
+            '1':
+              desc: "PWM_CH0 period point"
+              val: 1
+            '2':
+              desc: "PWM_CH0 zero or period point"
+              val: 2
+            '3':
+              desc: "PWM_CH0 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "PWM_CH0 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved"
+              val: 5
+            '6':
+              desc: "Reserved"
+              val: 6
+            '7':
+              desc: "Reserved"
+              val: 7
+            '8':
+              desc: "PWM_CH1 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "PWM_CH1 down-count CMPDAT point"
+              val: 9
+        TRGEN1:
+          desc: "PWM_CH1 Trigger ADC Enable Control"
+          bits: 15
+        TRGSEL2:
+          desc: "PWM_CH2 Trigger ADC Source Select\n"
+          bits: 19-16
+          enum:
+            '0':
+              desc: "PWM_CH2 zero point"
+              val: 0
+            '1':
+              desc: "PWM_CH2 period point"
+              val: 1
+            '2':
+              desc: "PWM_CH2 zero or period point"
+              val: 2
+            '3':
+              desc: "PWM_CH2 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "PWM_CH2 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved"
+              val: 5
+            '6':
+              desc: "Reserved"
+              val: 6
+            '7':
+              desc: "Reserved"
+              val: 7
+            '8':
+              desc: "PWM_CH3 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "PWM_CH3 down-count CMPDAT point"
+              val: 9
+        TRGEN2:
+          desc: "PWM_CH2 Trigger ADC Enable Control"
+          bits: 23
+        TRGSEL3:
+          desc: "PWM_CH3 Trigger ADC Source Select\n"
+          bits: 27-24
+          enum:
+            '0':
+              desc: "PWM_CH2 zero point"
+              val: 0
+            '1':
+              desc: "PWM_CH2 period point"
+              val: 1
+            '2':
+              desc: "PWM_CH2 zero or period point"
+              val: 2
+            '3':
+              desc: "PWM_CH2 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "PWM_CH2 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved"
+              val: 5
+            '6':
+              desc: "Reserved"
+              val: 6
+            '7':
+              desc: "Reserved"
+              val: 7
+            '8':
+              desc: "PWM_CH3 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "PWM_CH3 down-count CMPDAT point"
+              val: 9
+        TRGEN3:
+          desc: "PWM_CH3 Trigger ADC Enable Control"
+          bits: 31
+    ADCTS1:
+      desc: PWM Trigger ADC Source Select Register 1
+      offset: 0xfc
+      reset_val: 0x0
+      fields:
+        TRGSEL4:
+          desc: "PWM_CH4 Trigger ADC Source Select\n"
+          bits: 3-0
+          enum:
+            '0':
+              desc: "PWM_CH4 zero point"
+              val: 0
+            '1':
+              desc: "PWM_CH4 period point"
+              val: 1
+            '2':
+              desc: "PWM_CH4 zero or period point"
+              val: 2
+            '3':
+              desc: "PWM_CH4 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "PWM_CH4 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved"
+              val: 5
+            '6':
+              desc: "Reserved"
+              val: 6
+            '7':
+              desc: "Reserved"
+              val: 7
+            '8':
+              desc: "PWM_CH5 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "PWM_CH5 down-count CMPDAT point"
+              val: 9
+        TRGEN4:
+          desc: "PWM_CH4 Trigger ADC Enable Control"
+          bits: 7
+        TRGSEL5:
+          desc: "PWM_CH5 Trigger ADC Source Select\n"
+          bits: 11-8
+          enum:
+            '0':
+              desc: "PWM_CH4 zero point"
+              val: 0
+            '1':
+              desc: "PWM_CH4 period point"
+              val: 1
+            '2':
+              desc: "PWM_CH4 zero or period point"
+              val: 2
+            '3':
+              desc: "PWM_CH4 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "PWM_CH4 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved"
+              val: 5
+            '6':
+              desc: "Reserved"
+              val: 6
+            '7':
+              desc: "Reserved"
+              val: 7
+            '8':
+              desc: "PWM_CH5 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "PWM_CH5 down-count CMPDAT point"
+              val: 9
+        TRGEN5:
+          desc: "PWM_CH5 Trigger ADC Enable Control"
+          bits: 15
+    SSCTL:
+      desc: PWM Synchronous Start Control Register
+      offset: 0x110
+      reset_val: 0x0
+      fields:
+        SSEN0:
+          desc: "PWM Synchronous Start Function Enable 0\nWhen synchronous start function is enabled, the PWM_CH0 counter enable bit (CNTEN0) can be enabled by writing PWM synchronous start trigger bit (CNTSEN). \n"
+          bits: 0
+          enum:
+            '0':
+              desc: "PWM synchronous start function Disabled"
+              val: 0
+            '1':
+              desc: "PWM synchronous start function Enabled"
+              val: 1
+        SSEN2:
+          desc: "PWM Synchronous Start Function Enable 2\nWhen synchronous start function is enabled, the PWM_CH2 counter enable bit (CNTEN2) can be enabled by writing PWM synchronous start trigger bit (CNTSEN). \n"
+          bits: 2
+          enum:
+            '0':
+              desc: "PWM synchronous start function Disabled"
+              val: 0
+            '1':
+              desc: "PWM synchronous start function Enabled"
+              val: 1
+        SSEN4:
+          desc: "PWM Synchronous Start Function Enable 4\nWhen synchronous start function is enabled, the PWM_CH4 counter enable bit (CNTEN4) can be enabled by writing PWM synchronous start trigger bit (CNTSEN). \n"
+          bits: 4
+          enum:
+            '0':
+              desc: "PWM synchronous start function Disabled"
+              val: 0
+            '1':
+              desc: "PWM synchronous start function Enabled"
+              val: 1
+        SSRC:
+          desc: "PWM Synchronous Start Source Select\n"
+          bits: 9-8
+          enum:
+            '0':
+              desc: "Synchronous start source come from PWM0"
+              val: 0
+            '1':
+              desc: "Synchronous start source come from PWM1"
+              val: 1
+            '2':
+              desc: "Synchronous start source come from BPWM0"
+              val: 2
+            '3':
+              desc: "Synchronous start source come from BPWM1"
+              val: 3
+    SSTRG:
+      desc: PWM Synchronous Start Trigger Register
+      offset: 0x114
+      reset_val: 0x0
+      fields:
+        CNTSEN:
+          desc: "PWM Counter Synchronous Start Enable (Write Only)\nPMW counter synchronous enable function is used to make selected PWM channels (include PWM0_CHx and PWM1_CHx) start counting at the same time.\nWriting this bit to 1 will also set the counter enable bit (CNTENn, n denotes channel 0 to 5) if correlated PWM channel counter synchronous start function is enabled.\nNote: This bit only present in PWM0_BA."
+          bits: 0
+    STATUS:
+      desc: PWM Status Register
+      offset: 0x120
+      reset_val: 0x0
+      fields:
+        CNTMAX0:
+          desc: "Time-Base Counter 0 Equal To 0xFFFF Latched Status\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "indicates the time-base counter never reached its maximum value 0xFFFF"
+              val: 0
+            '1':
+              desc: "indicates the time-base counter reached its maximum value, software can write 1 to clear this bit"
+              val: 1
+        CNTMAX2:
+          desc: "Time-Base Counter 2 Equal To 0xFFFF Latched Status\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "indicates the time-base counter never reached its maximum value 0xFFFF"
+              val: 0
+            '1':
+              desc: "indicates the time-base counter reached its maximum value, software can write 1 to clear this bit"
+              val: 1
+        CNTMAX4:
+          desc: "Time-Base Counter 4 Equal To 0xFFFF Latched Status\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "indicates the time-base counter never reached its maximum value 0xFFFF"
+              val: 0
+            '1':
+              desc: "indicates the time-base counter reached its maximum value, software can write 1 to clear this bit"
+              val: 1
+        ADCTRGn:
+          desc: "ADC Start Of Conversion Status\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 21-16
+          enum:
+            '0':
+              desc: "Indicates no ADC start of conversion trigger event has occurred"
+              val: 0
+            '1':
+              desc: "Indicates an ADC start of conversion trigger event has occurred, software can write 1 to clear this bit"
+              val: 1
+    CAPINEN:
+      desc: PWM Capture Input Enable Register
+      offset: 0x200
+      reset_val: 0x0
+      fields:
+        CAPINENn:
+          desc: "Capture Input Enable\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "PWM Channel capture input path Disabled. The input of PWM channel capture function is always regarded as 0"
+              val: 0
+            '1':
+              desc: "PWM Channel capture input path Enabled. The input of PWM channel capture function comes from correlative multifunction pin"
+              val: 1
+    CAPCTL:
+      desc: PWM Capture Control Register
+      offset: 0x204
+      reset_val: 0x0
+      fields:
+        CAPENn:
+          desc: "Capture Function Enable Control\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "Capture function Disabled. RCAPDAT/FCAPDAT register will not be updated"
+              val: 0
+            '1':
+              desc: "Capture function Enabled. Capture latched the PWM counter value when detected rising or falling edge of input signal and saved to RCAPDAT (Rising latch) and FCAPDAT (Falling latch)"
+              val: 1
+        CAPINVn:
+          desc: "Capture Inverter Enable Control\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 13-8
+          enum:
+            '0':
+              desc: "Capture source inverter Disabled"
+              val: 0
+            '1':
+              desc: "Capture source inverter Enabled. Reverse the input signal from GPIO"
+              val: 1
+        RCRLDENn:
+          desc: "Rising Capture Reload Enable Control\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 21-16
+          enum:
+            '0':
+              desc: "Rising capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Rising capture reload counter Enabled"
+              val: 1
+        FCRLDENn:
+          desc: "Falling Capture Reload Enable Control\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 29-24
+          enum:
+            '0':
+              desc: "Falling capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Falling capture reload counter Enabled"
+              val: 1
+    CAPSTS:
+      desc: PWM Capture Status Register
+      offset: 0x208
+      reset_val: 0x0
+      fields:
+        CRLIFOVn:
+          desc: "Capture Rising Latch Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if rising latch happened when the corresponding CRLIF is 1. Each bit n controls the corresponding PWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CRLIF."
+          bits: 5-0
+        CFLIFOVn:
+          desc: "Capture Falling Latch Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if falling latch happened when the corresponding CFLIF is 1. Each bit n controls the corresponding PWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CFLIF."
+          bits: 13-8
+    RCAPDAT0:
+      desc: PWM Rising Capture Data Register 0
+      offset: 0x20c
+      reset_val: 0x0
+      fields:
+        RCAPDAT:
+          desc: "PWM Rising Capture Data Register (Read Only)\nWhen rising capture condition happened, the PWM counter value will be saved in this register."
+          bits: 15-0
+    FCAPDAT0:
+      desc: PWM Falling Capture Data Register 0
+      offset: 0x210
+      reset_val: 0x0
+      fields:
+        FCAPDAT:
+          desc: "PWM Falling Capture Data Register (Read Only)\nWhen falling capture condition happened, the PWM counter value will be saved in this register."
+          bits: 15-0
+    RCAPDAT1:
+      desc: PWM Rising Capture Data Register 1
+      offset: 0x214
+      reset_val: 0x0
+    FCAPDAT1:
+      desc: PWM Falling Capture Data Register 1
+      offset: 0x218
+      reset_val: 0x0
+    RCAPDAT2:
+      desc: PWM Rising Capture Data Register 2
+      offset: 0x21c
+      reset_val: 0x0
+    FCAPDAT2:
+      desc: PWM Falling Capture Data Register 2
+      offset: 0x220
+      reset_val: 0x0
+    RCAPDAT3:
+      desc: PWM Rising Capture Data Register 3
+      offset: 0x224
+      reset_val: 0x0
+    FCAPDAT3:
+      desc: PWM Falling Capture Data Register 3
+      offset: 0x228
+      reset_val: 0x0
+    RCAPDAT4:
+      desc: PWM Rising Capture Data Register 4
+      offset: 0x22c
+      reset_val: 0x0
+    FCAPDAT4:
+      desc: PWM Falling Capture Data Register 4
+      offset: 0x230
+      reset_val: 0x0
+    RCAPDAT5:
+      desc: PWM Rising Capture Data Register 5
+      offset: 0x234
+      reset_val: 0x0
+    FCAPDAT5:
+      desc: PWM Falling Capture Data Register 5
+      offset: 0x238
+      reset_val: 0x0
+    CAPIEN:
+      desc: PWM Capture Interrupt Enable Register
+      offset: 0x250
+      reset_val: 0x0
+      fields:
+        CAPRIENn:
+          desc: "PWM Capture Rising Latch Interrupt Enable Control\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "Capture rising edge latch interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Capture rising edge latch interrupt Enabled"
+              val: 1
+        CAPFIENn:
+          desc: "PWM Capture Falling Latch Interrupt Enable Control\nEach bit n controls the corresponding PWM channel n.\n"
+          bits: 13-8
+          enum:
+            '0':
+              desc: "Capture falling edge latch interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Capture falling edge latch interrupt Enabled"
+              val: 1
+    CAPIF:
+      desc: PWM Capture Interrupt Flag Register
+      offset: 0x254
+      reset_val: 0x0
+      fields:
+        CRLIFn:
+          desc: "PWM Capture Rising Latch Interrupt Flag\nThis bit is writing 1 to clear. Each bit n controls the corresponding PWM channel n.\n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "No capture rising latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture rising latch condition happened, this flag will be set to high"
+              val: 1
+        CFLIFn:
+          desc: "PWM Capture Falling Latch Interrupt Flag\nThis bit is writing 1 to clear. Each bit n controls the corresponding PWM channel n.\n"
+          bits: 13-8
+          enum:
+            '0':
+              desc: "No capture falling latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture falling latch condition happened, this flag will be set to high"
+              val: 1
+    PBUF0:
+      desc: PWM PERIOD0 Buffer
+      offset: 0x304
+      reset_val: 0x0
+      fields:
+        PBUF:
+          desc: "PWM Period Register Buffer (Read Only)\nUsed as PERIOD active register."
+          bits: 15-0
+    PBUF2:
+      desc: PWM PERIOD2 Buffer
+      offset: 0x30c
+      reset_val: 0x0
+    PBUF4:
+      desc: PWM PERIOD4 Buffer
+      offset: 0x314
+      reset_val: 0x0
+    CMPBUF0:
+      desc: PWM CMPDAT0 Buffer
+      offset: 0x31c
+      reset_val: 0x0
+      fields:
+        CMPBUF:
+          desc: "PWM Comparator Register Buffer (Read Only)\nUsed as CMP active register."
+          bits: 15-0
+    CMPBUF1:
+      desc: PWM CMPDAT1 Buffer
+      offset: 0x320
+      reset_val: 0x0
+    CMPBUF2:
+      desc: PWM CMPDAT2 Buffer
+      offset: 0x324
+      reset_val: 0x0
+    CMPBUF3:
+      desc: PWM CMPDAT3 Buffer
+      offset: 0x328
+      reset_val: 0x0
+    CMPBUF4:
+      desc: PWM CMPDAT4 Buffer
+      offset: 0x32c
+      reset_val: 0x0
+    CMPBUF5:
+      desc: PWM CMPDAT5 Buffer
+      offset: 0x330
+      reset_val: 0x0

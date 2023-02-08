@@ -1,0 +1,165 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: FMC Register Map
+  ver: 1
+  registers:
+    ISPCON:
+      desc: ISP Control Register
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        ISPEN:
+          desc: "ISP Enable Control (Write Protect )\nISP function enable bit. Set this bit to enable ISP function.\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "ISP function Disabled"
+              val: 0
+            '1':
+              desc: "ISP function Enabled"
+              val: 1
+        BS:
+          desc: "Boot Select (Write Protect )\nSet/clear this bit to select next booting from LDROM/APROM, respectively. This bit also functions as chip booting status flag, which can be used to check where chip booted from. This bit is initiated with the inversed value of CBS in CONFIG0 after any reset is happened except CPU reset (RSTS_CPU is 1) or system reset (RSTS_SYS) is happened.\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "Boot from APROM"
+              val: 0
+            '1':
+              desc: "Boot from LDROM"
+              val: 1
+        APUEN:
+          desc: "APROM Update Enable Control (Write Protect)\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "APROM cannot be updated when chip runs in APROM"
+              val: 0
+            '1':
+              desc: "APROM can be updated when chip runs in APROM"
+              val: 1
+        CFGUEN:
+          desc: "Enable Config Update By ISP (Write Protect)\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "ISP update config-bit Disabled"
+              val: 0
+            '1':
+              desc: "ISP update config-bit Enabled"
+              val: 1
+        LDUEN:
+          desc: "LDROM Update Enable Control (Write Protect)\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "LDROM cannot be updated"
+              val: 0
+            '1':
+              desc: "LDROM can be updated when chip runs in APROM"
+              val: 1
+        ISPFF:
+          desc: "ISP Fail Flag (Write Protect)\nThis bit is set by hardware when a triggered ISP meets any of the following conditions:\n(1) APROM writes to itself if APUEN is set to 0.\n(2) LDROM writes to itself if LDUEN is set to 0.\n(3) CONFIG is erased/programmed if CFGUEN is set to 0.\n(4) Destination address is illegal, such as over an available range.\nWrite 1 to clear to this bit to 0."
+          bits: 6
+    ISPADR:
+      desc: ISP Address Register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        ISPADR:
+          desc: "ISP Address\nThe NuMicro( NUC131 series has a maximum of 17Kx32 (68 KB) embedded Flash, which supports word program only. ISPADR[1:0] must be kept 00b for ISP operation."
+          bits: 31-0
+    ISPDAT:
+      desc: ISP Data Register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        ISPDAT:
+          desc: "ISP Data\nWrite data to this register before ISP program operation.\nRead data from this register after ISP read operation."
+          bits: 31-0
+    ISPCMD:
+      desc: ISP Command Register
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        ISPCMD:
+          desc: "ISP Command\nISP command table is shown below:\n"
+          bits: 5-0
+          enum:
+            '0':
+              desc: "Read"
+              val: 0
+            '4':
+              desc: "Read Unique ID"
+              val: 4
+            '11':
+              desc: "Read Company ID (0xDA)"
+              val: 11
+            '33':
+              desc: "Program"
+              val: 33
+            '34':
+              desc: "Page Erase"
+              val: 34
+            '46':
+              desc: "Set Vector Page Re-Map"
+              val: 46
+    ISPTRG:
+      desc: ISP Trigger Control Register
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        ISPGO:
+          desc: "ISP Start Trigger (Write Protect)\nWrite 1 to start ISP operation and this bit will be cleared to 0 by hardware automatically when ISP operation is finished.\nThis bit is the protected bit, It means programming this bit needs to write <59h>, <16h>, <88h> to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 0
+          enum:
+            '0':
+              desc: "ISP operation finished"
+              val: 0
+            '1':
+              desc: "ISP is in progress"
+              val: 1
+    DFBADR:
+      desc: Data Flash Base Address
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        DFBADR:
+          desc: "Data Flash Base Address\nThis register indicates Data Flash start address. It is read only.\nWhen DFVSEN is set to 0, the data flash is shared with APROM. The data flash size is defined by user configuration and the content of this register is loaded from Config1.\nWhen DFVSEN is set to 1, the data flash size is fixed as 4K and the start address can be read from this register is fixed at 0x0001_F000."
+          bits: 31-0
+    FATCON:
+      desc: Flash Access Time Control Register
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        FOMSEL0:
+          desc: "Chip Frequency Optimization Mode Select 0 (Write-Protection Bit)\nWhen CPU frequency is lower than 25 MHz, user can modify flash access delay cycle by FOMSEL1 and FOMSEL0 to improve system performance.\n"
+          bits: 4
+        FOMSEL1:
+          desc: "Chip Frequency Optimization Mode Select1 (Write-protection Bit)"
+          bits: 6
+    ISPSTA:
+      desc: ISP Status Register
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        ISPGO:
+          desc: "ISP Start Trigger (Read Only)\nWrite 1 to start ISP operation and this bit will be cleared to 0 by hardware automatically when ISP operation is finished.\nNote: This bit is the same as ISPTRG bit0."
+          bits: 0
+          enum:
+            '0':
+              desc: "ISP operation finished"
+              val: 0
+            '1':
+              desc: "ISP operation progressed"
+              val: 1
+        CBS:
+          desc: "Chip Boot Selection (Read Only)\nThis is a mirror of CBS in CONFIG0."
+          bits: 2-1
+        ISPFF:
+          desc: "ISP Fail Flag (Write-Protection Bit)\nThis bit is set by hardware when a triggered ISP meets any of the following conditions:\n(1) APROM writes to itself\n(2) LDROM writes to itself\n(3) CONFIG is erased/programmed if CFGUEN is set to 0\n(4) Destination address is illegal, such as over an available range\nWrite 1 to clear this bit.\nNote: The function of this bit is the same as ISPCON bit6."
+          bits: 6
+        VECMAP:
+          desc: "Vector Page Mapping Address (Read Only)\nThe current flash address space 0x0000_0000~0x0000_01FF is mapping to address {VECMAP[11:0], 9'h000} ~ {VECMAP[11:0], 9'h1FF}."
+          bits: 20-9

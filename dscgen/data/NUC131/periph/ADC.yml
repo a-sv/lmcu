@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/ADC
+  base: 0x400e0000

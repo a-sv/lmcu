@@ -44,6 +44,17 @@ set(LMCU_C_FLAGS
 ${LMCU_C_FLAGS} \
 ")
 
+set(CORTEX_M0_C_FLAGS
+"\
+-mcpu=cortex-m0 \
+-march=armv6-m \
+-mthumb \
+-mlittle-endian \
+-mfpu=vfp \
+-mfloat-abi=soft \
+${LMCU_C_FLAGS} \
+")
+
 set(CORTEX_M3_C_FLAGS
 "\
 -mcpu=cortex-m3 \
@@ -148,6 +159,30 @@ if("${DEVICE_SIG}" STREQUAL "M48")
 
   if(NOT LMCU_LD_SCRIPT)
     set(LMCU_LD_SCRIPT "${LD_DIR}/${DEVICE_FAMILY}x${DEVICE_FLASH}${DEVICE_SRAM}xxxx_${LD_POSTFIX}.ld")
+  endif()
+
+  set(SUPPORTED_DEVICE TRUE)
+endif()
+
+string(SUBSTRING "${LMCU_DEVICE}" 0 6 DEVICE_SIG)
+if("${DEVICE_SIG}" STREQUAL "NUC131")
+  set(DEVICE_FAMILY NUC131)
+  string(SUBSTRING "${LMCU_DEVICE}" 7 1  DEVICE_FLASH)
+  string(SUBSTRING "${LMCU_DEVICE}" 0 11 DEVICE_NAME_0)
+
+  set(CORTEX "M0")
+  set(LMCU_C_FLAGS "${CORTEX_M0_C_FLAGS}")
+  set(LD_DIR "${LMCU_DIR}/lib/ld/cortex-m0")
+
+  set(LMCU_DEFINITIONS
+    -DLMCU_CORTEX
+    -DLMCU_CORTEX_${CORTEX}
+    -DLMCU_${DEVICE_FAMILY}
+    -DLMCU_${DEVICE_NAME_0}
+  CACHE INTERNAL "")
+
+  if(NOT LMCU_LD_SCRIPT)
+    set(LMCU_LD_SCRIPT "${LD_DIR}/${DEVICE_FAMILY}x${DEVICE_FLASH}xxx_${LD_POSTFIX}.ld")
   endif()
 
   set(SUPPORTED_DEVICE TRUE)

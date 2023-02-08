@@ -1,0 +1,320 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: ADC Register Map
+  ver: 1
+  registers:
+    ADDR0:
+      desc: ADC Data Register 0
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        RSLT:
+          desc: "A/D Conversion Result\nThis field contains conversion result of ADC.\n"
+          bits: 15-0
+        OVERRUN:
+          desc: "Overrun Flag\nIf converted data in RSLT has not been read before new conversion result is loaded to this register, OVERRUN is set to 1 and previous conversion result is gone. It is cleared by hardware after ADDR register is read.\nThis is a read only bit."
+          bits: 16
+          enum:
+            '0':
+              desc: "Data in RSLT (ADDRx[15:0], x=0~7) is recent conversion result"
+              val: 0
+            '1':
+              desc: "Data in RSLT (ADDRx[15:0], x=0~7) is overwritten"
+              val: 1
+        VALID:
+          desc: "Valid Flag\nThis bit is set to 1 when corresponding channel analog input conversion is completed and cleared by hardware after ADDR register is read.\nThis is a read only bit."
+          bits: 17
+          enum:
+            '0':
+              desc: "Data in RSLT bits (ADDRx[15:0], x=0~7) is not valid"
+              val: 0
+            '1':
+              desc: "Data in RSLT bits (ADDRx[15:0], x=0~7) is valid"
+              val: 1
+    ADDR1:
+      desc: ADC Data Register 1
+      offset: 0x4
+      reset_val: 0x0
+    ADDR2:
+      desc: ADC Data Register 2
+      offset: 0x8
+      reset_val: 0x0
+    ADDR3:
+      desc: ADC Data Register 3
+      offset: 0xc
+      reset_val: 0x0
+    ADDR4:
+      desc: ADC Data Register 4
+      offset: 0x10
+      reset_val: 0x0
+    ADDR5:
+      desc: ADC Data Register 5
+      offset: 0x14
+      reset_val: 0x0
+    ADDR6:
+      desc: ADC Data Register 6
+      offset: 0x18
+      reset_val: 0x0
+    ADDR7:
+      desc: ADC Data Register 7
+      offset: 0x1c
+      reset_val: 0x0
+    ADCR:
+      desc: ADC Control Register
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        ADEN:
+          desc: "A/D Converter Enable Control\nBefore starting A/D conversion function, this bit should be set to 1. Clear it to 0 to disable A/D converter analog circuit for saving power consumption."
+          bits: 0
+          enum:
+            '0':
+              desc: "Disabled"
+              val: 0
+            '1':
+              desc: "Enabled"
+              val: 1
+        ADIE:
+          desc: "A/D Interrupt Enable Control\nA/D conversion end interrupt request is generated if ADIE bit (ADCR[1]) is set to 1."
+          bits: 1
+          enum:
+            '0':
+              desc: "A/D interrupt function Disabled"
+              val: 0
+            '1':
+              desc: "A/D interrupt function Enabled"
+              val: 1
+        ADMD:
+          desc: "A/D Converter Operation Mode\nWhen changing the operation mode, software should disable ADST bit (ADCR[11]) firstly."
+          bits: 3-2
+          enum:
+            '0':
+              desc: "Single conversion"
+              val: 0
+            '1':
+              desc: "Reserved"
+              val: 1
+            '2':
+              desc: "Single-cycle scan"
+              val: 2
+            '3':
+              desc: "Continuous scan"
+              val: 3
+        TRGS:
+          desc: "Hardware Trigger Source\nSoftware should disable TRGEN (ADCR[8]) and ADST (ADCR[11]) before change TRGS."
+          bits: 5-4
+          enum:
+            '0':
+              desc: "A/D conversion is started by external STADC pin"
+              val: 0
+            '3':
+              desc: "A/D conversion is started by PWM Center-aligned trigger"
+              val: 3
+        TRGCOND:
+          desc: "External Trigger Condition\nThese two bits decide external pin STADC trigger event is level or edge. The signal must be kept at stable state at least 8 PCLKs for level trigger and 4 PCLKs at high and low state for edge trigger.\n"
+          bits: 7-6
+          enum:
+            '0':
+              desc: "Low level"
+              val: 0
+            '1':
+              desc: "High level"
+              val: 1
+            '2':
+              desc: "Falling edge"
+              val: 2
+            '3':
+              desc: "Rising edge"
+              val: 3
+        TRGEN:
+          desc: "Hardware Trigger Enable Control\nEnable or disable triggering of A/D conversion by hardware (external STADC pin or PWM Center-aligned trigger).\nADC hardware trigger function is only supported in single-cycle scan mode.\nIf hardware trigger mode, the ADST bit (ADCR[11]) can be set to 1 by the selected hardware trigger source."
+          bits: 8
+          enum:
+            '0':
+              desc: "Disabled"
+              val: 0
+            '1':
+              desc: "Enabled"
+              val: 1
+        DIFFEN:
+          desc: "Differential Input Mode Control\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "Single-end analog input mode"
+              val: 0
+            '1':
+              desc: "Differential analog input mode"
+              val: 1
+        ADST:
+          desc: "A/D Conversion Start\nADST bit can be set to 1 from three sources: software, PWM Center-aligned trigger and external pin STADC. ADST will be cleared to 0 by hardware automatically at the ends of single mode and single-cycle scan mode. In continuous scan mode, A/D conversion is continuously performed until software writes 0 to this bit or chip reset."
+          bits: 11
+          enum:
+            '0':
+              desc: "Conversion stops and A/D converter enter idle state"
+              val: 0
+            '1':
+              desc: "Conversion starts"
+              val: 1
+        DMOF:
+          desc: "A/D Differential Input Mode Output Format\n"
+          bits: 31
+          enum:
+            '0':
+              desc: "A/D Conversion result will be filled in RSLT at ADDRx registers with unsigned format"
+              val: 0
+            '1':
+              desc: "A/D Conversion result will be filled in RSLT at ADDRx registers with 2'complement format"
+              val: 1
+    ADCHER:
+      desc: ADC Channel Enable Register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        CHEN:
+          desc: "Analog Input Channel Enable Control\nSet CHEN[7:0] to enable the corresponding analog input channel 7 ~ 0. If DIFFEN bit (ADCR[10]) is set to 1, only the even number channels need to be enabled.\n"
+          bits: 7-0
+          enum:
+            '0':
+              desc: "ADC input channel Disabled"
+              val: 0
+            '1':
+              desc: "ADC input channel Enabled"
+              val: 1
+        PRESEL:
+          desc: "Analog Input Channel 7 Selection\n"
+          bits: 9-8
+          enum:
+            '0':
+              desc: "External analog input"
+              val: 0
+            '1':
+              desc: "Internal band-gap voltage"
+              val: 1
+            '2':
+              desc: "Reserved"
+              val: 2
+            '3':
+              desc: "Reserved"
+              val: 3
+    ADCMPR0:
+      desc: ADC Compare Register 0
+      offset: 0x28
+      reset_val: 0x0
+      fields:
+        CMPEN:
+          desc: "Compare Enable Control\nSet this bit to 1 to enable ADC controller to compare CMPD (ADCMPR0/1[27:16]) with specified channel conversion result when converted data is loaded into ADDR register."
+          bits: 0
+          enum:
+            '0':
+              desc: "Compare function Disabled"
+              val: 0
+            '1':
+              desc: "Compare function Enabled"
+              val: 1
+        CMPIE:
+          desc: "Compare Interrupt Enable Control\nIf the compare function is enabled and the compare condition matches the setting of CMPCOND (ADCMPR0/1[2]) and CMPMATCNT (ADCMPR0/1[11:8]), CMPF0/1 bit (ADSR[1]/[2]) will be asserted, in the meanwhile, if CMPIE (ADCMPR0/1[1]) is set to 1, a compare interrupt request is generated."
+          bits: 1
+          enum:
+            '0':
+              desc: "Compare function interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare function interrupt Enabled"
+              val: 1
+        CMPCOND:
+          desc: "Compare Condition\nNote: When the internal counter reaches the value to (CMPMATCNT (ADCMPR0/1[11:8]) + 1), the CMPF0/1 bit (ADSR[1]/[2]) will be set."
+          bits: 2
+          enum:
+            '0':
+              desc: "Set the compare condition as that when a 12-bit A/D conversion result is less than the 12-bit CMPD (ADCMPR0/1[27:16]), the internal match counter will increase one"
+              val: 0
+            '1':
+              desc: "Set the compare condition as that when a 12-bit A/D conversion result is greater or equal to the 12-bit CMPD (ADCMPR0/1[27:16]), the internal match counter will increase one"
+              val: 1
+        CMPCH:
+          desc: "Compare Channel Selection\n"
+          bits: 5-3
+          enum:
+            '0':
+              desc: "Channel 0 conversion result is selected to be compared"
+              val: 0
+            '1':
+              desc: "Channel 1 conversion result is selected to be compared"
+              val: 1
+            '2':
+              desc: "Channel 2 conversion result is selected to be compared"
+              val: 2
+            '3':
+              desc: "Channel 3 conversion result is selected to be compared"
+              val: 3
+            '4':
+              desc: "Channel 4 conversion result is selected to be compared"
+              val: 4
+            '5':
+              desc: "Channel 5 conversion result is selected to be compared"
+              val: 5
+            '6':
+              desc: "Channel 6 conversion result is selected to be compared"
+              val: 6
+            '7':
+              desc: "Channel 7 conversion result is selected to be compared"
+              val: 7
+        CMPMATCNT:
+          desc: "Compare Match Count\nWhen the specified A/D channel analog conversion result matches the compare condition defined by CMPCOND (ADCMPR0/1[2]), the internal match counter will increase 1, The comparing data must successively matched with the compare condition. Once any comparing data does not match during the comparing, the internal counter will clear to 0. When the internal counter reaches the value to (CMPMATCNT (ADCMPR0/1[11:8]) +1), the CMPF0/1 bit (ADSR[1]/[2]) will be set."
+          bits: 11-8
+        CMPD:
+          desc: "Comparison Data\nThe 12-bit data is used to compare with conversion result of specified channel.\nWhen DMOF bit (ADCR[31]) is set to 0, ADC comparator compares CMPD with conversion result with unsigned format. CMPD should be filled in unsigned format.\nWhen DMOF bit (ADCR[31]) is set to 1, ADC comparator compares CMPD with conversion result with 2'complement format. CMPD should be filled in 2'complement format."
+          bits: 27-16
+    ADCMPR1:
+      desc: ADC Compare Register 1
+      offset: 0x2c
+      reset_val: 0x0
+    ADSR:
+      desc: ADC Status Register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        ADF:
+          desc: "A/D Conversion End Flag\nA status flag that indicates the end of A/D conversion.\nADF is set to 1 at these two conditions:\n1. When A/D conversion ends in Single mode.\n2. When A/D conversion ends on all specified channels in Scan mode.\nThis flag can be cleared by writing 1 to itself."
+          bits: 0
+        CMPF0:
+          desc: "Compare Flag\nWhen the selected channel A/D conversion result meets setting condition in ADCMPR0 then this bit is set to 1. And it is cleared by writing 1 to self.\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "Conversion result in ADDR does not meet ADCMPR0 setting"
+              val: 0
+            '1':
+              desc: "Conversion result in ADDR meets ADCMPR0 setting"
+              val: 1
+        CMPF1:
+          desc: "Compare Flag\nWhen the selected channel A/D conversion result meets setting condition in ADCMPR1 then this bit is set to 1. And it is cleared by writing 1 to self.\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Conversion result in ADDR does not meet ADCMPR1 setting"
+              val: 0
+            '1':
+              desc: "Conversion result in ADDR meets ADCMPR1 setting"
+              val: 1
+        BUSY:
+          desc: "BUSY/IDLE\nThis bit is mirror of as ADST bit (ADCR[11]).\nIt is read only."
+          bits: 3
+          enum:
+            '0':
+              desc: "A/D converter is in idle state"
+              val: 0
+            '1':
+              desc: "A/D converter is busy at conversion"
+              val: 1
+        CHANNEL:
+          desc: "Current Conversion Channel\nIt is read only."
+          bits: 6-4
+        VALID:
+          desc: "Data Valid Flag\nIt is a mirror of VALID bit (ADDR0~7[17]).\nIt is read only."
+          bits: 15-8
+        OVERRUN:
+          desc: "Overrun Flag\nIt is a mirror to OVERRUN bit (ADDR0~7[16]).\nIt is read only."
+          bits: 23-16

@@ -1,0 +1,1636 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: GPIO Register Map
+  ver: 1
+  registers:
+    PMD:
+      desc: GPIO Port A Pin I/O Mode Control
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        PMD0:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 1-0
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD1:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 3-2
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD2:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 5-4
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD3:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 7-6
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD4:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 9-8
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD5:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 11-10
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD6:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 13-12
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD7:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 15-14
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD8:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 17-16
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD9:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 19-18
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD10:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 21-20
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD11:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 23-22
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD12:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 25-24
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD13:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 27-26
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD14:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 29-28
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+        PMD15:
+          desc: "GPIOx I/O Pin[N] Mode Control\nDetermine each I/O mode of GPIOx pins.\nNote2:\nThe initial value of this field is defined by CIOINI (CONFIG0[10]). If CIOINI is set to 1, the default value is 0xFFFF_FFFF and all pins will be Quasi-bidirectional mode after chip is powered on. If CIOINI is cleared to 0, the default value is 0x0000_0000 and all pins will be input only mode after chip is powered on."
+          bits: 31-30
+          enum:
+            '0':
+              desc: "GPIO port [n] pin is in Input mode"
+              val: 0
+            '1':
+              desc: "GPIO port [n] pin is in Push-pull Output mode"
+              val: 1
+            '2':
+              desc: "GPIO port [n] pin is in Open-drain Output mode"
+              val: 2
+            '3':
+              desc: "GPIO port [n] pin is in Quasi-bidirectional mode"
+              val: 3
+    OFFD:
+      desc: GPIO Port A Pin Digital Input Path Disable Control
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        OFFD0:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD1:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD2:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 18
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD3:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 19
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD4:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 20
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD5:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 21
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD6:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 22
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD7:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 23
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD8:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 24
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD9:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 25
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD10:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 26
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD11:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 27
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD12:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 28
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD13:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 29
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD14:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 30
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+        OFFD15:
+          desc: "GPIOx Pin[N] Digital Input Path Disable Control\nEach of these bits is used to control if the digital input path of corresponding GPIO pin is disabled. If input is analog signal, users can disable GPIO digital input path to avoid current leakage.\n"
+          bits: 31
+          enum:
+            '0':
+              desc: "I/O digital input path Enabled"
+              val: 0
+            '1':
+              desc: "I/O digital input path Disabled (digital input tied to low)"
+              val: 1
+    DOUT:
+      desc: GPIO Port A Data Output Value
+      offset: 0x8
+      reset_val: 0xffff
+      fields:
+        DOUT0:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT1:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT2:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT3:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT4:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT5:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT6:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT7:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT8:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT9:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT10:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT11:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 11
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT12:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 12
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT13:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 13
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT14:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+        DOUT15:
+          desc: "GPIOx Pin[N] Output Value\nEach of these bits controls the status of a GPIO pin when the GPIO pin is configured as Push-pull output, open-drain output or quasi-bidirectional mode.\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive Low if the GPIO pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode"
+              val: 0
+            '1':
+              desc: "GPIO port [A/B/C/D/E/F] Pin[n] will drive High if the GPIO pin is configured as Push-pull output or Quasi-bidirectional mode"
+              val: 1
+    DMASK:
+      desc: GPIO Port A Data Output Write Mask
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        DMASK0:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK1:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK2:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK3:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK4:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK5:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK6:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK7:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK8:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK9:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK10:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK11:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 11
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK12:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 12
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK13:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 13
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK14:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+        DMASK15:
+          desc: "Port [A/B/C/D/E/F] Data Output Write Mask\nThese bits are used to protect the corresponding register of  GPIOx_DOUT[n] bit. When the  DMASK[n] bit is set to 1, the corresponding GPIOx_DOUT[n] bit is protected. If the write signal is masked, write data to the protect bit is ignored.\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "Corresponding GPIOx_DOUT[n] bit can be updated"
+              val: 0
+            '1':
+              desc: "Corresponding GPIOx_DOUT[n] bit protected"
+              val: 1
+    PIN:
+      desc: GPIO Port A Pin Value
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        PIN0:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 0
+        PIN1:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 1
+        PIN2:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 2
+        PIN3:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 3
+        PIN4:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 4
+        PIN5:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 5
+        PIN6:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 6
+        PIN7:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 7
+        PIN8:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 8
+        PIN9:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 9
+        PIN10:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 10
+        PIN11:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 11
+        PIN12:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 12
+        PIN13:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 13
+        PIN14:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 14
+        PIN15:
+          desc: "Port [A/B/C/D/E/F] Pin Values\nEach bit of the register reflects the actual status of the respective GPIO pin. If the bit is 1, it indicates the corresponding pin status is high, else the pin status is low.\nNote:\n"
+          bits: 15
+    DBEN:
+      desc: GPIO Port A De-bounce Enable
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        DBEN0:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN1:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN2:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN3:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN4:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN5:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN6:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN7:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN8:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN9:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN10:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN11:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 11
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN12:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 12
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN13:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 13
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN14:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+        DBEN15:
+          desc: "Port [A/B/C/D/E/F] Input Signal De-Bounce Enable Control\nDBEN[n] is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt. The de-bounce clock source is controlled by DBNCECON[4], one de-bounce sample cycle period is controlled by DBNCECON[3:0].\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "Bit[n] de-bounce function Disabled"
+              val: 0
+            '1':
+              desc: "Bit[n] de-bounce function Enabled"
+              val: 1
+    IMD:
+      desc: GPIO Port A Interrupt Mode Control
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        IMD0:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD1:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD2:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD3:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD4:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD5:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD6:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD7:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD8:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD9:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD10:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD11:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 11
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD12:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 12
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD13:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 13
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD14:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+        IMD15:
+          desc: "Port [A/B/C/D/E/F] Edge Or Level Detection Interrupt Control\nIMD[n] is used to control the interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt.\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "Edge trigger interrupt"
+              val: 0
+            '1':
+              desc: "Level trigger interrupt"
+              val: 1
+    IEN:
+      desc: GPIO Port A Interrupt Enable
+      offset: 0x1c
+      reset_val: 0x0
+      fields:
+        IF_EN0:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN1:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN2:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN3:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN4:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN5:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN6:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN7:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN8:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN9:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN10:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN11:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 11
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN12:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 12
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN13:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 13
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN14:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IF_EN15:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Falling Edge Or Input Level Low\nIF_EN[n] is used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IF_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <low> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <high-to-low> will generate the interrupt.\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] state low-level or high-to-low change interrupt Enabled"
+              val: 1
+        IR_EN0:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN1:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN2:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 18
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN3:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 19
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN4:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 20
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN5:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 21
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN6:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 22
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN7:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 23
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN8:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 24
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN9:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 25
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN10:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 26
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN11:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 27
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN12:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 28
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN13:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 29
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN14:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 30
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+        IR_EN15:
+          desc: "Port [A/B/C/D/E/F] Interrupt Enabled By Input Rising Edge Or Input Level High\nIR_EN[n] used to enable the interrupt for each of the corresponding input GPIO_PIN[n]. Set bit to 1 also enable the pin wake-up function.\nWhen setting the IR_EN[n] bit to 1:\nIf the interrupt is level trigger, the input PIN[n] state at level <high> will generate the interrupt.\nIf the interrupt is edge trigger, the input PIN[n] state change from <low-to-high> will generate the interrupt.\n"
+          bits: 31
+          enum:
+            '0':
+              desc: "PIN[n] level-high or low-to-high interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PIN[n] level-high or low-to-high interrupt Enabled"
+              val: 1
+    ISRC:
+      desc: GPIO Port A Interrupt Source Flag
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        ISRC0:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC1:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC2:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC3:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC4:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC5:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC6:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC7:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC8:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC9:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC10:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC11:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 11
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC12:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 12
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC13:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 13
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC14:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+        ISRC15:
+          desc: "Port [A/B/C/D/E/F] Interrupt Source Flag\nRead :\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "No interrupt at GPIOx[n].\nNo action"
+              val: 0
+            '1':
+              desc: "GPIOx[n] generates an interrupt.\nClear the corresponding pending interrupt"
+              val: 1
+

@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/UART
+  base: 0x40050000

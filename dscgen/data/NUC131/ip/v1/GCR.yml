@@ -1,0 +1,1058 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: GCR Register Map
+  ver: 1
+  registers:
+    PDID:
+      desc: Part Device Identification Number Register
+      offset: 0x0
+      reset_val: 0x20140018
+      fields:
+        PDID:
+          desc: "Part Device Identification Number\nThis register reflects device part number code. Software can read this register to identify which device is used."
+          bits: 31-0
+    RSTSRC:
+      desc: System Reset Source Register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        RSTS_POR:
+          desc: "Power-On Reset Flag\nThe RSTS_POR Flag is set by the {Reset Signal} from the Power-On Reset (POR) vontroller or bit CHIP_RST (IPRSTC1[0]) to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 0
+          enum:
+            '0':
+              desc: "No reset from POR or CHIP_RST (IPRSTC1[0])"
+              val: 0
+            '1':
+              desc: "Power-on Reset (POR) or CHIP_RST (IPRSTC1[0]) had issued the reset signal to reset the system"
+              val: 1
+        RSTS_RESET:
+          desc: "Reset Pin Reset Flag\nThe RSTS_RESET flag is set by the {Reset Signal} from the nRESET Pin to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 1
+          enum:
+            '0':
+              desc: "No reset from nRESET pin"
+              val: 0
+            '1':
+              desc: "The Pin nRESET had issued the reset signal to reset the system"
+              val: 1
+        RSTS_WDT:
+          desc: "Watchdog Timer Reset Flag\nThe RSTS_WDT flag is set by the {Reset Signal} from the watchdog timer or window watchdog timer to indicate the previous reset source.\nNote1: Write 1 to clear this bit to 0.\nNote2: Watchdog Timer register WTRF (WTCR[2]) bit is set if the system has been reset by WDT time-out reset. Window Watchdog Timer register WWDTRF (WWDTSR) bit is set if the system has been reset by WWDT time-out reset."
+          bits: 2
+          enum:
+            '0':
+              desc: "No reset from watchdog timer or window watchdog timer"
+              val: 0
+            '1':
+              desc: "The watchdog timer or window watchdog timer had issued the reset signal to reset the system"
+              val: 1
+        RSTS_LVR:
+          desc: "Low Voltage Reset Flag\nThe RSTS_LVR flag is set by the {Reset Signal} from the Low-Voltage-Reset controller to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 3
+          enum:
+            '0':
+              desc: "No reset from LVR"
+              val: 0
+            '1':
+              desc: "The LVR controller had issued the reset signal to reset the system"
+              val: 1
+        RSTS_BOD:
+          desc: "Brown-Out Detector Reset Flag\nThe RSTS_BOD flag is set by the {Reset Signal} from the Brown-Out Detector to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 4
+          enum:
+            '0':
+              desc: "No reset from BOD"
+              val: 0
+            '1':
+              desc: "The BOD had issued the reset signal to reset the system"
+              val: 1
+        RSTS_SYS:
+          desc: "SYS Reset Flag\nThe RSTS_SYS flag Is set by the {Reset Signal} from the Cortex-M0 coreto indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 5
+          enum:
+            '0':
+              desc: "No reset from Cortex-M0"
+              val: 0
+            '1':
+              desc: "The Cortex-M0 had issued the reset signal to reset the system by writing 1 to bit SYSRESETREQ (AIRCR[2], Application Interrupt and Reset Control Register, address = 0xE000ED0C) in system control registers of Cortex-M0 kernel"
+              val: 1
+        RSTS_CPU:
+          desc: "CPU Reset Flag\nThe RSTS_CPU flag Is set by hardware if software writes CPU_RST (IPRSTC1[1]) 1 To reset Cortex-M0 coreand flash memory controller (FMC).\nNote: Write 1 to clear this bit to 0."
+          bits: 7
+          enum:
+            '0':
+              desc: "No reset from CPU"
+              val: 0
+            '1':
+              desc: "Cortex-M0 CPU core and FMC are reset by software setting CPU_RST (IPRSTC1[1]) to 1"
+              val: 1
+    IPRSTC1:
+      desc: Peripheral Reset Control Register 1
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        CHIP_RST:
+          desc: "CHIP One-Shot Reset (Write Protect)\nSetting this bit will reset the whole chip, including CPU coreand all peripherals, and this bit will automatically return to 0 after the 2 clock cycles.\nThe CHIP_RST is the same as the POR reset, all the chip controllers are reset and the chip setting from flash are also reload.\nFor the difference between CHIP_RST and SYSRESETREQ, please refer to section 6.2.2.\nNote: This bit is the protected bit, and programming it needs to write [59h], [16h], and [88h[ to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 0
+          enum:
+            '0':
+              desc: "CHIP normal operation"
+              val: 0
+            '1':
+              desc: "CHIP one-shot reset"
+              val: 1
+        CPU_RST:
+          desc: "CPU Kernel One-Shot Reset (Write Protect)\nSetting this bit will only reset the CPU coreand Flash Memory Controller(FMC), and this bit will automatically return 0 after the two clock cycles.\nNote: This bit is the protected bit, and programming it needs to write [59h], [16h], and [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 1
+          enum:
+            '0':
+              desc: "CPU normal operation"
+              val: 0
+            '1':
+              desc: "CPU one-shot reset"
+              val: 1
+    IPRSTC2:
+      desc: Peripheral Reset Control Register 2
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        GPIO_RST:
+          desc: "GPIO Controller Reset\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "GPIO controller normal operation"
+              val: 0
+            '1':
+              desc: "GPIO controller reset"
+              val: 1
+        TMR0_RST:
+          desc: "Timer0 Controller Reset\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Timer0 controller normal operation"
+              val: 0
+            '1':
+              desc: "Timer0 controller reset"
+              val: 1
+        TMR1_RST:
+          desc: "Timer1 Controller Reset\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Timer1 controller normal operation"
+              val: 0
+            '1':
+              desc: "Timer1 controller reset"
+              val: 1
+        TMR2_RST:
+          desc: "Timer2 Controller Reset\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Timer2 controller normal operation"
+              val: 0
+            '1':
+              desc: "Timer2 controller reset"
+              val: 1
+        TMR3_RST:
+          desc: "Timer3 Controller Reset\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "Timer3 controller normal operation"
+              val: 0
+            '1':
+              desc: "Timer3 controller reset"
+              val: 1
+        I2C0_RST:
+          desc: "I2C0 Controller Reset\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "I2C0 controller normal operation"
+              val: 0
+            '1':
+              desc: "I2C0 controller reset"
+              val: 1
+        I2C1_RST:
+          desc: "I2C1 Controller Reset\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "I2C1 controller normal operation"
+              val: 0
+            '1':
+              desc: "I2C1 controller reset"
+              val: 1
+        SPI0_RST:
+          desc: "SPI0 Controller Reset\n"
+          bits: 12
+          enum:
+            '0':
+              desc: "SPI0 controller normal operation"
+              val: 0
+            '1':
+              desc: "SPI0 controller reset"
+              val: 1
+        UART0_RST:
+          desc: "UART0 Controller Reset\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "UART0 controller normal operation"
+              val: 0
+            '1':
+              desc: "UART0 controller reset"
+              val: 1
+        UART1_RST:
+          desc: "UART1 Controller Reset\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "UART1 controller normal operation"
+              val: 0
+            '1':
+              desc: "UART1 controller reset"
+              val: 1
+        UART2_RST:
+          desc: "UART2 Controller Reset \n"
+          bits: 18
+          enum:
+            '0':
+              desc: "UART2 controller normal operation"
+              val: 0
+            '1':
+              desc: "UART2 controller reset"
+              val: 1
+        CAN0_RST:
+          desc: "CAN0 Controller Reset\n"
+          bits: 24
+          enum:
+            '0':
+              desc: "CAN0 controller normal operation"
+              val: 0
+            '1':
+              desc: "CAN0 controller reset"
+              val: 1
+        ADC_RST:
+          desc: "ADC Controller Reset\n"
+          bits: 28
+          enum:
+            '0':
+              desc: "ADC controller normal operation"
+              val: 0
+            '1':
+              desc: "ADC controller reset"
+              val: 1
+    IPRSTC3:
+      desc: Peripheral Reset Control Register 3
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        UART3_RST:
+          desc: "UART3 Controller Reset\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "UART3 controller normal operation"
+              val: 0
+            '1':
+              desc: "UART3 controller reset"
+              val: 1
+        UART4_RST:
+          desc: "UART4 Controller Reset\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "UART4 controller normal operation"
+              val: 0
+            '1':
+              desc: "UART4 controller reset"
+              val: 1
+        UART5_RST:
+          desc: "UART5 Controller Reset\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "UART5 controller normal operation"
+              val: 0
+            '1':
+              desc: "UART5 controller reset"
+              val: 1
+        PWM0_RST:
+          desc: "PWM0 Controller Reset\n"
+          bits: 16
+          enum:
+            '0':
+              desc: "PWM0 controller normal operation"
+              val: 0
+            '1':
+              desc: "PWM0 controller reset"
+              val: 1
+        PWM1_RST:
+          desc: "PWM1 Controller Reset\n"
+          bits: 17
+          enum:
+            '0':
+              desc: "PWM1 controller normal operation"
+              val: 0
+            '1':
+              desc: "PWM1 controller reset"
+              val: 1
+        BPWM0_RST:
+          desc: "BPWM0 Controller Reset\n"
+          bits: 18
+          enum:
+            '0':
+              desc: "BPWM0 controller normal operation"
+              val: 0
+            '1':
+              desc: "BPWM0 controller reset"
+              val: 1
+        BPWM1_RST:
+          desc: "BPWM1 Controller Reset\n"
+          bits: 19
+          enum:
+            '0':
+              desc: "BPWM1 controller normal operation"
+              val: 0
+            '1':
+              desc: "BPWM1 controller reset"
+              val: 1
+    BODCR:
+      desc: Brown-out Detector Control Register
+      offset: 0x18
+      reset_val: 0x380
+      fields:
+        BOD_EN:
+          desc: "Brown-Out Detector Enable Control (Write Protect)\nThe default value is set by flash memory controller user configuration register CBODEN (CONFIG0[23]) bit.\nNote: This bit is the protected bit. It means programming this needs to write [59h], [16h], [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 0
+          enum:
+            '0':
+              desc: "Brown-out Detector function Disabled"
+              val: 0
+            '1':
+              desc: "Brown-out Detector function Enabled"
+              val: 1
+        BOD_VL:
+          desc: "Brown-Out Detector Threshold Voltage Selection (Write Protect)\nThe default value is set by flash memory controller user configuration register CBOV (CONFIG0[22:21]) bit.\nNote: This bit is the protected bit. It means programming this needs to write [59h], [16h], [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 2-1
+          enum:
+            '0':
+              desc: "Brown-out voltage is 2.2V"
+              val: 0
+            '1':
+              desc: "Brown-out voltage is 2.7V"
+              val: 1
+            '2':
+              desc: "Brown-out voltage is 3.7V"
+              val: 2
+            '3':
+              desc: "Brown-out voltage is 4.4V"
+              val: 3
+        BOD_RSTEN:
+          desc: "Brown-Out Reset Enable Control (Write Protect)\nWhile the Brown-out Detector function is enabled (BOD_EN high) and BOD reset function is enabled (BOD_RSTEN high), BOD will assert a signal to reset chip when the detected voltage is lower than the threshold (BOD_OUT high).\nNote1: While the BOD function is enabled (BOD_EN high) and BOD interrupt function is enabled (BOD_RSTEN low), BOD will assert an interrupt if BOD_OUT is high. BOD interrupt will keep till to the BOD_EN set to 0. BOD interrupt can be blocked by disabling the NVIC BOD interrupt or disabling BOD function (set BOD_EN low).\nNote2: The default value is set by flash controller user configuration register CBORST (CONFIG0[20]) bit. \nNote3: This bit is the protected bit. It means programming this needs to write [59h], [16h], [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 3
+          enum:
+            '0':
+              desc: "Brown-out [INTERRUPT] function Enabled"
+              val: 0
+            '1':
+              desc: "Brown-out [RESET] function Enabled"
+              val: 1
+        BOD_INTF:
+          desc: "Brown-Out Detector Interrupt Flag\nNote: Write 1 to clear this bit to 0."
+          bits: 4
+          enum:
+            '0':
+              desc: "Brown-out Detector does not detect any voltage draft at VDD down through or up through the voltage of BOD_VL setting"
+              val: 0
+            '1':
+              desc: "When Brown-out Detector detects the VDD is dropped down through the voltage of BOD_VL setting or the VDD is raised up through the voltage of BOD_VL setting, this bit is set to 1 and the Brown-out interrupt is requested if Brown-out interrupt is enabled"
+              val: 1
+        BOD_LPM:
+          desc: "Brown-Out Detector Low Power Mode (Write Protect)\nNote1: The BOD consumes about 100 uA in Normal mode, and the low power mode can reduce the current to about 1/10 but slow the BOD response.\nNote2: This bit is the protected bit, and programming it needs to write [59h], [16h], and [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 5
+          enum:
+            '0':
+              desc: "BOD operated in Normal mode (default)"
+              val: 0
+            '1':
+              desc: "BOD Low Power mode Enabled"
+              val: 1
+        BOD_OUT:
+          desc: "Brown-Out Detector Output Status\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "Brown-out Detector output status is 0. It means the detected voltage is higher than BOD_VL setting or BOD_EN is 0"
+              val: 0
+            '1':
+              desc: "Brown-out Detector output status is 1. It means the detected voltage is lower than BOD_VL setting. If the BOD_EN is 0, BOD function disabled, this bit always responds to 0"
+              val: 1
+        LVR_EN:
+          desc: "Low Voltage Reset Enable Control (Write Protect)\nThe LVR function reset the chip when the input power voltage is lower than LVR circuit setting. LVR function is enabled by default.\nNote: This bit is the protected bit, and programming it needs to write [59h], [16h], and [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 7
+          enum:
+            '0':
+              desc: "Low Voltage Reset function Disabled"
+              val: 0
+            '1':
+              desc: "Low Voltage Reset function Enabled - After enabling the bit, the LVR function will be active with 100us delay for LVR output stable (default)"
+              val: 1
+        BODDGSEL:
+          desc: "Brown-Out Detector Output De-Glitch Time Select (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write [59h], [16h], and [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 10-8
+          enum:
+            '0':
+              desc: "BOD output is sampled by RC10K clock"
+              val: 0
+            '1':
+              desc: "4 system clock (HCLK)"
+              val: 1
+            '2':
+              desc: "8 system clock (HCLK)"
+              val: 2
+            '3':
+              desc: "16 system clock (HCLK)"
+              val: 3
+            '4':
+              desc: "32 system clock (HCLK)"
+              val: 4
+            '5':
+              desc: "64 system clock (HCLK)"
+              val: 5
+            '6':
+              desc: "128 system clock (HCLK)"
+              val: 6
+            '7':
+              desc: "256 system clock (HCLK)"
+              val: 7
+        LVRDGSEL:
+          desc: "LVR Output De-Glitch Time Select (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write [59h], [16h], and [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 14-12
+          enum:
+            '0':
+              desc: "Without de-glitch function"
+              val: 0
+            '1':
+              desc: "4 system clock (HCLK)"
+              val: 1
+            '2':
+              desc: "8 system clock (HCLK)"
+              val: 2
+            '3':
+              desc: "16 system clock (HCLK)"
+              val: 3
+            '4':
+              desc: "32 system clock (HCLK)"
+              val: 4
+            '5':
+              desc: "64 system clock (HCLK)"
+              val: 5
+            '6':
+              desc: "128 system clock (HCLK)"
+              val: 6
+            '7':
+              desc: "256 system clock (HCLK)"
+              val: 7
+    PORCR:
+      desc: Power-on-reset Controller Register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        POR_DIS_CODE:
+          desc: "Power-On-Reset Enable Control (Write Protect)\nWhen powered on, the POR circuit generates a reset signal to reset the whole chip function, but noise on the power may cause the POR active again. User can disable internal POR circuit to avoid unpredictable noise to cause chip reset by writing 0x5AA5 to this field.\nThe POR function will be active again when  this field is set to another value or chip is reset by other reset source, including:\nnRESET, Watchdog Timer reset, Window Watchdog Timer reset, LVR reset, BOD reset, ICE reset command and the software-chip reset function\nNote: This bit is the protected bit. It means programming this needs to write [59h], [16h], [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 15-0
+    VREFCR:
+      desc: VREF Controller Register
+      offset: 0x28
+      reset_val: 0x10
+      fields:
+        ADC_VREFSEL:
+          desc: "ADC VREF Path Control (Write Protect)\nNote: This bit is the protected bit, and programming it needs to write [59h], [16h], and [88h] to address 0x5000_0100 to disable register protection. Refer to the register REGWRPROT at address GCR_BA+0x100."
+          bits: 4
+          enum:
+            '0':
+              desc: "ADC VREF is from VREF pin"
+              val: 0
+            '1':
+              desc: "ADC VREF is from AVDD"
+              val: 1
+    GPA_MFP:
+      desc: GPIOA Multiple Function and Input Type Control Register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        GPA_MFP0:
+          desc: "PA.0 Pin Function Selection\nBits PA0_PWM04 (ALT_MFP3[4]), PA0_UR5TXD (ALT_MFP4[7]), PA0_I2C1SCL (ALT_MFP4[12]) and GPA_MFP0 determine the PA.0 function.\n(PA0_PWM04, PA0_UR5TXD, PA0_I2C1SCL, GPA_MFP0) value and function mapping is as following list.\n"
+          bits: 0
+        GPA_MFP1:
+          desc: "PA.1 Pin Function Selection\nBits PA1_PWM05 (ALT_MFP3[5]), PA1_UR5RXD (ALT_MFP4[6]), PA1_I2C1SDA (ALT_MFP4[13]) and GPA_MFP1 determine the PA.1 function.\n(PA1_PWM05, PA1_UR5RXD, PA1_I2C1SDA, GPA_MFP1) value and function mapping is as following list.\n"
+          bits: 1
+        GPA_MFP2:
+          desc: "PA.2 Pin Function Selection\nBits PA2_PWM10 (ALT_MFP3[6]), PA2_UR3TXD (ALT_MFP4[3]) and GPA_MFP2 determine the PA.2 function.\n(PA2_PWM10, PA2_UR3TXD, GPA_MFP2) value and function mapping is as following list.\n"
+          bits: 2
+        GPA_MFP3:
+          desc: "PA.3 Pin Function Selection\nBits PA3_PWM11 (ALT_MFP3[7]), PA3_UR3RXD (ALT_MFP4[2]) and GPA_MFP3 determine the PA.3 function.\n(PA3_PWM11, PA3_UR3RXD, GPA_MFP3) value and function mapping is as following list.\n"
+          bits: 3
+        GPA_MFP4:
+          desc: "PA.4 Pin Function Selection\nBit GPA_MFP4 determines the PA.4 function.\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "ADC4 function is selected"
+              val: 1
+        GPA_MFP5:
+          desc: "PA.5 Pin Function Selection\nBits PA5_UR3RXD (ALT_MFP4[4]) and GPA_MFP5 determine the PA.5 function.\n(PA5_UR3RXD, GPA_MFP5) value and function mapping is as following list.\n"
+          bits: 5
+        GPA_MFP6:
+          desc: "PA.6 Pin Function Selection\nBits PA6_UR3TXD (ALT_MFP4[5]) and GPA_MFP6 determine the PA.6 function.\n(PA6_UR3TXD, GPA_MFP6) value and function mapping is as following list.\n"
+          bits: 6
+        GPA_MFP7:
+          desc: "PA.7 Pin Function Selection\nBits PA7_VREF (ALT_MFP4[14]) and GPA_MFP7 determine the PA.7 function.\n(PA7_VREF, GPA_MFP7) value and function mapping is as following list.\n"
+          bits: 7
+        GPA_MFP8:
+          desc: "PA.8 Pin Function Selection\nBits PA8_UR1RTS (ALT_MFP4[0]) and GPA_MFP8 determine the PA.8 function.\n(PA8_UR1RTS, GPA_MFP8) value and function mapping is as following list.\n"
+          bits: 8
+        GPA_MFP9:
+          desc: "PA.9 Pin Function Selection\nBits PA9_UR1CTS (ALT_MFP4[1]) and GPA_MFP9 determine the PA.9 function.\n(PA9_UR1CTS, GPA_MFP9) value and function mapping is as following list.\n"
+          bits: 9
+        GPA_MFP10:
+          desc: "PA.10 Pin Function Selection\nBits PA10_PWM12 (ALT_MFP3[8]) and GPA_MFP10 determine the PA.10 function.\n(PA10_PWM12, GPA_MFP10) value and function mapping is as following list.\n"
+          bits: 10
+        GPA_MFP11:
+          desc: "PA.11 Pin Function Selection\nBits PA11_PWM13 (ALT_MFP3[9]) and GPA_MFP11 determine the PA.11 function.\n(PA11_PWM13, GPA_MFP11) value and function mapping is as following list.\n"
+          bits: 11
+        GPA_MFP12:
+          desc: "PA.12 Pin Function Selection\nBits PA12_UR5RXD (ALT_MFP4[8]) and GPA_MFP12 determine the PA.12 function.\n(PA12_UR5RXD, GPA_MFP12) value and function mapping is as following list.\n"
+          bits: 12
+        GPA_MFP13:
+          desc: "PA.13 Pin Function Selection\nBits PA13_UR5TXD (ALT_MFP4[9]) and GPA_MFP13 determine the PA.13 function.\n(PA13_UR5TXD, GPA_MFP13) value and function mapping is as following list.\n"
+          bits: 13
+        GPA_MFP14:
+          desc: "PA.14 Pin Function Selection\nBit GPA_MFP14 determines the PA.14 function.\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "PWM0_CH2 function is selected"
+              val: 1
+        GPA_MFP15:
+          desc: "PA.15 Pin Function Selection\nBit GPA_MFP15 determines the PA.15 function.\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "PWM0_CH3 function is selected"
+              val: 1
+        GPA_TYPEn:
+          desc: "Trigger Function Selection\n"
+          bits: 31-16
+          enum:
+            '0':
+              desc: "GPIOA[15:0] I/O input Schmitt Trigger function Disabled"
+              val: 0
+            '1':
+              desc: "GPIOA[15:0] I/O input Schmitt Trigger function Enabled"
+              val: 1
+    GPB_MFP:
+      desc: GPIOB Multiple Function and Input Type Control Register
+      offset: 0x34
+      reset_val: 0x0
+      fields:
+        GPB_MFP0:
+          desc: "PB.0 Pin Function Selection\nBit GPB_MFP0 determines the PB.0 function.\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "UART0_RXD function is selected"
+              val: 1
+        GPB_MFP1:
+          desc: "PB.1 Pin Function Selection\nBit GPB_MFP1 determines the PB.1 function.\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "UART0_TXD function is selected"
+              val: 1
+        GPB_MFP2:
+          desc: "PB.2 Pin Function Selection\nBits PB2_TM2 (ALT_MFP2[4]), PB2_PWM1BK1 (ALT_MFP3[31]), PB2_T2EX (ALT_MFP[26]) and GPB_MFP2 determine the PB.2 function.\n(PB2_TM2, PB2_PWM1BK1, PB2_T2EX, GPB_MFP2) value and function mapping is as following list.\n"
+          bits: 2
+        GPB_MFP3:
+          desc: "PB.3 Pin Function Selection\nBits PB3_TM3 (ALT_MFP2[5]), PB3_PWM1BK0 (ALT_MFP3[30]), PB3_T3EX (ALT_MFP[27]) and GPB_MFP3 determine the PB.3 function.\n(PB3_TM3, PB3_PWM1BK0, PB3_T3EX, GPB_MFP3) value and function mapping is as following list.\n"
+          bits: 3
+        GPB_MFP4:
+          desc: "PB.4 Pin Function Selection\nBit GPB_MFP4 determines the PB.4 function.\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "UART1_RXD function is selected"
+              val: 1
+        GPB_MFP5:
+          desc: "PB 5 Pin Function Selection\nBit GPB_MFP5 determines the PB.5 function.\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "UART1_TXD function is selected"
+              val: 1
+        GPB_MFP6:
+          desc: "PB.6 Pin Function Selection\nBit GPB_MFP6 determines the PB.6 function.\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "UART1_nRTS function is selected"
+              val: 1
+        GPB_MFP7:
+          desc: "PB.7 Pin Function Selection\nBit GPB_MFP7 determines the PB.7 function.\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "UART1_nCTS function is selected"
+              val: 1
+        GPB_MFP8:
+          desc: "PB.8 Pin Function Selection\nBits PB8_BPWM12 (ALT_MFP3[20]), PB8_CLKO (ALT_MFP[29]) and GPB_MFP8 determine the PB.8 function.\n(PB8_BPWM12, PB8_CLKO, GPB_MFP8) value and function mapping is as following list.\n"
+          bits: 8
+        GPB_MFP9:
+          desc: "PB.9 Pin Function Selection\nBit GPB_MFP9 determines the PB.9 function.\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "TM1 function is selected"
+              val: 1
+        GPB_MFP10:
+          desc: "PB.10 Pin Function Selection\nBit GPB_MFP10 determines the PB.10 function.\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "TM2 function is selected"
+              val: 1
+        GPB_MFP11:
+          desc: "PB.11 Pin Function Selection\nBits PB11_PWM04 (ALT_MFP3[24]) and GPB_MFP11 determine the PB.11 function.\n(PB11_PWM04, GPB_MFP11) value and function mapping is as following list.\n"
+          bits: 11
+        GPB_MFP12:
+          desc: "PB.12 Pin Function Selection\nBits PB12_BPWM13 (ALT_MFP3[21]) and GPB_MFP12 determine the PB.12 function.\n(PB12_BPWM13, GPB_MFP12) value and function mapping is as following list.\n"
+          bits: 12
+        GPB_MFP14:
+          desc: "PB.14 Pin Function Selection\nBit GPB_MFP14 determines the PB.14 function.\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "INT0 function is selected"
+              val: 1
+        GPB_MFP15:
+          desc: "PB.15 Pin Function Selection\nBits PB15_BPWM15 (ALT_MFP3[23]), PB15_T0EX (ALT_MFP[24]), PB15_TM0 (ALT_MFP2[2]) and GPB_MFP15 determine the PB.15 function.\n(PB15_BPWM15, PB15_T0EX, PB15_TM0, GPB_MFP15) value and function mapping is as following list.\n"
+          bits: 15
+        GPB_TYPEn:
+          desc: "Trigger Function Selection\n"
+          bits: 31-16
+          enum:
+            '0':
+              desc: "GPIOB[15:0] I/O input Schmitt Trigger function Disabled"
+              val: 0
+            '1':
+              desc: "GPIOB[15:0] I/O input Schmitt Trigger function Enabled"
+              val: 1
+    GPC_MFP:
+      desc: GPIOC Multiple Function and Input Type Control Register
+      offset: 0x38
+      reset_val: 0x0
+      fields:
+        GPC_MFP0:
+          desc: "PC.0 Pin Function Selection\nBits PC0_BPWM00 (ALT_MFP3[12]) and GPC_MFP0 determine the PC.0 function.\n(PC0_BPWM00, GPC_MFP0) value and function mapping is as following list.\n"
+          bits: 0
+        GPC_MFP1:
+          desc: "PC.1 Pin Function Selection\nBits PC1_BPWM01 (ALT_MFP3[13]) and GPC_MFP1 determine the PC.1 function.\n(PC1_BPWM01, GPC_MFP1) value and function mapping is as following list.\n"
+          bits: 1
+        GPC_MFP2:
+          desc: "PC.2 Pin Function Selection\nBits PC2_BPWM02 (ALT_MFP3[14]) and GPC_MFP2 determine the PC.2 function.\n(PC2_BPWM02, GPC_MFP2) value and function mapping is as following list.\n"
+          bits: 2
+        GPC_MFP3:
+          desc: "PC.3 Pin Function Selection\nBits PC3_BPWM03 (ALT_MFP3[15]) and GPC_MFP3 determine the PC.3 function.\n(PC3_BPWM03, GPC_MFP3) value and function mapping is as following list.\n"
+          bits: 3
+        GPC_MFP6:
+          desc: "PC.6 Pin Function Selection\nBits PC6_PWM0BK0 (ALT_MFP3[28]), PC6_I2C0SDA (ALT_MFP4[10]) and GPC_MFP6 determine the PC.6 function.\n(PC6_PWM0BK0, PC6_I2C0SDA, GPC_MFP6) value and function mapping is as following list.\n"
+          bits: 6
+        GPC_MFP7:
+          desc: "PC.7 Pin Function Selection\nBits PC7_PWM0BK1 (ALT_MFP3[29]), PC7_I2C0SCL (ALT_MFP4[11]) and GPC_MFP7 determine the PC.7 function.\n(PC7_PWM0BK1, PC7_I2C0SCL, GPC_MFP7) value and function mapping is as following list.\n"
+          bits: 7
+        GPC_MFP8:
+          desc: "PC.8 Pin Function Selection\nBit GPC_MFP8 determines the PC.8 function.\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "PWM0_BRAKE0 function is selected"
+              val: 1
+        GPC_MFP9:
+          desc: "PC.9 Pin Function Selection\nBit GPC_MFP9 determines the PC.9 function.\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "PWM0_BRAKE1 function is selected"
+              val: 1
+        GPC_MFP10:
+          desc: "PC.10 Pin Function Selection\nBit GPC_MFP10 determines the PC.10 function.\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "PWM1_BRAKE0 function is selected"
+              val: 1
+        GPC_MFP11:
+          desc: "PC.11 Pin Function Selection\nBit GPC_MFP11 determines the PC.11 function.\n"
+          bits: 11
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "PWM1_BRAKE1 function is selected"
+              val: 1
+        GPC_TYPEn:
+          desc: "Trigger Function Selection\n"
+          bits: 31-16
+          enum:
+            '0':
+              desc: "GPIOC[15:0] I/O input Schmitt Trigger function Disabled"
+              val: 0
+            '1':
+              desc: "GPIOC[15:0] I/O input Schmitt Trigger function Enabled"
+              val: 1
+    GPD_MFP:
+      desc: GPIOD Multiple Function and Input Type Control Register
+      offset: 0x3c
+      reset_val: 0x0
+      fields:
+        GPD_MFP6:
+          desc: "PD.6 Pin Function Selection\nBits PD6_BPWM11 (ALT_MFP3[19]) and GPD_MFP6 determine the PD.6 function.\n(PD6_BPWM11, GPD_MFP6) value and function mapping is as following list.\n"
+          bits: 6
+        GPD_MFP7:
+          desc: "PD.7 Pin Function Selection \nBits PD7_BPWM10 (ALT_MFP3[18]) and GPD_MFP7 determine the PD.7 function.\n(PD7_BPWM10, GPD_MFP7) value and function mapping is as following list.\n"
+          bits: 7
+        GPD_MFP14:
+          desc: "PD.14 Pin Function Selection \nBits PD14_BPWM05 (ALT_MFP3[17]) and GPD_MFP14 determine the PD.14 function.\n(PD14_BPWM05, GPD_MFP14) value and function mapping is as following list.\n"
+          bits: 14
+        GPD_MFP15:
+          desc: "PD.15 Pin Function Selection \nBits PD15_BPWM04 (ALT_MFP3[16]) and GPD_MFP15 determine the PD.15 function.\n(PD15_BPWM04, GPD_MFP15) value and function mapping is as following list.\n"
+          bits: 15
+        GPD_TYPEn:
+          desc: "Trigger Function Selection\n"
+          bits: 31-16
+          enum:
+            '0':
+              desc: "GPIOD[15:0] I/O input Schmitt Trigger function Disabled"
+              val: 0
+            '1':
+              desc: "GPIOD[15:0] I/O input Schmitt Trigger function Enabled"
+              val: 1
+    GPE_MFP:
+      desc: GPIOE Multiple Function and Input Type Control Register
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        GPE_MFP5:
+          desc: "PE.5 Pin Function Selection\nBits PE5_T1EX (ALT_MFP[25]), PE5_TM1 (ALT_MFP2[3]) and GPE_MFP5 determine the PE.5 function.\n(PE5_T1EX, PE5_TM1, GPE_MFP5) value and function mapping is as following list.\n"
+          bits: 5
+        GPE_TYPE5:
+          desc: "Trigger Function Selection\n"
+          bits: 21
+          enum:
+            '0':
+              desc: "GPIOE[5] I/O input Schmitt Trigger function Disabled"
+              val: 0
+            '1':
+              desc: "GPIOE[5] I/O input Schmitt Trigger function Enabled"
+              val: 1
+    GPF_MFP:
+      desc: GPIOF Multiple Function and Input Type Control Register
+      offset: 0x44
+      reset_val: 0xc0
+      fields:
+        GPF_MFP0:
+          desc: "PF.0 Pin Function Selection\nBit GPF_MFP0 determines the PF.0 function.\nNote: This bit is read only and is decided by user configuration CGPFMFP (CONFIG0[27])."
+          bits: 0
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "XT1_OUT function is selected"
+              val: 1
+        GPF_MFP1:
+          desc: "PF.1 Pin Function Selection \nBit GPF_MFP1 determine the PF.1 function.\nNote: This bit is read only and is decided by user configuration CGPFMFP (CONFIG0[27])."
+          bits: 1
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "XT1_IN function is selected"
+              val: 1
+        GPF_MFP4:
+          desc: "PF.4 Pin Function Selection \nBits PF4_PWM14 (ALT_MFP3[10]) and GPF_MFP4 determine the PF.4 function.\n(PF4_PWM14, GPF_MFP4) value and function mapping is as following list.\n"
+          bits: 4
+        GPF_MFP5:
+          desc: "PF.5 Pin Function Selection\nBits PF5_PWM15 (ALT_MFP3[11]) and GPF_MFP5 determine the PF.5 function.\n(PF5_PWM15, GPF_MFP5) value and function mapping is as following list.\n"
+          bits: 5
+        GPF_MFP6:
+          desc: "PF.6 Pin Function Selection\nBit GPF_MFP6 determines the PF.6 function.\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "ICE_CLK function is selected"
+              val: 1
+        GPF_MFP7:
+          desc: "PF.7 Pin Function Selection\nBit GPF_MFP7 determines the PF.7 function.\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "GPIO function is selected"
+              val: 0
+            '1':
+              desc: "ICE_DAT function is selected"
+              val: 1
+        GPF_MFP8:
+          desc: "PF.8 Pin Function Selection\nBit PF8_BPWM14 (ALT_MFP3[22]), GPF_MFP8 determines the PF.8 function.\n(PF8_BPWM14, GPF_MFP8) value and function mapping is as following list.\n"
+          bits: 8
+        GPF_TYPEn:
+          desc: "Trigger Function Selection\n"
+          bits: 24-16
+          enum:
+            '0':
+              desc: "GPIOF[8:0] I/O input Schmitt Trigger function Disabled"
+              val: 0
+            '1':
+              desc: "GPIOF[8:0] I/O input Schmitt Trigger function Enabled"
+              val: 1
+    ALT_MFP:
+      desc: Alternative Multiple Function Pin Control Register
+      offset: 0x50
+      reset_val: 0x0
+      fields:
+        PB15_T0EX:
+          desc: "PB.15 Pin Alternative Function Selection\nBits PB15_BPWM15 (ALT_MFP3[23]), PB15_T0EX (ALT_MFP[24]), PB15_TM0 (ALT_MFP2[2]) and GPB_MFP15 determine the PB.15 function.\n(PB15_BPWM15, PB15_T0EX, PB15_TM0, GPB_MFP15) value and function mapping is as following list.\n"
+          bits: 24
+        PE5_T1EX:
+          desc: "PE.5 Pin Alternative Function Selection\nBits PE5_T1EX (ALT_MFP[25]), PE5_TM1 (ALT_MFP2[3]) and GPE_MFP5 determine the PE.5 function.\n(PE5_T1EX, PE5_TM1, GPE_MFP5) value and function mapping is as following list.\n"
+          bits: 25
+        PB2_T2EX:
+          desc: "PB.2 Pin Alternative Function Selection\nBits PB2_TM2 (ALT_MFP2[4]), PB2_PWM1BK1 (ALT_MFP3[31]), PB2_T2EX (ALT_MFP[26]) and GPB_MFP2 determine the PB.2 function.\n(PB2_TM2, PB2_PWM1BK1, PB2_T2EX, GPB_MFP2) value and function mapping is as following list.\n"
+          bits: 26
+        PB3_T3EX:
+          desc: "PB.3 Pin Alternative Function Selection\nBits PB3_TM3 (ALT_MFP2[5]), PB3_PWM1BK0 (ALT_MFP3[30]), PB3_T3EX (ALT_MFP[27]) and GPB_MFP3 determine the PB.3 function.\n(PB3_TM3, PB3_PWM1BK0, PB3_T3EX, GPB_MFP3) value and function mapping is as following list.\n"
+          bits: 27
+        PB8_CLKO:
+          desc: "PB.8 Pin Alternative Function Selection\nBits PB8_BPWM12 (ALT_MFP3[20]), PB8_CLKO (ALT_MFP[29]) and GPB_MFP8 determine the PB.8 function.\n(PB8_BPWM12, PB8_CLKO, GPB_MFP8) value and function mapping is as following list.\n"
+          bits: 29
+    ALT_MFP2:
+      desc: Alternative Multiple Function Pin Control Register 2
+      offset: 0x5c
+      reset_val: 0x0
+      fields:
+        PB15_TM0:
+          desc: "PB.15 Pin Alternative Function Selection\nBits PB15_BPWM15 (ALT_MFP3[23]), PB15_T0EX (ALT_MFP[24]), PB15_TM0 (ALT_MFP2[2]) and GPB_MFP15 determine the PB.15 function.\n(PB15_BPWM15, PB15_T0EX, PB15_TM0, GPB_MFP15) value and function mapping is as following list.\n"
+          bits: 2
+        PE5_TM1:
+          desc: "PE.5 Pin Alternative Function Selection\nBits PE5_T1EX (ALT_MFP[25]), PE5_TM1 (ALT_MFP2[3]) and GPE_MFP5 determine the PE.5 function.\n(PE5_T1EX, PE5_TM1, GPE_MFP5) value and function mapping is as following list.\n"
+          bits: 3
+        PB2_TM2:
+          desc: "PB.2 Pin Alternative Function Selection\nBits PB2_TM2 (ALT_MFP2[4]), PB2_PWM1BK1 (ALT_MFP3[31]), PB2_T2EX (ALT_MFP[26]) and GPB_MFP2 determine the PB.2 function.\n(PB2_TM2, PB2_PWM1BK1, PB2_T2EX, GPB_MFP2) value and function mapping is as following list.\n"
+          bits: 4
+        PB3_TM3:
+          desc: "PB.3 Pin Alternative Function Selection\nBits PB3_TM3 (ALT_MFP2[5]), PB3_PWM1BK0 (ALT_MFP3[30]), PB3_T3EX (ALT_MFP[27]) and GPB_MFP3 determine the PB.3 function.\n(PB3_TM3, PB3_PWM1BK0, PB3_T3EX, GPB_MFP3) value and function mapping is as following list.\n"
+          bits: 5
+    ALT_MFP3:
+      desc: Alternative Multiple Function Pin Control Register 3
+      offset: 0x60
+      reset_val: 0x0
+      fields:
+        PA0_PWM04:
+          desc: "PA.0 Pin Alternative Function Selection\nBits PA0_PWM04 (ALT_MFP3[4]), PA0_UR5TXD (ALT_MFP4[7]), PA0_I2C1SCL (ALT_MFP4[12]) and GPA_MFP0 determine the PA.0 function.\n(PA0_PWM04, PA0_UR5TXD, PA0_I2C1SCL, GPA_MFP0) value and function mapping is as following list.\n"
+          bits: 4
+        PA1_PWM05:
+          desc: "PA.1 Pin Alternative Function Selection\nBits PA1_PWM05 (ALT_MFP3[5]), PA1_UR5RXD (ALT_MFP4[6]), PA1_I2C1SDA (ALT_MFP4[13]) and GPA_MFP1 determine the PA.1 function.\n(PA1_PWM05, PA1_UR5RXD , PA1_I2C1SDA, GPA_MFP1) value and function mapping is as following list.\n"
+          bits: 5
+        PA2_PWM10:
+          desc: "PA.2 Pin Alternative Function Selection\nBits PA2_PWM10 (ALT_MFP3[6]), PA2_UR3TXD (ALT_MFP4[3]) and GPA_MFP2 determine the PA.2 function.\n(PA2_PWM10, PA2_UR3TXD, GPA_MFP2) value and function mapping is as following list.\n"
+          bits: 6
+        PA3_PWM11:
+          desc: "PA.3 Pin Alternative Function Selection\nBits PA3_PWM11 (ALT_MFP3[7]), PA3_UR3RXD (ALT_MFP4[2]) and GPA_MFP3 determine the PA.3 function.\n(PA3_PWM11, PA3_UR3RXD, GPA_MFP3) value and function mapping is as following list.\n"
+          bits: 7
+        PA10_PWM12:
+          desc: "PA.10 Pin Alternative Function Selection\nBits PA10_PWM12 (ALT_MFP3[8]) and GPA_MFP10 determine the PA.10 function.\n(PA10_PWM12, GPA_MFP10) value and function mapping is as following list.\n"
+          bits: 8
+        PA11_PWM13:
+          desc: "PA.11 Pin Alternative Function Selection\nBits PA11_PWM13 (ALT_MFP3[9]) and GPA_MFP11 determine the PA.11 function.\n(PA11_PWM13, GPA_MFP11) value and function mapping is as following list.\n"
+          bits: 9
+        PF4_PWM14:
+          desc: "PF.4 Pin Alternative Function Selection \nBits PF4_PWM14 (ALT_MFP3[10]) and GPF_MFP4 determine the PF.4 function.\n(PF4_PWM14, GPF_MFP4) value and function mapping is as following list.\n"
+          bits: 10
+        PF5_PWM15:
+          desc: "PF.5 Pin Alternative Function Selection\nBits PF5_PWM15 (ALT_MFP3[11]) and GPF_MFP5 determine the PF.5 function.\n(PF5_PWM15, GPF_MFP5) value and function mapping is as following list.\n"
+          bits: 11
+        PC0_BPWM00:
+          desc: "PC.0 Pin Alternative Function Selection\nBits PC0_BPWM00 (ALT_MFP3[12]) and GPC_MFP0 determine the PC.0 function.\n(PC0_BPWM00, GPC_MFP0) value and function mapping is as following list.\n"
+          bits: 12
+        PC1_BPWM01:
+          desc: "PC.1 Pin Alternative Function Selection\nBits PC1_BPWM01 (ALT_MFP3[13]) and GPC_MFP1 determine the PC.1 function.\n(PC1_BPWM01, GPC_MFP1) value and function mapping is as following list.\n"
+          bits: 13
+        PC2_BPWM02:
+          desc: "PC.2 Pin Alternative Function Selection\nBits PC2_BPWM02 (ALT_MFP3[14]) and GPC_MFP2 determine the PC.2 function.\n(PC2_BPWM02, GPC_MFP2) value and function mapping is as following list.\n"
+          bits: 14
+        PC3_BPWM03:
+          desc: "PC.3 Pin Alternative Function Selection\nBits PC3_BPWM03 (ALT_MFP3[15]) and GPC_MFP3 determine the PC.3 function.\n(PC3_BPWM03, GPC_MFP3) value and function mapping is as following list.\n"
+          bits: 15
+        PD15_BPWM04:
+          desc: "PD.15 Pin Alternative Function Selection \nBits PD15_BPWM04 (ALT_MFP3[16]) and GPD_MFP15 determine the PD.15 function.\n(PD15_BPWM04, GPD_MFP15) value and function mapping is as following list.\n"
+          bits: 16
+        PD14_BPWM05:
+          desc: "PD.14 Pin Alternative Function Selection \nBits PD14_BPWM05 (ALT_MFP3[17]) and GPD_MFP14 determine the PD.14 function.\n(PD14_BPWM05, GPD_MFP14) value and function mapping is as following list.\n"
+          bits: 17
+        PD7_BPWM10:
+          desc: "PD.7 Pin Alternative Function Selection \nBits PD7_BPWM10 (ALT_MFP3[18]) and GPD_MFP7 determine the PD.7 function.\n(PD7_BPWM10, GPD_MFP7) value and function mapping is as following list.\n"
+          bits: 18
+        PD6_BPWM11:
+          desc: "PD.6 Pin Alternative Function Selection\nBits PD6_BPWM11 (ALT_MFP3[19]) and GPD_MFP6 determine the PD.6 function.\n(PD6_BPWM11, GPD_MFP6) value and function mapping is as following list.\n"
+          bits: 19
+        PB8_BPWM12:
+          desc: "PB.8 Pin Alternative Function Selection\nBits PB8_BPWM12 (ALT_MFP3[20]), PB8_CLKO (ALT_MFP[29]) and GPB_MFP8 determine the PB.8 function.\n(PB8_BPWM12, PB8_CLKO, GPB_MFP8) value and function mapping is as following list.\n"
+          bits: 20
+        PB12_BPWM13:
+          desc: "PB.12 Pin Alternative Function Selection\nBits PB12_BPWM13 (ALT_MFP3[21]) and GPB_MFP12 determine the PB.12 function.\n(PB12_BPWM13, GPB_MFP12) value and function mapping is as following list.\n"
+          bits: 21
+        PF8_BPWM14:
+          desc: "PF.8 Pin Function Selection\nBit PF8_BPWM14 (ALT_MFP3[22]), GPF_MFP8 determines the PF.8 function.\n(PF8_BPWM14, GPF_MFP8) value and function mapping is as following list.\n"
+          bits: 22
+        PB15_BPWM15:
+          desc: "PB.15 Pin Function Selection\nBits PB15_BPWM15 (ALT_MFP3[23]), PB15_T0EX (ALT_MFP[24]), PB15_TM0 (ALT_MFP2[2]) and GPB_MFP15 determine the PB.15 function.\n(PB15_BPWM15, PB15_T0EX, PB15_TM0, GPB_MFP15) value and function mapping is as following list.\n"
+          bits: 23
+        PB11_PWM04:
+          desc: "PB.11 Pin Alternative Function Selection\nBits PB11_PWM04 (ALT_MFP3[24]) and GPB_MFP11 determine the PB.11 function.\n(PB11_PWM04, GPB_MFP11) value and function mapping is as following list.\n"
+          bits: 24
+        PC6_PWM0BK0:
+          desc: "PC.6 Pin Alternative Function Selection\nBits PC6_PWM0BK0 (ALT_MFP3[28]), PC6_I2C0SDA (ALT_MFP4[10]) and GPC_MFP6 determine the PC.6 function.\n(PC6_PWM0BK0, PC6_I2C0SDA, GPB_MFP6) value and function mapping is as following list.\n"
+          bits: 28
+        PC7_PWM0BK1:
+          desc: "PC.7 Pin Alternative Function Selection\nBits PC7_PWM0BK1 (ALT_MFP3[29]), PC7_I2C0SCL (ALT_MFP4[11]) and GPC_MFP7 determine the PC.7 function.\n(PC7_PWM0BK1, PC7_I2C0SCL, GPC_MFP7) value and function mapping is as following list.\n"
+          bits: 29
+        PB3_PWM1BK0:
+          desc: "PB.3 Pin Alternative Function Selection\nBits PB3_TM3 (ALT_MFP2[5]), PB3_PWM1BK0 (ALT_MFP3[30]), PB3_T3EX (ALT_MFP[27]) and GPB_MFP3 determine the PB.3 function.\n(PB3_TM3, PB3_PWM1BK0, PB3_T3EX, GPB_MFP3) value and function mapping is as following list.\n"
+          bits: 30
+        PB2_PWM1BK1:
+          desc: "PB.2 Pin Alternative Function Selection\nBits PB2_TM2 (ALT_MFP2[4]), PB2_PWM1BK1 (ALT_MFP3[31]), PB2_T2EX (ALT_MFP[26]) and GPB_MFP2 determine the PB.2 function.\n(PB2_TM2, PB2_PWM1BK1, PB2_T2EX, GPB_MFP2) value and function mapping is as following list.\n"
+          bits: 31
+    ALT_MFP4:
+      desc: Alternative Multiple Function Pin Control Register 4
+      offset: 0x64
+      reset_val: 0x0
+      fields:
+        PA8_UR1RTS:
+          desc: "PA.8 Pin Alternative Function Selection\nBits PA8_UR1RTS (ALT_MFP4[0]) and GPA_MFP8 determine the PA.8 function.\n(PA8_UR1RTS, GPA_MFP8) value and function mapping is as following list.\n"
+          bits: 0
+        PA9_UR1CTS:
+          desc: "PA.9 Pin Alternative Function Selection\nBits PA9_UR1CTS (ALT_MFP4[1]) and GPA_MFP9 determine the PA.9 function.\n(PA9_UR1CTS, GPA_MFP9) value and function mapping is as following list.\n"
+          bits: 1
+        PA3_UR3RXD:
+          desc: "PA.3 Pin Alternative Function Selection\nBits PA3_PWM11 (ALT_MFP3[7]), PA3_UR3RXD (ALT_MFP4[2]) and GPA_MFP3 determine the PA.3 function.\n(PA3_PWM11, PA3_UR3RXD, GPA_MFP3) value and function mapping is as following list.\n"
+          bits: 2
+        PA2_UR3TXD:
+          desc: "PA.2 Pin Alternative Function Selection\nBits PA2_PWM10 (ALT_MFP3[6]), PA2_UR3TXD (ALT_MFP4[3]) and GPA_MFP2 determine the PA.2 function.\n(PA2_PWM10, PA2_UR3TXD, GPA_MFP2) value and function mapping is as following list.\n"
+          bits: 3
+        PA5_UR3RXD:
+          desc: "PA.5 Pin Alternative Function Selection\nBits PA5_UR3RXD (ALT_MFP4[4]) and GPA_MFP5 determine the PA.5 function.\n(PA5_UR3RXD, GPA_MFP5) value and function mapping is as following list.\n"
+          bits: 4
+        PA6_UR3TXD:
+          desc: "PA.6 Pin Alternative Function Selection\nBits PA6_UR3TXD (ALT_MFP4[5]) and GPA_MFP6 determine the PA.6 function.\n(PA6_UR3TXD, GPA_MFP6) value and function mapping is as following list.\n"
+          bits: 5
+        PA1_UR5RXD:
+          desc: "PA.1 Pin Alternative Function Selection\nBits PA1_PWM05 (ALT_MFP3[5]), PA1_UR5RXD (ALT_MFP4[6]), PA1_I2C1SDA (ALT_MFP4[13]) and GPA_MFP1 determine the PA.1 function.\n(PA1_PWM05, PA1_UR5RXD, PA1_I2C1SDA, GPA_MFP1) value and function mapping is as following list.\n"
+          bits: 6
+        PA0_UR5TXD:
+          desc: "PA.0 Pin Alternative Function Selection\nBits PA0_PWM04 (ALT_MFP3[4]), PA0_UR5TXD (ALT_MFP4[7]), PA0_I2C1SCL (ALT_MFP4[12]) and GPA_MFP0 determine the PA.0 function.\n(PA0_PWM04, PA0_UR5TXD, PA0_I2C1SCL, GPA_MFP0) value and function mapping is as following list.\n"
+          bits: 7
+        PA12_UR5RXD:
+          desc: "PA.12 Pin Alternative Function Selection\nBits PA12_UR5RXD (ALT_MFP4[8]) and GPA_MFP12 determine the PA.12 function.\n(PA12_UR5RXD, GPA_MFP12) value and function mapping is as following list.\n"
+          bits: 8
+        PA13_UR5TXD:
+          desc: "PA.13 Pin Alternative Function Selection\nBits PA13_UR5TXD (ALT_MFP4[9]) and GPA_MFP13 determine the PA.13 function.\n(PA13_UR5TXD, GPA_MFP13) value and function mapping is as following list.\n"
+          bits: 9
+        PC6_I2C0SDA:
+          desc: "PC.6 Pin Alternative Function Selection\nBits PC6_PWM0BK0 (ALT_MFP3[28]), PC6_I2C0SDA (ALT_MFP4[10]) and GPC_MFP6 determine the PC.6 function.\n(PC6_PWM0BK0, PC6_I2C0SDA, GPC_MFP6) value and function mapping is as following list.\n"
+          bits: 10
+        PC7_I2C0SCL:
+          desc: "PC.7 Pin Alternative Function Selection\nBits PC7_PWM0BK1 (ALT_MFP3[29]), PC7_I2C0SCL (ALT_MFP4[11]) and GPC_MFP7 determine the PC.7 function.\n(PC7_PWM0BK1, PC7_I2C0SCL, GPC_MFP7) value and function mapping is as following list.\n"
+          bits: 11
+        PA0_I2C1SCL:
+          desc: "PA.0 Pin Alternative Function Selection\nBits PA0_PWM04 (ALT_MFP3[4]), PA0_UR5TXD (ALT_MFP4[7]), PA0_I2C1SCL (ALT_MFP4[12]) and GPA_MFP0 determine the PA.0 function.\n(PA0_PWM04, PA0_UR5TXD, PA0_I2C1SCL, GPA_MFP0) value and function mapping is as following list.\n"
+          bits: 12
+        PA1_I2C1SDA:
+          desc: "PA.1 Pin Alternative Function Selection\nBits PA1_PWM05 (ALT_MFP3[5]), PA1_UR5RXD (ALT_MFP4[6]), PA1_I2C1SDA (ALT_MFP4[13]) and GPA_MFP1 determine the PA.1 function.\n(PA1_PWM05, PA1_UR5RXD, PA1_I2C1SDA, GPA_MFP1) value and function mapping is as following list.\n"
+          bits: 13
+        PA7_VREF:
+          desc: "PA.7 Pin Alternative Function Selection\nBits PA7_VREF (ALT_MFP4[14]) and GPA_MFP7 determine the PA.7 function.\n(PA7_VREF, GPA_MFP7) value and function mapping is as following list.\n"
+          bits: 14
+    REGWRPROT:
+      desc: Register Write Protection Register
+      offset: 0x100
+      reset_val: 0x0
+      fields:
+        REGPROTDIS:
+          desc: "Register Write-Protection Disable Index (Read Only)\nThe Protected registers are:\nIPRSTC1: address 0x5000_0008\nBODCR: address 0x5000_0018\nPORCR: address 0x5000_0024\nVREFCR: address 0x5000_0028\nPWRCON: address 0x5000_0200 (bit[6] is not protected for power wake-up interrupt clear) \nAPBCLK bit[0]: address 0x5000_0208 (bit[0] is Watchdog Timer clock enable)\nCLKSEL0: address 0x5000_0210 (for HCLK and CPU STCLK clock source selection)\nCLKSEL1 bit[1:0]: address 0x5000_0214 (for Watchdog Timer clock source selection)\nNMI_SEL bit[8]: address 0x5000_0380 (for NMI_EN clock source selection)\nISPCON: address 0x5000_C000 (Flash ISP Control register)\nISPTRG: address 0x5000_C010 (ISP Trigger Control register)\nFATCON: address 0x5000_C018\nWTCR: address 0x4000_4000\nWTCRALT: address 0x4000_4004\nPWM_CTL0: address 0x4004_0000, 0x4014_0000\nPWM_DTCTL0_1: address 0x4004_0070, 0x4014_0070\nPWM_DTCTL2_3: address 0x4004_0074, 0x4014_0074\nPWM_DTCTL4_5: address 0x4004_0078, 0x4014_0078\nPWM_BRKCTL0_1: address 0x4004_00C8, 0x4014_00C8\nPWM_BRKCTL2_3: address 0x4004_00CC, 0x4014_00CC\nPWM_BRKCTL4_5: address 0x4004_00D0, 0x4014_00D0\nPWM_SWBRK: address 0x4004_00DC, 0x4014_00DC\nPWM_INTEN1: address 0x4004_00E4, 0x4014_00E4\nPWM_INTSTS1: address 0x4004_00EC, 0x4014_00EC\nBPWM_CTL0: address 0x4004_4000, 0x4014_4000\nNote: The bits which are write-protected will be noted as (Write Protect) beside the description."
+          bits: 0
+          enum:
+            '0':
+              desc: "Write-protection is enabled for writing protected registers. Any write to the protected register is ignored"
+              val: 0
+            '1':
+              desc: "Write-protection is disabled for writing protected registers"
+              val: 1
+        REGWRPROT:
+          desc: "Register Write-Protection Code (Write Only)\nSome registers have write-protection function. Writing these registers have to disable the protected function by writing the sequence value [59h], [16h], [88h] to this field. After this sequence is completed, the REGPROTDIS bit will be set to 1 and write-protection registers can be normal write."
+          bits: 7-1

@@ -1,0 +1,789 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: CAN Register Map
+  ver: 1
+  registers:
+    CON:
+      desc: Control Register
+      offset: 0x0
+      reset_val: 0x1
+      fields:
+        Init:
+          desc: "Init Initialization\n"
+          bits: 0
+          enum:
+            '0':
+              desc: "Normal Operation"
+              val: 0
+            '1':
+              desc: "Initialization is started"
+              val: 1
+        IE:
+          desc: "Module Interrupt Enable Control\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "Disabled"
+              val: 0
+            '1':
+              desc: "Enabled"
+              val: 1
+        SIE:
+          desc: "Status Change Interrupt Enable Control\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Disabled - No Status Change Interrupt will be generated"
+              val: 0
+            '1':
+              desc: "Enabled - An interrupt will be generated when a message transfer is successfully completed or a CAN bus error is detected"
+              val: 1
+        EIE:
+          desc: "Error Interrupt Enable Control\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Disabled - No Error Status Interrupt will be generated"
+              val: 0
+            '1':
+              desc: "Enabled - A change in the bits BOff (CAN_STATUS[7]) or EWarn (CAN_STATUS[6]) in the Status Register will generate an interrupt"
+              val: 1
+        DAR:
+          desc: "Automatic Re-Transmission Disable Control\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "Automatic Retransmission of disturbed messages Enabled"
+              val: 0
+            '1':
+              desc: "Automatic Retransmission Disabled"
+              val: 1
+        CCE:
+          desc: "Configuration Change Enable Control\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "No write access to the Bit Timing Register"
+              val: 0
+            '1':
+              desc: "Write access to the Bit Timing Register (CAN_BTIME) allowed. (while Init bit (CAN_CON[0]) = 1)"
+              val: 1
+        Test:
+          desc: "Test Mode Enable Control\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "Normal Operation"
+              val: 0
+            '1':
+              desc: "Test Mode"
+              val: 1
+    STATUS:
+      desc: Status Register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        LEC:
+          desc: "Last Error Code (Type Of The Last Error To Occur On The CAN Bus)\nThe LEC field holds a code, which indicates the type of the last error to occur on the CAN bus. This field will be cleared to '0' when a message has been transferred (reception or transmission) without error. The unused code '7' may be written by the CPU to check for updates. The following table describes the error code."
+          bits: 2-0
+        TxOK:
+          desc: "Transmitted A Message Successfully\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Since this bit was reset by the CPU, no message has been successfully transmitted. This bit is never reset by the CAN Core"
+              val: 0
+            '1':
+              desc: "Since this bit was last reset by the CPU, a message has been successfully (error free and acknowledged by at least one other node) transmitted"
+              val: 1
+        RxOK:
+          desc: "Received A Message Successfully\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "No message has been successfully received since this bit was last reset by the CPU. This bit is never reset by the CAN Core"
+              val: 0
+            '1':
+              desc: "A message has been successfully received since this bit was last reset by the CPU (independent of the result of acceptance filtering)"
+              val: 1
+        EPass:
+          desc: "Error Passive (Read Only)\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "The CAN Core is error active"
+              val: 0
+            '1':
+              desc: "The CAN Core is in the error passive state as defined in the CAN Specification"
+              val: 1
+        EWarn:
+          desc: "Error Warning Status (Read Only)\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "Both error counters are below the error warning limit of 96"
+              val: 0
+            '1':
+              desc: "At least one of the error counters in the EML has reached the error warning limit of 96"
+              val: 1
+        BOff:
+          desc: "Bus-Off Status (Read Only) \n"
+          bits: 7
+          enum:
+            '0':
+              desc: "The CAN module is not in bus-off state"
+              val: 0
+            '1':
+              desc: "The CAN module is in bus-off state"
+              val: 1
+    ERR:
+      desc: Error Counter Register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        TEC:
+          desc: "Transmit Error Counter\nActual state of the Transmit Error Counter. Values between 0 and 255."
+          bits: 7-0
+        REC:
+          desc: "Receive Error Counter\nActual state of the Receive Error Counter. Values between 0 and 127."
+          bits: 14-8
+        RP:
+          desc: "Receive Error Passive\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "The Receive Error Counter is below the error passive level"
+              val: 0
+            '1':
+              desc: "The Receive Error Counter has reached the error passive level as defined in the CAN Specification"
+              val: 1
+    BTIME:
+      desc: Bit Timing Register
+      offset: 0xc
+      reset_val: 0x2301
+      fields:
+        BRP:
+          desc: "Baud Rate Prescaler \n0x01-0x3F: The value by which the oscillator frequency is divided for generating the bit time quanta. The bit time is built up from a multiple of this quantum. Valid values for the Baud Rate Prescaler are [0...63]. The actual interpretation by the hardware of this value is such that one more than the value programmed here is used."
+          bits: 5-0
+        SJW:
+          desc: "(Re)Synchronization Jump Width\n0x0-0x3: Valid programmed values are [0...3]. The actual interpretation by the hardware of this value is such that one more than the value programmed here is used."
+          bits: 7-6
+        TSeg1:
+          desc: "Time Segment Before The Sample Point Minus Sync_Seg\n0x01-0x0F: valid values for TSeg1 are [1...15]. The actual interpretation by the hardware of this value is such that one more than the value programmed is used."
+          bits: 11-8
+        TSeg2:
+          desc: "Time Segment After Sample Point \n0x0-0x7: Valid values for TSeg2 are [0...7]. The actual interpretation by the hardware of this value is such that one more than the value programmed here is used."
+          bits: 14-12
+    IIDR:
+      desc: Interrupt Identifier Register
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        IntId:
+          desc: "Interrupt Identifier (Indicates The Source Of The Interrupt)\nIf several interrupts are pending, the CAN Interrupt Register will point to the pending interrupt with the highest priority, disregarding their chronological order. An interrupt remains pending until the application software has cleared it. If IntId is different from 0x0000 and IE (CAN_IFn_MCON[1]) is set, the IRQ interrupt signal to the EIC is active. The interrupt remains active until IntId is back to value 0x0000 (the cause of the interrupt is reset) or until IE is reset.\nThe Status Interrupt has the highest priority. Among the message interrupts, the Message Object' s interrupt priority decreases with increasing message number.\nA message interrupt is cleared by clearing the Message Object's IntPnd bit (CAN_IFn_MCON[13]). The Status Interrupt is cleared by reading the Status Register."
+          bits: 15-0
+    TEST:
+      desc: Test Register (Register Map Note 1)
+      offset: 0x14
+      reset_val: 0x80
+      fields:
+        Basic:
+          desc: "Basic Mode\n"
+          bits: 2
+          enum:
+            '0':
+              desc: "Basic Mode Disabled"
+              val: 0
+            '1':
+              desc: "IF1 Registers used as Tx Buffer, IF2 Registers used as Rx Buffer"
+              val: 1
+        Silent:
+          desc: "Silent Mode\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "Normal operation"
+              val: 0
+            '1':
+              desc: "The module is in Silent Mode"
+              val: 1
+        LBack:
+          desc: "Loop Back Mode Enable Control\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Loop Back Mode is Disabled"
+              val: 0
+            '1':
+              desc: "Loop Back Mode is Enabled"
+              val: 1
+        Tx:
+          desc: "Tx[1:0]: Control Of CAN_TX Pin\n"
+          bits: 6-5
+          enum:
+            '0':
+              desc: "Reset value, CAN_TX pin is controlled by the CAN Core"
+              val: 0
+            '1':
+              desc: "Sample Point can be monitored at CAN_TX pin"
+              val: 1
+            '2':
+              desc: "CAN_TX pin drives a dominant ('0') value"
+              val: 2
+            '3':
+              desc: "CAN_TX pin drives a recessive ('1') value"
+              val: 3
+        Rx:
+          desc: "Monitors The Actual Value Of CAN_RX Pin (Read Only) \n"
+          bits: 7
+          enum:
+            '0':
+              desc: "The CAN bus is dominant (CAN_RX = '0')"
+              val: 0
+            '1':
+              desc: "The CAN bus is recessive (CAN_RX = '1')"
+              val: 1
+    BRPE:
+      desc: Baud Rate Prescaler Extension Register
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        BRPE:
+          desc: "Baud Rate Prescaler Extension\n0x00-0x0F: By programming BRPE, the Baud Rate Prescaler can be extended to values up to 1023. The actual interpretation by the hardware is that one more than the value programmed by BRPE (MSBs) and BTIME (LSBs) is used."
+          bits: 3-0
+    IF1_CREQ:
+      desc: IF1 (Register Map Note 2) Command Request Registers
+      offset: 0x20
+      reset_val: 0x1
+      fields:
+        MessageNumber:
+          desc: "Message Number\n0x01-0x20: Valid Message Number, the Message Object in the Message.\nRAM is selected for data transfer.\n0x00: Not a valid Message Number, interpreted as 0x20.\n0x21-0x3F: Not a valid Message Number, interpreted as 0x01-0x1F."
+          bits: 5-0
+        Busy:
+          desc: "Busy Flag\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "Read/write action has finished"
+              val: 0
+            '1':
+              desc: "Writing to the IFn Command Request Register is in progress. This bit can only be read by the software"
+              val: 1
+    IF1_CMASK:
+      desc: IF1 Command Mask Register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        DAT_B:
+          desc: "Access Data Bytes [7:4]\nWrite Operation: \n"
+          bits: 0
+          enum:
+            '0':
+              desc: "Data Bytes [7:4] unchanged"
+              val: 0
+            '1':
+              desc: "Transfer Data Bytes [7:4] to Message Object.\nTransfer Data Bytes [7:4] to IFn Message Buffer Register"
+              val: 1
+        DAT_A:
+          desc: "Access Data Bytes [3:0]\nWrite Operation:\n"
+          bits: 1
+          enum:
+            '0':
+              desc: "Data Bytes [3:0] unchanged"
+              val: 0
+            '1':
+              desc: "Transfer Data Bytes [3:0] to Message Object.\nTransfer Data Bytes [3:0] to IFn Message Buffer Register"
+              val: 1
+        TxRqst_NewDat:
+          desc: "Access Transmission Request Bit When Write Operation\nNote: A read access to a Message Object can be combined with the reset of the control bits IntPnd and NewDat. The values of these bits transferred to the IFn Message Control Register always reflect the status before resetting these bits."
+          bits: 2
+          enum:
+            '0':
+              desc: "TxRqst bit unchanged.\nNewDat bit remains unchanged"
+              val: 0
+            '1':
+              desc: "Set TxRqst bit.\nClear NewDat bit in the Message Object"
+              val: 1
+        ClrIntPnd:
+          desc: "Clear Interrupt Pending Bit\nWrite Operation:\nWhen writing to a Message Object, this bit is ignored.\nRead Operation:\n"
+          bits: 3
+          enum:
+            '0':
+              desc: "IntPnd bit (CAN_IFn_MCON[13]) remains unchanged"
+              val: 0
+            '1':
+              desc: "Clear IntPnd bit in the Message Object"
+              val: 1
+        Control:
+          desc: "Control Access Control Bit\nWrite Operation:\n"
+          bits: 4
+          enum:
+            '0':
+              desc: "Control Bits unchanged"
+              val: 0
+            '1':
+              desc: "Transfer Control Bits to Message Object.\nTransfer Control Bits to IFn Message Buffer Register"
+              val: 1
+        Arb:
+          desc: "Access Arbitration Bits\nWrite Operation:\n"
+          bits: 5
+          enum:
+            '0':
+              desc: "Arbitration bits unchanged"
+              val: 0
+            '1':
+              desc: "Transfer Identifier + Dir (CAN_IFn_ARB2[13]) + Xtd (CAN_IFn_ARB2[14]) + MsgVal (CAN_IFn_ARB2[15]) to Message Object.\nTransfer Identifier + Dir + Xtd + MsgVal to IFn Message Buffer Register"
+              val: 1
+        Mask:
+          desc: "Access Mask Bits\nWrite Operation:\n"
+          bits: 6
+          enum:
+            '0':
+              desc: "Mask bits unchanged"
+              val: 0
+            '1':
+              desc: "Transfer Identifier Mask + MDir + MXtd to Message Object.\nTransfer Identifier Mask + MDir + MXtd to IFn Message Buffer Register"
+              val: 1
+        WR_RD:
+          desc: "Write / Read Mode\n"
+          bits: 7
+          enum:
+            '0':
+              desc: "Read: Transfer data from the Message Object addressed by the Command Request Register into the selected Message Buffer Registers"
+              val: 0
+            '1':
+              desc: "Write: Transfer data from the selected Message Buffer Registers to the Message Object addressed by the Command Request Register"
+              val: 1
+    IF1_MASK1:
+      desc: IF1 Mask 1 Register
+      offset: 0x28
+      reset_val: 0xffff
+      fields:
+        Msk15_0:
+          desc: "Identifier Mask 15-0\n"
+          bits: 15-0
+          enum:
+            '0':
+              desc: "The corresponding bit in the identifier of the message object cannot inhibit the match in the acceptance filtering"
+              val: 0
+            '1':
+              desc: "The corresponding identifier bit is used for acceptance filtering"
+              val: 1
+    IF1_MASK2:
+      desc: IF1 Mask 2 Register
+      offset: 0x2c
+      reset_val: 0xffff
+      fields:
+        Msk28_16:
+          desc: "Identifier Mask 28-16\n"
+          bits: 12-0
+          enum:
+            '0':
+              desc: "The corresponding bit in the identifier of the message object cannot inhibit the match in the acceptance filtering"
+              val: 0
+            '1':
+              desc: "The corresponding identifier bit is used for acceptance filtering"
+              val: 1
+        MDir:
+          desc: "Mask Message Direction\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "The message direction bit (Dir (CAN_IFn_ARB2[13])) has no effect on the acceptance filtering"
+              val: 0
+            '1':
+              desc: "The message direction bit (Dir) is used for acceptance filtering"
+              val: 1
+        MXtd:
+          desc: "Mask Extended Identifier\nNote: When 11-bit  (standard)  Identifiers  are  used  for  a  Message Object, the identifiers of received Data Frames are written into bits ID28 to ID18 (CAN_IFn_ARB2[12:2]). For acceptance filtering, only these bits together with mask bits Msk28 to Msk18 (CAN_IFn_MASK2[12:2]) are considered."
+          bits: 15
+          enum:
+            '0':
+              desc: "The extended identifier bit (IDE) has no effect on the acceptance filtering"
+              val: 0
+            '1':
+              desc: "The extended identifier bit (IDE) is used for acceptance filtering"
+              val: 1
+    IF1_ARB1:
+      desc: IF1 Arbitration 1 Register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        ID15_0:
+          desc: "Message Identifier 15-0\nID28 - ID0, 29-bit Identifier (Extended Frame).\nID28 - ID18, 11-bit Identifier (Standard Frame)."
+          bits: 15-0
+    IF1_ARB2:
+      desc: IF1 Arbitration 2 Register
+      offset: 0x34
+      reset_val: 0x0
+      fields:
+        ID28_16:
+          desc: "Message Identifier 28-16\nID28 - ID0, 29-bit Identifier (Extended Frame).\nID28 - ID18, 11-bit Identifier (Standard Frame)."
+          bits: 12-0
+        Dir:
+          desc: "Message Direction\n"
+          bits: 13
+          enum:
+            '0':
+              desc: "Direction is receive"
+              val: 0
+            '1':
+              desc: "Direction is transmit"
+              val: 1
+        Xtd:
+          desc: "Extended Identifier\n"
+          bits: 14
+          enum:
+            '0':
+              desc: "The 11-bit (standard) Identifier will be used for this Message Object"
+              val: 0
+            '1':
+              desc: "The 29-bit (extended) Identifier will be used for this Message Object"
+              val: 1
+        MsgVal:
+          desc: "Message Valid\nNote: The application software must reset the MsgVal bit of all unused Messages Objects during the initialization before it resets bit Init (CAN_CON[0]). This bit must also be reset before the identifier Id28-0 (CAN_IFn_ARB1/2), the control bits Xtd (CAN_IFn_ARB2[14]), Dir (CAN_IFn_ARB2[13]), or the Data Length Code DLC3-0 (CAN_IFn_MCON[3:0]) are modified,  or if the Messages Object  is no longer required."
+          bits: 15
+          enum:
+            '0':
+              desc: "The Message Object is ignored by the Message Handler"
+              val: 0
+            '1':
+              desc: "The Message Object is configured and should be considered by the Message Handler"
+              val: 1
+    IF1_MCON:
+      desc: IF1 Message Control Register
+      offset: 0x38
+      reset_val: 0x0
+      fields:
+        DLC:
+          desc: "Data Length Code\n0-8: Data Frame has 0-8 data bytes.\n9-15: Data Frame has 8 data bytes\nNote: The Data Length Code of a Message Object must be defined the same as in all the corresponding objects with the same identifier at other nodes. When the Message Handler stores a data frame, it will write the DLC to the value given by the received message.\nData(0): 1st data byte of a CAN Data Frame\nData(1): 2nd data byte of a CAN Data Frame\nData(2): 3rd data byte of a CAN Data Frame\nData(3): 4th data byte of a CAN Data Frame\nData(4): 5th data byte of a CAN Data Frame\nData(5): 6th data byte of a CAN Data Frame\nData(6): 7th data byte of a CAN Data Frame\nData(7): 8th data byte of a CAN Data Frame\nNote: The Data(0) byte is the first data byte shifted into the shift register of the CAN Core during a reception while the Data(7) byte is the last. When the Message Handler stores a Data Frame, it will write all the eight data bytes into a Message Object. If the Data Length Code is less than 8, the remaining bytes of the Message Object will be overwritten by unspecified values."
+          bits: 3-0
+        EoB:
+          desc: "End Of Buffer\nNote: This bit is used to concatenate two or more Message Objects (up to 32) to build a FIFO Buffer. For single Message Objects (not belonging to a FIFO Buffer), this bit must always be set to one."
+          bits: 7
+          enum:
+            '0':
+              desc: "Message Object belongs to a FIFO Buffer and is not the last Message Object of that FIFO Buffer"
+              val: 0
+            '1':
+              desc: "Single Message Object or last Message Object of a FIFO Buffer"
+              val: 1
+        TxRqst:
+          desc: "Transmit Request\n"
+          bits: 8
+          enum:
+            '0':
+              desc: "This Message Object is not waiting for transmission"
+              val: 0
+            '1':
+              desc: "The transmission of this Message Object is requested and is not yet done"
+              val: 1
+        RmtEn:
+          desc: "Remote Enable Control\n"
+          bits: 9
+          enum:
+            '0':
+              desc: "At the reception of a Remote Frame, TxRqst (CAN_IFn_MCON[8]) is left unchanged"
+              val: 0
+            '1':
+              desc: "At the reception of a Remote Frame, TxRqst is set"
+              val: 1
+        RxIE:
+          desc: "Receive Interrupt Enable Control\n"
+          bits: 10
+          enum:
+            '0':
+              desc: "IntPnd (CAN_IFn_MCON[13]) will be left unchanged after a successful reception of a frame"
+              val: 0
+            '1':
+              desc: "IntPnd will be set after a successful reception of a frame"
+              val: 1
+        TxIE:
+          desc: "Transmit Interrupt Enable Control\n"
+          bits: 11
+          enum:
+            '0':
+              desc: "IntPnd (CAN_IFn_MCON[13]) will be left unchanged after the successful transmission of a frame"
+              val: 0
+            '1':
+              desc: "IntPnd will be set after a successful transmission of a frame"
+              val: 1
+        UMask:
+          desc: "Use Acceptance Mask\nNote: If the UMask bit is set to one, the Message Object's mask bits have  to  be  programmed  during  initialization  of  the  Message Object before MsgVal bit (CAN_IFn_ARB2[15]) is set to one."
+          bits: 12
+          enum:
+            '0':
+              desc: "Mask ignored"
+              val: 0
+            '1':
+              desc: "Use Mask (Msk28-0, MXtd, and MDir) for acceptance filtering"
+              val: 1
+        IntPnd:
+          desc: "Interrupt Pending\n"
+          bits: 13
+          enum:
+            '0':
+              desc: "This message object is not the source of an interrupt"
+              val: 0
+            '1':
+              desc: "This message object is the source of an interrupt. The Interrupt Identifier in the Interrupt Register will point to this message object if there is no other interrupt source with higher priority"
+              val: 1
+        MsgLst:
+          desc: ""
+          bits: 14
+          enum:
+            '0':
+              desc: "No message lost since last time this bit was reset by the CPU"
+              val: 0
+            '1':
+              desc: "The Message Handler stored a new message into this object when NewDat was still set, the CPU has lost a message"
+              val: 1
+        NewDat:
+          desc: "New Data\n"
+          bits: 15
+          enum:
+            '0':
+              desc: "No new data has been written into the data portion of this Message Object by the Message Handler since last time this flag was cleared by the application software"
+              val: 0
+            '1':
+              desc: "The Message Handler or the application software has written new data into the data portion of this Message Object"
+              val: 1
+    IF1_DAT_A1:
+      desc: IF1 Data A1 Register (Register Map Note 3)
+      offset: 0x3c
+      reset_val: 0x0
+      fields:
+        Data_0:
+          desc: "Data Byte 0\n1st data byte of a CAN Data Frame."
+          bits: 7-0
+        Data_1:
+          desc: "Data Byte 1\n2nd data byte of a CAN Data Frame."
+          bits: 15-8
+    IF1_DAT_A2:
+      desc: IF1 Data A2 Register (Register Map Note 3)
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        Data_2:
+          desc: "Data Byte 2\n3rd data byte of CAN Data Frame."
+          bits: 7-0
+        Data_3:
+          desc: "Data Byte 3\n4th data byte of CAN Data Frame."
+          bits: 15-8
+    IF1_DAT_B1:
+      desc: IF1 Data B1 Register (Register Map Note 3)
+      offset: 0x44
+      reset_val: 0x0
+      fields:
+        Data_4:
+          desc: "Data Byte 4\n5th data byte of CAN Data Frame."
+          bits: 7-0
+        Data_5:
+          desc: "Data Byte 5\n6th data byte of CAN Data Frame."
+          bits: 15-8
+    IF1_DAT_B2:
+      desc: IF1 Data B2 Register (Register Map Note 3)
+      offset: 0x48
+      reset_val: 0x0
+      fields:
+        Data_6:
+          desc: "Data Byte 6\n7th data byte of CAN Data Frame."
+          bits: 7-0
+        Data_7:
+          desc: "Data Byte 7\n8th data byte of CAN Data Frame."
+          bits: 15-8
+    IF2_CREQ:
+      desc: IF2 (Register Map Note 2) Command Request Registers
+      offset: 0x80
+      reset_val: 0x0
+    IF2_CMASK:
+      desc: IF2 Command Mask Register
+      offset: 0x84
+      reset_val: 0x0
+    IF2_MASK1:
+      desc: IF2 Mask 1 Register
+      offset: 0x88
+      reset_val: 0x0
+    IF2_MASK2:
+      desc: IF2 Mask 2 Register
+      offset: 0x8c
+      reset_val: 0x0
+    IF2_ARB1:
+      desc: IF2 Arbitration 1 Register
+      offset: 0x90
+      reset_val: 0x0
+    IF2_ARB2:
+      desc: IF2 Arbitration 2 Register
+      offset: 0x94
+      reset_val: 0x0
+    IF2_MCON:
+      desc: IF2 Message Control Register
+      offset: 0x98
+      reset_val: 0x0
+    IF2_DAT_A1:
+      desc: IF2 Data A1 Register (Register Map Note 3)
+      offset: 0x9c
+      reset_val: 0x0
+    IF2_DAT_A2:
+      desc: IF2 Data A2 Register (Register Map Note 3)
+      offset: 0xa0
+      reset_val: 0x0
+    IF2_DAT_B1:
+      desc: IF2 Data B1 Register (Register Map Note 3)
+      offset: 0xa4
+      reset_val: 0x0
+    IF2_DAT_B2:
+      desc: IF2 Data B2 Register (Register Map Note 3)
+      offset: 0xa8
+      reset_val: 0x0
+    TXREQ1:
+      desc: Transmission Request Register 1
+      offset: 0x100
+      reset_val: 0x0
+      fields:
+        TxRqst16_1:
+          desc: "Transmission Request Bits 16-1 (Of All Message Objects)\nThese bits are read only."
+          bits: 15-0
+          enum:
+            '0':
+              desc: "This Message Object is not waiting for transmission"
+              val: 0
+            '1':
+              desc: "The transmission of this Message Object is requested and is not yet done"
+              val: 1
+    TXREQ2:
+      desc: Transmission Request Register 2
+      offset: 0x104
+      reset_val: 0x0
+      fields:
+        TxRqst32_17:
+          desc: "Transmission Request Bits 32-17 (Of All Message Objects)\nThese bits are read only."
+          bits: 15-0
+          enum:
+            '0':
+              desc: "This Message Object is not waiting for transmission"
+              val: 0
+            '1':
+              desc: "The transmission of this Message Object is requested and is not yet done"
+              val: 1
+    NDAT1:
+      desc: New Data Register 1
+      offset: 0x120
+      reset_val: 0x0
+      fields:
+        NewData16_1:
+          desc: "New Data Bits 16-1 (Of All Message Objects)\n"
+          bits: 15-0
+          enum:
+            '0':
+              desc: "No new data has been written into the data portion of this Message Object by the Message Handler since the last time this flag was cleared by the application software"
+              val: 0
+            '1':
+              desc: "The Message Handler or the application software has written new data into the data portion of this Message Object"
+              val: 1
+    NDAT2:
+      desc: New Data Register 2
+      offset: 0x124
+      reset_val: 0x0
+      fields:
+        NewData32_17:
+          desc: "New Data Bits 32-17 (Of All Message Objects)\n"
+          bits: 15-0
+          enum:
+            '0':
+              desc: "No new data has been written into the data portion of this Message Object by the Message Handler since the last time this flag was cleared by the application software"
+              val: 0
+            '1':
+              desc: "The Message Handler or the application software has written new data into the data portion of this Message Object"
+              val: 1
+    IPND1:
+      desc: Interrupt Pending Register 1
+      offset: 0x140
+      reset_val: 0x0
+      fields:
+        IntPnd16_1:
+          desc: "Interrupt Pending Bits 16-1 (Of All Message Objects)\n"
+          bits: 15-0
+          enum:
+            '0':
+              desc: "This message object is not the source of an interrupt"
+              val: 0
+            '1':
+              desc: "This message object is the source of an interrupt"
+              val: 1
+    IPND2:
+      desc: Interrupt Pending Register 2
+      offset: 0x144
+      reset_val: 0x0
+      fields:
+        IntPnd32_17:
+          desc: "Interrupt Pending Bits 32-17 (Of All Message Objects)\n"
+          bits: 15-0
+          enum:
+            '0':
+              desc: "This message object is not the source of an interrupt"
+              val: 0
+            '1':
+              desc: "This message object is the source of an interrupt"
+              val: 1
+    MVLD1:
+      desc: Message Valid Register 1
+      offset: 0x160
+      reset_val: 0x0
+      fields:
+        MsgVal16_1:
+          desc: "Message Valid Bits 16-1 (Of All Message Objects) (Read Only)\nEx. CAN_MVLD1[0] means Message object No.1 is valid or not. If CAN_MVLD1[0] is set, message object No.1 is configured."
+          bits: 15-0
+          enum:
+            '0':
+              desc: "This Message Object is ignored by the Message Handler"
+              val: 0
+            '1':
+              desc: "This Message Object is configured and should be considered by the Message Handler"
+              val: 1
+    MVLD2:
+      desc: Message Valid Register 2
+      offset: 0x164
+      reset_val: 0x0
+      fields:
+        MsgVal32_17:
+          desc: "Message Valid Bits 32-17 (Of All Message Objects) (Read Only)\nEx.CAN_MVLD2[15] means Message object No.32 is valid or not. If CAN_MVLD2[15] is set, message object No.32 is configured."
+          bits: 15-0
+          enum:
+            '0':
+              desc: "This Message Object is ignored by the Message Handler"
+              val: 0
+            '1':
+              desc: "This Message Object is configured and should be considered by the Message Handler"
+              val: 1
+    WU_EN:
+      desc: Wake-up Enable Register
+      offset: 0x168
+      reset_val: 0x0
+      fields:
+        WAKUP_EN:
+          desc: "Wake-Up Enable Control\nNote: User can wake-up system when there is a falling edge in the CAN_Rx pin."
+          bits: 0
+          enum:
+            '0':
+              desc: "The wake-up function Disabled"
+              val: 0
+            '1':
+              desc: "The wake-up function Enabled"
+              val: 1
+    WU_STATUS:
+      desc: Wake-up Status Register
+      offset: 0x16c
+      reset_val: 0x0
+      fields:
+        WAKUP_STS:
+          desc: "Wake-Up Status \nNote: This bit can be cleared by writing '0'."
+          bits: 0
+          enum:
+            '0':
+              desc: "No wake-up event occurred"
+              val: 0
+            '1':
+              desc: "Wake-up event occurred"
+              val: 1

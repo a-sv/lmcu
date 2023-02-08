@@ -1,0 +1,30 @@
+nvic_irqn:
+  $extends: nvic_irqn.inc | nvic_irqn
+  bod: 0
+  wdt: 1
+  eint0: 2
+  eint1: 3
+  gpab: 4
+  gpcdef: 5
+  tmr0: 8
+  tmr1: 9
+  tmr2: 10
+  tmr3: 11
+  uart02: 12
+  uart1: 13
+  spi0: 14
+  uart3: 15
+  uart4: 16
+  uart5: 17
+  i2c0: 18
+  i2c1: 19
+  can0: 20
+  pwm0: 22
+  pwm1: 23
+  bpwm0: 24
+  bpwm1: 25
+  brake0: 26
+  brake1: 27
+  pwrwu: 28
+  adc: 29
+  ckd: 30

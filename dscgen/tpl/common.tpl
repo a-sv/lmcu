@@ -8,6 +8,7 @@ namespace lmcu::device {
 
 enum class arch
 {
+  CM0, // Arm Cortex-M0
   CM3, // Arm Cortex-M3
   CM4  // Arm Cortex-M4
 };
