@@ -14,7 +14,10 @@ enum class dev_class
   adc_regular_channel,
   adc_injected_channel,
   i2c,
+  uart,
+  spi,
   dma,
+  crc,
   one_wire,
   temp_sensor,
   key

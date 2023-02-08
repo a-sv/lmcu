@@ -1,0 +1,1626 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: GPIO Register Map
+  ver: 1
+  registers:
+    MODE:
+      desc: PA I/O Mode Control
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        MODE0: &MODE0
+          desc: "Port A-H I/O Pin[n] Mode Control\nDetermine each I/O mode of Px.n pins."
+          bits: 1-0
+          enum:
+            '0':
+              desc: Px.n is in Input mode
+              val: 0
+            '1':
+              desc: Px.n is in Push-pull Output mode
+              val: 1
+            '2':
+              desc: Px.n is in Open-drain Output mode
+              val: 2
+            '3':
+              desc: Px.n is in Quasi-bidirectional mode
+              val: 3
+        MODE1: &MODE1
+          <<: *MODE0
+          bits: 3-2
+        MODE2: &MODE2
+          <<: *MODE0
+          bits: 5-4
+        MODE3: &MODE3
+          <<: *MODE0
+          bits: 7-6
+        MODE4: &MODE4
+          <<: *MODE0
+          bits: 3-2
+        MODE5: &MODE5
+          <<: *MODE0
+          bits: 11-10
+        MODE6: &MODE6
+          <<: *MODE0
+          bits: 13-12
+        MODE7: &MODE7
+          <<: *MODE0
+          bits: 15-14
+        MODE8: &MODE8
+          <<: *MODE0
+          bits: 9-8
+        MODE9: &MODE9
+          <<: *MODE0
+          bits: 19-18
+        MODE10: &MODE10
+          <<: *MODE0
+          bits: 21-20
+        MODE11: &MODE11
+          <<: *MODE0
+          bits: 23-22
+        MODE12: &MODE12
+          <<: *MODE0
+          bits: 25-24
+        MODE13: &MODE13
+          <<: *MODE0
+          bits: 27-26
+        MODE14: &MODE14
+          <<: *MODE0
+          bits: 29-28
+        MODE15: &MODE15
+          <<: *MODE0
+          bits: 31-30
+    DINOFF:
+      desc: PA Digital Input Path Disable Control
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        DINOFF0: &DINOFF0
+          desc: "Port A-H Pin[n] Digital Input Path Disable Bit\nEach of these bits is used to control if the digital input path of corresponding Px.n pin is disabled. If input is analog signal, users can disable Px.n digital input path to avoid input current leakage."
+          bits: 16
+          enum:
+            '0':
+              desc: Px.n digital input path Enabled
+              val: 0
+            '1':
+              desc: Px.n digital input path Disabled (digital input tied to low)
+              val: 1
+        DINOFF1: &DINOFF1
+          <<: *DINOFF0
+          bits: 17
+        DINOFF2: &DINOFF2
+          <<: *DINOFF0
+          bits: 18
+        DINOFF3: &DINOFF3
+          <<: *DINOFF0
+          bits: 19
+        DINOFF4: &DINOFF4
+          <<: *DINOFF0
+          bits: 20
+        DINOFF5: &DINOFF5
+          <<: *DINOFF0
+          bits: 21
+        DINOFF6: &DINOFF6
+          <<: *DINOFF0
+          bits: 22
+        DINOFF7: &DINOFF7
+          <<: *DINOFF0
+          bits: 23
+        DINOFF8: &DINOFF8
+          <<: *DINOFF0
+          bits: 24
+        DINOFF9: &DINOFF9
+          <<: *DINOFF0
+          bits: 25
+        DINOFF10: &DINOFF10
+          <<: *DINOFF0
+          bits: 26
+        DINOFF11: &DINOFF11
+          <<: *DINOFF0
+          bits: 27
+        DINOFF12: &DINOFF12
+          <<: *DINOFF0
+          bits: 28
+        DINOFF13: &DINOFF13
+          <<: *DINOFF0
+          bits: 29
+        DINOFF14: &DINOFF14
+          <<: *DINOFF0
+          bits: 30
+        DINOFF15: &DINOFF15
+          <<: *DINOFF0
+          bits: 31
+    DOUT:
+      desc: PA Data Output Value
+      offset: 0x8
+      reset_val: 0xffff
+      fields:
+        DOUT0: &DOUT0
+          desc: "Port A-H Pin[n] Output Value\nEach of these bits controls the status of a Px.n pin when the Px.n is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode."
+          bits: 0
+          enum:
+            '0':
+              desc: Px.n will drive Low if the Px.n pin is configured as Push-pull output, Open-drain output or Quasi-bidirectional mode
+              val: 0
+            '1':
+              desc: Px.n will drive High if the Px.n pin is configured as Push-pull output or Quasi-bidirectional mode
+              val: 1
+        DOUT1:
+          <<: *DOUT0
+          bits: 1
+        DOUT2:
+          <<: *DOUT0
+          bits: 2
+        DOUT3:
+          <<: *DOUT0
+          bits: 3
+        DOUT4:
+          <<: *DOUT0
+          bits: 4
+        DOUT5:
+          <<: *DOUT0
+          bits: 5
+        DOUT6:
+          <<: *DOUT0
+          bits: 6
+        DOUT7:
+          <<: *DOUT0
+          bits: 7
+        DOUT8:
+          <<: *DOUT0
+          bits: 8
+        DOUT9:
+          <<: *DOUT0
+          bits: 9
+        DOUT10:
+          <<: *DOUT0
+          bits: 10
+        DOUT11:
+          <<: *DOUT0
+          bits: 11
+        DOUT12:
+          <<: *DOUT0
+          bits: 12
+        DOUT13:
+          <<: *DOUT0
+          bits: 13
+        DOUT14:
+          <<: *DOUT0
+          bits: 14
+        DOUT15:
+          <<: *DOUT0
+          bits: 15
+    DATMSK:
+      desc: PA Data Output Write Mask
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        DATMSK0: &DATMSK0
+          desc: "Port A-H Pin[n] Data Output Write Mask\nThese bits are used to protect the corresponding DOUT (Px_DOUT[n]) bit. When the DATMSK (Px_DATMSK[n]) bit is set to 1, the corresponding DOUT (Px_DOUT[n]) bit is protected. If the write signal is masked, writing data to the protect bit is ignored."
+          bits: 0
+          enum:
+            '0':
+              desc: Corresponding DOUT (Px_DOUT[n]) bit can be updated
+              val: 0
+            '1':
+              desc: Corresponding DOUT (Px_DOUT[n]) bit protected
+              val: 1
+        DATMSK1:
+          <<: *DATMSK0
+          bits: 1
+        DATMSK2:
+          <<: *DATMSK0
+          bits: 2
+        DATMSK3:
+          <<: *DATMSK0
+          bits: 3
+        DATMSK4:
+          <<: *DATMSK0
+          bits: 4
+        DATMSK5:
+          <<: *DATMSK0
+          bits: 5
+        DATMSK6:
+          <<: *DATMSK0
+          bits: 6
+        DATMSK7:
+          <<: *DATMSK0
+          bits: 7
+        DATMSK8:
+          <<: *DATMSK0
+          bits: 8
+        DATMSK9:
+          <<: *DATMSK0
+          bits: 9
+        DATMSK10:
+          <<: *DATMSK0
+          bits: 10
+        DATMSK11:
+          <<: *DATMSK0
+          bits: 11
+        DATMSK12:
+          <<: *DATMSK0
+          bits: 12
+        DATMSK13:
+          <<: *DATMSK0
+          bits: 13
+        DATMSK14:
+          <<: *DATMSK0
+          bits: 14
+        DATMSK15:
+          <<: *DATMSK0
+          bits: 15
+    PIN:
+      desc: PA Pin Value
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        PIN0: &PIN0
+          desc: "Port A-H Pin[n] Pin Value\nEach bit of the register reflects the actual status of the respective Px.n pin. If the bit is 1, it indicates the corresponding pin status is high; else the pin status is low.\nNote: "
+          bits: 0
+        PIN1:
+          <<: *PIN0
+          bits: 1
+        PIN2:
+          <<: *PIN0
+          bits: 2
+        PIN3:
+          <<: *PIN0
+          bits: 3
+        PIN4:
+          <<: *PIN0
+          bits: 4
+        PIN5:
+          <<: *PIN0
+          bits: 5
+        PIN6:
+          <<: *PIN0
+          bits: 6
+        PIN7:
+          <<: *PIN0
+          bits: 7
+        PIN8:
+          <<: *PIN0
+          bits: 8
+        PIN9:
+          <<: *PIN0
+          bits: 9
+        PIN10:
+          <<: *PIN0
+          bits: 10
+        PIN11:
+          <<: *PIN0
+          bits: 11
+        PIN12:
+          <<: *PIN0
+          bits: 12
+        PIN13:
+          <<: *PIN0
+          bits: 13
+        PIN14:
+          <<: *PIN0
+          bits: 14
+        PIN15:
+          <<: *PIN0
+          bits: 15
+    DBEN:
+      desc: PA De-bounce Enable Control Register
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        DBEN0: &DBEN0
+          desc: "Port A-H Pin[n] Input Signal De-bounce Enable Bit\nThe DBEN[n] bit is used to enable the de-bounce function for each corresponding bit. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the interrupt.  The de-bounce clock source is controlled by DBCLKSRC (GPIO_DBCTL [4]), one de-bounce sample cycle period is controlled by DBCLKSEL (GPIO_DBCTL [3:0])."
+          bits: 0
+          enum:
+            '0':
+              desc: Px.n de-bounce function Disabled
+              val: 0
+            '1':
+              desc: Px.n de-bounce function Enabled
+              val: 1
+        DBEN1:
+          <<: *DBEN0
+          bits: 1
+        DBEN2:
+          <<: *DBEN0
+          bits: 2
+        DBEN3:
+          <<: *DBEN0
+          bits: 3
+        DBEN4:
+          <<: *DBEN0
+          bits: 4
+        DBEN5:
+          <<: *DBEN0
+          bits: 5
+        DBEN6:
+          <<: *DBEN0
+          bits: 6
+        DBEN7:
+          <<: *DBEN0
+          bits: 7
+        DBEN8:
+          <<: *DBEN0
+          bits: 8
+        DBEN9:
+          <<: *DBEN0
+          bits: 9
+        DBEN10:
+          <<: *DBEN0
+          bits: 10
+        DBEN11:
+          <<: *DBEN0
+          bits: 11
+        DBEN12:
+          <<: *DBEN0
+          bits: 12
+        DBEN13:
+          <<: *DBEN0
+          bits: 13
+        DBEN14:
+          <<: *DBEN0
+          bits: 14
+        DBEN15:
+          <<: *DBEN0
+          bits: 15
+    INTTYPE:
+      desc: PA Interrupt Trigger Type Control
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        TYPE0: &TYPE0
+          desc: "Port A-H Pin[n] Edge or Level Detection Interrupt Trigger Type Control\nTYPE (Px_INTTYPE[n]) bit is used to control the triggered interrupt is by level trigger or by edge trigger. If the interrupt is by edge trigger, the trigger source can be controlled by de-bounce. If the interrupt is by level trigger, the input source is sampled by one HCLK clock and generates the interrupt."
+          bits: 0
+          enum:
+            '0':
+              desc: Edge trigger interrupt
+              val: 0
+            '1':
+              desc: Level trigger interrupt
+              val: 1
+        TYPE1:
+          <<: *TYPE0
+          bits: 1
+          enum:
+            '0':
+              desc: Edge trigger interrupt
+              val: 0
+            '1':
+              desc: Level trigger interrupt
+              val: 1
+        TYPE2:
+          <<: *TYPE0
+          bits: 2
+        TYPE3:
+          <<: *TYPE0
+          bits: 3
+        TYPE4:
+          <<: *TYPE0
+          bits: 4
+        TYPE5:
+          <<: *TYPE0
+          bits: 5
+        TYPE6:
+          <<: *TYPE0
+          bits: 6
+        TYPE7:
+          <<: *TYPE0
+          bits: 7
+        TYPE8:
+          <<: *TYPE0
+          bits: 8
+        TYPE9:
+          <<: *TYPE0
+          bits: 9
+        TYPE10:
+          <<: *TYPE0
+          bits: 10
+        TYPE11:
+          <<: *TYPE0
+          bits: 11
+        TYPE12:
+          <<: *TYPE0
+          bits: 12
+        TYPE13:
+          <<: *TYPE0
+          bits: 13
+        TYPE14:
+          <<: *TYPE0
+          bits: 14
+        TYPE15:
+          <<: *TYPE0
+          bits: 15
+    INTEN:
+      desc: PA Interrupt Enable Control Register
+      offset: 0x1c
+      reset_val: 0x0
+      fields:
+        FLIEN0:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 0
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN1:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 1
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN2:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 2
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN3:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 3
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN4:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 4
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN5:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 5
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN6:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 6
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN7:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 7
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN8:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 8
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN9:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 9
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN10:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 10
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN11:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 11
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN12:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 12
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN13:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 13
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN14:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 14
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        FLIEN15:
+          desc: "Port A-H Pin[n] Falling Edge or Low Level Interrupt Trigger Type Enable Bit\nThe FLIEN (Px_INTEN[n]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function.\nWhen setting the FLIEN (Px_INTEN[n]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at low level.\nIf the interrupt is edge trigger(TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from high to low."
+          bits: 15
+          enum:
+            '0':
+              desc: Px.n level low or high to low interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level low or high to low interrupt Enabled
+              val: 1
+        RHIEN0:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 16
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN1:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 17
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN2:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 18
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN3:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 19
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN4:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 20
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN5:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 21
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN6:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 22
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN7:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 23
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN8:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 24
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN9:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 25
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN10:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 26
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN11:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 27
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN12:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 28
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN13:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 29
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN14:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 30
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+        RHIEN15:
+          desc: "Port A-H Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit\nThe RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin. Set bit to 1 also enable the pin wake-up function. \nWhen setting the RHIEN (Px_INTEN[n+16]) bit to 1 :\nIf the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.\nIf the interrupt is edge trigger (TYPE (Px_INTTYPE[n]) bit is set to 0), the input Px.n pin will generate the interrupt while this pin state changed from low to high."
+          bits: 31
+          enum:
+            '0':
+              desc: Px.n level high or low to high interrupt Disabled
+              val: 0
+            '1':
+              desc: Px.n level high or low to high interrupt Enabled
+              val: 1
+    INTSRC:
+      desc: PA Interrupt Source Flag
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        INTSRC0:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 0
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC1:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 1
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC2:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 2
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC3:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 3
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC4:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 4
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC5:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 5
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC6:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 6
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC7:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 7
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC8:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 8
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC9:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 9
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC10:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 10
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC11:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 11
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC12:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 12
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC13:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 13
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC14:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 14
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+        INTSRC15:
+          desc: "Port A-H Pin[n] Interrupt Source Flag\nWrite Operation :"
+          bits: 15
+          enum:
+            '0':
+              desc: No action.\nNo interrupt at Px.n
+              val: 0
+            '1':
+              desc: Clear the corresponding pending interrupt.\nPx.n generates an interrupt
+              val: 1
+    SMTEN:
+      desc: PA Input Schmitt Trigger Enable Register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        SMTEN0:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN1:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN2:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN3:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 3
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN4:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN5:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 5
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN6:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 6
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN7:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 7
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN8:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 8
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN9:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 9
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN10:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 10
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN11:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 11
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN12:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 12
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN13:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 13
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN14:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 14
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+        SMTEN15:
+          desc: "Port A-H Pin[n] Input Schmitt Trigger Enable Bit"
+          bits: 15
+          enum:
+            '0':
+              desc: Px.n input schmitt trigger function Disabled
+              val: 0
+            '1':
+              desc: Px.n input schmitt trigger function Enabled
+              val: 1
+    SLEWCTL:
+      desc: PA High Slew Rate Control Register
+      offset: 0x28
+      reset_val: 0x0
+      fields:
+        HSREN0:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 1-0
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN1:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 3-2
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN2:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 5-4
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN3:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 7-6
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN4:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 9-8
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN5:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 11-10
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN6:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 13-12
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN7:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 15-14
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN8:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 17-16
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN9:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 19-18
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN10:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 21-20
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN11:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 23-22
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN12:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 25-24
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN13:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 27-26
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN14:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 29-28
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        HSREN15:
+          desc: "Port A-H Pin[n] High Slew Rate Control"
+          bits: 31-30
+          enum:
+            '0':
+              desc: Px.n output with normal slew rate mode (maximum 40 MHz at 2.7V)
+              val: 0
+            '1':
+              desc: Px.n output with high slew rate mode (maximum 80 MHz at 2.7V)
+              val: 1
+            '2':
+              desc: Px.n output with fast slew rate mode (maximum 100 MHz at 2.7V)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+    PUSEL:
+      desc: PA Pull-up and Pull-down Selection Register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        PUSEL0:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 1-0
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL1:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 3-2
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL2:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 5-4
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL3:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 7-6
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL4:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 9-8
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL5:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 11-10
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL6:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 13-12
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL7:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 15-14
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL8:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 17-16
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL9:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 19-18
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL10:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 21-20
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL11:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 23-22
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL12:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 25-24
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL13:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 27-26
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL14:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 29-28
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        PUSEL15:
+          desc: "Port A-H Pin[n] Pull-up and Pull-down Enable Register\nDetermine each I/O Pull-up/pull-down of Px.n pins."
+          bits: 31-30
+          enum:
+            '0':
+              desc: Px.n pull-up and pull-down disable
+              val: 0
+            '1':
+              desc: Px.n pull-up enable
+              val: 1
+            '2':
+              desc: Px.n pull-down enable
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+    PDIO:
+      desc: GPIO A-H Pin Data Input/Output Register
+      offset: 0x400
+      size: 32
+      count: 16
+      fields:
+        PDIO:
+          desc: "GPIO Px.n Pin Data Input/Output\nWriting this bit can control one GPIO pin output value."
+          bits: 0
+          enum:
+            '0':
+              desc: Corresponding GPIO pin set to low
+              val: 0
+            '1':
+              desc: Corresponding GPIO pin set to high
+              val: 1
+

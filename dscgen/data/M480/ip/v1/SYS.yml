@@ -1,0 +1,2380 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: SYS Register Map
+  ver: 1
+  registers:
+    PDID:
+      desc: Part Device Identification Number Register
+      offset: 0x0
+      reset_val: 0x451a93
+      fields:
+        PDID:
+          desc: "Part Device Identification Number (Read Only)\nThis register reflects device part number code. Software can read this register to identify which device is used."
+          bits: 31-0
+    RSTSTS:
+      desc: System Reset Status Register
+      offset: 0x4
+      reset_val: 0x43
+      fields:
+        PORF:
+          desc: "POR Reset Flag\nThe POR reset flag is set by the 'Reset Signal' from the Power-on Reset (POR) Controller or bit CHIPRST (SYS_IPRST0[0]) to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 0
+          enum:
+            '0':
+              desc: No reset from POR or CHIPRST
+              val: 0
+            '1':
+              desc: Power-on Reset (POR) or CHIPRST had issued the reset signal to reset the system
+              val: 1
+        PINRF:
+          desc: "NRESET Pin Reset Flag\nThe nRESET pin reset flag is set by the 'Reset Signal' from the nRESET Pin to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 1
+          enum:
+            '0':
+              desc: No reset from nRESET pin
+              val: 0
+            '1':
+              desc: Pin nRESET had issued the reset signal to reset the system
+              val: 1
+        WDTRF:
+          desc: "WDT Reset Flag\nThe WDT reset flag is set by the 'Reset Signal' from the Watchdog Timer or Window Watchdog Timer to indicate the previous reset source.\nNote 1: Write 1 to clear this bit to 0.\nNote 2: Watchdog Timer register RSTF(WDT_CTL[2]) bit is set if the system has been reset by WDT time-out reset. Window Watchdog Timer register WWDTRF(WWDT_STATUS[1]) bit is set if the system has been reset by WWDT time-out reset."
+          bits: 2
+          enum:
+            '0':
+              desc: No reset from watchdog timer or window watchdog timer
+              val: 0
+            '1':
+              desc: The watchdog timer or window watchdog timer had issued the reset signal to reset the system
+              val: 1
+        LVRF:
+          desc: "LVR Reset Flag\nThe LVR reset flag is set by the 'Reset Signal' from the Low Voltage Reset Controller to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 3
+          enum:
+            '0':
+              desc: No reset from LVR
+              val: 0
+            '1':
+              desc: LVR controller had issued the reset signal to reset the system
+              val: 1
+        BODRF:
+          desc: "BOD Reset Flag\nThe BOD reset flag is set by the 'Reset Signal' from the Brown-Out Detector to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 4
+          enum:
+            '0':
+              desc: No reset from BOD
+              val: 0
+            '1':
+              desc: The BOD had issued the reset signal to reset the system
+              val: 1
+        SYSRF:
+          desc: "System Reset Flag\nThe system reset flag is set by the 'Reset Signal' from the Cortex-M4 Core to indicate the previous reset source.\nNote: Write 1 to clear this bit to 0."
+          bits: 5
+          enum:
+            '0':
+              desc: No reset from Cortex-M4
+              val: 0
+            '1':
+              desc: The Cortex-M4 had issued the reset signal to reset the system by writing 1 to the bit SYSRESETREQ(AIRCR[2], Application Interrupt and Reset Control Register, address = 0xE000ED0C) in system control registers of Cortex-M4 core
+              val: 1
+        HRESETRF:
+          desc: "HRESET Reset Flag\nThe HRESET reset flag is set by the 'Reset Signal' from the HRESET.\nNote: Write 1 to clear this bit to 0."
+          bits: 6
+          enum:
+            '0':
+              desc: No reset from HRESET
+              val: 0
+            '1':
+              desc: Reset from HRESET
+              val: 1
+        CPURF:
+          desc: "CPU Reset Flag\nThe CPU reset flag is set by hardware if software writes CPURST (SYS_IPRST0[1]) 1 to reset Cortex-M4 Core and Flash Memory Controller (FMC).\nNote: Write 1 to clear this bit to 0."
+          bits: 7
+          enum:
+            '0':
+              desc: No reset from CPU
+              val: 0
+            '1':
+              desc: The Cortex-M4 Core and FMC are reset by software setting CPURST to 1
+              val: 1
+        CPULKRF:
+          desc: "CPU Lockup Reset Flag\nNote 1: Write 1 to clear this bit to 0.\nNote 2: When CPU lockup happened under ICE is connected, this flag will set to 1 but chip will not reset."
+          bits: 8
+          enum:
+            '0':
+              desc: No reset from CPU lockup happened
+              val: 0
+            '1':
+              desc: The Cortex-M4 lockup happened and chip is reset
+              val: 1
+    IPRST0:
+      desc: Peripheral Reset Control Register 0
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        CHIPRST:
+          desc: "Chip One-shot Reset (Write Protect)\nSetting this bit will reset the whole chip, including Processor core and all peripherals, and this bit will automatically return to 0 after the 2 clock cycles.\nThe CHIPRST is same as the POR reset, all the chip controllers is reset and the chip setting from Flash are also reload.\nAbout the difference between CHIPRST and SYSRESETREQ(AIRCR[2]), please refer to section 7.2.2\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: Chip normal operation
+              val: 0
+            '1':
+              desc: Chip one-shot reset
+              val: 1
+        CPURST:
+          desc: "Processor Core One-shot Reset (Write Protect)\nSetting this bit will only reset the processor core and Flash Memory Controller(FMC), and this bit will automatically return to 0 after the 2 clock cycles.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 1
+          enum:
+            '0':
+              desc: Processor core normal operation
+              val: 0
+            '1':
+              desc: Processor core one-shot reset
+              val: 1
+        PDMARST:
+          desc: "PDMA Controller Reset (Write Protect)\nSetting this bit to 1 will generate a reset signal to the PDMA. User needs to set this bit to 0 to release from reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 2
+          enum:
+            '0':
+              desc: PDMA controller normal operation
+              val: 0
+            '1':
+              desc: PDMA controller reset
+              val: 1
+        EBIRST:
+          desc: "EBI Controller Reset (Write Protect)\nSet this bit to 1 will generate a reset signal to the EBI. User needs to set this bit to 0 to release from the reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 3
+          enum:
+            '0':
+              desc: EBI controller normal operation
+              val: 0
+            '1':
+              desc: EBI controller reset
+              val: 1
+        EMACRST:
+          desc: "EMAC Controller Reset (Write Protect)\nSetting this bit to 1 will generate a reset signal to the EMAC controller. User needs to set this bit to 0 to release from the reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 5
+          enum:
+            '0':
+              desc: EMAC controller normal operation
+              val: 0
+            '1':
+              desc: EMAC controller reset
+              val: 1
+        SDH0RST:
+          desc: "SDHOST0 Controller Reset (Write Protect)\nSetting this bit to 1 will generate a reset signal to the SDHOST0 controller. User needs to set this bit to 0 to release from the reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 6
+          enum:
+            '0':
+              desc: SDHOST0 controller normal operation
+              val: 0
+            '1':
+              desc: SDHOST0 controller reset
+              val: 1
+        CRCRST:
+          desc: "CRC Calculation Controller Reset (Write Protect)\nSet this bit to 1 will generate a reset signal to the CRC calculation controller. User needs to set this bit to 0 to release from the reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 7
+          enum:
+            '0':
+              desc: CRC calculation controller normal operation
+              val: 0
+            '1':
+              desc: CRC calculation controller reset
+              val: 1
+        CCAPRST:
+          desc: "CCAP Controller Reset (Write Protect)\nSet this bit to 1 will generate a reset signal to the CCAP controller. User needs to set this bit to 0 to release from the reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 8
+          enum:
+            '0':
+              desc: CCAP controller normal operation
+              val: 0
+            '1':
+              desc: CCAP controller reset
+              val: 1
+        HSUSBDRST:
+          desc: "HSUSBD Controller Reset (Write Protect)\nSetting this bit to 1 will generate a reset signal to the HSUSBD controller. User needs to set this bit to 0 to release from the reset state."
+          bits: 10
+          enum:
+            '0':
+              desc: HSUSBD controller normal operation
+              val: 0
+            '1':
+              desc: HSUSBD controller reset
+              val: 1
+        CRPTRST:
+          desc: "CRYPTO Controller Reset (Write Protect)\nSetting this bit to 1 will generate a reset signal to the CRYPTO controller. User needs to set this bit to 0 to release from the reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 12
+          enum:
+            '0':
+              desc: CRYPTO controller normal operation
+              val: 0
+            '1':
+              desc: CRYPTO controller reset
+              val: 1
+        SPIMRST:
+          desc: "SPIM Controller Reset\nSetting this bit to 1 will generate a reset signal to the SPIM controller. User needs to set this bit to 0 to release from the reset state."
+          bits: 14
+          enum:
+            '0':
+              desc: SPIM controller normal operation
+              val: 0
+            '1':
+              desc: SPIM controller reset
+              val: 1
+        HSUSBHRST:
+          desc: "HSUSBH Controller Reset (Write Protect)\nSet this bit to 1 will generate a reset signal to the HSUSBH controller. User needs to set this bit to 0 to release from the reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 16
+          enum:
+            '0':
+              desc: HSUSBH controller normal operation
+              val: 0
+            '1':
+              desc: HSUSBH controller reset
+              val: 1
+        SDH1RST:
+          desc: "SDHOST1 Controller Reset (Write Protect)\nSetting this bit to 1 will generate a reset signal to the SDHOST1 controller. User needs to set this bit to 0 to release from the reset state.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 17
+          enum:
+            '0':
+              desc: SDHOST1 controller normal operation
+              val: 0
+            '1':
+              desc: SDHOST1 controller reset
+              val: 1
+    IPRST1:
+      desc: Peripheral Reset Control Register 1
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        GPIORST:
+          desc: "GPIO Controller Reset"
+          bits: 1
+          enum:
+            '0':
+              desc: GPIO controller normal operation
+              val: 0
+            '1':
+              desc: GPIO controller reset
+              val: 1
+        TMR0RST:
+          desc: "Timer0 Controller Reset"
+          bits: 2
+          enum:
+            '0':
+              desc: Timer0 controller normal operation
+              val: 0
+            '1':
+              desc: Timer0 controller reset
+              val: 1
+        TMR1RST:
+          desc: "Timer1 Controller Reset"
+          bits: 3
+          enum:
+            '0':
+              desc: Timer1 controller normal operation
+              val: 0
+            '1':
+              desc: Timer1 controller reset
+              val: 1
+        TMR2RST:
+          desc: "Timer2 Controller Reset"
+          bits: 4
+          enum:
+            '0':
+              desc: Timer2 controller normal operation
+              val: 0
+            '1':
+              desc: Timer2 controller reset
+              val: 1
+        TMR3RST:
+          desc: "Timer3 Controller Reset"
+          bits: 5
+          enum:
+            '0':
+              desc: Timer3 controller normal operation
+              val: 0
+            '1':
+              desc: Timer3 controller reset
+              val: 1
+        ACMP01RST:
+          desc: "Analog Comparator 0/1 Controller Reset"
+          bits: 7
+          enum:
+            '0':
+              desc: Analog Comparator 0/1 controller normal operation
+              val: 0
+            '1':
+              desc: Analog Comparator 0/1 controller reset
+              val: 1
+        I2C0RST:
+          desc: "I2C0 Controller Reset"
+          bits: 8
+          enum:
+            '0':
+              desc: I2C0 controller normal operation
+              val: 0
+            '1':
+              desc: I2C0 controller reset
+              val: 1
+        I2C1RST:
+          desc: "I2C1 Controller Reset"
+          bits: 9
+          enum:
+            '0':
+              desc: I2C1 controller normal operation
+              val: 0
+            '1':
+              desc: I2C1 controller reset
+              val: 1
+        I2C2RST:
+          desc: "I2C2 Controller Reset"
+          bits: 10
+          enum:
+            '0':
+              desc: I2C2 controller normal operation
+              val: 0
+            '1':
+              desc: I2C2 controller reset
+              val: 1
+        QSPI0RST:
+          desc: "Qual SPI0 Controller Reset"
+          bits: 12
+          enum:
+            '0':
+              desc: Qual SPI0 controller normal operation
+              val: 0
+            '1':
+              desc: Qual SPI0 controller reset
+              val: 1
+        SPI0RST:
+          desc: "SPI0 Controller Reset"
+          bits: 13
+          enum:
+            '0':
+              desc: SPI0 controller normal operation
+              val: 0
+            '1':
+              desc: SPI0 controller reset
+              val: 1
+        SPI1RST:
+          desc: "SPI1 Controller Reset"
+          bits: 14
+          enum:
+            '0':
+              desc: SPI1 controller normal operation
+              val: 0
+            '1':
+              desc: SPI1 controller reset
+              val: 1
+        SPI2RST:
+          desc: "SPI2 Controller Reset"
+          bits: 15
+          enum:
+            '0':
+              desc: SPI2 controller normal operation
+              val: 0
+            '1':
+              desc: SPI2 controller reset
+              val: 1
+        UART0RST:
+          desc: "UART0 Controller Reset"
+          bits: 16
+          enum:
+            '0':
+              desc: UART0 controller normal operation
+              val: 0
+            '1':
+              desc: UART0 controller reset
+              val: 1
+        UART1RST:
+          desc: "UART1 Controller Reset"
+          bits: 17
+          enum:
+            '0':
+              desc: UART1 controller normal operation
+              val: 0
+            '1':
+              desc: UART1 controller reset
+              val: 1
+        UART2RST:
+          desc: "UART2 Controller Reset "
+          bits: 18
+          enum:
+            '0':
+              desc: UART2 controller normal operation
+              val: 0
+            '1':
+              desc: UART2 controller reset
+              val: 1
+        UART3RST:
+          desc: "UART3 Controller Reset "
+          bits: 19
+          enum:
+            '0':
+              desc: UART3 controller normal operation
+              val: 0
+            '1':
+              desc: UART3 controller reset
+              val: 1
+        UART4RST:
+          desc: "UART4 Controller Reset"
+          bits: 20
+          enum:
+            '0':
+              desc: UART4 controller normal operation
+              val: 0
+            '1':
+              desc: UART4 controller reset
+              val: 1
+        UART5RST:
+          desc: "UART5 Controller Reset"
+          bits: 21
+          enum:
+            '0':
+              desc: UART5 controller normal operation
+              val: 0
+            '1':
+              desc: UART5 controller reset
+              val: 1
+        UART6RST:
+          desc: "UART6 Controller Reset"
+          bits: 22
+          enum:
+            '0':
+              desc: UART6 controller normal operation
+              val: 0
+            '1':
+              desc: UART6 controller reset
+              val: 1
+        UART7RST:
+          desc: "UART7 Controller Reset"
+          bits: 23
+          enum:
+            '0':
+              desc: UART7 controller normal operation
+              val: 0
+            '1':
+              desc: UART7 controller reset
+              val: 1
+        CAN0RST:
+          desc: "CAN0 Controller Reset"
+          bits: 24
+          enum:
+            '0':
+              desc: CAN0 controller normal operation
+              val: 0
+            '1':
+              desc: CAN0 controller reset
+              val: 1
+        CAN1RST:
+          desc: "CAN1 Controller Reset"
+          bits: 25
+          enum:
+            '0':
+              desc: CAN1 controller normal operation
+              val: 0
+            '1':
+              desc: CAN1 controller reset
+              val: 1
+        OTGRST:
+          desc: "OTG Controller Reset"
+          bits: 26
+          enum:
+            '0':
+              desc: OTG controller normal operation
+              val: 0
+            '1':
+              desc: OTG controller reset
+              val: 1
+        USBDRST:
+          desc: "USBD Controller Reset"
+          bits: 27
+          enum:
+            '0':
+              desc: USBD controller normal operation
+              val: 0
+            '1':
+              desc: USBD controller reset
+              val: 1
+        EADCRST:
+          desc: "EADC Controller Reset"
+          bits: 28
+          enum:
+            '0':
+              desc: EADC controller normal operation
+              val: 0
+            '1':
+              desc: EADC controller reset
+              val: 1
+        I2S0RST:
+          desc: "I2S0 Controller Reset"
+          bits: 29
+          enum:
+            '0':
+              desc: I2S0 controller normal operation
+              val: 0
+            '1':
+              desc: I2S0 controller reset
+              val: 1
+        HSOTGRST:
+          desc: "HSOTG Controller Reset"
+          bits: 30
+          enum:
+            '0':
+              desc: HSOTG controller normal operation
+              val: 0
+            '1':
+              desc: HSOTG controller reset
+              val: 1
+        TRNGRST:
+          desc: "TRNG Controller Reset"
+          bits: 31
+          enum:
+            '0':
+              desc: TRNG controller normal operation
+              val: 0
+            '1':
+              desc: TRNG controller reset
+              val: 1
+    IPRST2:
+      desc: Peripheral Reset Control Register 2
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        SC0RST:
+          desc: "SC0 Controller Reset"
+          bits: 0
+          enum:
+            '0':
+              desc: SC0 controller normal operation
+              val: 0
+            '1':
+              desc: SC0 controller reset
+              val: 1
+        SC1RST:
+          desc: "SC1 Controller Reset"
+          bits: 1
+          enum:
+            '0':
+              desc: SC1 controller normal operation
+              val: 0
+            '1':
+              desc: SC1 controller reset
+              val: 1
+        SC2RST:
+          desc: "SC2 Controller Reset"
+          bits: 2
+          enum:
+            '0':
+              desc: SC2 controller normal operation
+              val: 0
+            '1':
+              desc: SC2 controller reset
+              val: 1
+        QSPI1RST:
+          desc: "QSPI1 Controller Reset"
+          bits: 4
+          enum:
+            '0':
+              desc: QSPI1 controller normal operation
+              val: 0
+            '1':
+              desc: QSPI1 controller reset
+              val: 1
+        SPI3RST:
+          desc: "SPI3 Controller Reset"
+          bits: 6
+          enum:
+            '0':
+              desc: SPI3 controller normal operation
+              val: 0
+            '1':
+              desc: SPI3 controller reset
+              val: 1
+        USCI0RST:
+          desc: "USCI0 Controller Reset"
+          bits: 8
+          enum:
+            '0':
+              desc: USCI0 controller normal operation
+              val: 0
+            '1':
+              desc: USCI0 controller reset
+              val: 1
+        USCI1RST:
+          desc: "USCI1 Controller Reset"
+          bits: 9
+          enum:
+            '0':
+              desc: USCI1 controller normal operation
+              val: 0
+            '1':
+              desc: USCI1 controller reset
+              val: 1
+        DACRST:
+          desc: "DAC Controller Reset"
+          bits: 12
+          enum:
+            '0':
+              desc: DAC controller normal operation
+              val: 0
+            '1':
+              desc: DAC controller reset
+              val: 1
+        EPWM0RST:
+          desc: "EPWM0 Controller Reset"
+          bits: 16
+          enum:
+            '0':
+              desc: EPWM0 controller normal operation
+              val: 0
+            '1':
+              desc: EPWM0 controller reset
+              val: 1
+        EPWM1RST:
+          desc: "EPWM1 Controller Reset"
+          bits: 17
+          enum:
+            '0':
+              desc: EPWM1 controller normal operation
+              val: 0
+            '1':
+              desc: EPWM1 controller reset
+              val: 1
+        BPWM0RST:
+          desc: "BPWM0 Controller Reset"
+          bits: 18
+          enum:
+            '0':
+              desc: BPWM0 controller normal operation
+              val: 0
+            '1':
+              desc: BPWM0 controller reset
+              val: 1
+        BPWM1RST:
+          desc: "BPWM1 Controller Reset"
+          bits: 19
+          enum:
+            '0':
+              desc: BPWM1 controller normal operation
+              val: 0
+            '1':
+              desc: BPWM1 controller reset
+              val: 1
+        QEI0RST:
+          desc: "QEI0 Controller Reset"
+          bits: 22
+          enum:
+            '0':
+              desc: QEI0 controller normal operation
+              val: 0
+            '1':
+              desc: QEI0 controller reset
+              val: 1
+        QEI1RST:
+          desc: "QEI1 Controller Reset"
+          bits: 23
+          enum:
+            '0':
+              desc: QEI1 controller normal operation
+              val: 0
+            '1':
+              desc: QEI1 controller reset
+              val: 1
+        ECAP0RST:
+          desc: "ECAP0 Controller Reset"
+          bits: 26
+          enum:
+            '0':
+              desc: ECAP0 controller normal operation
+              val: 0
+            '1':
+              desc: ECAP0 controller reset
+              val: 1
+        ECAP1RST:
+          desc: "ECAP1 Controller Reset"
+          bits: 27
+          enum:
+            '0':
+              desc: ECAP1 controller normal operation
+              val: 0
+            '1':
+              desc: ECAP1 controller reset
+              val: 1
+        CAN2RST:
+          desc: "CAN2 Controller Reset"
+          bits: 28
+          enum:
+            '0':
+              desc: CAN2 controller normal operation
+              val: 0
+            '1':
+              desc: CAN2 controller reset
+              val: 1
+        OPARST:
+          desc: "OP Amplifier (OPA) Controller Reset"
+          bits: 30
+          enum:
+            '0':
+              desc: OPA controller normal operation
+              val: 0
+            '1':
+              desc: OPA controller reset
+              val: 1
+        EADC1RST:
+          desc: "EADC1 Controller Reset"
+          bits: 31
+          enum:
+            '0':
+              desc: EADC1 controller normal operation
+              val: 0
+            '1':
+              desc: EADC1 controller reset
+              val: 1
+    BODCTL:
+      desc: Brown-out Detector Control Register
+      offset: 0x18
+      reset_val: 0x380
+      fields:
+        BODEN:
+          desc: "Brown-out Detector Enable Bit (Write Protect)\nThe default value is set by Flash controller user configuration register CBODEN (CONFIG0 [19]).\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: Brown-out Detector function Disabled
+              val: 0
+            '1':
+              desc: Brown-out Detector function Enabled
+              val: 1
+        BODRSTEN:
+          desc: "Brown-out Reset Enable Bit (Write Protect)\nThe default value is set by Flash controller user configuration register CBORST(CONFIG0[20]) bit.\nNote 1: While the Brown-out Detector function is enabled (BODEN high) and BOD reset function is enabled (BODRSTEN high), BOD will assert a signal to reset chip when the detected voltage is lower than the threshold (BODOUT high).\nWhile the BOD function is enabled (BODEN high) and BOD interrupt function is enabled (BODRSTEN low), BOD will assert an interrupt if BODOUT is high. BOD interrupt will keep till to the BODEN set to 0. BOD interrupt can be blocked by disabling the NVIC BOD interrupt or disabling BOD function (set BODEN low).\nNote 2: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 3
+          enum:
+            '0':
+              desc: Brown-out 'INTERRUPT' function Enabled
+              val: 0
+            '1':
+              desc: Brown-out 'RESET' function Enabled
+              val: 1
+        BODIF:
+          desc: "Brown-out Detector Interrupt Flag\nNote: Write 1 to clear this bit to 0."
+          bits: 4
+          enum:
+            '0':
+              desc: Brown-out Detector does not detect any voltage draft at VDD down through or up through the voltage of BODVL setting
+              val: 0
+            '1':
+              desc: When Brown-out Detector detects the VDD is dropped down through the voltage of BODVL setting or the VDD is raised up through the voltage of BODVL setting, this bit is set to 1 and the brown-out interrupt is requested if brown-out interrupt is enabled
+              val: 1
+        BODLPM:
+          desc: "Brown-out Detector Low Power Mode (Write Protect)\nNote 1: The BOD consumes about 100uA in normal mode, the low power mode can reduce the current to about 1/10 but slow the BOD response.\nNote 2: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 5
+          enum:
+            '0':
+              desc: BOD operate in normal mode (default)
+              val: 0
+            '1':
+              desc: BOD Low Power mode Enabled
+              val: 1
+        BODOUT:
+          desc: "Brown-out Detector Output Status\nIt means the detected voltage is lower than BODVL setting. If the BODEN is 0, BOD function disabled, this bit always responds 0000."
+          bits: 6
+          enum:
+            '0':
+              desc: Brown-out Detector output status is 0
+              val: 0
+            '1':
+              desc: Brown-out Detector output status is 1
+              val: 1
+        LVREN:
+          desc: "Low Voltage Reset Enable Bit (Write Protect)\nThe LVR function resets the chip when the input power voltage is lower than LVR circuit setting. LVR function is enabled by default.\nNote 1: After enabling the bit, the LVR function will be active with 100us delay for LVR output stable (default).\nNote 2: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 7
+          enum:
+            '0':
+              desc: Low Voltage Reset function Disabled
+              val: 0
+            '1':
+              desc: Low Voltage Reset function Enabled
+              val: 1
+        BODDGSEL:
+          desc: "Brown-out Detector Output De-glitch Time Select (Write Protect)\nNote: These bits are write protected. Refer to the SYS_REGLCTL register."
+          bits: 10-8
+          enum:
+            '0':
+              desc: BOD output is sampled by RC10K clock
+              val: 0
+            '1':
+              desc: 4 system clock (HCLK)
+              val: 1
+            '2':
+              desc: 8 system clock (HCLK)
+              val: 2
+            '3':
+              desc: 16 system clock (HCLK)
+              val: 3
+            '4':
+              desc: 32 system clock (HCLK)
+              val: 4
+            '5':
+              desc: 64 system clock (HCLK)
+              val: 5
+            '6':
+              desc: 128 system clock (HCLK)
+              val: 6
+            '7':
+              desc: 256 system clock (HCLK)
+              val: 7
+        LVRDGSEL:
+          desc: "LVR Output De-glitch Time Select (Write Protect)\nNote: These bits are write protected. Refer to the SYS_REGLCTL register."
+          bits: 14-12
+          enum:
+            '0':
+              desc: Without de-glitch function
+              val: 0
+            '1':
+              desc: 4 system clock (HCLK)
+              val: 1
+            '2':
+              desc: 8 system clock (HCLK)
+              val: 2
+            '3':
+              desc: 16 system clock (HCLK)
+              val: 3
+            '4':
+              desc: 32 system clock (HCLK)
+              val: 4
+            '5':
+              desc: 64 system clock (HCLK)
+              val: 5
+            '6':
+              desc: 128 system clock (HCLK)
+              val: 6
+            '7':
+              desc: 256 system clock (HCLK)
+              val: 7
+        BODVL:
+          desc: "Brown-out Detector Threshold Voltage Selection (Write Protect)\nThe default value is set by Flash controller user configuration register CBOV (CONFIG0 [23:21]).\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 18-16
+          enum:
+            '0':
+              desc: Brown-Out Detector threshold voltage is 1.6V
+              val: 0
+            '1':
+              desc: Brown-Out Detector threshold voltage is 1.8V
+              val: 1
+            '2':
+              desc: Brown-Out Detector threshold voltage is 2.0V
+              val: 2
+            '3':
+              desc: Brown-Out Detector threshold voltage is 2.2V
+              val: 3
+            '4':
+              desc: Brown-Out Detector threshold voltage is 2.4V
+              val: 4
+            '5':
+              desc: Brown-Out Detector threshold voltage is 2.6V
+              val: 5
+            '6':
+              desc: Brown-Out Detector threshold voltage is 2.8V
+              val: 6
+            '7':
+              desc: Brown-Out Detector threshold voltage is 3.0V
+              val: 7
+    IVSCTL:
+      desc: Internal Voltage Source Control Register
+      offset: 0x1c
+      reset_val: 0x0
+      fields:
+        VTEMPEN:
+          desc: "Temperature Sensor Enable Bit\nThis bit is used to enable/disable temperature sensor function."
+          bits: 0
+          enum:
+            '0':
+              desc: Temperature sensor function Disabled (default)
+              val: 0
+            '1':
+              desc: Temperature sensor function Enabled
+              val: 1
+        VBATUGEN:
+          desc: "VBAT Unity Gain Buffer Enable Bit\nThis bit is used to enable/disable VBAT unity gain buffer function.\nNote: After this bit is set to 1, the value of VBAT unity gain buffer output voltage can be obtained from ADC conversion result"
+          bits: 1
+          enum:
+            '0':
+              desc: VBAT unity gain buffer function Disabled (default)
+              val: 0
+            '1':
+              desc: VBAT unity gain buffer function Enabled
+              val: 1
+    VREFCTL:
+      desc: VREF Control Register
+      offset: 0x28
+      reset_val: 0x200
+      fields:
+        VREFCTL:
+          desc: "VREF Control Bits (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 4-0
+          enum:
+            '0':
+              desc: VREF is from external pin
+              val: 0
+            '3':
+              desc: VREF is internal 1.6V
+              val: 3
+            '7':
+              desc: VREF is internal 2.0V
+              val: 7
+            '11':
+              desc: VREF is internal 2.5V
+              val: 11
+            '15':
+              desc: VREF is internal 3.0V
+              val: 15
+        PRELOAD_SEL:
+          desc: "Pre-load Timing Selection (Write Protect)"
+          bits: 7-6
+          enum:
+            '0':
+              desc: pre-load time is 60us for 0.1uF Capacitor
+              val: 0
+            '1':
+              desc: pre-load time is 310us for 1uF Capacitor
+              val: 1
+            '2':
+              desc: pre-load time is 1270us for 4.7uF Capacitor
+              val: 2
+            '3':
+              desc: pre-load time is 2650us for 10uF Capacitor
+              val: 3
+        VBGFEN:
+          desc: "Chip Internal Voltage Bandgap Force Enable Bit(Write Only)"
+          bits: 24
+          enum:
+            '0':
+              desc: Chip internal voltage bandgap controlled by ADC/ACMP if source selected
+              val: 0
+            '1':
+              desc: Chip internal voltage bandgap force enable
+              val: 1
+        VBGISEL:
+          desc: "Chip Internal Voltage Bandgap Current Selection Bits (Write Only)\nNote: When ADC conversion source select bandgap voltage, suggest set VBGISEL as 10."
+          bits: 26-25
+          enum:
+            '0':
+              desc: Bandgap voltage buffer current is 4.2uA
+              val: 0
+            '1':
+              desc: Bandgap voltage buffer current is 7.3uA
+              val: 1
+            '2':
+              desc: Bandgap voltage buffer current is 10.4uA
+              val: 2
+            '3':
+              desc: Bandgap voltage buffer current is 13.5uA
+              val: 3
+    USBPHY:
+      desc: USB PHY Control Register
+      offset: 0x2c
+      reset_val: 0x30007
+      fields:
+        USBROLE:
+          desc: "USB Role Option (Write Protect)\nThese two bits are used to select the role of USB.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 1-0
+          enum:
+            '0':
+              desc: Standard USB Device mode
+              val: 0
+            '1':
+              desc: Standard USB Host mode
+              val: 1
+            '2':
+              desc: ID dependent mode
+              val: 2
+            '3':
+              desc: On-The-Go device mode
+              val: 3
+        SBO:
+          desc: "Note: This bit must always be kept 1. If set to 0, the result is unpredictable"
+          bits: 2
+        USBEN:
+          desc: "USB PHY Enable\nThis bit is used to enable/disable USB PHY."
+          bits: 8
+          enum:
+            '0':
+              desc: USB PHY Disabled
+              val: 0
+            '1':
+              desc: USB PHY Enabled
+              val: 1
+        HSUSBROLE:
+          desc: "HSUSB Role Option (Write Protect)\nThese two bits are used to select the role of HSUSB\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 17-16
+          enum:
+            '0':
+              desc: Standard HSUSB Device mode
+              val: 0
+            '1':
+              desc: Standard HSUSB Host mode
+              val: 1
+            '2':
+              desc: ID dependent mode
+              val: 2
+            '3':
+              desc: On-The-Go device mode
+              val: 3
+        HSUSBEN:
+          desc: "HSUSB PHY Enable\nThis bit is used to enable/disable HSUSB PHY."
+          bits: 24
+          enum:
+            '0':
+              desc: HSUSB PHY Disabled
+              val: 0
+            '1':
+              desc: HSUSB PHY Enabled
+              val: 1
+        HSUSBACT:
+          desc: "HSUSB PHY Active Control\nThis bit is used to control HSUSB PHY at reset state or active state\nNote: After set HSUSBEN (SYS_USBPHY[24]) to enable HSUSB PHY, user should keep HSUSB PHY at reset mode at lease 10uS before changing to active mode"
+          bits: 25
+          enum:
+            '0':
+              desc: HSUSB PHY at reset state
+              val: 0
+            '1':
+              desc: HSUSB PHY at active state
+              val: 1
+    GPA_MFPL:
+      desc: GPIOA Low Byte Multiple Function Control Register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        PA0MFP:
+          desc: "PA.0 Multi-function Pin Selection"
+          bits: 3-0
+        PA1MFP:
+          desc: "PA.1 Multi-function Pin Selection"
+          bits: 7-4
+        PA2MFP:
+          desc: "PA.2 Multi-function Pin Selection"
+          bits: 11-8
+        PA3MFP:
+          desc: "PA.3 Multi-function Pin Selection"
+          bits: 15-12
+        PA4MFP:
+          desc: "PA.4 Multi-function Pin Selection"
+          bits: 19-16
+        PA5MFP:
+          desc: "PA.5 Multi-function Pin Selection"
+          bits: 23-20
+        PA6MFP:
+          desc: "PA.6 Multi-function Pin Selection"
+          bits: 27-24
+        PA7MFP:
+          desc: "PA.7 Multi-function Pin Selection"
+          bits: 31-28
+    GPA_MFPH:
+      desc: GPIOA High Byte Multiple Function Control Register
+      offset: 0x34
+      reset_val: 0x0
+      fields:
+        PA8MFP:
+          desc: "PA.8 Multi-function Pin Selection"
+          bits: 3-0
+        PA9MFP:
+          desc: "PA.9 Multi-function Pin Selection"
+          bits: 7-4
+        PA10MFP:
+          desc: "PA.10 Multi-function Pin Selection"
+          bits: 11-8
+        PA11MFP:
+          desc: "PA.11 Multi-function Pin Selection"
+          bits: 15-12
+        PA12MFP:
+          desc: "PA.12 Multi-function Pin Selection"
+          bits: 19-16
+        PA13MFP:
+          desc: "PA.13 Multi-function Pin Selection"
+          bits: 23-20
+        PA14MFP:
+          desc: "PA.14 Multi-function Pin Selection"
+          bits: 27-24
+        PA15MFP:
+          desc: "PA.15 Multi-function Pin Selection"
+          bits: 31-28
+    GPB_MFPL:
+      desc: GPIOB Low Byte Multiple Function Control Register
+      offset: 0x38
+      reset_val: 0x0
+      fields:
+        PB0MFP:
+          desc: "PB.0 Multi-function Pin Selection"
+          bits: 3-0
+        PB1MFP:
+          desc: "PB.1 Multi-function Pin Selection"
+          bits: 7-4
+        PB2MFP:
+          desc: "PB.2 Multi-function Pin Selection"
+          bits: 11-8
+        PB3MFP:
+          desc: "PB.3 Multi-function Pin Selection"
+          bits: 15-12
+        PB4MFP:
+          desc: "PB.4 Multi-function Pin Selection"
+          bits: 19-16
+        PB5MFP:
+          desc: "PB.5 Multi-function Pin Selection"
+          bits: 23-20
+        PB6MFP:
+          desc: "PB.6 Multi-function Pin Selection"
+          bits: 27-24
+        PB7MFP:
+          desc: "PB.7 Multi-function Pin Selection"
+          bits: 31-28
+    GPB_MFPH:
+      desc: GPIOB High Byte Multiple Function Control Register
+      offset: 0x3c
+      reset_val: 0x0
+      fields:
+        PB8MFP:
+          desc: "PB.8 Multi-function Pin Selection"
+          bits: 3-0
+        PB9MFP:
+          desc: "PB.9 Multi-function Pin Selection"
+          bits: 7-4
+        PB10MFP:
+          desc: "PB.10 Multi-function Pin Selection"
+          bits: 11-8
+        PB11MFP:
+          desc: "PB.11 Multi-function Pin Selection"
+          bits: 15-12
+        PB12MFP:
+          desc: "PB.12 Multi-function Pin Selection"
+          bits: 19-16
+        PB13MFP:
+          desc: "PB.13 Multi-function Pin Selection"
+          bits: 23-20
+        PB14MFP:
+          desc: "PB.14 Multi-function Pin Selection"
+          bits: 27-24
+        PB15MFP:
+          desc: "PB.15 Multi-function Pin Selection"
+          bits: 31-28
+    GPC_MFPL:
+      desc: GPIOC Low Byte Multiple Function Control Register
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        PC0MFP:
+          desc: "PC.0 Multi-function Pin Selection"
+          bits: 3-0
+        PC1MFP:
+          desc: "PC.1 Multi-function Pin Selection"
+          bits: 7-4
+        PC2MFP:
+          desc: "PC.2 Multi-function Pin Selection"
+          bits: 11-8
+        PC3MFP:
+          desc: "PC.3 Multi-function Pin Selection"
+          bits: 15-12
+        PC4MFP:
+          desc: "PC.4 Multi-function Pin Selection"
+          bits: 19-16
+        PC5MFP:
+          desc: "PC.5 Multi-function Pin Selection"
+          bits: 23-20
+        PC6MFP:
+          desc: "PC.6 Multi-function Pin Selection"
+          bits: 27-24
+        PC7MFP:
+          desc: "PC.7 Multi-function Pin Selection"
+          bits: 31-28
+    GPC_MFPH:
+      desc: GPIOC High Byte Multiple Function Control Register
+      offset: 0x44
+      reset_val: 0x0
+      fields:
+        PC8MFP:
+          desc: "PC.8 Multi-function Pin Selection"
+          bits: 3-0
+        PC9MFP:
+          desc: "PC.9 Multi-function Pin Selection"
+          bits: 7-4
+        PC10MFP:
+          desc: "PC.10 Multi-function Pin Selection"
+          bits: 11-8
+        PC11MFP:
+          desc: "PC.11 Multi-function Pin Selection"
+          bits: 15-12
+        PC12MFP:
+          desc: "PC.12 Multi-function Pin Selection"
+          bits: 19-16
+        PC13MFP:
+          desc: "PC.13 Multi-function Pin Selection"
+          bits: 23-20
+        PC14MFP:
+          desc: "PC.14 Multi-function Pin Selection"
+          bits: 27-24
+        PC15MFP:
+          desc: "PC.15 Multi-function Pin Selection"
+          bits: 31-28
+    GPD_MFPL:
+      desc: GPIOD Low Byte Multiple Function Control Register
+      offset: 0x48
+      reset_val: 0x0
+      fields:
+        PD0MFP:
+          desc: "PD.0 Multi-function Pin Selection"
+          bits: 3-0
+        PD1MFP:
+          desc: "PD.1 Multi-function Pin Selection"
+          bits: 7-4
+        PD2MFP:
+          desc: "PD.2 Multi-function Pin Selection"
+          bits: 11-8
+        PD3MFP:
+          desc: "PD.3 Multi-function Pin Selection"
+          bits: 15-12
+        PD4MFP:
+          desc: "PD.4 Multi-function Pin Selection"
+          bits: 19-16
+        PD5MFP:
+          desc: "PD.5 Multi-function Pin Selection"
+          bits: 23-20
+        PD6MFP:
+          desc: "PD.6 Multi-function Pin Selection"
+          bits: 27-24
+        PD7MFP:
+          desc: "PD.7 Multi-function Pin Selection"
+          bits: 31-28
+    GPD_MFPH:
+      desc: GPIOD High Byte Multiple Function Control Register
+      offset: 0x4c
+      reset_val: 0x0
+      fields:
+        PD8MFP:
+          desc: "PD.8 Multi-function Pin Selection"
+          bits: 3-0
+        PD9MFP:
+          desc: "PD.9 Multi-function Pin Selection"
+          bits: 7-4
+        PD10MFP:
+          desc: "PD.10 Multi-function Pin Selection"
+          bits: 11-8
+        PD11MFP:
+          desc: "PD.11 Multi-function Pin Selection"
+          bits: 15-12
+        PD12MFP:
+          desc: "PD.12 Multi-function Pin Selection"
+          bits: 19-16
+        PD13MFP:
+          desc: "PD.13 Multi-function Pin Selection"
+          bits: 23-20
+        PD14MFP:
+          desc: "PD.14 Multi-function Pin Selection"
+          bits: 27-24
+        PD15MFP:
+          desc: "PD.15 Multi-function Pin Selection"
+          bits: 31-28
+    GPE_MFPL:
+      desc: GPIOE Low Byte Multiple Function Control Register
+      offset: 0x50
+      reset_val: 0x0
+      fields:
+        PE0MFP:
+          desc: "PE.0 Multi-function Pin Selection"
+          bits: 3-0
+        PE1MFP:
+          desc: "PE.1 Multi-function Pin Selection"
+          bits: 7-4
+        PE2MFP:
+          desc: "PE.2 Multi-function Pin Selection"
+          bits: 11-8
+        PE3MFP:
+          desc: "PE.3 Multi-function Pin Selection"
+          bits: 15-12
+        PE4MFP:
+          desc: "PE.4 Multi-function Pin Selection"
+          bits: 19-16
+        PE5MFP:
+          desc: "PE.5 Multi-function Pin Selection"
+          bits: 23-20
+        PE6MFP:
+          desc: "PE.6 Multi-function Pin Selection"
+          bits: 27-24
+        PE7MFP:
+          desc: "PE.7 Multi-function Pin Selection"
+          bits: 31-28
+    GPE_MFPH:
+      desc: GPIOE High Byte Multiple Function Control Register
+      offset: 0x54
+      reset_val: 0x0
+      fields:
+        PE8MFP:
+          desc: "PE.8 Multi-function Pin Selection"
+          bits: 3-0
+        PE9MFP:
+          desc: "PE.9 Multi-function Pin Selection"
+          bits: 7-4
+        PE10MFP:
+          desc: "PE.10 Multi-function Pin Selection"
+          bits: 11-8
+        PE11MFP:
+          desc: "PE.11 Multi-function Pin Selection"
+          bits: 15-12
+        PE12MFP:
+          desc: "PE.12 Multi-function Pin Selection"
+          bits: 19-16
+        PE13MFP:
+          desc: "PE.13 Multi-function Pin Selection"
+          bits: 23-20
+        PE14MFP:
+          desc: "PE.14 Multi-function Pin Selection"
+          bits: 27-24
+        PE15MFP:
+          desc: "PE.15 Multi-function Pin Selection"
+          bits: 31-28
+    GPF_MFPL:
+      desc: GPIOF Low Byte Multiple Function Control Register
+      offset: 0x58
+      reset_val: 0xee
+      fields:
+        PF0MFP:
+          desc: "PF.0 Multi-function Pin Selection"
+          bits: 3-0
+        PF1MFP:
+          desc: "PF.1 Multi-function Pin Selection"
+          bits: 7-4
+        PF2MFP:
+          desc: "PF.2 Multi-function Pin Selection"
+          bits: 11-8
+        PF3MFP:
+          desc: "PF.3 Multi-function Pin Selection"
+          bits: 15-12
+        PF4MFP:
+          desc: "PF.4 Multi-function Pin Selection"
+          bits: 19-16
+        PF5MFP:
+          desc: "PF.5 Multi-function Pin Selection"
+          bits: 23-20
+        PF6MFP:
+          desc: "PF.6 Multi-function Pin Selection"
+          bits: 27-24
+        PF7MFP:
+          desc: "PF.7 Multi-function Pin Selection"
+          bits: 31-28
+    GPF_MFPH:
+      desc: GPIOF High Byte Multiple Function Control Register
+      offset: 0x5c
+      reset_val: 0x0
+      fields:
+        PF8MFP:
+          desc: "PF.8 Multi-function Pin Selection"
+          bits: 3-0
+        PF9MFP:
+          desc: "PF.9 Multi-function Pin Selection"
+          bits: 7-4
+        PF10MFP:
+          desc: "PF.10 Multi-function Pin Selection"
+          bits: 11-8
+        PF11MFP:
+          desc: "PF.11 Multi-function Pin Selection"
+          bits: 15-12
+        PF12MFP:
+          desc: "PF.12 Multi-function Pin Selection"
+          bits: 19-16
+        PF13MFP:
+          desc: "PF.13 Multi-function Pin Selection"
+          bits: 23-20
+        PF14MFP:
+          desc: "PF.14 Multi-function Pin Selection"
+          bits: 27-24
+        PF15MFP:
+          desc: "PF.15 Multi-function Pin Selection"
+          bits: 31-28
+    GPG_MFPL:
+      desc: GPIOG Low Byte Multiple Function Control Register
+      offset: 0x60
+      reset_val: 0x0
+      fields:
+        PG0MFP:
+          desc: "PG.0 Multi-function Pin Selection"
+          bits: 3-0
+        PG1MFP:
+          desc: "PG.1 Multi-function Pin Selection"
+          bits: 7-4
+        PG2MFP:
+          desc: "PG.2 Multi-function Pin Selection"
+          bits: 11-8
+        PG3MFP:
+          desc: "PG.3 Multi-function Pin Selection"
+          bits: 15-12
+        PG4MFP:
+          desc: "PG.4 Multi-function Pin Selection"
+          bits: 19-16
+        PG5MFP:
+          desc: "PG.5 Multi-function Pin Selection"
+          bits: 23-20
+        PG6MFP:
+          desc: "PG.6 Multi-function Pin Selection"
+          bits: 27-24
+        PG7MFP:
+          desc: "PG.7 Multi-function Pin Selection"
+          bits: 31-28
+    GPG_MFPH:
+      desc: GPIOG High Byte Multiple Function Control Register
+      offset: 0x64
+      reset_val: 0x0
+      fields:
+        PG8MFP:
+          desc: "PG.8 Multi-function Pin Selection"
+          bits: 3-0
+        PG9MFP:
+          desc: "PG.9 Multi-function Pin Selection"
+          bits: 7-4
+        PG10MFP:
+          desc: "PG.10 Multi-function Pin Selection"
+          bits: 11-8
+        PG11MFP:
+          desc: "PG.11 Multi-function Pin Selection"
+          bits: 15-12
+        PG12MFP:
+          desc: "PG.12 Multi-function Pin Selection"
+          bits: 19-16
+        PG13MFP:
+          desc: "PG.13 Multi-function Pin Selection"
+          bits: 23-20
+        PG14MFP:
+          desc: "PG.14 Multi-function Pin Selection"
+          bits: 27-24
+        PG15MFP:
+          desc: "PG.15 Multi-function Pin Selection"
+          bits: 31-28
+    GPH_MFPL:
+      desc: GPIOH Low Byte Multiple Function Control Register
+      offset: 0x68
+      reset_val: 0x0
+      fields:
+        PH0MFP:
+          desc: "PH.0 Multi-function Pin Selection"
+          bits: 3-0
+        PH1MFP:
+          desc: "PH.1 Multi-function Pin Selection"
+          bits: 7-4
+        PH2MFP:
+          desc: "PH.2 Multi-function Pin Selection"
+          bits: 11-8
+        PH3MFP:
+          desc: "PH.3 Multi-function Pin Selection"
+          bits: 15-12
+        PH4MFP:
+          desc: "PH.4 Multi-function Pin Selection"
+          bits: 19-16
+        PH5MFP:
+          desc: "PH.5 Multi-function Pin Selection"
+          bits: 23-20
+        PH6MFP:
+          desc: "PH.6 Multi-function Pin Selection"
+          bits: 27-24
+        PH7MFP:
+          desc: "PH.7 Multi-function Pin Selection"
+          bits: 31-28
+    GPH_MFPH:
+      desc: GPIOH High Byte Multiple Function Control Register
+      offset: 0x6c
+      reset_val: 0x0
+      fields:
+        PH8MFP:
+          desc: "PH.8 Multi-function Pin Selection"
+          bits: 3-0
+        PH9MFP:
+          desc: "PH.9 Multi-function Pin Selection"
+          bits: 7-4
+        PH10MFP:
+          desc: "PH.10 Multi-function Pin Selection"
+          bits: 11-8
+        PH11MFP:
+          desc: "PH.11 Multi-function Pin Selection"
+          bits: 15-12
+        PH12MFP:
+          desc: "PH.12 Multi-function Pin Selection"
+          bits: 19-16
+        PH13MFP:
+          desc: "PH.13 Multi-function Pin Selection"
+          bits: 23-20
+        PH14MFP:
+          desc: "PH.14 Multi-function Pin Selection"
+          bits: 27-24
+        PH15MFP:
+          desc: "PH.15 Multi-function Pin Selection"
+          bits: 31-28
+    GPA_MFOS:
+      desc: GPIOA Multiple Function Output Select Register
+      offset: 0x80
+      reset_val: 0x0
+      fields:
+        MFOS0:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 0
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS1:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 1
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS2:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 2
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS3:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 3
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS4:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 4
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS5:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 5
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS6:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 6
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS7:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 7
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS8:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 8
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS9:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 9
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS10:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 10
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS11:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 11
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS12:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 12
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS13:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 13
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS14:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 14
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+        MFOS15:
+          desc: "GPIOA-h Pin[n] Multiple Function Pin Output Mode Select\nThis bit used to select multiple function pin output mode type for Px.n pin"
+          bits: 15
+          enum:
+            '0':
+              desc: Multiple function pin output mode type is Push-pull mode
+              val: 0
+            '1':
+              desc: Multiple function pin output mode type is Open-drain mode
+              val: 1
+    GPB_MFOS:
+      desc: GPIOB Multiple Function Output Select Register
+      offset: 0x84
+      reset_val: 0x0
+    GPC_MFOS:
+      desc: GPIOC Multiple Function Output Select Register
+      offset: 0x88
+      reset_val: 0x0
+    GPD_MFOS:
+      desc: GPIOD Multiple Function Output Select Register
+      offset: 0x8c
+      reset_val: 0x0
+    GPE_MFOS:
+      desc: GPIOE Multiple Function Output Select Register
+      offset: 0x90
+      reset_val: 0x0
+    GPF_MFOS:
+      desc: GPIOF Multiple Function Output Select Register
+      offset: 0x94
+      reset_val: 0x0
+    GPG_MFOS:
+      desc: GPIOG Multiple Function Output Select Register
+      offset: 0x98
+      reset_val: 0x0
+    GPH_MFOS:
+      desc: GPIOH Multiple Function Output Select Register
+      offset: 0x9c
+      reset_val: 0x0
+    SRAM_INTCTL:
+      desc: System SRAM Interrupt Enable Control Register
+      offset: 0xc0
+      reset_val: 0x0
+      fields:
+        PERRIEN:
+          desc: "SRAM Parity Check Error Interrupt Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: SRAM parity check error interrupt Disabled
+              val: 0
+            '1':
+              desc: SRAM parity check error interrupt Enabled
+              val: 1
+    SRAM_STATUS:
+      desc: System SRAM Parity Error Status Register
+      offset: 0xc4
+      reset_val: 0x0
+      fields:
+        PERRIF:
+          desc: "SRAM Parity Check Error Flag\nThis bit indicates the System SRAM parity error occurred. Write 1 to clear this to 0."
+          bits: 0
+          enum:
+            '0':
+              desc: No System SRAM parity error
+              val: 0
+            '1':
+              desc: System SRAM parity error occur
+              val: 1
+    SRAM_ERRADDR:
+      desc: System SRAM Parity Check Error Address Register
+      offset: 0xc8
+      reset_val: 0x0
+      fields:
+        ERRADDR:
+          desc: "System SRAM Parity Error Address\nThis register shows system SRAM parity error byte address."
+          bits: 31-0
+    SRAM_BISTCTL:
+      desc: System SRAM BIST Test Control Register
+      offset: 0xd0
+      reset_val: 0x0
+      fields:
+        SRBIST0:
+          desc: "SRAM Bank0 BIST Enable Bit (Write Protect)\nThis bit enables BIST test for SRAM bank0.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: system SRAM bank0 BIST Disabled
+              val: 0
+            '1':
+              desc: system SRAM bank0 BIST Enabled
+              val: 1
+        SRBIST1:
+          desc: "SRAM Bank1 BIST Enable Bit (Write Protect)\nThis bit enables BIST test for SRAM bank1.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 1
+          enum:
+            '0':
+              desc: system SRAM bank1 BIST Disabled
+              val: 0
+            '1':
+              desc: system SRAM bank1 BIST Enabled
+              val: 1
+        CRBIST:
+          desc: "CACHE BIST Enable Bit (Write Protect)\nThis bit enables BIST test for CACHE RAM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 2
+          enum:
+            '0':
+              desc: system CACHE BIST Disabled
+              val: 0
+            '1':
+              desc: system CACHE BIST Enabled
+              val: 1
+        CANBIST:
+          desc: "CAN BIST Enable Bit (Write Protect)\nThis bit enables BIST test for CAN RAM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 3
+          enum:
+            '0':
+              desc: system CAN BIST Disabled
+              val: 0
+            '1':
+              desc: system CAN BIST Enabled
+              val: 1
+        USBBIST:
+          desc: "USB BIST Enable Bit (Write Protect)\nThis bit enables BIST test for USB RAM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 4
+          enum:
+            '0':
+              desc: system USB BIST Disabled
+              val: 0
+            '1':
+              desc: system USB BIST Enabled
+              val: 1
+        SPIMBIST:
+          desc: "SPIM BIST Enable Bit (Write Protect)\nThis bit enables BIST test for SPIM RAM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 5
+          enum:
+            '0':
+              desc: system SPIM BIST Disabled
+              val: 0
+            '1':
+              desc: system SPIM BIST Enabled
+              val: 1
+        EMCBIST:
+          desc: "EMC BIST Enable Bit (Write Protect)\nThis bit enables BIST test for EMC RAM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 6
+          enum:
+            '0':
+              desc: system EMC BIST Disabled
+              val: 0
+            '1':
+              desc: system EMC BIST Enabled
+              val: 1
+        PDMABIST:
+          desc: "PDMA BIST Enable Bit (Write Protect)\nThis bit enables BIST test for PDMA RAM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 7
+          enum:
+            '0':
+              desc: system PDMA BIST Disabled
+              val: 0
+            '1':
+              desc: system PDMA BIST Enabled
+              val: 1
+        HSUSBDBIST:
+          desc: "HSUSBD BIST Enable Bit (Write Protect)\nThis bit enables BIST test for HSUSBD RAM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 8
+          enum:
+            '0':
+              desc: system HSUSBD BIST Disabled
+              val: 0
+            '1':
+              desc: system HSUSBD BIST Enabled
+              val: 1
+        HSUSBHBIST:
+          desc: "HSUSBH BIST Enable Bit (Write Protect)\nThis bit enables BIST test for HSUSBH RAM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 9
+          enum:
+            '0':
+              desc: system HSUSBH BIST Disabled
+              val: 0
+            '1':
+              desc: system HSUSBH BIST Enabled
+              val: 1
+    SRAM_BISTSTS:
+      desc: System SRAM BIST Test Status Register
+      offset: 0xd4
+      reset_val: 0x0
+      fields:
+        SRBISTEF0:
+          desc: "1st System SRAM BIST Fail Flag"
+          bits: 0
+          enum:
+            '0':
+              desc: 1st system SRAM BIST test pass
+              val: 0
+            '1':
+              desc: 1st system SRAM BIST test fail
+              val: 1
+        SRBISTEF1:
+          desc: "2nd System SRAM BIST Fail Flag"
+          bits: 1
+          enum:
+            '0':
+              desc: 2nd system SRAM BIST test pass
+              val: 0
+            '1':
+              desc: 2nd system SRAM BIST test fail
+              val: 1
+        CRBISTEF:
+          desc: "CACHE SRAM BIST Fail Flag"
+          bits: 2
+          enum:
+            '0':
+              desc: System CACHE RAM BIST test pass
+              val: 0
+            '1':
+              desc: System CACHE RAM BIST test fail
+              val: 1
+        CANBEF:
+          desc: "CAN SRAM BIST Fail Flag"
+          bits: 3
+          enum:
+            '0':
+              desc: CAN SRAM BIST test pass
+              val: 0
+            '1':
+              desc: CAN SRAM BIST test fail
+              val: 1
+        USBBEF:
+          desc: "USB SRAM BIST Fail Flag"
+          bits: 4
+          enum:
+            '0':
+              desc: USB SRAM BIST test pass
+              val: 0
+            '1':
+              desc: USB SRAM BIST test fail
+              val: 1
+        PDMABEF:
+          desc: "PDMA SRAM BIST Fail Flag"
+          bits: 7
+          enum:
+            '0':
+              desc: PDMA SRAM BIST test pass
+              val: 0
+            '1':
+              desc: PDMA SRAM BIST test fail
+              val: 1
+        SRBEND0:
+          desc: "1st SRAM BIST Test Finish"
+          bits: 16
+          enum:
+            '0':
+              desc: 1st system SRAM BIST active
+              val: 0
+            '1':
+              desc: 1st system SRAM BIST finish
+              val: 1
+        SRBEND1:
+          desc: "2nd SRAM BIST Test Finish"
+          bits: 17
+          enum:
+            '0':
+              desc: 2nd system SRAM BIST is active
+              val: 0
+            '1':
+              desc: 2nd system SRAM BIST finish
+              val: 1
+        CRBEND:
+          desc: "CACHE SRAM BIST Test Finish"
+          bits: 18
+          enum:
+            '0':
+              desc: System CACHE RAM BIST is active
+              val: 0
+            '1':
+              desc: System CACHE RAM BIST test finish
+              val: 1
+        CANBEND:
+          desc: "CAN SRAM BIST Test Finish"
+          bits: 19
+          enum:
+            '0':
+              desc: CAN SRAM BIST is active
+              val: 0
+            '1':
+              desc: CAN SRAM BIST test finish
+              val: 1
+        USBBEND:
+          desc: "USB SRAM BIST Test Finish"
+          bits: 20
+          enum:
+            '0':
+              desc: USB SRAM BIST is active
+              val: 0
+            '1':
+              desc: USB SRAM BIST test finish
+              val: 1
+        PDMABEND:
+          desc: "PDMA SRAM BIST Test Finish"
+          bits: 23
+          enum:
+            '0':
+              desc: PDMA SRAM BIST is active
+              val: 0
+            '1':
+              desc: PDMA SRAM BIST test finish
+              val: 1
+    HIRCTCTL:
+      desc: HIRC48M Trim Control Register
+      offset: 0xe4
+      reset_val: 0x80000
+      fields:
+        FREQSEL:
+          desc: "Trim Frequency Selection\nThis field indicates the target frequency of 48 MHz internal high speed RC oscillator (HIRC) auto trim.\nDuring auto trim operation, if clock error detected with CESTOPEN is set to 1 or trim retry limitation count reached, this field will be cleared to 00 automatically."
+          bits: 1-0
+          enum:
+            '0':
+              desc: Disable HIRC auto trim function
+              val: 0
+            '1':
+              desc: Enable HIRC auto trim function and trim HIRC to 48 MHz
+              val: 1
+            '2':
+              desc: Reserved.
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        LOOPSEL:
+          desc: "Trim Calculation Loop Selection\nThis field defines that trim value calculation is based on how many reference clocks.\nNote: For example, if LOOPSEL is set as 00, auto trim circuit will calculate trim value based on the average frequency difference in 4 clocks of reference clock."
+          bits: 5-4
+          enum:
+            '0':
+              desc: Trim value calculation is based on average difference in 4 clocks of reference clock
+              val: 0
+            '1':
+              desc: Trim value calculation is based on average difference in 8 clocks of reference clock
+              val: 1
+            '2':
+              desc: Trim value calculation is based on average difference in 16 clocks of reference clock
+              val: 2
+            '3':
+              desc: Trim value calculation is based on average difference in 32 clocks of reference clock
+              val: 3
+        RETRYCNT:
+          desc: "Trim Value Update Limitation Count\nThis field defines that how many times the auto trim circuit will try to update the HIRC trim value before the frequency of HIRC locked.\nOnce the HIRC locked, the internal trim value update counter will be reset.\nIf the trim value update counter reached this limitation value and frequency of HIRC still doesn't lock, the auto trim operation will be disabled and FREQSEL will be cleared to 00."
+          bits: 7-6
+          enum:
+            '0':
+              desc: Trim retry count limitation is 64 loops
+              val: 0
+            '1':
+              desc: Trim retry count limitation is 128 loops
+              val: 1
+            '2':
+              desc: Trim retry count limitation is 256 loops
+              val: 2
+            '3':
+              desc: Trim retry count limitation is 512 loops
+              val: 3
+        CESTOPEN:
+          desc: "Clock Error Stop Enable Bit"
+          bits: 8
+          enum:
+            '0':
+              desc: The trim operation is keep going if clock is inaccuracy
+              val: 0
+            '1':
+              desc: The trim operation is stopped if clock is inaccuracy
+              val: 1
+        BOUNDEN:
+          desc: "Boundary Enable Bit"
+          bits: 9
+          enum:
+            '0':
+              desc: Boundary function Disabled
+              val: 0
+            '1':
+              desc: Boundary function Enabled
+              val: 1
+        REFCKSEL:
+          desc: "Reference Clock Selection\nNote: HIRC trim reference clock is 20 kHz in test mode."
+          bits: 10
+          enum:
+            '0':
+              desc: HIRC trim reference clock is from LXT (32.768 kHz)
+              val: 0
+            '1':
+              desc: HIRC trim reference clock is from internal USB synchronous mode
+              val: 1
+        BOUNDARY:
+          desc: "Boundary Selection\nFill the boundary range from 0x1 to 0x31, 0x0 is reserved.\nNote: This field is effective only when the BOUNDEN(SYS_HIRCTRIMCTL[9]) is enabled."
+          bits: 20-16
+    HIRCTIEN:
+      desc: HIRC48M Trim Interrupt Enable Register
+      offset: 0xe8
+      reset_val: 0x0
+      fields:
+        TFAILIEN:
+          desc: "Trim Failure Interrupt Enable Bit\nThis bit controls if an interrupt will be triggered while HIRC trim value update limitation count reached and HIRC frequency still not locked on target frequency set by FREQSEL(SYS_IRCTCTL[1:0]).\nIf this bit is high and TFAILIF(SYS_IRCTISTS[1]) is set during auto trim operation, an interrupt will be triggered to notify that HIRC trim value update limitation count was reached."
+          bits: 1
+          enum:
+            '0':
+              desc: Disable TFAILIF(SYS_IRCTISTS[1]) status to trigger an interrupt to CPU
+              val: 0
+            '1':
+              desc: Enable TFAILIF(SYS_IRCTISTS[1]) status to trigger an interrupt to CPU
+              val: 1
+        CLKEIEN:
+          desc: "Clock Error Interrupt Enable Bit\nThis bit controls if CPU would get an interrupt while clock is inaccuracy during auto trim operation.\nIf this bit is set to1, and CLKERRIF(SYS_IRCTISTS[2]) is set during auto trim operation, an interrupt will be triggered to notify the clock frequency is inaccuracy."
+          bits: 2
+          enum:
+            '0':
+              desc: Disable CLKERRIF(SYS_IRCTISTS[2]) status to trigger an interrupt to CPU
+              val: 0
+            '1':
+              desc: Enable CLKERRIF(SYS_IRCTISTS[2]) status to trigger an interrupt to CPU
+              val: 1
+    HIRCTISTS:
+      desc: HIRC48M Trim Interrupt Status Register
+      offset: 0xec
+      reset_val: 0x0
+      fields:
+        FREQLOCK:
+          desc: "HIRC Frequency Lock Status\nThis bit indicates the HIRC frequency is locked.\nThis is a status bit and doesn't trigger any interrupt\nWrite 1 to clear this to 0. This bit will be set automatically, if the frequency is lock and the RC_TRIM is enabled."
+          bits: 0
+          enum:
+            '0':
+              desc: The internal high-speed oscillator frequency doesn't lock at 48 MHz yet
+              val: 0
+            '1':
+              desc: The internal high-speed oscillator frequency locked at 48 MHz
+              val: 1
+        TFAILIF:
+          desc: "Trim Failure Interrupt Status\nThis bit indicates that HIRC trim value update limitation count reached and the HIRC clock frequency still doesn't be locked. Once this bit is set, the auto trim operation stopped and FREQSEL(SYS_IRCTCTL[1:0]) will be cleared to 00 by hardware automatically.\nIf this bit is set and TFAILIEN(SYS_IRCTIEN[1]) is high, an interrupt will be triggered to notify that HIRC trim value update limitation count was reached. Write 1 to clear this to 0."
+          bits: 1
+          enum:
+            '0':
+              desc: Trim value update limitation count does not reach
+              val: 0
+            '1':
+              desc: Trim value update limitation count reached and HIRC frequency still not locked
+              val: 1
+        CLKERRIF:
+          desc: "Clock Error Interrupt Status\nWhen the frequency of 32.768 kHz external low speed crystal oscillator (LXT) or 48 MHz internal high speed RC oscillator (HIRC) is shift larger to unreasonable value, this bit will be set and to be an indicate that clock frequency is inaccuracy\nOnce this bit is set to 1, the auto trim operation stopped and FREQSEL(SYS_IRCTCL[1:0]) will be cleared to 00 by hardware automatically if CESTOPEN(SYS_IRCTCTL[8]) is set to 1.\nIf this bit is set and CLKEIEN(SYS_IRCTIEN[2]) is high, an interrupt will be triggered to notify the clock frequency is inaccuracy. Write 1 to clear this to 0."
+          bits: 2
+          enum:
+            '0':
+              desc: Clock frequency is accuracy
+              val: 0
+            '1':
+              desc: Clock frequency is inaccuracy
+              val: 1
+        OVBDIF:
+          desc: "Over Boundary Status\nWhen the over boundary function is set, if there occurs the over boundary condition, this flag will be set.\nNote 1: Write 1 to clear this flag."
+          bits: 3
+          enum:
+            '0':
+              desc: Over boundary coundition did not occur
+              val: 0
+            '1':
+              desc: Over boundary coundition occurred
+              val: 1
+    IRCTCTL:
+      desc: HIRC Trim Control Register
+      offset: 0xf0
+      reset_val: 0x80000
+      fields:
+        FREQSEL:
+          desc: "Trim Frequency Selection\nThis field indicates the target frequency of 12 MHz internal high speed RC oscillator (HIRC) auto trim.\nDuring auto trim operation, if clock error detected with CESTOPEN is set to 1 or trim retry limitation count reached, this field will be cleared to 00 automatically."
+          bits: 1-0
+          enum:
+            '0':
+              desc: Disable HIRC auto trim function
+              val: 0
+            '1':
+              desc: Enable HIRC auto trim function and trim HIRC to 12 MHz
+              val: 1
+            '2':
+              desc: Reserved.
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+        LOOPSEL:
+          desc: "Trim Calculation Loop Selection\nThis field defines that trim value calculation is based on how many reference clocks.\nNote: For example, if LOOPSEL is set as 00, auto trim circuit will calculate trim value based on the average frequency difference in 4 clocks of reference clock."
+          bits: 5-4
+          enum:
+            '0':
+              desc: Trim value calculation is based on average difference in 4 clocks of reference clock
+              val: 0
+            '1':
+              desc: Trim value calculation is based on average difference in 8 clocks of reference clock
+              val: 1
+            '2':
+              desc: Trim value calculation is based on average difference in 16 clocks of reference clock
+              val: 2
+            '3':
+              desc: Trim value calculation is based on average difference in 32 clocks of reference clock
+              val: 3
+        RETRYCNT:
+          desc: "Trim Value Update Limitation Count\nThis field defines that how many times the auto trim circuit will try to update the HIRC trim value before the frequency of HIRC locked.\nOnce the HIRC locked, the internal trim value update counter will be reset.\nIf the trim value update counter reached this limitation value and frequency of HIRC still doesn't lock, the auto trim operation will be disabled and FREQSEL will be cleared to 00."
+          bits: 7-6
+          enum:
+            '0':
+              desc: Trim retry count limitation is 64 loops
+              val: 0
+            '1':
+              desc: Trim retry count limitation is 128 loops
+              val: 1
+            '2':
+              desc: Trim retry count limitation is 256 loops
+              val: 2
+            '3':
+              desc: Trim retry count limitation is 512 loops
+              val: 3
+        CESTOPEN:
+          desc: "Clock Error Stop Enable Bit"
+          bits: 8
+          enum:
+            '0':
+              desc: The trim operation is keep going if clock is inaccuracy
+              val: 0
+            '1':
+              desc: The trim operation is stopped if clock is inaccuracy
+              val: 1
+        BOUNDEN:
+          desc: "Boundary Enable Bit"
+          bits: 9
+          enum:
+            '0':
+              desc: Boundary function Disabled
+              val: 0
+            '1':
+              desc: Boundary function Enabled
+              val: 1
+        REFCKSEL:
+          desc: "Reference Clock Selection\nNote: HIRC trim reference clock is 20 kHz in test mode."
+          bits: 10
+          enum:
+            '0':
+              desc: HIRC trim reference clock is from LXT (32.768 kHz)
+              val: 0
+            '1':
+              desc: HIRC trim reference clock is from internal USB synchronous mode
+              val: 1
+        BOUNDARY:
+          desc: "Boundary Selection\nFill the boundary range from 0x1 to 0x31, 0x0 is reserved.\nNote 1: This field is effective only when the BOUNDEN(SYS_HIRCTRIMCTL[9]) is enabled."
+          bits: 20-16
+    IRCTIEN:
+      desc: HIRC Trim Interrupt Enable Register
+      offset: 0xf4
+      reset_val: 0x0
+      fields:
+        TFAILIEN:
+          desc: "Trim Failure Interrupt Enable Bit\nThis bit controls if an interrupt will be triggered while HIRC trim value update limitation count reached and HIRC frequency still not locked on target frequency set by FREQSEL(SYS_IRCTCTL[1:0]).\nIf this bit is high and TFAILIF(SYS_IRCTISTS[1]) is set during auto trim operation, an interrupt will be triggered to notify that HIRC trim value update limitation count was reached."
+          bits: 1
+          enum:
+            '0':
+              desc: Disable TFAILIF(SYS_IRCTISTS[1]) status to trigger an interrupt to CPU
+              val: 0
+            '1':
+              desc: Enable TFAILIF(SYS_IRCTISTS[1]) status to trigger an interrupt to CPU
+              val: 1
+        CLKEIEN:
+          desc: "Clock Error Interrupt Enable Bit\nThis bit controls if CPU would get an interrupt while clock is inaccuracy during auto trim operation.\nIf this bit is set to1, and CLKERRIF(SYS_IRCTISTS[2]) is set during auto trim operation, an interrupt will be triggered to notify the clock frequency is inaccuracy."
+          bits: 2
+          enum:
+            '0':
+              desc: Disable CLKERRIF(SYS_IRCTISTS[2]) status to trigger an interrupt to CPU
+              val: 0
+            '1':
+              desc: Enable CLKERRIF(SYS_IRCTISTS[2]) status to trigger an interrupt to CPU
+              val: 1
+    IRCTISTS:
+      desc: HIRC Trim Interrupt Status Register
+      offset: 0xf8
+      reset_val: 0x0
+      fields:
+        FREQLOCK:
+          desc: "HIRC Frequency Lock Status\nThis bit indicates the HIRC frequency is locked.\nThis is a status bit and doesn't trigger any interrupt\nWrite 1 to clear this to 0. This bit will be set automatically, if the frequency is lock and the RC_TRIM is enabled."
+          bits: 0
+          enum:
+            '0':
+              desc: The internal high-speed oscillator frequency doesn't lock at 12 MHz yet
+              val: 0
+            '1':
+              desc: The internal high-speed oscillator frequency locked at 12 MHz
+              val: 1
+        TFAILIF:
+          desc: "Trim Failure Interrupt Status\nThis bit indicates that HIRC trim value update limitation count reached and the HIRC clock frequency still doesn't be locked. Once this bit is set, the auto trim operation stopped and FREQSEL(SYS_IRCTCTL[1:0]) will be cleared to 00 by hardware automatically.\nIf this bit is set and TFAILIEN(SYS_IRCTIEN[1]) is high, an interrupt will be triggered to notify that HIRC trim value update limitation count was reached. Write 1 to clear this to 0."
+          bits: 1
+          enum:
+            '0':
+              desc: Trim value update limitation count does not reach
+              val: 0
+            '1':
+              desc: Trim value update limitation count reached and HIRC frequency still not locked
+              val: 1
+        CLKERRIF:
+          desc: "Clock Error Interrupt Status\nWhen the frequency of 32.768 kHz external low speed crystal oscillator (LXT) or 12 MHz internal high speed RC oscillator (HIRC) is shift larger to unreasonable value, this bit will be set and to be an indicate that clock frequency is inaccuracy\nOnce this bit is set to 1, the auto trim operation stopped and FREQSEL(SYS_IRCTCL[1:0]) will be cleared to 00 by hardware automatically if CESTOPEN(SYS_IRCTCTL[8]) is set to 1.\nIf this bit is set and CLKEIEN(SYS_IRCTIEN[2]) is high, an interrupt will be triggered to notify the clock frequency is inaccuracy. Write 1 to clear this to 0."
+          bits: 2
+          enum:
+            '0':
+              desc: Clock frequency is accuracy
+              val: 0
+            '1':
+              desc: Clock frequency is inaccuracy
+              val: 1
+        OVBDIF:
+          desc: "Over Boundary Status\nWhen the over boundary function is set, if there occurs the over boundary condition, this flag will be set.\nNote 1: Write 1 to clear this flag."
+          bits: 3
+          enum:
+            '0':
+              desc: Over boundary coundition did not occur
+              val: 0
+            '1':
+              desc: Over boundary coundition occurred
+              val: 1
+    REGLCTL:
+      desc: Register Lock Control Register
+      offset: 0x100
+      reset_val: 0x0
+      fields:
+        REGLCTL:
+          desc: "Register Lock Control Code\nSome registers have write-protection function. Writing these registers have to disable the protected function by writing the sequence value '59h', '16h', '88h' to this field. After this sequence is completed, the REGLCTL bit will be set to 1 and write-protection registers can be normal write.\n\nREGLCTL[0]\nRegister Lock Control Disable Index"
+          bits: 7-0
+          enum:
+            '0':
+              desc: Write-protection Enabled for writing protected registers. Any write to the protected register is ignored
+              val: 0
+            '1':
+              desc: Write-protection Disabled for writing protected registers
+              val: 1
+    PORDISAN:
+      desc: Analog POR Disable Control Register
+      offset: 0x1ec
+      reset_val: 0x0
+      fields:
+        POROFFAN:
+          desc: "Power-on Reset Enable Bit (Write Protect)\nAfter powered on, User can turn off internal analog POR circuit to save power by writing 0x5AA5 to this field.\nThe analog POR circuit will be active again when  this field is set to another value or chip is reset by other reset source, including:\nnRESET, Watchdog, LVR reset, BOD reset, ICE reset command and the software-chip reset function.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register.\nNote: M48xID/M487KMCAN series will disable POR by hardware when system enter power-down mode."
+          bits: 15-0
+    CSERVER:
+      desc: Chip Series Version Register
+      offset: 0x1f4
+      reset_val: 0x0
+      fields:
+        VERSION:
+          desc: "Chip Series Version\nThese bits indicate the series version of chip."
+          bits: 7-0
+          enum:
+            '0':
+              desc: M48xID/M487KMCAN
+              val: 0
+            '1':
+              desc: M48xGC/M48xE8
+              val: 1
+    PLCTL:
+      desc: Power Level Control Register
+      offset: 0x1f8
+      reset_val: 0x0
+      fields:
+        PLSEL:
+          desc: "Power Level Select(Write Protect)\nThese bits indicate the status of power level."
+          bits: 1-0
+          enum:
+            '0':
+              desc: Power level is PL0
+              val: 0
+            '1':
+              desc: Power level is PL1
+              val: 1
+        LVSSTEP:
+          desc: "LDO Voltage Scaling Step(Write Protect)\nThe LVSSTEP value is LDO voltage rising step."
+          bits: 21-16
+        LVSPRD:
+          desc: "LDO Voltage Scaling Period(Write Protect)\nThe LVSPRD value is the period of each LDO voltage rising step."
+          bits: 31-24
+    PLSTS:
+      desc: Power Level Status Register
+      offset: 0x1fc
+      reset_val: 0x100
+      fields:
+        PLCBUSY:
+          desc: "Power Level Change Busy Bit (Read Only)\nThis bit is set by hardware when power level is changing. After power level change is completed, this bit will be cleared automatically by hardware."
+          bits: 0
+          enum:
+            '0':
+              desc: Core voltage change is completed
+              val: 0
+            '1':
+              desc: Core voltage change is ongoing
+              val: 1
+        PLSTATUS:
+          desc: "Power Level Status (Read Only)\nThis bit indicates the status of power level."
+          bits: 9-8
+          enum:
+            '0':
+              desc: Power level is PL0
+              val: 0
+            '1':
+              desc: Power level is PL1
+              val: 1
+    AHBMCTL:
+      desc: AHB Bus Matrix Priority Control Register
+      offset: 0x400
+      reset_val: 0x1
+      fields:
+        INTACTEN:
+          desc: "Highest AHB Bus Priority of Cortex-M4 Core Enable Bit (Write Protect)\nEnable Cortex-M4 Core With Highest AHB Bus Priority In AHB Bus Matrix\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: Round-robin mode
+              val: 0
+            '1':
+              desc: Cortex-M4 CPU with highest bus priority when interrupt occurred
+              val: 1

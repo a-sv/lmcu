@@ -1,0 +1,661 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: FMC Register Map
+  ver: 1
+  registers:
+    ISPCTL:
+      desc: ISP Control Register
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        ISPEN:
+          desc: "ISP Enable Bit (Write Protect)\nISP function enable bit. Set this bit to enable ISP function.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: ISP function Disabled
+              val: 0
+            '1':
+              desc: ISP function Enabled
+              val: 1
+        BS:
+          desc: "Boot Select (Write Protect)\nWhen MBS in CONFIG0 is 1, set/clear this bit to select next booting from LDROM/APROM, respectively. This bit also functions as chip booting status flag, which can be used to check where chip booted from. This bit is initiated with the inversed value of CBS[1]  (CONFIG0[7]) after any reset is happened except CPU reset (CPU is 1) or system reset (SYS) is happened\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 1
+          enum:
+            '0':
+              desc: Boot from APROM when MBS (CONFIG0[5]) is 1
+              val: 0
+            '1':
+              desc: Boot from LDROM when MBS (CONFIG0[5]) is 1
+              val: 1
+        APUEN:
+          desc: "APROM Update Enable Bit (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 3
+          enum:
+            '0':
+              desc: APROM cannot be updated when the chip runs in APROM
+              val: 0
+            '1':
+              desc: APROM can be updated when the chip runs in APROM
+              val: 1
+        CFGUEN:
+          desc: "CONFIG Update Enable Bit (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 4
+          enum:
+            '0':
+              desc: CONFIG cannot be updated
+              val: 0
+            '1':
+              desc: CONFIG can be updated
+              val: 1
+        LDUEN:
+          desc: "LDROM Update Enable Bit (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 5
+          enum:
+            '0':
+              desc: LDROM cannot be updated
+              val: 0
+            '1':
+              desc: LDROM can be updated
+              val: 1
+        ISPFF:
+          desc: "ISP Fail Flag (Write Protect)\nThis bit is set by hardware when a triggered ISP meets any of the following conditions:\nThis bit needs to be cleared by writing 1 to it.\nAPROM writes to itself if APUEN is set to 0.\nAPROM(except for Data Flash) is erased/programmed if KEYLOCK is 1\nLDROM writes to itself if LDUEN is set to 0.\nLDROM is erased/programmed if KEYLOCK is set to 1\nCONFIG is erased/programmed if CFGUEN is set to 0.\nCONFIG is erased/programmed if KEYLOCK is set to 1 and KEYENROM[1:0] are 1 \nKPROM is erased/programmed if KEYLOCK is set to 1\nErase or Program command at brown-out detected\nDestination address is illegal, such as over an available range.\nInvalid ISP commands\nPage Erase command at LOCK mode with ICE connection\nInvalid operations (except for chip erase) with ICE connection if SBLOCK is not 0x5A\nRead any content of boot loader with ICE connection \nThe base and size of new XOM regsions is wrong, overlap or writed twice\nThe input setting of XOM page erase function is wrong\nThe active XOM regsion is accessed (except for chip erase, page erase, chksum and read CID/DID)\nThe XOM setting page is accessed (except for chip erase, word program and read)\nViolate the load code read protection\nOTP is erased, multi-word programed or 64-bit read\nChecksum or Flash All One Verification is not executed in their valid range\nBlock erase or bank erase is not executed in APROM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 6
+        BL:
+          desc: "Boot Loader Booting (Write Protect)\nThis bit is initiated with the inversed value of MBS (CONFIG0[5]).  Any reset, except CPU reset (CPU is 1) or system reset (SYS), BL will be reloaded. This bit is used to check chip boot from Boot Loader or not. User should keep original value of this bit when updating FMC_ISPCTL register.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 16
+          enum:
+            '0':
+              desc: Boot from APROM or LDROM
+              val: 0
+            '1':
+              desc: Boot from Boot Loader
+              val: 1
+    ISPADDR:
+      desc: ISP Address Register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        ISPADDR:
+          desc: "ISP Address\nThe M480 series is equipped with embedded Flash. ISPADDR[1:0] must be kept 00 for ISP 32-bit operation. ISPADDR[2:0] must be kept 000 for ISP 64-bit operation.\nFor CRC32 Checksum Calculation command, this field is the Flash starting address for checksum calculation, 4 Kbytes alignment is necessary for CRC32 checksum calculation.\nFor Flash32-bit Program, ISP address needs word alignment (4-byte). For Flash 64-bit Program, ISP address needs double word alignment (8-byte)."
+          bits: 31-0
+    ISPDAT:
+      desc: ISP Data Register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        ISPDAT:
+          desc: "ISP Data\nWrite data to this register before ISP program operation.\nRead data from this register after ISP read operation."
+          bits: 31-0
+    ISPCMD:
+      desc: ISP Command Register
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        CMD:
+          desc: "ISP Command\nISP command table is shown below:\nThe other commands are invalid."
+          bits: 6-0
+          enum:
+            '0':
+              desc: FLASH Read
+              val: 0
+            '4':
+              desc: Read Unique ID
+              val: 4
+            '8':
+              desc: Read Flash All-One Result
+              val: 8
+            '11':
+              desc: Read Company ID
+              val: 11
+            '12':
+              desc: Read Device ID
+              val: 12
+            '13':
+              desc: Read Checksum
+              val: 13
+            '33':
+              desc: FLASH 32-bit Program
+              val: 33
+            '34':
+              desc: FLASH Page Erase. Erase any page in two banks, except for OTP
+              val: 34
+            '35':
+              desc: FLASH Bank Erase. Erase all pages of APROM in BANK0 or BANK1
+              val: 35
+            '37':
+              desc: FLASH Block Erase. Erase four pages alignment of APROM in BANK0 or BANK1
+              val: 37
+            '39':
+              desc: FLASH Multi-Word Program
+              val: 39
+            '40':
+              desc: Run Flash All-One Verification
+              val: 40
+            '45':
+              desc: Run Checksum Calculation
+              val: 45
+            '46':
+              desc: Vector Remap
+              val: 46
+            '64':
+              desc: FLASH 64-bit Read
+              val: 64
+            '97':
+              desc: FLASH 64-bit Program
+              val: 97
+    ISPTRG:
+      desc: ISP Trigger Control Register
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        ISPGO:
+          desc: "ISP Start Trigger (Write Protect)\nWrite 1 to start ISP operation and this bit will be cleared to 0 by hardware automatically when ISP operation is finished.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: ISP operation is finished
+              val: 0
+            '1':
+              desc: ISP is progressed
+              val: 1
+    DFBA:
+      desc: Data Flash Base Address
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        DFBA:
+          desc: "Data Flash Base Address\nThis register indicates Data Flash start address. It is a read only register.\nThe Data Flash is shared with APROM. the content of this register is loaded from CONFIG1"
+          bits: 31-0
+    FTCTL:
+      desc: Flash Access Time Control Register
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        CACHEINV:
+          desc: "Flash Cache Invalidation (Write Protect)\nNote 1: Write 1 to start cache invalidation. The value will be changed to 0 once the process finishes.\nNote 2: This bit is write-protected. Refer to the SYS_REGLCTL register.\nNote 3: When ISP is processed, the Flash Cache will be invalid."
+          bits: 9
+          enum:
+            '0':
+              desc: Flash Cache Invalidation finished (default)
+              val: 0
+            '1':
+              desc: Flash Cache Invalidation
+              val: 1
+    ISPSTS:
+      desc: ISP Status Register
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        ISPBUSY:
+          desc: "ISP Busy Flag (Read Only)\nWrite 1 to start ISP operation and this bit will be cleared to 0 by hardware automatically when ISP operation is finished.\nThis bit is the mirror of ISPGO(FMC_ISPTRG[0])."
+          bits: 0
+          enum:
+            '0':
+              desc: ISP operation is finished
+              val: 0
+            '1':
+              desc: ISP is progressed
+              val: 1
+        CBS:
+          desc: "Boot Selection of CONFIG (Read Only)\nThis bit is initiated with the CBS (CONFIG0[7:6]) after any reset is happened except CPU reset (CPU is 1) or system reset (SYS) is happened."
+          bits: 2-1
+          enum:
+            '0':
+              desc: LDROM with IAP mode
+              val: 0
+            '1':
+              desc: LDROM without IAP mode
+              val: 1
+            '2':
+              desc: APROM with IAP mode
+              val: 2
+            '3':
+              desc: APROM without IAP mode
+              val: 3
+        MBS:
+          desc: "Boot From Boot Loader Selection Flag (Read Only)\nThis bit is initiated with the MBS (CONFIG0[5]) after any reset is happened except CPU reset (CPU is 1) or system reset (SYS) is happened."
+          bits: 3
+          enum:
+            '0':
+              desc: Boot from Boot Loader
+              val: 0
+            '1':
+              desc: Boot from LDROM/APROM.(.see CBS bit setting)
+              val: 1
+        FCYCDIS:
+          desc: "Flash Access Cycle Auto-tuning Disable Flag (Read Only)\nThis bit is set if Flash access cycle auto-tunning function is disabled. The auto-tunning function is disabled by FADIS(FMC_CYCCTL[8]) or HIRC clock is not ready."
+          bits: 4
+          enum:
+            '0':
+              desc: Flash access cycle auto-tuning Enabled
+              val: 0
+            '1':
+              desc: Flash access cyle auto-tuning Disabled
+              val: 1
+        PGFF:
+          desc: "Flash Program with Fast Verification Flag (Read Only)\nThis bit is set if data is mismatched at ISP programming verification. This bit is clear by performing ISP Flash erase or ISP read CID operation "
+          bits: 5
+          enum:
+            '0':
+              desc: Flash Program is success
+              val: 0
+            '1':
+              desc: Flash Program is fail. Program data is different with data in the Flash memory
+              val: 1
+        ISPFF:
+          desc: "ISP Fail Flag (Write Protect)\nThis bit is the mirror of ISPFF (FMC_ISPCTL[6]), it needs to be cleared by writing 1 to FMC_ISPCTL[6] or FMC_ISPSTS[6]. This bit is set by hardware when a triggered ISP meets any of the following conditions:\nAPROM writes to itself if APUEN is set to 0.\nAPROM(except for Data Flash) is erased/programmed if KEYLOCK is 1\nLDROM writes to itself if LDUEN is set to 0.\nLDROM is erased/programmed if KEYLOCK is set to 1\nCONFIG is erased/programmed if CFGUEN is set to 0.\nCONFIG is erased/programmed if KEYLOCK is set to 1 and KEYENROM[1:0] are 1 \nKPROM is erased/programmed if KEYLOCK is set to 1\nErase or Program command at brown-out detected\nDestination address is illegal, such as over an available range.\nInvalid ISP commands\nPage Erase command at LOCK mode with ICE connection\nInvalid operations (except for chip erase) with ICE connection if SBLOCK is not 0x5A\nRead any content of boot loader with ICE connection \nThe base and size of new XOM regsions is wrong, overlap or writed twice\nThe input setting of XOM page erase function is wrong\nThe active XOM regsion is accessed (except for chip erase, page erase, chksum and read CID/DID)\nThe XOM setting page is accessed (except for chip erase, word program and read)\nViolate the load code read protection\nOTP is erased, multi-word programed or 64-bit read\nChecksum or Flash All One Verification is not executed in their valid range\nBlock erase or bank erase is not executed in APROM\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 6
+        ALLONE:
+          desc: "Flash All-one Verification Flag \nThis bit is set by hardware if all of Flash bits are 1, and clear if Flash bits are not all 1 after 'Run Flash All-One Verification' complete; this bit also can be clear by writing 1"
+          bits: 7
+          enum:
+            '0':
+              desc: All of Flash bits are 1 after 'Run Flash All-One Verification' complete
+              val: 0
+            '1':
+              desc: Flash bits are not all 1 after 'Run Flash All-One Verification' complete
+              val: 1
+        VECMAP:
+          desc: "Vector Page Mapping Address (Read Only)\nAll access to 0x0000_0000~0x0000_01FF is remapped to the Flash memory address {VECMAP[14:0], 9'h000} ~ {VECMAP[14:0], 9'h1FF}"
+          bits: 23-9
+    CYCCTL:
+      desc: Flash Access Cycle Control Register
+      offset: 0x4c
+      reset_val: 0x0
+      fields:
+        CYCLE:
+          desc: "Flash Access Cycle Control (Write Protect)\nThis register is updated automatically by hardware while FCYCDIS (FMC_ISPSTS[4]) is 0, and updated by software while auto-tuning function disabled ( FADIS (FMC_CYCTL[8]) is 1)  \nThe optimized HCLK working frequency range is 192 MHz\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 3-0
+          enum:
+            '0':
+              desc: CPU access with zero wait cycle ; Flash access cycle is 1;
+              val: 0
+            '1':
+              desc: CPU access with one wait cycle if cache miss; Flash access cycle is 1;
+              val: 1
+            '2':
+              desc: CPU access with two wait cycles if cache miss; Flash access cycle is 2;
+              val: 2
+            '3':
+              desc: CPU access with three wait cycles if cache miss; Flash access cycle is 3;
+              val: 3
+            '4':
+              desc: CPU access with four wait cycles if cache miss; Flash access cycle is 4;
+              val: 4
+            '5':
+              desc: CPU access with five wait cycles if cache miss; Flash access cycle is 5;
+              val: 5
+            '6':
+              desc: CPU access with six wait cycles if cache miss; Flash access cycle is 6;
+              val: 6
+            '7':
+              desc: CPU access with seven wait cycles if cache miss; Flash access cycle is 7;
+              val: 7
+            '8':
+              desc: CPU access with eight wait cycles if cache miss; Flash access cycle is 8;
+              val: 8
+        FADIS:
+          desc: "Flash Access Cycle Auto-tuning Disable Bit (Write Protect)\nSet this bit to disable Flash access cycle auto-tuning function\nNote: This bit is write protected. Refer to the SYS_REGLCTL register. When FMC is doing auto-tuning, we considered as an ISP operation need to monitor busy flag."
+          bits: 8
+          enum:
+            '0':
+              desc: Flash access cycle auto-tuning Enabled
+              val: 0
+            '1':
+              desc: Flash access cycle auto-tuning Disabled
+              val: 1
+    KPKEY0:
+      desc: KPROM KEY0 Data Register
+      offset: 0x50
+      reset_val: 0x0
+      fields:
+        KPKEY0:
+          desc: "KPROM KEY0 Data (Write Only)\nWrite KPKEY0 data to this register before KEY Comparison operation."
+          bits: 31-0
+    KPKEY1:
+      desc: KPROM KEY1 Data Register
+      offset: 0x54
+      reset_val: 0x0
+      fields:
+        KPKEY1:
+          desc: "KPROM KEY1 Data (Write Only)\nWrite KPKEY1 data to this register before KEY Comparison operation."
+          bits: 31-0
+    KPKEY2:
+      desc: KPROM KEY2 Data Register
+      offset: 0x58
+      reset_val: 0x0
+      fields:
+        KPKEY2:
+          desc: "KPROM KEY2 Data (Write Only)\nWrite KPKEY2 data to this register before KEY Comparison operation."
+          bits: 31-0
+    KPKEYTRG:
+      desc: KPROM KEY Comparison Trigger Control Register
+      offset: 0x5c
+      reset_val: 0x0
+      fields:
+        KPKEYGO:
+          desc: "KPROM KEY Comparison Start Trigger (Write Protect)\nWrite 1 to start KEY comparison operation and this bit will be cleared to 0 by hardware automatically when KEY comparison operation is finished. This trigger operation is valid while FORBID (FMC_KPKEYSTS [3]) is 0.\nNote: This bit is write-protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: KEY comparison operation is finished
+              val: 0
+            '1':
+              desc: KEY comparison is progressed
+              val: 1
+        TCEN:
+          desc: "Timeout Counting Enable Bit (Write Protect)\n10 minutes is at least for timeout, and average is about 20 minutes.\nNote: This bit is write-protected. Refer to the SYS_REGLCTL register."
+          bits: 1
+          enum:
+            '0':
+              desc: Timeout counting Disabled
+              val: 0
+            '1':
+              desc: Timeout counting Enabled if input key is matched after key comparison finished
+              val: 1
+    KPKEYSTS:
+      desc: KPROM KEY Comparison Status Register
+      offset: 0x60
+      reset_val: 0x0
+      fields:
+        KEYBUSY:
+          desc: "KEY Comparison Busy (Read Only)"
+          bits: 0
+          enum:
+            '0':
+              desc: KEY comparison is finished
+              val: 0
+            '1':
+              desc: KEY comparison is busy
+              val: 1
+        KEYLOCK:
+          desc: "KEY LOCK Flag \nThis bit is set to 1 if KEYMATCH (FMC_KPKEYSTS [2]) is 0 and cleared to 0 if KEYMATCH is 1 in Security Key protection. After Mass Erase operation, users must reset or power on /off to clear this bit to 0. This bit also can be set to 1 while:\nCPU write 1 to KEYLOCK(FMC_KPKEYSTS[1]) or\nKEYFLAG(FMC_KPKEYSTS[4]) is 1 at power-on or reset or\nKEYENROM is programmed a non-0xFF value or\nTimeout event or\nFORBID(FMC_KPKEYSTS[3]) is 1\nCONFIG write protect is depended on CFGFLAG"
+          bits: 1
+          enum:
+            '0':
+              desc: KPROM, LDROM and APROM (not include Data Flash) is not in write protection
+              val: 0
+            '1':
+              desc: KPROM, LDROM and APROM (not include Data Flash) is in write protection
+              val: 1
+        KEYMATCH:
+          desc: "KEY Match Flag (Read Only)\nThis bit is set to 1 after KEY comparison complete if the KEY0, KEY1 and KEY2 are matched with the 96-bit security keys in KPROM; and cleared to 0 if KEYs are unmatched. This bit is also cleared to 0 while \nCPU writing 1 to KEYLOCK(FMC_KPKEYSTS[1]) or\nTimeout event or\nKPROM is erased or\nKEYENROM is programmed to a non-0xFF value.\nChip is in Power-down mode."
+          bits: 2
+          enum:
+            '0':
+              desc: KEY0, KEY1, and KEY2 are unmatched with the KPROM setting
+              val: 0
+            '1':
+              desc: KEY0, KEY1, and KEY2 are matched with the KPROM setting
+              val: 1
+        FORBID:
+          desc: "KEY Comparison Forbidden Flag (Read Only)\nThis bit is set to 1 when KPKECNT(FMC_KPKEY0[4:0]) is more than KPKEMAX (FMC_KPKEY0[12:8]) or KPCNT (FMC_KPCNT [2:0]) is more than KPMAX (FMC_KPCNT [10:8]). "
+          bits: 3
+          enum:
+            '0':
+              desc: KEY comparison is not forbidden
+              val: 0
+            '1':
+              desc: KEY comparison is forbidden, KEYGO (FMC_KEYTRG [0]) cannot trigger
+              val: 1
+        KEYFLAG:
+          desc: "KEY Protection Enable Flag (Read Only)\nThis bit is set while the KEYENROM [7:0] is not 0xFF at power-on or reset. This bit is cleared to 0 by hardware while KPROM is erased. This bit is set to 1 by hardware while KEYENROM is programmed to a non-0xFF value."
+          bits: 4
+          enum:
+            '0':
+              desc: Security Key protection Disabled
+              val: 0
+            '1':
+              desc: Security Key protection Enabled
+              val: 1
+        CFGFLAG:
+          desc: "CONFIG Write-protection Enable Flag (Read Only)\nThis bit is set while the KEYENROM [0] is 0 at power-on or reset. This bit is cleared to 0 by hardware while KPROM is erased. This bit is set to 1 by hardware while KEYENROM[0] is programmed to 0."
+          bits: 5
+          enum:
+            '0':
+              desc: CONFIG write-protection Disabled
+              val: 0
+            '1':
+              desc: CONFIG write-protection Enabled
+              val: 1
+    KPKEYCNT:
+      desc: KPROM KEY-unmatched Counting Register
+      offset: 0x64
+      reset_val: 0x0
+      fields:
+        KPKECNT:
+          desc: "Error Key Entry Counter at Each Power-on (Read Only)\nKPKECNT is increased when entry keys is wrong in Security Key protection. KPKECNT is cleared to 0 if key comparison is matched or system power-on."
+          bits: 5-0
+        KPKEMAX:
+          desc: "Maximum Number for Error Key Entry at Each Power-on (Read Only)\nKPKEMAX is the maximum error key entry number at each power-on. When KPKEMAXROM of KPROM is erased or programmed, KPKEMAX will also be updated. KPKEMAX is used to limit KPKECNT(FMC_KPKEY0[5:0]) maximum counting. The FORBID (FMC_KPKEYSTS [3]) will be set to 1 when KPKECNT is more than KPKEMAX."
+          bits: 13-8
+    KPCNT:
+      desc: KPROM KEY-unmatched Power-on Counting Register
+      offset: 0x68
+      reset_val: 0x0
+      fields:
+        KPCNT:
+          desc: "Power-on Counter for Error Key Entry (Read Only)\nKPCNT is the power-on counting for error key entry in Security Key protection. KPCNT is cleared to 0 if key comparison is matched."
+          bits: 3-0
+        KPMAX:
+          desc: "Power-on Maximum Number for Error Key Entry (Read Only)\nKPMAX is the power-on maximum number for error key entry. When KPMAXROM of KPROM is erased or programmed, KPMAX will also be updated. KPMAX is used to limit KPCNT (FMC_KPCNT [3:0]) maximum counting. The FORBID(FMC_KPKEYSTS[3]) will be set to 1 when KPCNT is more than KPMAX"
+          bits: 11-8
+    MPDAT0:
+      desc: ISP Data0 Register
+      offset: 0x80
+      reset_val: 0x0
+      fields:
+        ISPDAT0:
+          desc: "ISP Data 0\nThis register is the first 32-bit data for 32-bit/64-bit/multi-word programming, and it is also the mirror of FMC_ISPDAT, both registers keep the same data."
+          bits: 31-0
+    MPDAT1:
+      desc: ISP Data1 Register
+      offset: 0x84
+      reset_val: 0x0
+      fields:
+        ISPDAT1:
+          desc: "ISP Data 1\nThis register is the second 32-bit data for 64-bit/multi-word programming."
+          bits: 31-0
+    MPDAT2:
+      desc: ISP Data2 Register
+      offset: 0x88
+      reset_val: 0x0
+      fields:
+        ISPDAT2:
+          desc: "ISP Data 2\nThis register is the third 32-bit data for multi-word programming."
+          bits: 31-0
+    MPDAT3:
+      desc: ISP Data3 Register
+      offset: 0x8c
+      reset_val: 0x0
+      fields:
+        ISPDAT3:
+          desc: "ISP Data 3\nThis register is the fourth 32-bit data for multi-word programming."
+          bits: 31-0
+    MPSTS:
+      desc: ISP Multi-program Status Register
+      offset: 0xc0
+      reset_val: 0x0
+      fields:
+        MPBUSY:
+          desc: "ISP Multi-word Program Busy Flag (Read Only)\nWrite 1 to start ISP Multi-Word program operation and this bit will be cleared to 0 by hardware automatically when ISP Multi-Word program operation is finished.\nThis bit is the mirror of ISPGO(FMC_ISPTRG[0])."
+          bits: 0
+          enum:
+            '0':
+              desc: ISP Multi-Word program operation is finished
+              val: 0
+            '1':
+              desc: ISP Multi-Word program operation is progressed
+              val: 1
+        PPGO:
+          desc: "ISP Multi-program Status (Read Only)"
+          bits: 1
+          enum:
+            '0':
+              desc: ISP multi-word program operation is not active
+              val: 0
+            '1':
+              desc: ISP multi-word program operation is in progress
+              val: 1
+        ISPFF:
+          desc: "ISP Fail Flag (Read Only)\nThis bit is the mirror of ISPFF (FMC_ISPCTL[6]), it needs to be cleared by writing 1 to FMC_ISPCTL[6] or FMC_ISPSTS[6]. This bit is set by hardware when a triggered ISP meets any of the following conditions:\nAPROM writes to itself if APUEN is set to 0.\nAPROM(except for Data Flash) is erased/programmed if KEYLOCK is 1\nLDROM writes to itself if LDUEN is set to 0.\nLDROM is erased/programmed if KEYLOCK is set to 1\nCONFIG is erased/programmed if CFGUEN is set to 0.\nCONFIG is erased/programmed if KEYLOCK is set to 1 and KEYENROM[1:0] are 1 \nKPROM is erased/programmed if KEYLOCK is set to 1\nErase or Program command at brown-out detected\nDestination address is illegal, such as over an available range.\nInvalid ISP commands\nPage Erase command at LOCK mode with ICE connection\nInvalid operations (except for chip erase) with ICE connection if SBLOCK is not 0x5A\nRead any content of boot loader with ICE connection \nThe base and size of new XOM regsions is wrong, overlap or writed twice\nThe input setting of XOM page erase function is wrong\nThe active XOM regsion is accessed (except for chip erase, page erase, chksum and read CID/DID)\nThe XOM setting page is accessed (except for chip erase, word program and read)\nViolate the load code read protection\nOTP is erased, multi-word programed or 64-bit read\nChecksum or Flash All One Verification is not executed in their valid range\nBlock erase or bank erase is not executed in APROM"
+          bits: 2
+        KEYBUSY:
+          desc: "KEY Comparison Busy (Read Only)"
+          bits: 3
+          enum:
+            '0':
+              desc: KEY Comparison is finished
+              val: 0
+            '1':
+              desc: KEY Comparison is busy
+              val: 1
+        D0:
+          desc: "ISP DATA 0 Flag (Read Only)\nThis bit is set when FMC_MPDAT0 is written and auto-clear to 0 when the FMC_MPDAT0 data is programmed to Flash complete."
+          bits: 4
+          enum:
+            '0':
+              desc: FMC_MPDAT0 register is empty, or program to Flash complete
+              val: 0
+            '1':
+              desc: FMC_MPDAT0 register has been written, and not program to Flash complete
+              val: 1
+        D1:
+          desc: "ISP DATA 1 Flag (Read Only)\nThis bit is set when FMC_MPDAT1 is written and auto-clear to 0 when the FMC_MPDAT1 data is programmed to Flash complete."
+          bits: 5
+          enum:
+            '0':
+              desc: FMC_MPDAT1 register is empty, or program to Flash complete
+              val: 0
+            '1':
+              desc: FMC_MPDAT1 register has been written, and not program to Flash complete
+              val: 1
+        D2:
+          desc: "ISP DATA 2 Flag (Read Only)\nThis bit is set when FMC_MPDAT2 is written and auto-clear to 0 when the FMC_MPDAT2 data is programmed to Flash complete."
+          bits: 6
+          enum:
+            '0':
+              desc: FMC_MPDAT2 register is empty, or program to Flash complete
+              val: 0
+            '1':
+              desc: FMC_MPDAT2 register has been written, and not program to Flash complete
+              val: 1
+        D3:
+          desc: "ISP DATA 3 Flag (Read Only)\nThis bit is set when FMC_MPDAT3 is written and auto-clear to 0 when the FMC_MPDAT3 data is programmed to Flash complete."
+          bits: 7
+          enum:
+            '0':
+              desc: FMC_MPDAT3 register is empty, or program to Flash complete
+              val: 0
+            '1':
+              desc: FMC_MPDAT3 register has been written, and not program to Flash complete
+              val: 1
+    MPADDR:
+      desc: ISP Multi-program Address Register
+      offset: 0xc4
+      reset_val: 0x0
+      fields:
+        MPADDR:
+          desc: "ISP Multi-word Program Address\nMPADDR is the address of ISP multi-word program operation when ISPGO flag is 1.\nMPADDR will keep the final ISP address when ISP multi-word program is complete."
+          bits: 31-0
+    XOMR0STS:
+      desc: XOM Region 0 Status Register
+      offset: 0xd0
+      reset_val: 0xff000ff
+      fields:
+        SIZE:
+          desc: "XOM Region 0 Size (Page-aligned)\nSIZE is the page number of XOM Region 0."
+          bits: 7-0
+        BASE:
+          desc: "XOM Region 0 Base Address (Page-aligned)\nBASE is the base address of XOM Region 0."
+          bits: 31-8
+    XOMR1STS:
+      desc: XOM Region 1 Status Register
+      offset: 0xd4
+      reset_val: 0xff000ff
+      fields:
+        SIZE:
+          desc: "XOM Region 1 Size (Page-aligned)\nSIZE is the page number of XOM Region 1."
+          bits: 7-0
+        BASE:
+          desc: "XOM Region 1 Base Address (Page-aligned)\nBASE is the base address of XOM Region 1."
+          bits: 31-8
+    XOMR2STS:
+      desc: XOM Region 2 Status Register
+      offset: 0xd8
+      reset_val: 0xff000ff
+      fields:
+        SIZE:
+          desc: "XOM Region 2 Size (Page-aligned)\nSIZE is the page number of XOM Region 2."
+          bits: 7-0
+        BASE:
+          desc: "XOM Region 2 Base Address (Page-aligned)\nBASE is the base address of XOM Region 2."
+          bits: 31-8
+    XOMR3STS:
+      desc: XOM Region 3 Status Register
+      offset: 0xdc
+      reset_val: 0xff000ff
+      fields:
+        SIZE:
+          desc: "XOM Region 3 Size (Page-aligned)\nSIZE is the page number of XOM Region 3."
+          bits: 7-0
+        BASE:
+          desc: "XOM Region 3 Base Address (Page-aligned)\nBASE is the base address of XOM Region 3."
+          bits: 31-8
+    XOMSTS:
+      desc: XOM Status Register
+      offset: 0xe0
+      reset_val: 0x0
+      fields:
+        XOMR0ON:
+          desc: "XOM Region 0 On\nXOM Region 0 active status."
+          bits: 0
+          enum:
+            '0':
+              desc: No active
+              val: 0
+            '1':
+              desc: XOM region 0 is active
+              val: 1
+        XOMR1ON:
+          desc: "XOM Region 1 On\nXOM Region 1 active status."
+          bits: 1
+          enum:
+            '0':
+              desc: No active
+              val: 0
+            '1':
+              desc: XOM region 1 is active
+              val: 1
+        XOMR2ON:
+          desc: "XOM Region 2 On\nXOM Region 2 active status."
+          bits: 2
+          enum:
+            '0':
+              desc: No active
+              val: 0
+            '1':
+              desc: XOM region 2 is active
+              val: 1
+        XOMR3ON:
+          desc: "XOM Region 3 On\nXOM Region 3 active status."
+          bits: 3
+          enum:
+            '0':
+              desc: No active
+              val: 0
+            '1':
+              desc: XOM region 3 is active
+              val: 1
+        XOMPEF:
+          desc: "XOM Page Erase Function Fail\nXOM page erase function status. If XOMPEF is set to 1, user needs to erase XOM region again."
+          bits: 4
+          enum:
+            '0':
+              desc: Sucess
+              val: 0
+            '1':
+              desc: Fail
+              val: 1

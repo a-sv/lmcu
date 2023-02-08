@@ -1,0 +1,124 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: CRC Register Map
+  ver: 1
+  registers:
+    CTL:
+      desc: CRC Control Register
+      offset: 0x0
+      reset_val: 0x20000000
+      fields:
+        CRCEN:
+          desc: "CRC Channel Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: CRC operation Enabled
+              val: 1
+        CHKSINIT:
+          desc: "Checksum Initialization\nNote: This bit will be cleared automatically."
+          bits: 1
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: Initial checksum value by auto reload CRC_SEED register value to CRC_CHECKSUM register value
+              val: 1
+        DATREV:
+          desc: "Write Data Bit Order Reverse\nThis bit is used to enable the bit order reverse function per byte for write data value in CRC_DAT register.\nNote: If the write data is 0xAABBCCDD, the bit order reverse for CRC write data in is 0x55DD33BB."
+          bits: 24
+          enum:
+            '0':
+              desc: Bit order reversed for CRC write data in Disabled
+              val: 0
+            '1':
+              desc: Bit order reversed for CRC write data in Enabled (per byte)
+              val: 1
+        CHKSREV:
+          desc: "Checksum Bit Order Reverse\nThis bit is used to enable the bit order reverse function for checksum result in CRC_CHECKSUM register.\nNote: If the checksum result is 0xDD7B0F2E, the bit order reverse for CRC checksum is 0x74F0DEBB."
+          bits: 25
+          enum:
+            '0':
+              desc: Bit order reverse for CRC checksum Disabled
+              val: 0
+            '1':
+              desc: Bit order reverse for CRC checksum Enabled
+              val: 1
+        DATFMT:
+          desc: "Write Data 1's Complement\nThis bit is used to enable the 1's complement function for write data value in CRC_DAT register."
+          bits: 26
+          enum:
+            '0':
+              desc: 1's complement for CRC writes data in Disabled
+              val: 0
+            '1':
+              desc: 1's complement for CRC writes data in Enabled
+              val: 1
+        CHKSFMT:
+          desc: "Checksum 1's Complement\nThis bit is used to enable the 1's complement function for checksum result in CRC_CHECKSUM register."
+          bits: 27
+          enum:
+            '0':
+              desc: 1's complement for CRC checksum Disabled
+              val: 0
+            '1':
+              desc: 1's complement for CRC checksum Enabled
+              val: 1
+        DATLEN:
+          desc: "CPU Write Data Length\nThis field indicates the write data length.\nNote: When the write data length is 8-bit mode, the valid data in CRC_DAT register is only DATA[7:0] bits; if the write data length is 16-bit mode, the valid data in CRC_DAT register is only DATA[15:0]."
+          bits: 29-28
+          enum:
+            '0':
+              desc: Data length is 8-bit mode
+              val: 0
+            '1':
+              desc: Data length is 16-bit mode.
+              val: 1
+            '2':
+              desc: Data length is 32-bit mode
+              val: 2
+        CRCMODE:
+          desc: "CRC Polynomial Mode\nThis field indicates the CRC operation polynomial mode. "
+          bits: 31-30
+          enum:
+            '0':
+              desc: CRC-CCITT Polynomial mode
+              val: 0
+            '1':
+              desc: CRC-8 Polynomial mode
+              val: 1
+            '2':
+              desc: CRC-16 Polynomial mode
+              val: 2
+            '3':
+              desc: CRC-32 Polynomial mode
+              val: 3
+    DAT:
+      desc: CRC Write Data Register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        DATA:
+          desc: "CRC Write Data Bits\nUser can write data directly by CPU mode or use PDMA function to write data to this field to perform CRC operation.\nNote: When the write data length is 8-bit mode, the valid data in CRC_DAT register is only DATA[7:0] bits; if the write data length is 16-bit mode, the valid data in CRC_DAT register is only DATA[15:0]."
+          bits: 31-0
+    SEED:
+      desc: CRC Seed Register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        SEED:
+          desc: "CRC Seed Value\nThis field indicates the CRC seed value.\nNote: This field will be reloaded as checksum initial value (CRC_CHECKSUM register) after perform CHKSINIT (CRC_CTL[1])."
+          bits: 31-0
+    CHECKSUM:
+      desc: CRC Checksum Register
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        CHECKSUM:
+          desc: "CRC Checksum Results\nThis field indicates the CRC checksum result."
+          bits: 31-0

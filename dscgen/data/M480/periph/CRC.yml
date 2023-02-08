@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/CRC
+  base: 0x40031000

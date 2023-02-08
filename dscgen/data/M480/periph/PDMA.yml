@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/PDMA
+  base: 0x40008000

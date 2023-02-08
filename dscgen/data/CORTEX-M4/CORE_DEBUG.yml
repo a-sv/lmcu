@@ -1,0 +1,150 @@
+ip:
+  header: |
+    #include "../common.h"
+  desc: Core debug functionality
+  base: 0xE000EDF0
+  registers:
+    DHCSR:
+      desc: Debug Halting Control and Status Register
+      offset: 0x0
+      fields:
+        C_DEBUGEN:
+          desc: Enables debug.
+          bits: 0
+        C_HALT:
+          desc: Halts the core.
+          bits: 1
+        C_STEP:
+          desc: Steps the core in halted debug.
+          bits: 2
+        C_MASKINTS:
+          desc: Mask interrupts when stepping or running in halted debug.
+          bits: 3
+        C_SNAPSTALL:
+          desc: |
+            If the core is stalled on a load/store operation the stall ceases and the instruction
+            is forced to complete. This enables Halting debug to gain control of the core.
+          bits: 5
+        S_REGRDY:
+          desc: |
+            Register Read/Write on the Debug Core Register Selector register is available.
+            Last transfer is complete.
+          bits: 16
+        S_HALT:
+          desc: The core is in debug state when S_HALT is set.
+          bits: 17
+        S_SLEEP:
+          desc: Indicates that the core is sleeping (WFI, WFE or SLEEP-ON-EXIT).
+          bits: 18
+        S_LOCKUP:
+          desc: Reads as one if the core is running (not halted) and a lockup condition is present.
+          bits: 19
+        S_RETIRE_ST:
+          desc: Indicates that an instruction has completed since last read.
+          bits: 24
+        S_RESET_ST:
+          desc: |
+            Indicates that the core has been reset, or is now being reset, since the last time this
+            bit was read.
+          bits: 25
+        DBGKEY:
+          desc: Debug Key. 0xA05F must be written whenever this register is written.
+          bits: 31-16
+    DCRSR:
+      desc: Debug Halting Control and Status Register
+      offset: 0x4
+      fields:
+        REGSEL:
+          desc: Register select
+          bits: 4-0
+          enum:
+            R0:
+              val: 0
+            R1:
+              val: 1
+            R2:
+              val: 2
+            R3:
+              val: 3
+            R4:
+              val: 4
+            R5:
+              val: 5
+            R6:
+              val: 6
+            R7:
+              val: 7
+            R8:
+              val: 8
+            R9:
+              val: 9
+            R10:
+              val: 10
+            R11:
+              val: 11
+            R12:
+              val: 12
+            R13:
+              val: 13
+            R14:
+              val: 14
+            DBG_RET_ADDR:
+              desc: DebugReturnAddress()
+              val: 15
+            XPSR:
+              desc: xPSR/Flags, Execution Number, and state information
+              val: 16
+            MSP:
+              desc: MSP (Main SP)
+              val: 17
+            RAZ_WI:
+              desc: RAZ/WI
+              val: 18
+    DCRDR:
+      desc: Debug Core Register Data Register
+      offset: 0x8
+    DEMCR:
+      desc: Debug Exception and Monitor Control Register
+      offset: 0xC
+      fields:
+        VC_CORERESET:
+          desc: Reset Vector Catch. Halt running system if Core reset occurs.
+          bits: 0
+        VC_MMERR:
+          desc: Debug trap on Memory Management faults.
+          bits: 4
+        VC_NOCPERR:
+          desc: |
+            Debug trap on Usage Fault access to Coprocessor which is not present or marked as not
+            present in CAR register.
+          bits: 5
+        VC_CHKERR:
+          desc: Debug trap on Usage Fault enabled checking errors.
+          bits: 6
+        VC_STATERR:
+          desc: Debug trap on Usage Fault state errors.
+          bits: 7
+        VC_BUSERR:
+          desc: Debug Trap on normal Bus error.
+          bits: 8
+        VC_INTERR:
+          desc: Debug Trap on interrupt/exception service errors.
+          bits: 9
+        VC_HARDERR:
+          desc: Debug trap on Hard Fault.
+          bits: 10
+        MON_EN:
+          desc: Enable the debug monitor.
+          bits: 16
+        MON_PEND:
+          desc: Pend the monitor to activate when priority permits.
+          bits: 17
+        MON_STEP:
+          desc: When MON_EN = 1, this steps the core. When MON_EN = 0, this bit is ignored.
+          bits: 18
+        MON_REQ:
+          desc: This enables the monitor to identify how it wakes up.
+          bits: 19
+        TRCENA:
+          desc: This bit must be set to 1 to enable use of the trace and debug blocks.
+          bits: 24

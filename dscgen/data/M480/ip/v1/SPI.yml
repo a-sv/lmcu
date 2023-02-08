@@ -1,0 +1,898 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: SPI Register Map
+  ver: 1
+  registers:
+    CTL:
+      desc: SPI Control Register
+      offset: 0x0
+      reset_val: 0x34
+      fields:
+        SPIEN:
+          desc: "SPI Transfer Control Enable Bit\nIn Master mode, the transfer will start when there is data in the FIFO buffer after this bit is set to 1. In Slave mode, this device is ready to receive data when this bit is set to 1.\nNote: Before changing the configurations of SPIx_CTL, SPIx_CLKDIV, SPIx_SSCTL and SPIx_FIFOCTL registers, user shall clear the SPIEN (SPIx_CTL[0]) and confirm the SPIENSTS (SPIx_STATUS[15]) is 0."
+          bits: 0
+          enum:
+            '0':
+              desc: Transfer control Disabled
+              val: 0
+            '1':
+              desc: Transfer control Enabled
+              val: 1
+        RXNEG:
+          desc: "Receive on Negative Edge"
+          bits: 1
+          enum:
+            '0':
+              desc: Received data input signal is latched on the rising edge of SPI bus clock
+              val: 0
+            '1':
+              desc: Received data input signal is latched on the falling edge of SPI bus clock
+              val: 1
+        TXNEG:
+          desc: "Transmit on Negative Edge"
+          bits: 2
+          enum:
+            '0':
+              desc: Transmitted data output signal is changed on the rising edge of SPI bus clock
+              val: 0
+            '1':
+              desc: Transmitted data output signal is changed on the falling edge of SPI bus clock
+              val: 1
+        CLKPOL:
+          desc: "Clock Polarity"
+          bits: 3
+          enum:
+            '0':
+              desc: SPI bus clock is idle low
+              val: 0
+            '1':
+              desc: SPI bus clock is idle high
+              val: 1
+        SUSPITV:
+          desc: "Suspend Interval (Master Only)\nThe four bits provide configurable suspend interval between two successive transmit/receive transaction in a transfer. The definition of the suspend interval is the interval between the last clock edge of the preceding transaction word and the first clock edge of the following transaction word. The default value is 0x3. The period of the suspend interval is obtained according to the following equation.\n (SUSPITV + 0.5) * period of SPICLK clock cycle\nExample:"
+          bits: 7-4
+        DWIDTH:
+          desc: "Data Width\nThis field specifies how many bits can be transmitted / received in one transaction. The minimum bit length is 8 bits and can up to 32 bits.\nNote: This bit field will decide the depth of TX/RX FIFO configuration in SPI mode. Therefore, changing this bit field will clear TX/RX FIFO by hardware automatically."
+          bits: 12-8
+        LSB:
+          desc: "Send LSB First"
+          bits: 13
+          enum:
+            '0':
+              desc: The MSB, which bit of transmit/receive register depends on the setting of DWIDTH, is transmitted/received first
+              val: 0
+            '1':
+              desc: The LSB, bit 0 of the SPI TX register, is sent first to the SPI data output pin, and the first bit received from the SPI data input pin will be put in the LSB position of the RX register (bit 0 of SPI_RX)
+              val: 1
+        HALFDPX:
+          desc: "SPI Half-duplex Transfer Enable Bit\nThis bit is used to select full-duplex or half-duplex for SPI transfer. The bit field DATDIR (SPIx_CTL[20]) can be used to set the data direction in half-duplex transfer."
+          bits: 14
+          enum:
+            '0':
+              desc: SPI operates in full-duplex transfer
+              val: 0
+            '1':
+              desc: SPI operates in half-duplex transfer
+              val: 1
+        RXONLY:
+          desc: "Receive-only Mode Enable Bit (Master Only)\nThis bit field is only available in Master mode. In receive-only mode, SPI Master will generate SPI bus clock continuously for receiving data bit from SPI slave device and assert the BUSY status. "
+          bits: 15
+          enum:
+            '0':
+              desc: Receive-only mode Disabled
+              val: 0
+            '1':
+              desc: Receive-only mode Enabled
+              val: 1
+        UNITIEN:
+          desc: "Unit Transfer Interrupt Enable Bit"
+          bits: 17
+          enum:
+            '0':
+              desc: SPI unit transfer interrupt Disabled
+              val: 0
+            '1':
+              desc: SPI unit transfer interrupt Enabled
+              val: 1
+        SLAVE:
+          desc: "Slave Mode Control"
+          bits: 18
+          enum:
+            '0':
+              desc: Master mode
+              val: 0
+            '1':
+              desc: Slave mode
+              val: 1
+        REORDER:
+          desc: "Byte Reorder Function Enable Bit\nNote: Byte Reorder function is only available if DWIDTH is defined as 16, 24, and 32 bits."
+          bits: 19
+          enum:
+            '0':
+              desc: Byte Reorder function Disabled
+              val: 0
+            '1':
+              desc: Byte Reorder function Enabled. A byte suspend interval will be inserted among each byte. The period of the byte suspend interval depends on the setting of SUSPITV
+              val: 1
+        DATDIR:
+          desc: "Data Port Direction Control\nThis bit is used to select the data input/output direction in half-duplex transfer and Dual/Quad transfer"
+          bits: 20
+          enum:
+            '0':
+              desc: SPI data is input direction
+              val: 0
+            '1':
+              desc: SPI data is output direction
+              val: 1
+    CLKDIV:
+      desc: SPI Clock Divider Register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        DIVIDER:
+          desc: "Clock Divider\nThe value in this field is the frequency divider for generating the peripheral clock, fspi_eclk, and the SPI bus clock of SPI Master. The frequency is obtained according to the following equation.\n\nwhere \n is the peripheral clock source, which is defined in the clock control register, CLK_CLKSEL2.\nNote 1: Not supported in I2S mode.\nNote 2: The time interval must be larger than or equal to 8 peripheral clock cycles between releasing SPI IP software reset and setting this clock divider register."
+          bits: 8-0
+    SSCTL:
+      desc: SPI Slave Select Control Register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        SS:
+          desc: "Slave Selection Control (Master Only)\nIf AUTOSS bit is cleared to 0,"
+          bits: 0
+          enum:
+            '0':
+              desc: set the SPIx_SS line to inactive state.\nKeep the SPIx_SS line at inactive state
+              val: 0
+            '1':
+              desc: set the SPIx_SS line to active state.\nSPIx_SS line will be automatically driven to active state for the duration of data transfer, and will be driven to inactive state for the rest of the time. The active state of SPIx_SS is specified in SSACTPOL (SPIx_SSCTL[2])
+              val: 1
+        SSACTPOL:
+          desc: "Slave Selection Active Polarity\nThis bit defines the active polarity of slave selection signal (SPIx_SS)."
+          bits: 2
+          enum:
+            '0':
+              desc: The slave selection signal SPIx_SS is active low
+              val: 0
+            '1':
+              desc: The slave selection signal SPIx_SS is active high
+              val: 1
+        AUTOSS:
+          desc: "Automatic Slave Selection Function Enable Bit (Master Only)"
+          bits: 3
+          enum:
+            '0':
+              desc: Automatic slave selection function Disabled. Slave selection signal will be asserted/de-asserted according to SS (SPIx_SSCTL[0])
+              val: 0
+            '1':
+              desc: Automatic slave selection function Enabled
+              val: 1
+        SLVBEIEN:
+          desc: "Slave Mode Bit Count Error Interrupt Enable Bit"
+          bits: 8
+          enum:
+            '0':
+              desc: Slave mode bit count error interrupt Disabled
+              val: 0
+            '1':
+              desc: Slave mode bit count error interrupt Enabled
+              val: 1
+        SLVURIEN:
+          desc: "Slave Mode TX Under Run Interrupt Enable Bit"
+          bits: 9
+          enum:
+            '0':
+              desc: Slave mode TX under run interrupt Disabled
+              val: 0
+            '1':
+              desc: Slave mode TX under run interrupt Enabled
+              val: 1
+        SSACTIEN:
+          desc: "Slave Select Active Interrupt Enable Bit"
+          bits: 12
+          enum:
+            '0':
+              desc: Slave select active interrupt Disabled
+              val: 0
+            '1':
+              desc: Slave select active interrupt Enabled
+              val: 1
+        SSINAIEN:
+          desc: "Slave Select Inactive Interrupt Enable Bit"
+          bits: 13
+          enum:
+            '0':
+              desc: Slave select inactive interrupt Disabled
+              val: 0
+            '1':
+              desc: Slave select inactive interrupt Enabled
+              val: 1
+    PDMACTL:
+      desc: SPI PDMA Control Register
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        TXPDMAEN:
+          desc: "Transmit PDMA Enable Bit\nNote: In SPI Master mode with full duplex transfer, if both TX and RX PDMA functions are enabled, RX PDMA function cannot be enabled prior to TX PDMA function. User can enable TX PDMA function firstly or enable both functions simultaneously."
+          bits: 0
+          enum:
+            '0':
+              desc: Transmit PDMA function Disabled
+              val: 0
+            '1':
+              desc: Transmit PDMA function Enabled
+              val: 1
+        RXPDMAEN:
+          desc: "Receive PDMA Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: Receive PDMA function Disabled
+              val: 0
+            '1':
+              desc: Receive PDMA function Enabled
+              val: 1
+        PDMARST:
+          desc: "PDMA Reset"
+          bits: 2
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: Reset the PDMA control logic of the SPI controller. This bit will be automatically cleared to 0
+              val: 1
+    FIFOCTL:
+      desc: SPI FIFO Control Register
+      offset: 0x10
+      reset_val: 0x22000000
+      fields:
+        RXRST:
+          desc: "Receive Reset"
+          bits: 0
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: Reset receive FIFO pointer and receive circuit. The RXFULL bit will be cleared to 0 and the RXEMPTY bit will be set to 1. This bit will be cleared to 0 by hardware about 3 system clock cycles + 2 peripheral clock cycles after it is set to 1. User can read TXRXRST (SPIx_STATUS[23]) to check if reset is accomplished or not
+              val: 1
+        TXRST:
+          desc: "Transmit Reset\nNote: If TX underflow event occurs in SPI Slave mode, this bit can be used to make SPI return to idle state."
+          bits: 1
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: Reset transmit FIFO pointer and transmit circuit. The TXFULL bit will be cleared to 0 and the TXEMPTY bit will be set to 1. This bit will be cleared to 0 by hardware about 3 system clock cycles + 2 peripheral clock cycles after it is set to 1. User can read TXRXRST (SPIx_STATUS[23]) to check if reset is accomplished or not
+              val: 1
+        RXTHIEN:
+          desc: "Receive FIFO Threshold Interrupt Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: RX FIFO threshold interrupt Disabled
+              val: 0
+            '1':
+              desc: RX FIFO threshold interrupt Enabled
+              val: 1
+        TXTHIEN:
+          desc: "Transmit FIFO Threshold Interrupt Enable Bit"
+          bits: 3
+          enum:
+            '0':
+              desc: TX FIFO threshold interrupt Disabled
+              val: 0
+            '1':
+              desc: TX FIFO threshold interrupt Enabled
+              val: 1
+        RXTOIEN:
+          desc: "Slave Receive Time-out Interrupt Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: Receive time-out interrupt Disabled
+              val: 0
+            '1':
+              desc: Receive time-out interrupt Enabled
+              val: 1
+        RXOVIEN:
+          desc: "Receive FIFO Overrun Interrupt Enable Bit"
+          bits: 5
+          enum:
+            '0':
+              desc: Receive FIFO overrun interrupt Disabled
+              val: 0
+            '1':
+              desc: Receive FIFO overrun interrupt Enabled
+              val: 1
+        TXUFPOL:
+          desc: "TX Underflow Data Polarity\nNote 1: The TX underflow event occurs if there is no any data in TX FIFO when the slave selection signal is active.\nNote 2: This bit should be set as 0 in I2S mode.\nNote 3: When TX underflow event occurs, SPIx_MISO pin state will be determined by this setting even though TX FIFO is not empty afterward. Data stored in TX FIFO will be sent through SPIx_MISO pin in the next transfer frame."
+          bits: 6
+          enum:
+            '0':
+              desc: The SPI data out is keep 0 if there is TX underflow event in Slave mode
+              val: 0
+            '1':
+              desc: The SPI data out is keep 1 if there is TX underflow event in Slave mode
+              val: 1
+        TXUFIEN:
+          desc: "TX Underflow Interrupt Enable Bit\nWhen TX underflow event occurs in Slave mode, TXUFIF (SPIx_STATUS[19]) will be set to 1. This bit is used to enable the TX underflow interrupt."
+          bits: 7
+          enum:
+            '0':
+              desc: Slave TX underflow interrupt Disabled
+              val: 0
+            '1':
+              desc: Slave TX underflow interrupt Enabled
+              val: 1
+        RXFBCLR:
+          desc: "Receive FIFO Buffer Clear\nNote: The RX shift register will not be cleared."
+          bits: 8
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: Clear receive FIFO pointer. The RXFULL bit will be cleared to 0 and the RXEMPTY bit will be set to 1. This bit will be cleared to 0 by hardware about 1 system clock after it is set to 1
+              val: 1
+        TXFBCLR:
+          desc: "Transmit FIFO Buffer Clear\nNote: The TX shift register will not be cleared."
+          bits: 9
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: Clear transmit FIFO pointer. The TXFULL bit will be cleared to 0 and the TXEMPTY bit will be set to 1. This bit will be cleared to 0 by hardware about 1 system clock after it is set to 1
+              val: 1
+        RXTH:
+          desc: "Receive FIFO Threshold\nIf the valid data count of the receive FIFO buffer is larger than the (RXTH + 1) setting, the RXTHIF bit will be set to 1, else the RXTHIF bit will be cleared to 0. It could be 0~3. If SPI mode data width is 8~16 bits, it could be 0~7."
+          bits: 26-24
+        TXTH:
+          desc: "Transmit FIFO Threshold\nIf the valid data count of the transmit FIFO buffer is less than or equal to the (TXTH + 1) setting, the TXTHIF bit will be set to 1, else the TXTHIF bit will be cleared to 0. It could be 0~3. If SPI mode data width is 8~16 bits, it could be 0~7."
+          bits: 30-28
+    STATUS:
+      desc: SPI Status Register
+      offset: 0x14
+      reset_val: 0x50110
+      fields:
+        BUSY:
+          desc: "Busy Status (Read Only)"
+          bits: 0
+          enum:
+            '0':
+              desc: SPI controller is in idle state
+              val: 0
+            '1':
+              desc: SPI controller is in busy state
+              val: 1
+        UNITIF:
+          desc: "Unit Transfer Interrupt Flag\nNote: This bit will be cleared by writing 1 to it."
+          bits: 1
+          enum:
+            '0':
+              desc: No transaction has been finished since this bit was cleared to 0
+              val: 0
+            '1':
+              desc: SPI controller has finished one unit transfer
+              val: 1
+        SSACTIF:
+          desc: "Slave Select Active Interrupt Flag\nNote: Only available in Slave mode. This bit will be cleared by writing 1 to it."
+          bits: 2
+          enum:
+            '0':
+              desc: Slave select active interrupt was cleared or not occurred
+              val: 0
+            '1':
+              desc: Slave select active interrupt event occurred
+              val: 1
+        SSINAIF:
+          desc: "Slave Select Inactive Interrupt Flag\nNote: Only available in Slave mode. This bit will be cleared by writing 1 to it."
+          bits: 3
+          enum:
+            '0':
+              desc: Slave select inactive interrupt was cleared or not occurred
+              val: 0
+            '1':
+              desc: Slave select inactive interrupt event occurred
+              val: 1
+        SSLINE:
+          desc: "Slave Select Line Bus Status (Read Only)\nNote: This bit is only available in Slave mode. If SSACTPOL (SPIx_SSCTL[2]) is set 0, and the SSLINE is 1, the SPI slave select is in inactive status."
+          bits: 4
+          enum:
+            '0':
+              desc: The slave select line status is 0
+              val: 0
+            '1':
+              desc: The slave select line status is 1
+              val: 1
+        SLVBEIF:
+          desc: "Slave Mode Bit Count Error Interrupt Flag\nIn Slave mode, when the slave select line goes to inactive state, if bit counter is mismatch with DWIDTH, this interrupt flag will be set to 1.\nNote: If the slave select active but there is no any bus clock input, the SLVBEIF also active when the slave select goes to inactive state. This bit will be cleared by writing 1 to it"
+          bits: 6
+          enum:
+            '0':
+              desc: No Slave mode bit count error event
+              val: 0
+            '1':
+              desc: Slave mode bit count error event occurred
+              val: 1
+        SLVURIF:
+          desc: "Slave Mode TX Under Run Interrupt Flag\nIn Slave mode, if TX underflow event occurs and the slave select line goes to inactive state, this interrupt flag will be set to 1.\nNote: This bit will be cleared by writing 1 to it."
+          bits: 7
+          enum:
+            '0':
+              desc: No Slave TX under run event
+              val: 0
+            '1':
+              desc: Slave TX under run event occurred
+              val: 1
+        RXEMPTY:
+          desc: "Receive FIFO Buffer Empty Indicator (Read Only)"
+          bits: 8
+          enum:
+            '0':
+              desc: Receive FIFO buffer is not empty
+              val: 0
+            '1':
+              desc: Receive FIFO buffer is empty
+              val: 1
+        RXFULL:
+          desc: "Receive FIFO Buffer Full Indicator (Read Only)"
+          bits: 9
+          enum:
+            '0':
+              desc: Receive FIFO buffer is not full
+              val: 0
+            '1':
+              desc: Receive FIFO buffer is full
+              val: 1
+        RXTHIF:
+          desc: "Receive FIFO Threshold Interrupt Flag (Read Only)"
+          bits: 10
+          enum:
+            '0':
+              desc: The valid data count within the receive FIFO buffer is smaller than or equal to the setting value of RXTH
+              val: 0
+            '1':
+              desc: The valid data count within the receive FIFO buffer is larger than the setting value of RXTH
+              val: 1
+        RXOVIF:
+          desc: "Receive FIFO Overrun Interrupt Flag\nWhen the receive FIFO buffer is full, the follow-up data will be dropped and this bit will be set to 1.\nNote: This bit will be cleared by writing 1 to it."
+          bits: 11
+          enum:
+            '0':
+              desc: No FIFO is overrun
+              val: 0
+            '1':
+              desc: Receive FIFO is overrun
+              val: 1
+        RXTOIF:
+          desc: "Receive Time-out Interrupt Flag\nNote: This bit will be cleared by writing 1 to it."
+          bits: 12
+          enum:
+            '0':
+              desc: No receive FIFO time-out event
+              val: 0
+            '1':
+              desc: Receive FIFO buffer is not empty and no read operation on receive FIFO buffer over 64 SPI peripheral clock periods in Master mode or over 576 SPI peripheral clock periods in Slave mode. When the received FIFO buffer is read by software, the time-out status will be cleared automatically
+              val: 1
+        SPIENSTS:
+          desc: "SPI Enable Status (Read Only)\nNote: The SPI peripheral clock is asynchronous with the system clock. In order to make sure the SPI control logic is disabled, this bit indicates the real status of SPI controller."
+          bits: 15
+          enum:
+            '0':
+              desc: SPI controller Disabled
+              val: 0
+            '1':
+              desc: SPI controller Enabled
+              val: 1
+        TXEMPTY:
+          desc: "Transmit FIFO Buffer Empty Indicator (Read Only)"
+          bits: 16
+          enum:
+            '0':
+              desc: Transmit FIFO buffer is not empty
+              val: 0
+            '1':
+              desc: Transmit FIFO buffer is empty
+              val: 1
+        TXFULL:
+          desc: "Transmit FIFO Buffer Full Indicator (Read Only)"
+          bits: 17
+          enum:
+            '0':
+              desc: Transmit FIFO buffer is not full
+              val: 0
+            '1':
+              desc: Transmit FIFO buffer is full
+              val: 1
+        TXTHIF:
+          desc: "Transmit FIFO Threshold Interrupt Flag (Read Only)"
+          bits: 18
+          enum:
+            '0':
+              desc: The valid data count within the transmit FIFO buffer is larger than the setting value of TXTH
+              val: 0
+            '1':
+              desc: The valid data count within the transmit FIFO buffer is less than or equal to the setting value of TXTH
+              val: 1
+        TXUFIF:
+          desc: "TX Underflow Interrupt Flag\nWhen the TX underflow event occurs, this bit will be set to 1, the state of data output pin depends on the setting of TXUFPOL.\nNote 1: This bit will be cleared by writing 1 to it.\nNote 2: If reset slave's transmission circuit when slave selection signal is active, this flag will be set to 1 after 2 peripheral clock cycles + 3 system clock cycles since the reset operation is done."
+          bits: 19
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: No data in Transmit FIFO and TX shift register when the slave selection signal is active
+              val: 1
+        TXRXRST:
+          desc: "TX or RX Reset Status (Read Only)\nNote: Both the reset operations of TXRST and RXRST need 3 system clock cycles + 2 peripheral clock cycles. User can check the status of this bit to monitor the reset function is doing or done."
+          bits: 23
+          enum:
+            '0':
+              desc: The reset function of TXRST or RXRST is done
+              val: 0
+            '1':
+              desc: Doing the reset function of TXRST or RXRST
+              val: 1
+        RXCNT:
+          desc: "Receive FIFO Data Count (Read Only)\nThis bit field indicates the valid data count of receive FIFO buffer."
+          bits: 27-24
+        TXCNT:
+          desc: "Transmit FIFO Data Count (Read Only)\nThis bit field indicates the valid data count of transmit FIFO buffer."
+          bits: 31-28
+    TX:
+      desc: SPI Data Transmit Register
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        TX:
+          desc: "Data Transmit Register\nThe data transmit registers pass through the transmitted data into the 4-level transmit FIFO buffers. The number of valid bits depends on the setting of DWIDTH (SPIx_CTL[12:8]) in SPI mode or WDWIDTH (SPIx_I2SCTL[5:4]) in I2S mode.\nIn SPI mode, if DWIDTH is set to 0x08, the bits TX[7:0] will be transmitted. If DWIDTH is set to 0x00, the SPI controller will perform a 32-bit transfer.\nIn I2S mode, if WDWIDTH (SPIx_I2SCTL[5:4]) is set to 0x2, the data width of audio channel is 24-bit and corresponding to TX[23:0]. If WDWIDTH is set as 0x0, 0x1, or 0x3, all bits of this field are valid and referred to the data arrangement in I2S mode FIFO operation section\nNote: In Master mode, SPI controller will start to transfer the SPI bus clock after 1 APB clock and 6 peripheral clock cycles after user writes to this register."
+          bits: 31-0
+    RX:
+      desc: SPI Data Receive Register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        RX:
+          desc: "Data Receive Register (Read Only)\nThere are 4-level FIFO buffers in this controller. The data receive register holds the data received from SPI data input pin. If the RXEMPTY (SPIx_STATUS[8] or SPIx_I2SSTS[8]) is not set to 1, the receive FIFO buffers can be accessed through software by reading this register."
+          bits: 31-0
+    I2SCTL:
+      desc: I2S Control Register
+      offset: 0x60
+      reset_val: 0x0
+      fields:
+        I2SEN:
+          desc: "I2S Controller Enable Bit\nNote 1: If enabling this bit, I2Sx_BCLK will start to output in Master mode.\nNote 2: Before changing the configurations of SPIx_I2SCTL, SPIx_I2SCLK, and SPIx_FIFOCTL registers, user shall clear the I2SEN (SPIx_I2SCTL[0]) and confirm the I2SENSTS (SPIx_I2SSTS[15]) is 0."
+          bits: 0
+          enum:
+            '0':
+              desc: I2S mode Disabled
+              val: 0
+            '1':
+              desc: I2S mode Enabled
+              val: 1
+        TXEN:
+          desc: "Transmit Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: Data transmit Disabled
+              val: 0
+            '1':
+              desc: Data transmit Enabled
+              val: 1
+        RXEN:
+          desc: "Receive Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: Data receive Disabled
+              val: 0
+            '1':
+              desc: Data receive Enabled
+              val: 1
+        MUTE:
+          desc: "Transmit Mute Enable Bit"
+          bits: 3
+          enum:
+            '0':
+              desc: Transmit data is shifted from buffer
+              val: 0
+            '1':
+              desc: Transmit channel zero
+              val: 1
+        WDWIDTH:
+          desc: "Word Width"
+          bits: 5-4
+          enum:
+            '0':
+              desc: data size is 8-bit
+              val: 0
+            '1':
+              desc: data size is 16-bit
+              val: 1
+            '2':
+              desc: data size is 24-bit
+              val: 2
+            '3':
+              desc: data size is 32-bit
+              val: 3
+        MONO:
+          desc: "Monaural Data"
+          bits: 6
+          enum:
+            '0':
+              desc: Data is stereo format
+              val: 0
+            '1':
+              desc: Data is monaural format
+              val: 1
+        ORDER:
+          desc: "Stereo Data Order in FIFO"
+          bits: 7
+          enum:
+            '0':
+              desc: Left channel data at high byte
+              val: 0
+            '1':
+              desc: Left channel data at low byte
+              val: 1
+        SLAVE:
+          desc: "Slave Mode\nI2S can operate as master or slave. For Master mode, I2Sx_BCLK and I2Sx_LRCLK pins are output mode and send bit clock from this chip to audio CODEC chip. In Slave mode, I2Sx_BCLK and I2Sx_LRCLK pins are input mode and I2Sx_BCLK and I2Sx_LRCLK signals are received from outer audio CODEC chip."
+          bits: 8
+          enum:
+            '0':
+              desc: Master mode
+              val: 0
+            '1':
+              desc: Slave mode
+              val: 1
+        MCLKEN:
+          desc: "Master Clock Enable Bit\nIf MCLKEN is set to 1, I2S controller will generate master clock on SPIx_I2SMCLK pin for external audio devices."
+          bits: 15
+          enum:
+            '0':
+              desc: Master clock Disabled
+              val: 0
+            '1':
+              desc: Master clock Enabled
+              val: 1
+        RZCEN:
+          desc: "Right Channel Zero Cross Detection Enable Bit\nIf this bit is set to 1, when right channel data sign bit change or next shift data bits are all 0 then RZCIF flag in SPIx_I2SSTS register is set to 1. This function is only available in transmit operation."
+          bits: 16
+          enum:
+            '0':
+              desc: Right channel zero cross detection Disabled
+              val: 0
+            '1':
+              desc: Right channel zero cross detection Enabled
+              val: 1
+        LZCEN:
+          desc: "Left Channel Zero Cross Detection Enable Bit\nIf this bit is set to 1, when left channel data sign bit changes or next shift data bits are all 0 then LZCIF flag in SPIx_I2SSTS register is set to 1. This function is only available in transmit operation."
+          bits: 17
+          enum:
+            '0':
+              desc: Left channel zero cross detection Disabled
+              val: 0
+            '1':
+              desc: Left channel zero cross detection Enabled
+              val: 1
+        RXLCH:
+          desc: "Receive Left Channel Enable Bit"
+          bits: 23
+          enum:
+            '0':
+              desc: Receive right channel data in Mono mode
+              val: 0
+            '1':
+              desc: Receive left channel data in Mono mode
+              val: 1
+        RZCIEN:
+          desc: "Right Channel Zero Cross Interrupt Enable Bit\nInterrupt occurs if this bit is set to 1 and right channel zero cross event occurs."
+          bits: 24
+          enum:
+            '0':
+              desc: Interrupt Disabled
+              val: 0
+            '1':
+              desc: Interrupt Enabled
+              val: 1
+        LZCIEN:
+          desc: "Left Channel Zero Cross Interrupt Enable Bit\nInterrupt occurs if this bit is set to 1 and left channel zero cross event occurs."
+          bits: 25
+          enum:
+            '0':
+              desc: Interrupt Disabled
+              val: 0
+            '1':
+              desc: Interrupt Enabled
+              val: 1
+        FORMAT:
+          desc: "Data Format Selection"
+          bits: 29-28
+          enum:
+            '0':
+              desc: I2S data format
+              val: 0
+            '1':
+              desc: MSB justified data format
+              val: 1
+            '2':
+              desc: PCM mode A
+              val: 2
+            '3':
+              desc: PCM mode B
+              val: 3
+        SLVERRIEN:
+          desc: "Bit Clock Loss Interrupt Enable Bit for Slave Mode\nInterrupt occurs if this bit is set to 1 and bit clock loss event occurs."
+          bits: 31
+          enum:
+            '0':
+              desc: Interrupt Disabled
+              val: 0
+            '1':
+              desc: Interrupt Enabled
+              val: 1
+    I2SCLK:
+      desc: I2S Clock Divider Control Register
+      offset: 0x64
+      reset_val: 0x0
+      fields:
+        MCLKDIV:
+          desc: "Master Clock Divider\nIf MCLKEN is set to 1, I2S controller will generate master clock for external audio devices. The frequency of master clock, fMCLK, is determined by the following expressions:\nwhere\n is the frequency of I2S peripheral clock source, which is defined in the clock control register CLK_CLKSEL2. In general, the master clock rate is 256 times sampling clock rate."
+          bits: 6-0
+        BCLKDIV:
+          desc: "Bit Clock Divider\nThe I2S controller will generate bit clock in Master mode. The clock frequency of bit clock , fBCLK, is determined by the following expression:\n\nwhere \n is the frequency of I2S peripheral clock source, which is defined in the clock control register CLK_CLKSEL2.\nIn I2S Slave mode, this field is used to define the frequency of peripheral clock and it's determined by . \nThe peripheral clock frequency in I2S Slave mode must be equal to or faster than 6 times of input bit clock.\nNote: The time interval must be larger than or equal to 8 peripheral clock cycles between releasing SPI IP software reset and setting this clock divider register."
+          bits: 17-8
+    I2SSTS:
+      desc: I2S Status Register
+      offset: 0x68
+      reset_val: 0x50100
+      fields:
+        RIGHT:
+          desc: "Right Channel (Read Only)\nThis bit indicates the current transmit data is belong to which channel."
+          bits: 4
+          enum:
+            '0':
+              desc: Left channel
+              val: 0
+            '1':
+              desc: Right channel
+              val: 1
+        RXEMPTY:
+          desc: "Receive FIFO Buffer Empty Indicator (Read Only)"
+          bits: 8
+          enum:
+            '0':
+              desc: Receive FIFO buffer is not empty
+              val: 0
+            '1':
+              desc: Receive FIFO buffer is empty
+              val: 1
+        RXFULL:
+          desc: "Receive FIFO Buffer Full Indicator (Read Only)"
+          bits: 9
+          enum:
+            '0':
+              desc: Receive FIFO buffer is not full
+              val: 0
+            '1':
+              desc: Receive FIFO buffer is full
+              val: 1
+        RXTHIF:
+          desc: "Receive FIFO Threshold Interrupt Flag (Read Only)"
+          bits: 10
+          enum:
+            '0':
+              desc: The valid data count within the receive FIFO buffer is smaller than or equal to the setting value of RXTH
+              val: 0
+            '1':
+              desc: The valid data count within the receive FIFO buffer is larger than the setting value of RXTH
+              val: 1
+        RXOVIF:
+          desc: "Receive FIFO Overrun Interrupt Flag\nWhen the receive FIFO buffer is full, the follow-up data will be dropped and this bit will be set to 1.\nNote: This bit will be cleared by writing 1 to it."
+          bits: 11
+        RXTOIF:
+          desc: "Receive Time-out Interrupt Flag\nNote: This bit will be cleared by writing 1 to it."
+          bits: 12
+          enum:
+            '0':
+              desc: No receive FIFO time-out event
+              val: 0
+            '1':
+              desc: Receive FIFO buffer is not empty and no read operation on receive FIFO buffer over 64 SPI peripheral clock period in Master mode or over 576 SPI peripheral clock period in Slave mode. When the received FIFO buffer is read by software, the time-out status will be cleared automatically
+              val: 1
+        I2SENSTS:
+          desc: "I2S Enable Status (Read Only)\nNote: The SPI peripheral clock is asynchronous with the system clock. In order to make sure the SPI/I2S control logic is disabled, this bit indicates the real status of SPI/I2S control logic for user."
+          bits: 15
+          enum:
+            '0':
+              desc: The SPI/I2S control logic is disabled
+              val: 0
+            '1':
+              desc: The SPI/I2S control logic is enabled
+              val: 1
+        TXEMPTY:
+          desc: "Transmit FIFO Buffer Empty Indicator (Read Only)"
+          bits: 16
+          enum:
+            '0':
+              desc: Transmit FIFO buffer is not empty
+              val: 0
+            '1':
+              desc: Transmit FIFO buffer is empty
+              val: 1
+        TXFULL:
+          desc: "Transmit FIFO Buffer Full Indicator (Read Only)"
+          bits: 17
+          enum:
+            '0':
+              desc: Transmit FIFO buffer is not full
+              val: 0
+            '1':
+              desc: Transmit FIFO buffer is full
+              val: 1
+        TXTHIF:
+          desc: "Transmit FIFO Threshold Interrupt Flag (Read Only)"
+          bits: 18
+          enum:
+            '0':
+              desc: The valid data count within the transmit FIFO buffer is larger than the setting value of TXTH
+              val: 0
+            '1':
+              desc: The valid data count within the transmit FIFO buffer is less than or equal to the setting value of TXTH
+              val: 1
+        TXUFIF:
+          desc: "Transmit FIFO Underflow Interrupt Flag\nWhen the transmit FIFO buffer is empty and there is no datum written into the FIFO buffer, if there is more bus clock input, this bit will be set to 1.\nNote: This bit will be cleared by writing 1 to it."
+          bits: 19
+        RZCIF:
+          desc: "Right Channel Zero Cross Interrupt Flag"
+          bits: 20
+          enum:
+            '0':
+              desc: No zero cross event occurred on right channel
+              val: 0
+            '1':
+              desc: Zero cross event occurred on right channel
+              val: 1
+        LZCIF:
+          desc: "Left Channel Zero Cross Interrupt Flag"
+          bits: 21
+          enum:
+            '0':
+              desc: No zero cross event occurred on left channel
+              val: 0
+            '1':
+              desc: Zero cross event occurred on left channel
+              val: 1
+        SLVERRIF:
+          desc: "Bit Clock Loss Interrupt Flag for Slave Mode\nNote: This bit will be cleared by writing 1 to it."
+          bits: 22
+          enum:
+            '0':
+              desc: No bit clock loss event occurred
+              val: 0
+            '1':
+              desc: Bit clock loss event occurred
+              val: 1
+        TXRXRST:
+          desc: "TX or RX Reset Status (Read Only)\nNote: Both the reset operations of TXRST and RXRST need 3 system clock cycles + 2 peripheral clock cycles. User can check the status of this bit to monitor the reset function is doing or done."
+          bits: 23
+          enum:
+            '0':
+              desc: The reset function of TXRST or RXRST is done
+              val: 0
+            '1':
+              desc: Doing the reset function of TXRST or RXRST
+              val: 1
+        RXCNT:
+          desc: "Receive FIFO Data Count (Read Only)\nThis bit field indicates the valid data count of receive FIFO buffer."
+          bits: 26-24
+        TXCNT:
+          desc: "Transmit FIFO Data Count (Read Only)\nThis bit field indicates the valid data count of transmit FIFO buffer."
+          bits: 30-28

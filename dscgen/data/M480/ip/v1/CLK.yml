@@ -1,0 +1,2508 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: CLK Register Map
+  ver: 1
+  registers:
+    PWRCTL:
+      desc: System Power-down Control Register
+      offset: 0x0
+      reset_val: 0x1c1c
+      fields:
+        HXTEN:
+          desc: "HXT Enable Bit (Write Protect)\nThe bit default value is set by Flash controller user configuration register CONFIG0 [26:24]. When the default clock source is from HXT, this bit is set to 1 automatically.\nNote: 1.This bit is write protected. Refer to the SYS_REGLCTL register.\n2.When HXT is enabled, GPIO must be set as input mode."
+          bits: 0
+          enum:
+            '0':
+              desc: 4~24 MHz external high speed crystal (HXT) Disabled
+              val: 0
+            '1':
+              desc: 4~24 MHz external high speed crystal (HXT) Enabled
+              val: 1
+        LXTEN:
+          desc: "LXT Enable Bit (Write Protect)\nNote: 1. This bit is write protected. Refer to the SYS_REGLCTL register.\n2. When LXT is enabled, GPIO must be set as input mode."
+          bits: 1
+          enum:
+            '0':
+              desc: 32.768 kHz external low speed crystal (LXT) Disabled
+              val: 0
+            '1':
+              desc: 32.768 kHz external low speed crystal (LXT) Enabled
+              val: 1
+        HIRCEN:
+          desc: "HIRC Enable Bit (Write Protect)\nNote:1.This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 2
+          enum:
+            '0':
+              desc: 12 MHz internal high speed RC oscillator (HIRC) Disabled
+              val: 0
+            '1':
+              desc: 12 MHz internal high speed RC oscillator (HIRC) Enabled
+              val: 1
+        LIRCEN:
+          desc: "LIRC Enable Bit (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 3
+          enum:
+            '0':
+              desc: 10 kHz internal low speed RC oscillator (LIRC) Disabled
+              val: 0
+            '1':
+              desc: 10 kHz internal low speed RC oscillator (LIRC) Enabled
+              val: 1
+        PDWKDLY:
+          desc: "Enable the Wake-up Delay Counter (Write Protect)\nWhen the chip wakes up from Power-down mode, the clock control will delay certain clock cycles to wait system clock stable.\nThe delayed clock cycle is 4096 clock cycles when chip works at 4~24 MHz external high speed crystal oscillator (HXT), and 256 clock cycles when chip works at 12 MHz internal high speed RC oscillator (HIRC).\nNote: This bit is write protected. Refer to the SYS_REGLCTL register"
+          bits: 4
+          enum:
+            '0':
+              desc: Clock cycles delay Disabled
+              val: 0
+            '1':
+              desc: Clock cycles delay Enabled
+              val: 1
+        PDWKIEN:
+          desc: "Power-down Mode Wake-up Interrupt Enable Bit (Write Protect)\nNote1: The interrupt will occur when both PDWKIF and PDWKIEN are high.\nNote2: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 5
+          enum:
+            '0':
+              desc: Power-down mode wake-up interrupt Disabled
+              val: 0
+            '1':
+              desc: Power-down mode wake-up interrupt Enabled
+              val: 1
+        PDWKIF:
+          desc: "Power-down Mode Wake-up Interrupt Status\nSet by 'Power-down wake-up event', it indicates that resume from Power-down mode' \nThe flag is set if any wake-up source is occurred. Refer Power Modes and Wake-up Sources chapter.\nNote1: Write 1 to clear the bit to 0.\nNote2: This bit works only if PDWKIEN (CLK_PWRCTL[5]) set to 1."
+          bits: 6
+        PDEN:
+          desc: "System Power-down Enable (Write Protect)\nWhen this bit is set to 1, Power-down mode is enabled and chip keeps active till the CPU sleep mode is also active and then the chip enters Power-down mode.\nWhen chip wakes up from Power-down mode, this bit is auto cleared. Users need to set this bit again for next Power-down.\nIn Power-down mode, HXT and the HIRC will be disabled in this mode, but LXT and LIRC  are not controlled by Power-down mode.\nIn Power-down mode, the PLL and system clock are disabled, and ignored the clock source selection. The clocks of peripheral are not controlled by Power-down mode, if the peripheral clock source is from LXT or LIRC.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 7
+          enum:
+            '0':
+              desc: Chip will not enter Power-down mode after CPU sleep command WFI
+              val: 0
+            '1':
+              desc: Chip enters Power-down mode after CPU sleep command WFI
+              val: 1
+        HXTGAIN:
+          desc: "HXT Gain Control Bit (Write Protect)\nThis is a protected register. Please refer to open lock sequence to program it.\nGain control is used to enlarge the gain of crystal to make sure crystal work normally. If gain control is enabled, crystal will consume more power than gain control off. \nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 11-10
+          enum:
+            '0':
+              desc: HXT frequency is lower than from 8 MHz
+              val: 0
+            '1':
+              desc: HXT frequency is from 8 MHz to 12 MHz
+              val: 1
+            '2':
+              desc: HXT frequency is from 12 MHz to 16 MHz
+              val: 2
+            '3':
+              desc: HXT frequency is higher than 16 MHz
+              val: 3
+        HXTSELTYP:
+          desc: "HXT Crystal Type Select Bit (Write Protect)\nThis is a protected register. Please refer to open lock sequence to program it.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 12
+          enum:
+            '0':
+              desc: Select INV type
+              val: 0
+            '1':
+              desc: Select GM type
+              val: 1
+        HXTTBEN:
+          desc: "HXT Crystal TURBO Mode (Write Protect)\nThis is a protected register. Please refer to open lock sequence to program it."
+          bits: 13
+          enum:
+            '0':
+              desc: HXT Crystal TURBO mode Disabled
+              val: 0
+            '1':
+              desc: HXT Crystal TURBO mode Enabled
+              val: 1
+        HIRCSTBS:
+          desc: "HIRC Stable Count Select (Write Protect )\nOthers: Reserved\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 17-16
+          enum:
+            '0':
+              desc: HIRC stable count = 64 clocks
+              val: 0
+            '1':
+              desc: HIRC stable count = 24 clocks
+              val: 1
+        HIRC48MEN:
+          desc: "HIRC48M Enable Bit (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 18
+          enum:
+            '0':
+              desc: 48 MHz internal high speed RC oscillator (HIRC48M) Disabled
+              val: 0
+            '1':
+              desc: 48 MHz internal high speed RC oscillator (HIRC48M) Enabled
+              val: 1
+    AHBCLK:
+      desc: AHB Devices Clock Enable Control Register
+      offset: 0x4
+      reset_val: 0x8004
+      fields:
+        PDMACKEN:
+          desc: "PDMA Controller Clock Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: PDMA peripheral clock Disabled
+              val: 0
+            '1':
+              desc: PDMA peripheral clock Enabled
+              val: 1
+        ISPCKEN:
+          desc: "Flash ISP Controller Clock Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: Flash ISP peripheral clock Disabled
+              val: 0
+            '1':
+              desc: Flash ISP peripheral clock Enabled
+              val: 1
+        EBICKEN:
+          desc: "EBI Controller Clock Enable Bit "
+          bits: 3
+          enum:
+            '0':
+              desc: EBI peripheral clock Disabled
+              val: 0
+            '1':
+              desc: EBI peripheral clock Enabled
+              val: 1
+        EMACCKEN:
+          desc: "Ethernet Controller Clock Enable Bit"
+          bits: 5
+          enum:
+            '0':
+              desc: Ethernet Controller engine clock Disabled
+              val: 0
+            '1':
+              desc: Ethernet Controller engine clock Enabled
+              val: 1
+        SDH0CKEN:
+          desc: "SD0 Controller Clock Enable Bit "
+          bits: 6
+          enum:
+            '0':
+              desc: SD0 engine clock Disabled
+              val: 0
+            '1':
+              desc: SD0 engine clock Enabled
+              val: 1
+        CRCCKEN:
+          desc: "CRC Generator Controller Clock Enable Bit"
+          bits: 7
+          enum:
+            '0':
+              desc: CRC peripheral clock Disabled
+              val: 0
+            '1':
+              desc: CRC peripheral clock Enabled
+              val: 1
+        CCAPCKEN:
+          desc: "Camera Capture Interface Controller Clock Enable Control "
+          bits: 8
+          enum:
+            '0':
+              desc: CCAP controller's clock Disabled
+              val: 0
+            '1':
+              desc: CCAP controller's clock Enabled
+              val: 1
+        SENCKEN:
+          desc: "Sensor Clock Enable Control "
+          bits: 9
+          enum:
+            '0':
+              desc: CCAP Sensor clock Disabled
+              val: 0
+            '1':
+              desc: CCAP Sensor clock Enabled
+              val: 1
+        HSUSBDCKEN:
+          desc: "HSUSB Device Clock Enable Bit"
+          bits: 10
+          enum:
+            '0':
+              desc: HSUSB device controller's clock Disabled
+              val: 0
+            '1':
+              desc: HSUSB device controller's clock Enabled
+              val: 1
+        CRPTCKEN:
+          desc: "Cryptographic Accelerator Clock Enable Bit "
+          bits: 12
+          enum:
+            '0':
+              desc: Cryptographic Accelerator clock Disabled
+              val: 0
+            '1':
+              desc: Cryptographic Accelerator clock Enabled
+              val: 1
+        SPIMCKEN:
+          desc: "SPIM Controller Clock Enable Bit "
+          bits: 14
+          enum:
+            '0':
+              desc: SPIM controller clock Disabled
+              val: 0
+            '1':
+              desc: SPIM controller clock Enabled
+              val: 1
+        FMCIDLE:
+          desc: "Flash Memory Controller Clock Enable Bit in IDLE Mode"
+          bits: 15
+          enum:
+            '0':
+              desc: FMC clock Disabled when chip is under IDLE mode
+              val: 0
+            '1':
+              desc: FMC clock Enabled when chip is under IDLE mode
+              val: 1
+        USBHCKEN:
+          desc: "USB HOST Controller Clock Enable Bit "
+          bits: 16
+          enum:
+            '0':
+              desc: USB HOST peripheral clock Disabled
+              val: 0
+            '1':
+              desc: USB HOST peripheral clock Enabled
+              val: 1
+        SDH1CKEN:
+          desc: "SD1 Controller Clock Enable Bit "
+          bits: 17
+          enum:
+            '0':
+              desc: SD1 engine clock Disabled
+              val: 0
+            '1':
+              desc: SD1 engine clock Enabled
+              val: 1
+    APBCLK0:
+      desc: APB Devices Clock Enable Control Register 0
+      offset: 0x8
+      reset_val: 0x1
+      fields:
+        WDTCKEN:
+          desc: "Watchdog Timer Clock Enable Bit (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: Watchdog timer clock Disabled
+              val: 0
+            '1':
+              desc: Watchdog timer clock Enabled
+              val: 1
+        RTCCKEN:
+          desc: "Real-time-clock APB Interface Clock Enable Bit\nThis bit is used to control the RTC APB clock only. The RTC peripheral clock source is selected from RTCSEL(CLK_CLKSEL3[8]). It can be selected to 32.768 kHz external low speed crystal or 10 kHz internal low speed RC oscillator (LIRC)."
+          bits: 1
+          enum:
+            '0':
+              desc: RTC clock Disabled
+              val: 0
+            '1':
+              desc: RTC clock Enabled
+              val: 1
+        TMR0CKEN:
+          desc: "Timer0 Clock Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: Timer0 clock Disabled
+              val: 0
+            '1':
+              desc: Timer0 clock Enabled
+              val: 1
+        TMR1CKEN:
+          desc: "Timer1 Clock Enable Bit"
+          bits: 3
+          enum:
+            '0':
+              desc: Timer1 clock Disabled
+              val: 0
+            '1':
+              desc: Timer1 clock Enabled
+              val: 1
+        TMR2CKEN:
+          desc: "Timer2 Clock Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: Timer2 clock Disabled
+              val: 0
+            '1':
+              desc: Timer2 clock Enabled
+              val: 1
+        TMR3CKEN:
+          desc: "Timer3 Clock Enable Bit"
+          bits: 5
+          enum:
+            '0':
+              desc: Timer3 clock Disabled
+              val: 0
+            '1':
+              desc: Timer3 clock Enabled
+              val: 1
+        CLKOCKEN:
+          desc: "CLKO Clock Enable Bit"
+          bits: 6
+          enum:
+            '0':
+              desc: CLKO clock Disabled
+              val: 0
+            '1':
+              desc: CLKO clock Enabled
+              val: 1
+        ACMP01CKEN:
+          desc: "Analog Comparator 0/1 Clock Enable Bit"
+          bits: 7
+          enum:
+            '0':
+              desc: Analog comparator 0/1 clock Disabled
+              val: 0
+            '1':
+              desc: Analog comparator 0/1 clock Enabled
+              val: 1
+        I2C0CKEN:
+          desc: "I2C0 Clock Enable Bit"
+          bits: 8
+          enum:
+            '0':
+              desc: I2C0 clock Disabled
+              val: 0
+            '1':
+              desc: I2C0 clock Enabled
+              val: 1
+        I2C1CKEN:
+          desc: "I2C1 Clock Enable Bit"
+          bits: 9
+          enum:
+            '0':
+              desc: I2C1 clock Disabled
+              val: 0
+            '1':
+              desc: I2C1 clock Enabled
+              val: 1
+        I2C2CKEN:
+          desc: "I2C2 Clock Enable Bit"
+          bits: 10
+          enum:
+            '0':
+              desc: I2C2 clock Disabled
+              val: 0
+            '1':
+              desc: I2C2 clock Enabled
+              val: 1
+        QSPI0CKEN:
+          desc: "QSPI0 Clock Enable Bit"
+          bits: 12
+          enum:
+            '0':
+              desc: QSPI0 clock Disabled
+              val: 0
+            '1':
+              desc: QSPI0 clock Enabled
+              val: 1
+        SPI0CKEN:
+          desc: "SPI0 Clock Enable Bit"
+          bits: 13
+          enum:
+            '0':
+              desc: SPI0 clock Disabled
+              val: 0
+            '1':
+              desc: SPI0 clock Enabled
+              val: 1
+        SPI1CKEN:
+          desc: "SPI1 Clock Enable Bit"
+          bits: 14
+          enum:
+            '0':
+              desc: SPI1 clock Disabled
+              val: 0
+            '1':
+              desc: SPI1 clock Enabled
+              val: 1
+        SPI2CKEN:
+          desc: "SPI2 Clock Enable Bit"
+          bits: 15
+          enum:
+            '0':
+              desc: SPI2 clock Disabled
+              val: 0
+            '1':
+              desc: SPI2 clock Enabled
+              val: 1
+        UART0CKEN:
+          desc: "UART0 Clock Enable Bit"
+          bits: 16
+          enum:
+            '0':
+              desc: UART0 clock Disabled
+              val: 0
+            '1':
+              desc: UART0 clock Enabled
+              val: 1
+        UART1CKEN:
+          desc: "UART1 Clock Enable Bit"
+          bits: 17
+          enum:
+            '0':
+              desc: UART1 clock Disabled
+              val: 0
+            '1':
+              desc: UART1 clock Enabled
+              val: 1
+        UART2CKEN:
+          desc: "UART2 Clock Enable Bit"
+          bits: 18
+          enum:
+            '0':
+              desc: UART2 clock Disabled
+              val: 0
+            '1':
+              desc: UART2 clock Enabled
+              val: 1
+        UART3CKEN:
+          desc: "UART3 Clock Enable Bit"
+          bits: 19
+          enum:
+            '0':
+              desc: UART3 clock Disabled
+              val: 0
+            '1':
+              desc: UART3 clock Enabled
+              val: 1
+        UART4CKEN:
+          desc: "UART4 Clock Enable Bit"
+          bits: 20
+          enum:
+            '0':
+              desc: UART4 clock Disabled
+              val: 0
+            '1':
+              desc: UART4 clock Enabled
+              val: 1
+        UART5CKEN:
+          desc: "UART5 Clock Enable Bit"
+          bits: 21
+          enum:
+            '0':
+              desc: UART5 clock Disabled
+              val: 0
+            '1':
+              desc: UART5 clock Enabled
+              val: 1
+        UART6CKEN:
+          desc: "UART6 Clock Enable Bit"
+          bits: 22
+          enum:
+            '0':
+              desc: UART6 clock Disabled
+              val: 0
+            '1':
+              desc: UART6 clock Enabled
+              val: 1
+        UART7CKEN:
+          desc: "UART7 Clock Enable Bit"
+          bits: 23
+          enum:
+            '0':
+              desc: UART7 clock Disabled
+              val: 0
+            '1':
+              desc: UART7 clock Enabled
+              val: 1
+        CAN0CKEN:
+          desc: "CAN0 Clock Enable Bit"
+          bits: 24
+          enum:
+            '0':
+              desc: CAN0 clock Disabled
+              val: 0
+            '1':
+              desc: CAN0 clock Enabled
+              val: 1
+        CAN1CKEN:
+          desc: "CAN1 Clock Enable Bit"
+          bits: 25
+          enum:
+            '0':
+              desc: CAN1 clock Disabled
+              val: 0
+            '1':
+              desc: CAN1 clock Enabled
+              val: 1
+        OTGCKEN:
+          desc: "USB OTG Clock Enable Bit"
+          bits: 26
+          enum:
+            '0':
+              desc: USB OTG clock Disabled
+              val: 0
+            '1':
+              desc: USB OTG clock Enabled
+              val: 1
+        USBDCKEN:
+          desc: "USB Device Clock Enable Bit"
+          bits: 27
+          enum:
+            '0':
+              desc: USB device clock Disabled
+              val: 0
+            '1':
+              desc: USB device clock Enabled
+              val: 1
+        EADCCKEN:
+          desc: "Enhanced Analog-digital-converter (EADC) Clock Enable Bit"
+          bits: 28
+          enum:
+            '0':
+              desc: EADC clock Disabled
+              val: 0
+            '1':
+              desc: EADC clock Enabled
+              val: 1
+        I2S0CKEN:
+          desc: "I2S0 Clock Enable Bit"
+          bits: 29
+          enum:
+            '0':
+              desc: I2S0 clock Disabled
+              val: 0
+            '1':
+              desc: I2S0 clock Enabled
+              val: 1
+        HSOTGCKEN:
+          desc: "HSUSB OTG Clock Enable Bit"
+          bits: 30
+          enum:
+            '0':
+              desc: HSUSB OTG clock Disabled
+              val: 0
+            '1':
+              desc: HSUSB OTG clock Enabled
+              val: 1
+    APBCLK1:
+      desc: APB Devices Clock Enable Control Register 1
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        SC0CKEN:
+          desc: "SC0 Clock Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: SC0 clock Disabled
+              val: 0
+            '1':
+              desc: SC0 clock Enabled
+              val: 1
+        SC1CKEN:
+          desc: "SC1 Clock Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: SC1 clock Disabled
+              val: 0
+            '1':
+              desc: SC1 clock Enabled
+              val: 1
+        SC2CKEN:
+          desc: "SC2 Clock Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: SC2 clock Disabled
+              val: 0
+            '1':
+              desc: SC2 clock Enabled
+              val: 1
+        QSPI1CKEN:
+          desc: "QSPI1 Clock Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: QSPI1 clock Disabled
+              val: 0
+            '1':
+              desc: QSPI1 clock Enabled
+              val: 1
+        SPI3CKEN:
+          desc: "SPI3 Clock Enable Bit"
+          bits: 6
+          enum:
+            '0':
+              desc: SPI3 clock Disabled
+              val: 0
+            '1':
+              desc: SPI3 clock Enabled
+              val: 1
+        USCI0CKEN:
+          desc: "USCI0 Clock Enable Bit"
+          bits: 8
+          enum:
+            '0':
+              desc: USCI0 clock Disabled
+              val: 0
+            '1':
+              desc: USCI0 clock Enabled
+              val: 1
+        USCI1CKEN:
+          desc: "USCI1 Clock Enable Bit"
+          bits: 9
+          enum:
+            '0':
+              desc: USCI1 clock Disabled
+              val: 0
+            '1':
+              desc: USCI1 clock Enabled
+              val: 1
+        DACCKEN:
+          desc: "DAC Clock Enable Bit"
+          bits: 12
+          enum:
+            '0':
+              desc: DAC clock Disabled
+              val: 0
+            '1':
+              desc: DAC clock Enabled
+              val: 1
+        EPWM0CKEN:
+          desc: "EPWM0 Clock Enable Bit"
+          bits: 16
+          enum:
+            '0':
+              desc: EPWM0 clock Disabled
+              val: 0
+            '1':
+              desc: EPWM0 clock Enabled
+              val: 1
+        EPWM1CKEN:
+          desc: "EPWM1 Clock Enable Bit"
+          bits: 17
+          enum:
+            '0':
+              desc: EPWM1 clock Disabled
+              val: 0
+            '1':
+              desc: EPWM1 clock Enabled
+              val: 1
+        BPWM0CKEN:
+          desc: "BPWM0 Clock Enable Bit"
+          bits: 18
+          enum:
+            '0':
+              desc: BPWM0 clock Disabled
+              val: 0
+            '1':
+              desc: BPWM0 clock Enabled
+              val: 1
+        BPWM1CKEN:
+          desc: "BPWM1 Clock Enable Bit"
+          bits: 19
+          enum:
+            '0':
+              desc: BPWM1 clock Disabled
+              val: 0
+            '1':
+              desc: BPWM1 clock Enabled
+              val: 1
+        QEI0CKEN:
+          desc: "QEI0 Clock Enable Bit"
+          bits: 22
+          enum:
+            '0':
+              desc: QEI0 clock Disabled
+              val: 0
+            '1':
+              desc: QEI0 clock Enabled
+              val: 1
+        QEI1CKEN:
+          desc: "QEI1 Clock Enable Bit"
+          bits: 23
+          enum:
+            '0':
+              desc: QEI1 clock Disabled
+              val: 0
+            '1':
+              desc: QEI1 clock Enabled
+              val: 1
+        TRNGCKEN:
+          desc: "TRNG Clock Enable Bit"
+          bits: 25
+          enum:
+            '0':
+              desc: TRNG clock Disabled
+              val: 0
+            '1':
+              desc: TRNG clock Enabled
+              val: 1
+        ECAP0CKEN:
+          desc: "ECAP0 Clock Enable Bit"
+          bits: 26
+          enum:
+            '0':
+              desc: ECAP0 clock Disabled
+              val: 0
+            '1':
+              desc: ECAP0 clock Enabled
+              val: 1
+        ECAP1CKEN:
+          desc: "ECAP1 Clock Enable Bit"
+          bits: 27
+          enum:
+            '0':
+              desc: ECAP1 clock Disabled
+              val: 0
+            '1':
+              desc: ECAP1 clock Enabled
+              val: 1
+        CAN2CKEN:
+          desc: "CAN2 Clock Enable Bit"
+          bits: 28
+          enum:
+            '0':
+              desc: CAN2 clock Disabled
+              val: 0
+            '1':
+              desc: CAN2 clock Enabled
+              val: 1
+        OPACKEN:
+          desc: "OP Amplifier (OPA) Clock Enable Bit"
+          bits: 30
+          enum:
+            '0':
+              desc: OPA clock Disabled
+              val: 0
+            '1':
+              desc: OPA clock Enabled
+              val: 1
+        EADC1CKEN:
+          desc: "Enhanced Analog-digital-converter 1 (EADC1) Clock Enable Bit"
+          bits: 31
+          enum:
+            '0':
+              desc: EADC1 clock Disabled
+              val: 0
+            '1':
+              desc: EADC1 clock Enabled
+              val: 1
+    CLKSEL0:
+      desc: Clock Source Select Control Register 0
+      offset: 0x10
+      reset_val: 0xf30130
+      fields:
+        HCLKSEL:
+          desc: "HCLK Clock Source Selection (Write Protect)\nBefore clock switching, the related clock sources (both pre-select and new-select) must be turned on.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 2-0
+          enum:
+            '0':
+              desc: Clock source from HXT
+              val: 0
+            '1':
+              desc: Clock source from LXT
+              val: 1
+            '2':
+              desc: Clock source from PLL
+              val: 2
+            '3':
+              desc: Clock source from LIRC
+              val: 3
+            '7':
+              desc: Clock source from HIRC
+              val: 7
+        STCLKSEL:
+          desc: "Cortex-M4F SysTick Clock Source Selection (Write Protect)\nNote2: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 5-3
+          enum:
+            '0':
+              desc: Clock source from HXT
+              val: 0
+            '1':
+              desc: Clock source from LXT
+              val: 1
+            '2':
+              desc: Clock source from HXT/2
+              val: 2
+            '3':
+              desc: Clock source from HCLK/2
+              val: 3
+            '7':
+              desc: Clock source from HIRC/2
+              val: 7
+        USBSEL:
+          desc: "USB Clock Source Selection (Write Protect)"
+          bits: 8
+          enum:
+            '0':
+              desc: Clock source from HIRC48M
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+        CCAPSEL:
+          desc: "CCAP Engine Clock Source Selection (Write Protect)"
+          bits: 17-16
+          enum:
+            '0':
+              desc: Clock source from HXT clock
+              val: 0
+            '1':
+              desc: Clock source from PLL clock
+              val: 1
+            '2':
+              desc: Clock source from HCLK
+              val: 2
+            '3':
+              desc: Clock source from HIRC clock
+              val: 3
+        SDH0SEL:
+          desc: "SD0 Engine Clock Source Selection (Write Protect)"
+          bits: 21-20
+          enum:
+            '0':
+              desc: Clock source from HXT clock
+              val: 0
+            '1':
+              desc: Clock source from PLL clock
+              val: 1
+            '2':
+              desc: Clock source from HCLK
+              val: 2
+            '3':
+              desc: Clock source from HIRC clock
+              val: 3
+        SDH1SEL:
+          desc: "SD1 Engine Clock Source Selection (Write Protect)"
+          bits: 23-22
+          enum:
+            '0':
+              desc: Clock source from HXT clock
+              val: 0
+            '1':
+              desc: Clock source from PLL clock
+              val: 1
+            '2':
+              desc: Clock source from HCLK
+              val: 2
+            '3':
+              desc: Clock source from HIRC clock
+              val: 3
+    CLKSEL1:
+      desc: Clock Source Select Control Register 1
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        WDTSEL:
+          desc: "Watchdog Timer Clock Source Selection (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 1-0
+          enum:
+            '0':
+              desc: Reserved.
+              val: 0
+            '1':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 1
+            '2':
+              desc: Clock source from HCLK/2048
+              val: 2
+            '3':
+              desc: Clock source from 10 kHz internal low speed RC oscillator (LIRC)
+              val: 3
+        TMR0SEL:
+          desc: "TIMER0 Clock Source Selection"
+          bits: 10-8
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 1
+            '2':
+              desc: Clock source from PCLK0
+              val: 2
+            '3':
+              desc: Clock source from external clock TM0 pin
+              val: 3
+            '5':
+              desc: Clock source from 10 kHz internal low speed RC oscillator (LIRC)
+              val: 5
+            '7':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 7
+        TMR1SEL:
+          desc: "TIMER1 Clock Source Selection"
+          bits: 14-12
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 1
+            '2':
+              desc: Clock source from PCLK0
+              val: 2
+            '3':
+              desc: Clock source from external clock TM1 pin
+              val: 3
+            '5':
+              desc: Clock source from 10 kHz internal low speed RC oscillator (LIRC)
+              val: 5
+            '7':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 7
+        TMR2SEL:
+          desc: "TIMER2 Clock Source Selection"
+          bits: 18-16
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 1
+            '2':
+              desc: Clock source from PCLK1
+              val: 2
+            '3':
+              desc: Clock source from external clock TM2 pin
+              val: 3
+            '5':
+              desc: Clock source from 10 kHz internal low speed RC oscillator (LIRC)
+              val: 5
+            '7':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 7
+        TMR3SEL:
+          desc: "TIMER3 Clock Source Selection"
+          bits: 22-20
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 1
+            '2':
+              desc: Clock source from PCLK1
+              val: 2
+            '3':
+              desc: Clock source from external clock TM3 pin
+              val: 3
+            '5':
+              desc: Clock source from 10 kHz internal low speed RC oscillator (LIRC)
+              val: 5
+            '7':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 7
+        UART0SEL:
+          desc: "UART0 Clock Source Selection"
+          bits: 25-24
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        UART1SEL:
+          desc: "UART1 Clock Source Selection"
+          bits: 27-26
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        CLKOSEL:
+          desc: "Clock Divider Clock Source Selection"
+          bits: 29-28
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 1
+            '2':
+              desc: Clock source from HCLK
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        WWDTSEL:
+          desc: "Window Watchdog Timer Clock Source Selection"
+          bits: 31-30
+          enum:
+            '2':
+              desc: Clock source from HCLK/2048
+              val: 2
+            '3':
+              desc: Clock source from 10 kHz internal low speed RC oscillator (LIRC)
+              val: 3
+    CLKSEL2:
+      desc: Clock Source Select Control Register 2
+      offset: 0x18
+      reset_val: 0x3ab
+      fields:
+        EPWM0SEL:
+          desc: "EPWM0 Clock Source Selection\nThe peripheral clock source of EPWM0 is defined by EPWM0SEL. "
+          bits: 0
+          enum:
+            '0':
+              desc: Clock source from PLL
+              val: 0
+            '1':
+              desc: Clock source from PCLK0
+              val: 1
+        EPWM1SEL:
+          desc: "EPWM1 Clock Source Selection\nThe peripheral clock source of EPWM1 is defined by EPWM1SEL. "
+          bits: 1
+          enum:
+            '0':
+              desc: Clock source from PLL
+              val: 0
+            '1':
+              desc: Clock source from PCLK1
+              val: 1
+        QSPI0SEL:
+          desc: "QSPI0 Clock Source Selection"
+          bits: 3-2
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK0
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        SPI0SEL:
+          desc: "SPI0 Clock Source Selection"
+          bits: 5-4
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK1
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        SPI1SEL:
+          desc: "SPI1 Clock Source Selection"
+          bits: 7-6
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK0
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        BPWM0SEL:
+          desc: "BPWM0 Clock Source Selection\nThe peripheral clock source of BPWM0 is defined by BPWM0SEL. "
+          bits: 8
+          enum:
+            '0':
+              desc: Clock source from PLL
+              val: 0
+            '1':
+              desc: Clock source from PCLK0
+              val: 1
+        BPWM1SEL:
+          desc: "BPWM1 Clock Source Selection\nThe peripheral clock source of BPWM1 is defined by BPWM1SEL. "
+          bits: 9
+          enum:
+            '0':
+              desc: Clock source from PLL
+              val: 0
+            '1':
+              desc: Clock source from PCLK1
+              val: 1
+        SPI2SEL:
+          desc: "SPI2 Clock Source Selection"
+          bits: 11-10
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK1
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        SPI3SEL:
+          desc: "SPI3 Clock Source Selection"
+          bits: 13-12
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK0
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+    CLKSEL3:
+      desc: Clock Source Select Control Register 3
+      offset: 0x1c
+      reset_val: 0x0
+      fields:
+        SC0SEL:
+          desc: "SC0 Clock Source Selection"
+          bits: 1-0
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK0
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        SC1SEL:
+          desc: "SC0 Clock Source Selection"
+          bits: 3-2
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK1
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        SC2SEL:
+          desc: "SC2 Clock Source Selection"
+          bits: 5-4
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK0
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        RTCSEL:
+          desc: "RTC Clock Source Selection"
+          bits: 8
+          enum:
+            '0':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 0
+            '1':
+              desc: Clock source from 10 kHz internal low speed RC oscillator (LIRC)
+              val: 1
+        QSPI1SEL:
+          desc: "QSPI1 Clock Source Selection"
+          bits: 13-12
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from PCLK1
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        I2S0SEL:
+          desc: "I2S0 Clock Source Selection"
+          bits: 17-16
+          enum:
+            '0':
+              desc: Clock source from HXT clock
+              val: 0
+            '1':
+              desc: Clock source from PLL clock
+              val: 1
+            '2':
+              desc: Clock source from PCLK0
+              val: 2
+            '3':
+              desc: Clock source from HIRC clock
+              val: 3
+        UART6SEL:
+          desc: "UART6 Clock Source Selection"
+          bits: 21-20
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        UART7SEL:
+          desc: "UART7 Clock Source Selection"
+          bits: 23-22
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        UART2SEL:
+          desc: "UART2 Clock Source Selection"
+          bits: 25-24
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        UART3SEL:
+          desc: "UART3 Clock Source Selection"
+          bits: 27-26
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        UART4SEL:
+          desc: "UART4 Clock Source Selection"
+          bits: 29-28
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+        UART5SEL:
+          desc: "UART5 Clock Source Selection"
+          bits: 31-30
+          enum:
+            '0':
+              desc: Clock source from 4~24 MHz external high speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: Clock source from PLL
+              val: 1
+            '2':
+              desc: Clock source from 32.768 kHz external low speed crystal oscillator (LXT)
+              val: 2
+            '3':
+              desc: Clock source from 12 MHz internal high speed RC oscillator (HIRC)
+              val: 3
+    CLKDIV0:
+      desc: Clock Divider Number Register 0
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        HCLKDIV:
+          desc: "HCLK Clock Divide Number From HCLK Clock Source\nNote: If HCLK clock source frequency is PLL, HCLKDIV should not be 1. HCLK PLL/2"
+          bits: 3-0
+        USBDIV:
+          desc: "USB Clock Divide Number From PLL Clock"
+          bits: 7-4
+        UART0DIV:
+          desc: "UART0 Clock Divide Number From UART0 Clock Source"
+          bits: 11-8
+        UART1DIV:
+          desc: "UART1 Clock Divide Number From UART1 Clock Source"
+          bits: 15-12
+        EADCDIV:
+          desc: "EADC Clock Divide Number From EADC Clock Source"
+          bits: 23-16
+        SDH0DIV:
+          desc: "SD0 Clock Divide Number From SD0 Clock Source"
+          bits: 31-24
+    CLKDIV1:
+      desc: Clock Divider Number Register 1
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        SC0DIV:
+          desc: "SC0 Clock Divide Number From SC0 Clock Source"
+          bits: 7-0
+        SC1DIV:
+          desc: "SC1 Clock Divide Number From SC1 Clock Source"
+          bits: 15-8
+        SC2DIV:
+          desc: "SC2 Clock Divide Number From SC2 Clock Source"
+          bits: 23-16
+    CLKDIV2:
+      desc: Clock Divider Number Register 2
+      offset: 0x28
+      reset_val: 0x0
+      fields:
+        I2S0DIV:
+          desc: "I2S0 Clock Divide Number From I2S0 Clock Source"
+          bits: 3-0
+        EADC1DIV:
+          desc: "EADC1 Clock Divide Number From EADC Clock Source"
+          bits: 31-24
+    CLKDIV3:
+      desc: Clock Divider Number Register 3
+      offset: 0x2c
+      reset_val: 0x0
+      fields:
+        CCAPDIV:
+          desc: "Camera Capture Sensor Clock Divide Number From CCAP Clock Source"
+          bits: 7-0
+        VSENSEDIV:
+          desc: "Video Pixel Clock Divide Number From CCAP Clock Source"
+          bits: 15-8
+        EMACDIV:
+          desc: "Ethernet Clock Divide Number Form HCLK"
+          bits: 23-16
+        SDH1DIV:
+          desc: "SD1 Clock Divide Number From SD1 Clock Source"
+          bits: 31-24
+    CLKDIV4:
+      desc: Clock Divider Number Register 4
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        UART2DIV:
+          desc: "UART2 Clock Divide Number From UART2 Clock Source"
+          bits: 3-0
+        UART3DIV:
+          desc: "UART3 Clock Divide Number From UART3 Clock Source"
+          bits: 7-4
+        UART4DIV:
+          desc: "UART4 Clock Divide Number From UART4 Clock Source"
+          bits: 11-8
+        UART5DIV:
+          desc: "UART5 Clock Divide Number From UART5 Clock Source"
+          bits: 15-12
+        UART6DIV:
+          desc: "UART6 Clock Divide Number From UART6 Clock Source"
+          bits: 19-16
+        UART7DIV:
+          desc: "UART7 Clock Divide Number From UART7 Clock Source"
+          bits: 23-20
+    PCLKDIV:
+      desc: APB Clock Divider Register
+      offset: 0x34
+      reset_val: 0x0
+      fields:
+        APB0DIV:
+          desc: "APB0 Clock Divider\nAPB0 clock can be divided from HCLK\nOthers: Reserved.\nNote: PCLK must be less than 96 MHz."
+          bits: 2-0
+        APB1DIV:
+          desc: "APB1 Clock Divider\nAPB1 clock can be divided from HCLK\nOthers: Reserved.\nNote: PCLK must be less than 96 MHz."
+          bits: 6-4
+    PLLCTL:
+      desc: PLL Control Register
+      offset: 0x40
+      reset_val: 0x5c02e
+      fields:
+        FBDIV:
+          desc: "PLL Feedback Divider Control (Write Protect)\nRefer to the formulas below the table.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 8-0
+        INDIV:
+          desc: "PLL Input Divider Control (Write Protect)\nRefer to the formulas below the table.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 13-9
+        OUTDIV:
+          desc: "PLL Output Divider Control (Write Protect)\nRefer to the formulas below the table.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 15-14
+        PD:
+          desc: "Power-down Mode (Write Protect)\nIf set the PDEN bit to 1 in CLK_PWRCTL register, the PLL will enter Power-down mode, too.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 16
+          enum:
+            '0':
+              desc: PLL is in normal mode
+              val: 0
+            '1':
+              desc: PLL is in Power-down mode (default)
+              val: 1
+        BP:
+          desc: "PLL Bypass Control (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 17
+          enum:
+            '0':
+              desc: PLL is in normal mode (default)
+              val: 0
+            '1':
+              desc: PLL clock output is same as PLL input clock FIN
+              val: 1
+        OE:
+          desc: "PLL OE (FOUT Enable) Pin Control (Write Protect)\nNote 1: This bit is write protected. Refer to the SYS_REGLCTL register.\nNote 2: If HCLK is switched to PLL, OE(CLK_PLLCTL[18]) cannot be set to 1 to avoid clock stop."
+          bits: 18
+          enum:
+            '0':
+              desc: PLL FOUT Enabled
+              val: 0
+            '1':
+              desc: PLL FOUT is fixed low
+              val: 1
+        PLLSRC:
+          desc: "PLL Source Clock Selection (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 19
+          enum:
+            '0':
+              desc: PLL source clock from 4~24 MHz external high-speed crystal oscillator (HXT)
+              val: 0
+            '1':
+              desc: PLL source clock from 12 MHz internal high-speed oscillator (HIRC)
+              val: 1
+        STBSEL:
+          desc: "PLL Stable Counter Selection (Write Protect)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 23
+          enum:
+            '0':
+              desc: PLL stable time is 1200 PLL source clock (suitable for source clock is equal to or less than 12 MHz)
+              val: 0
+            '1':
+              desc: PLL stable time is 2400 PLL source clock (suitable for source clock is larger than 12 MHz)
+              val: 1
+    STATUS:
+      desc: Clock Status Monitor Register
+      offset: 0x50
+      reset_val: 0x0
+      fields:
+        HXTSTB:
+          desc: "HXT Clock Source Stable Flag (Read Only)"
+          bits: 0
+          enum:
+            '0':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock is not stable or disabled
+              val: 0
+            '1':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock is stable and enabled
+              val: 1
+        LXTSTB:
+          desc: "LXT Clock Source Stable Flag (Read Only)"
+          bits: 1
+          enum:
+            '0':
+              desc: 32.768 kHz external low speed crystal oscillator (LXT) clock is not stable or disabled
+              val: 0
+            '1':
+              desc: 32.768 kHz external low speed crystal oscillator (LXT) clock is stabled and enabled
+              val: 1
+        PLLSTB:
+          desc: "Internal PLL Clock Source Stable Flag (Read Only)"
+          bits: 2
+          enum:
+            '0':
+              desc: Internal PLL clock is not stable or disabled
+              val: 0
+            '1':
+              desc: Internal PLL clock is stable and enabled
+              val: 1
+        LIRCSTB:
+          desc: "LIRC Clock Source Stable Flag (Read Only)"
+          bits: 3
+          enum:
+            '0':
+              desc: 10 kHz internal low speed RC oscillator (LIRC) clock is not stable or disabled
+              val: 0
+            '1':
+              desc: 10 kHz internal low speed RC oscillator (LIRC) clock is stable and enabled
+              val: 1
+        HIRCSTB:
+          desc: "HIRC Clock Source Stable Flag (Read Only)"
+          bits: 4
+          enum:
+            '0':
+              desc: 12 MHz internal high speed RC oscillator (HIRC) clock is not stable or disabled
+              val: 0
+            '1':
+              desc: 12 MHz internal high speed RC oscillator (HIRC) clock is stable and enabled
+              val: 1
+        HIRC48MSTB:
+          desc: "HIRC48M Clock Source Stable Flag (Read Only)"
+          bits: 6
+          enum:
+            '0':
+              desc: 48 MHz internal high speed RC oscillator (HIRC48M) clock is not stable or disabled
+              val: 0
+            '1':
+              desc: 48 MHz internal high speed RC oscillator (HIRC48M) clock is stable and enabled
+              val: 1
+        CLKSFAIL:
+          desc: "Clock Switching Fail Flag (Read Only) \nThis bit is updated when software switches system clock source. If switch target clock is stable, this bit will be set to 0. If switch target clock is not stable, this bit will be set to 1.\nNote: Write 1 to clear the bit to 0."
+          bits: 7
+          enum:
+            '0':
+              desc: Clock switching success
+              val: 0
+            '1':
+              desc: Clock switching failure
+              val: 1
+    CLKOCTL:
+      desc: Clock Output Control Register
+      offset: 0x60
+      reset_val: 0x0
+      fields:
+        FREQSEL:
+          desc: "Clock Output Frequency Selection\nThe formula of output frequency is\nFin is the input clock frequency.\nFout is the frequency of divider output clock.\nN is the 4-bit value of FREQSEL[3:0]."
+          bits: 3-0
+        CLKOEN:
+          desc: "Clock Output Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: Clock Output function Disabled
+              val: 0
+            '1':
+              desc: Clock Output function Enabled
+              val: 1
+        DIV1EN:
+          desc: "Clock Output Divide One Enable Bit"
+          bits: 5
+          enum:
+            '0':
+              desc: Clock Output will output clock with source frequency divided by FREQSEL
+              val: 0
+            '1':
+              desc: Clock Output will output clock with source frequency
+              val: 1
+        CLK1HZEN:
+          desc: "Clock Output 1Hz Enable Bit"
+          bits: 6
+          enum:
+            '0':
+              desc: 1 Hz clock output for 32.768 kHz frequency compensation Disabled
+              val: 0
+            '1':
+              desc: 1 Hz clock output for 32.768 kHz frequency compensation Enabled
+              val: 1
+    CLKDCTL:
+      desc: Clock Fail Detector Control Register
+      offset: 0x70
+      reset_val: 0x0
+      fields:
+        HXTFDEN:
+          desc: "HXT Clock Fail Detector Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock fail detector Disabled
+              val: 0
+            '1':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock fail detector Enabled
+              val: 1
+        HXTFIEN:
+          desc: "HXT Clock Fail Interrupt Enable Bit"
+          bits: 5
+          enum:
+            '0':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock fail interrupt Disabled
+              val: 0
+            '1':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock fail interrupt Enabled
+              val: 1
+        LXTFDEN:
+          desc: "LXT Clock Fail Detector Enable Bit"
+          bits: 12
+          enum:
+            '0':
+              desc: 32.768 kHz external low speed crystal oscillator (LXT) clock fail detector Disabled
+              val: 0
+            '1':
+              desc: 32.768 kHz external low speed crystal oscillator (LXT) clock fail detector Enabled
+              val: 1
+        LXTFIEN:
+          desc: "LXT Clock Fail Interrupt Enable Bit"
+          bits: 13
+          enum:
+            '0':
+              desc: 32.768 kHz external low speed crystal oscillator (LXT) clock fail interrupt Disabled
+              val: 0
+            '1':
+              desc: 32.768 kHz external low speed crystal oscillator (LXT) clock fail interrupt Enabled
+              val: 1
+        HXTFQDEN:
+          desc: "HXT Clock Frequency Range Detector Enable Bit"
+          bits: 16
+          enum:
+            '0':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock frequency range detector Disabled
+              val: 0
+            '1':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock frequency range detector Enabled
+              val: 1
+        HXTFQIEN:
+          desc: "HXT Clock Frequency Range Detector Interrupt Enable Bit"
+          bits: 17
+          enum:
+            '0':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock frequency range detector fail interrupt Disabled
+              val: 0
+            '1':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock frequency range detector fail interrupt Enabled
+              val: 1
+    CLKDSTS:
+      desc: Clock Fail Detector Status Register
+      offset: 0x74
+      reset_val: 0x0
+      fields:
+        HXTFIF:
+          desc: "HXT Clock Fail Interrupt Flag\nNote: Write 1 to clear the bit to 0."
+          bits: 0
+          enum:
+            '0':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock is normal
+              val: 0
+            '1':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock stops
+              val: 1
+        LXTFIF:
+          desc: "LXT Clock Fail Interrupt Flag\nNote: Write 1 to clear the bit to 0."
+          bits: 1
+          enum:
+            '0':
+              desc: 32.768 kHz external low speed crystal oscillator (LXT) clock is normal
+              val: 0
+            '1':
+              desc: 32.768 kHz external low speed crystal oscillator (LXT) stops
+              val: 1
+        HXTFQIF:
+          desc: "HXT Clock Frequency Range Detector Interrupt Flag\nNote: Write 1 to clear the bit to 0."
+          bits: 8
+          enum:
+            '0':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock frequency is normal
+              val: 0
+            '1':
+              desc: 4~24 MHz external high speed crystal oscillator (HXT) clock frequency is abnormal
+              val: 1
+    CDUPB:
+      desc: Clock Frequency Range Detector Upper Boundary Register
+      offset: 0x78
+      reset_val: 0x0
+      fields:
+        UPERBD:
+          desc: "HXT Clock Frequency Range Detector Upper Boundary Value\nThe bits define the maximum value of frequency range detector window.\nWhen HXT frequency higher than this maximum frequency value, the HXT Clock Frequency Range Detector Interrupt Flag will set to 1."
+          bits: 9-0
+    CDLOWB:
+      desc: Clock Frequency Range Detector Lower Boundary Register
+      offset: 0x7c
+      reset_val: 0x0
+      fields:
+        LOWERBD:
+          desc: "HXT Clock Frequency Range Detector Lower Boundary Value\nThe bits define the minimum value of frequency range detector window.\nWhen HXT frequency lower than this minimum frequency value, the HXT Clock Frequency Range Detector Interrupt Flag will set to 1."
+          bits: 9-0
+    PMUCTL:
+      desc: Power Manager Control Register
+      offset: 0x90
+      reset_val: 0x80
+      fields:
+        PDMSEL:
+          desc: "Power-down Mode Selection (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nThese bits control chip power-down mode grade selection when CPU execute WFI/WFE instruction.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 2-0
+          enum:
+            '0':
+              desc: Power-down mode is selected. (NPD)
+              val: 0
+            '1':
+              desc: Low leakage Power-down mode is selected (LLPD)
+              val: 1
+            '2':
+              desc: Fast wake-up Power-down mode is selected (FWPD)
+              val: 2
+            '3':
+              desc: Reserved.
+              val: 3
+            '4':
+              desc: Standby Power-down mode 0 is selected (SPD0) (SRAM retention)
+              val: 4
+            '5':
+              desc: Standby Power-down mode 1 is selected (SPD1)
+              val: 5
+            '6':
+              desc: Deep Power-down mode is selected (DPD)
+              val: 6
+            '7':
+              desc: Reserved.
+              val: 7
+        DPDHOLDEN:
+          desc: "Deep-power-down Mode GPIO Hold Enable Bit "
+          bits: 3
+          enum:
+            '0':
+              desc: When GPIO enters deep power-down mode, all I/O status are tri-state
+              val: 0
+            '1':
+              desc: When GPIO enters deep power-down mode, all I/O status are hold to keep normal operating status. After chip was waked up from deep power-down mode, the I/O are still keep hold status until user set CLK_IOPDCTL[0] to release I/O hold status. (M48xGC/M48xE8)
+              val: 1
+        SRETSEL:
+          desc: "SRAM Retention Range Select Bit (Write Protect)\nSelect SRAM retention range when chip enter SPD mode. (M48xGC/M48xE8)\nNote: This bit is write protected. Refer to the SYS_REGLCTL register.\nNote: Chip may work in SPD mode abnormally, if not select SRAM retention size before enter SPD mode."
+          bits: 6-4
+          enum:
+            '0':
+              desc: No SRAM retention
+              val: 0
+            '1':
+              desc: 16K SRAM retention when chip enter SPD mode
+              val: 1
+            '2':
+              desc: 32K SRAM retention when chip enter SPD mode
+              val: 2
+            '3':
+              desc: 64K SRAM retention when chip enter SPD mode
+              val: 3
+            '4':
+              desc: 128K SRAM retention when chip enter SPD mode
+              val: 4
+        WKTMREN:
+          desc: "Wake-up Timer Enable Bit (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register"
+          bits: 8
+          enum:
+            '0':
+              desc: Wake-up timer disable at DPD/SPD mode
+              val: 0
+            '1':
+              desc: Wake-up timer enabled at DPD/SPD mode
+              val: 1
+        WKTMRIS:
+          desc: "Wake-up Timer Time-out Interval Select (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nThese bits control wake-up timer time-out interval when chip at DPD/SPD mode.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 12-9
+          enum:
+            '0':
+              desc: Time-out interval is 128 OSC10K clocks (12.8 ms)
+              val: 0
+            '1':
+              desc: Time-out interval is 256 OSC10K clocks (25.6 ms)
+              val: 1
+            '2':
+              desc: Time-out interval is 512 OSC10K clocks (51.2 ms)
+              val: 2
+            '3':
+              desc: Time-out interval is 1024 OSC10K clocks (102.4ms)
+              val: 3
+            '4':
+              desc: Time-out interval is 4096 OSC10K clocks (409.6ms)
+              val: 4
+            '5':
+              desc: Time-out interval is 8192 OSC10K clocks (819.2ms)
+              val: 5
+            '6':
+              desc: Time-out interval is 16384 OSC10K clocks (1638.4ms)
+              val: 6
+            '7':
+              desc: Time-out interval is 65536 OSC10K clocks (6553.6ms)
+              val: 7
+            '8':
+              desc: Time-out interval is 131072 OSC10K clocks (13107.2ms)
+              val: 8
+            '9':
+              desc: Time-out interval is 262144 OSC10K clocks (26214.4ms)
+              val: 9
+            '10':
+              desc: Time-out interval is 524288 OSC10K clocks (52428.8ms)
+              val: 10
+            '11':
+              desc: Time-out interval is 1048576 OSC10K clocks (104857.6ms)
+              val: 11
+        WKPINEN0:
+          desc: "Wake-up Pin0 Enable Bit (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nThis is control register for GPC.0 to wake-up pin.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 17-16
+          enum:
+            '0':
+              desc: Wake-up pin disable at Deep Power-down mode
+              val: 0
+            '1':
+              desc: Wake-up pin rising edge enabled at Deep Power-down mode
+              val: 1
+            '2':
+              desc: Wake-up pin falling edge enabled at Deep Power-down mode
+              val: 2
+            '3':
+              desc: Wake-up pin both edge enabled at Deep Power-down mode
+              val: 3
+        ACMPSPWK:
+          desc: "ACMP Standby Power-down Mode Wake-up Enable Bit (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 18
+          enum:
+            '0':
+              desc: ACMP wake-up disable at Standby Power-down mode
+              val: 0
+            '1':
+              desc: ACMP wake-up enabled at Standby Power-down mode
+              val: 1
+        RTCWKEN:
+          desc: "RTC Wake-up Enable Bit (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 23
+          enum:
+            '0':
+              desc: RTC wake-up disable at Deep Power-down mode or Standby Power-down mode
+              val: 0
+            '1':
+              desc: RTC wake-up enabled at Deep Power-down mode or Standby Power-down mode
+              val: 1
+        WKPINEN1:
+          desc: "Wake-up Pin1 Enable Bit (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nThis is control register for GPB.0 to wake-up pin.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 25-24
+          enum:
+            '0':
+              desc: Wake-up pin disable at Deep Power-down mode
+              val: 0
+            '1':
+              desc: Wake-up pin rising edge enabled at Deep Power-down mode
+              val: 1
+            '2':
+              desc: Wake-up pin falling edge enabled at Deep Power-down mode
+              val: 2
+            '3':
+              desc: Wake-up pin both edge enabled at Deep Power-down mode
+              val: 3
+        WKPINEN2:
+          desc: "Wake-up Pin2 Enable Bit (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nThis is control register for GPB.2 to wake-up pin.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 27-26
+          enum:
+            '0':
+              desc: Wake-up pin disable at Deep Power-down mode
+              val: 0
+            '1':
+              desc: Wake-up pin rising edge enabled at Deep Power-down mode
+              val: 1
+            '2':
+              desc: Wake-up pin falling edge enabled at Deep Power-down mode
+              val: 2
+            '3':
+              desc: Wake-up pin both edge enabled at Deep Power-down mode
+              val: 3
+        WKPINEN3:
+          desc: "Wake-up Pin3 Enable Bit (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nThis is control register for GPB.12 to wake-up pin.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 29-28
+          enum:
+            '0':
+              desc: Wake-up pin disable at Deep Power-down mode
+              val: 0
+            '1':
+              desc: Wake-up pin rising edge enabled at Deep Power-down mode
+              val: 1
+            '2':
+              desc: Wake-up pin falling edge enabled at Deep Power-down mode
+              val: 2
+            '3':
+              desc: Wake-up pin both edge enabled at Deep Power-down mode
+              val: 3
+        WKPINEN4:
+          desc: "Wake-up Pin4 Enable Bit (Write Protect)\nThis is a protected bit. Please refer to open lock sequence to program it.\nThis is control register for GPF.6 to wake-up pin.\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 31-30
+          enum:
+            '0':
+              desc: Wake-up pin disable at Deep Power-down mode
+              val: 0
+            '1':
+              desc: Wake-up pin rising edge enabled at Deep Power-down mode
+              val: 1
+            '2':
+              desc: Wake-up pin falling edge enabled at Deep Power-down mode
+              val: 2
+            '3':
+              desc: Wake-up pin both edge enabled at Deep Power-down mode
+              val: 3
+    PMUSTS:
+      desc: Power Manager Status Register
+      offset: 0x94
+      reset_val: 0x0
+      fields:
+        PINWK0:
+          desc: "Pin0 Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Deep Power-down mode was requested by a transition of the WAKEUP pin (GPC.0). This flag is cleared when DPD mode is entered."
+          bits: 0
+        TMRWK:
+          desc: "Timer Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Deep Power-down mode (DPD) or Standby Power-down (SPD) mode was requested by wakeup timer time-out. This flag is cleared when DPD or SPD mode is entered."
+          bits: 1
+        RTCWK:
+          desc: "RTC Wake-up Flag (Read Only)\nThis flag indicates that wakeup of device from Deep Power-down mode (DPD) or Standby Power-down (SPD) mode was requested with a RTC alarm, tick time or tamper happened. This flag is cleared when DPD or SPD mode is entered."
+          bits: 2
+        PINWK1:
+          desc: "Pin1 Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Deep Power-down mode was requested by a transition of the WAKEUP pin (PB.0). This flag is cleared when DPD mode is entered."
+          bits: 3
+        PINWK2:
+          desc: "Pin2 Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Deep Power-down mode was requested by a transition of the WAKEUP pin (PB.2). This flag is cleared when DPD mode is entered."
+          bits: 4
+        PINWK3:
+          desc: "Pin3 Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Deep Power-down mode was requested by a transition of the WAKEUP pin (PB.12). This flag is cleared when DPD mode is entered."
+          bits: 5
+        PINWK4:
+          desc: "Pin4 Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Deep Power-down mode was requested by a transition of the WAKEUP pin (PF.6). This flag is cleared when DPD mode is entered."
+          bits: 6
+        GPAWK:
+          desc: "GPA Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Standby Power-down mode was requested by a transition of selected one GPA group pins. This flag is cleared when SPD mode is entered."
+          bits: 8
+        GPBWK:
+          desc: "GPB Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Standby Power-down mode was requested by a transition of selected one GPB group pins. This flag is cleared when SPD mode is entered."
+          bits: 9
+        GPCWK:
+          desc: "GPC Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Standby Power-down mode was requested by a transition of selected one GPC group pins. This flag is cleared when SPD mode is entered."
+          bits: 10
+        GPDWK:
+          desc: "GPD Wake-up Flag (Read Only)\nThis flag indicates that wake-up of chip from Standby Power-down mode was requested by a transition of selected one GPD group pins. This flag is cleared when SPD mode is entered."
+          bits: 11
+        LVRWK:
+          desc: "LVR Wake-up Flag (Read Only)\nThis flag indicates that wakeup of device from Standby Power-down mode was requested with a LVR happened. This flag is cleared when SPD mode is entered."
+          bits: 12
+        BODWK:
+          desc: "BOD Wake-up Flag (Read Only)\nThis flag indicates that wakeup of device from Standby Power-down mode (SPD) was requested with a BOD happened. This flag is cleared when SPD mode is entered."
+          bits: 13
+        ACMPWK:
+          desc: "ACMP Wake-up Flag (Read Only)\nThis flag indicates that wakeup of device from Standby Power-down mode (SPD) was requested with a ACMP transition. This flag is cleared when SPD mode is entered."
+          bits: 14
+        CLRWK:
+          desc: "Clear Wake-up Flag"
+          bits: 31
+          enum:
+            '0':
+              desc: No clear
+              val: 0
+            '1':
+              desc: Clear all wake-up flag
+              val: 1
+    LDOCTL:
+      desc: LDO Control Register
+      offset: 0x98
+      reset_val: 0x0
+      fields:
+        DPDWKSEL:
+          desc: "DPD Wake Up Time Select Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: DPD wake up ready time about 3 cycles LIRC
+              val: 0
+            '1':
+              desc: DPD wake up ready time about 2 cycles LIRC
+              val: 1
+    SWKDBCTL:
+      desc: Standby Power-down Wake-up De-bounce Control Register
+      offset: 0x9c
+      reset_val: 0x0
+      fields:
+        SWKDBCLKSEL:
+          desc: "Standby Power-down Wake-up De-bounce Sampling Cycle Selection\nNote: De-bounce counter clock source is the 10 kHz internal low speed RC oscillator (LIRC)."
+          bits: 3-0
+          enum:
+            '0':
+              desc: Sample wake-up input once per 1 clocks
+              val: 0
+            '1':
+              desc: Sample wake-up input once per 2 clocks
+              val: 1
+            '2':
+              desc: Sample wake-up input once per 4 clocks
+              val: 2
+            '3':
+              desc: Sample wake-up input once per 8 clocks
+              val: 3
+            '4':
+              desc: Sample wake-up input once per 16 clocks
+              val: 4
+            '5':
+              desc: Sample wake-up input once per 32 clocks
+              val: 5
+            '6':
+              desc: Sample wake-up input once per 64 clocks
+              val: 6
+            '7':
+              desc: Sample wake-up input once per 128 clocks
+              val: 7
+            '8':
+              desc: Sample wake-up input once per 256 clocks
+              val: 8
+            '9':
+              desc: Sample wake-up input once per 2*256 clocks
+              val: 9
+            '10':
+              desc: Sample wake-up input once per 4*256 clocks
+              val: 10
+            '11':
+              desc: Sample wake-up input once per 8*256 clocks
+              val: 11
+            '12':
+              desc: Sample wake-up input once per 16*256 clocks
+              val: 12
+            '13':
+              desc: Sample wake-up input once per 32*256 clocks
+              val: 13
+            '14':
+              desc: Sample wake-up input once per 64*256 clocks
+              val: 14
+            '15':
+              desc: Sample wake-up input once per 128*256 clocks.
+              val: 15
+    PASWKCTL:
+      desc: GPA Standby Power-down Wake-up Control Register
+      offset: 0xa0
+      reset_val: 0x0
+      fields:
+        WKEN:
+          desc: "Standby Power-down Pin Wake-up Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: GPA group pin wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPA group pin wake-up function Enabled
+              val: 1
+        PRWKEN:
+          desc: "Pin Rising Edge Wake-up Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: GPA group pin rising edge wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPA group pin rising edge wake-up function Enabled
+              val: 1
+        PFWKEN:
+          desc: "Pin Falling Edge Wake-up Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: GPA group pin falling edge wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPA group pin falling edge wake-up function Enabled
+              val: 1
+        WKPSEL:
+          desc: "GPA Standby Power-down Wake-up Pin Select"
+          bits: 7-4
+          enum:
+            '0':
+              desc: GPA.0 wake-up function Enabled
+              val: 0
+            '1':
+              desc: GPA.1 wake-up function Enabled
+              val: 1
+            '2':
+              desc: GPA.2 wake-up function Enabled
+              val: 2
+            '3':
+              desc: GPA.3 wake-up function Enabled
+              val: 3
+            '4':
+              desc: GPA.4 wake-up function Enabled
+              val: 4
+            '5':
+              desc: GPA.5 wake-up function Enabled
+              val: 5
+            '6':
+              desc: GPA.6 wake-up function Enabled
+              val: 6
+            '7':
+              desc: GPA.7 wake-up function Enabled
+              val: 7
+            '8':
+              desc: GPA.8 wake-up function Enabled
+              val: 8
+            '9':
+              desc: GPA.9 wake-up function Enabled
+              val: 9
+            '10':
+              desc: GPA.10 wake-up function Enabled
+              val: 10
+            '11':
+              desc: GPA.11 wake-up function Enabled
+              val: 11
+            '12':
+              desc: GPA.12 wake-up function Enabled
+              val: 12
+            '13':
+              desc: GPA.13 wake-up function Enabled
+              val: 13
+            '14':
+              desc: GPA.14 wake-up function Enabled
+              val: 14
+            '15':
+              desc: GPA.15 wake-up function Enabled
+              val: 15
+        DBEN:
+          desc: "GPA Input Signal De-bounce Enable Bit\nThe DBEN bit is used to enable the de-bounce function for each corresponding IO. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the wake-up. The de-bounce clock source is the 10 kHz internal low speed RC oscillator.\nThe de-bounce function is valid only for edgetriggered."
+          bits: 8
+          enum:
+            '0':
+              desc: Standby power-down wake-up pin De-bounce function Disabled
+              val: 0
+            '1':
+              desc: Standby power-down wake-up pin De-bounce function Enabled
+              val: 1
+    PBSWKCTL:
+      desc: GPB Standby Power-down Wake-up Control Register
+      offset: 0xa4
+      reset_val: 0x0
+      fields:
+        WKEN:
+          desc: "Standby Power-down Pin Wake-up Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: GPB group pin wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPB group pin wake-up function Enabled
+              val: 1
+        PRWKEN:
+          desc: "Pin Rising Edge Wake-up Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: GPB group pin rising edge wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPB group pin rising edge wake-up function Enabled
+              val: 1
+        PFWKEN:
+          desc: "Pin Falling Edge Wake-up Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: GPB group pin falling edge wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPB group pin falling edge wake-up function Enabled
+              val: 1
+        WKPSEL:
+          desc: "GPB Standby Power-down Wake-up Pin Select"
+          bits: 7-4
+          enum:
+            '0':
+              desc: GPB.0 wake-up function Enabled
+              val: 0
+            '1':
+              desc: GPB.1 wake-up function Enabled
+              val: 1
+            '2':
+              desc: GPB.2 wake-up function Enabled
+              val: 2
+            '3':
+              desc: GPB.3 wake-up function Enabled
+              val: 3
+            '4':
+              desc: GPB.4 wake-up function Enabled
+              val: 4
+            '5':
+              desc: GPB.5 wake-up function Enabled
+              val: 5
+            '6':
+              desc: GPB.6 wake-up function Enabled
+              val: 6
+            '7':
+              desc: GPB.7 wake-up function Enabled
+              val: 7
+            '8':
+              desc: GPB.8 wake-up function Enabled
+              val: 8
+            '9':
+              desc: GPB.9 wake-up function Enabled
+              val: 9
+            '10':
+              desc: GPB.10 wake-up function Enabled
+              val: 10
+            '11':
+              desc: GPB.11 wake-up function Enabled
+              val: 11
+            '12':
+              desc: GPB.12 wake-up function Enabled
+              val: 12
+            '13':
+              desc: GPB.13 wake-up function Enabled
+              val: 13
+            '14':
+              desc: GPB.14 wake-up function Enabled
+              val: 14
+            '15':
+              desc: GPB.15 wake-up function Enabled
+              val: 15
+        DBEN:
+          desc: "GPB Input Signal De-bounce Enable Bit\nThe DBEN bit is used to enable the de-bounce function for each corresponding IO. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the wake-up. The de-bounce clock source is the 10 kHz internal low speed RC oscillator.\nThe de-bounce function is valid only for edgetriggered."
+          bits: 8
+          enum:
+            '0':
+              desc: Standby power-down wake-up pin De-bounce function Disabled
+              val: 0
+            '1':
+              desc: Standby power-down wake-up pin De-bounce function Enabled
+              val: 1
+    PCSWKCTL:
+      desc: GPC Standby Power-down Wake-up Control Register
+      offset: 0xa8
+      reset_val: 0x0
+      fields:
+        WKEN:
+          desc: "Standby Power-down Pin Wake-up Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: GPC group pin wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPC group pin wake-up function Enabled
+              val: 1
+        PRWKEN:
+          desc: "Pin Rising Edge Wake-up Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: GPC group pin rising edge wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPC group pin rising edge wake-up function Enabled
+              val: 1
+        PFWKEN:
+          desc: "Pin Falling Edge Wake-up Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: GPC group pin falling edge wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPC group pin falling edge wake-up function Enabled
+              val: 1
+        WKPSEL:
+          desc: "GPC Standby Power-down Wake-up Pin Select"
+          bits: 7-4
+          enum:
+            '0':
+              desc: GPC.0 wake-up function Enabled
+              val: 0
+            '1':
+              desc: GPC.1 wake-up function Enabled
+              val: 1
+            '2':
+              desc: GPC.2 wake-up function Enabled
+              val: 2
+            '3':
+              desc: GPC.3 wake-up function Enabled
+              val: 3
+            '4':
+              desc: GPC.4 wake-up function Enabled
+              val: 4
+            '5':
+              desc: GPC.5 wake-up function Enabled
+              val: 5
+            '6':
+              desc: GPC.6 wake-up function Enabled
+              val: 6
+            '7':
+              desc: GPC.7 wake-up function Enabled
+              val: 7
+            '8':
+              desc: GPC.8 wake-up function Enabled
+              val: 8
+            '9':
+              desc: GPC.9 wake-up function Enabled
+              val: 9
+            '10':
+              desc: GPC.10 wake-up function Enabled
+              val: 10
+            '11':
+              desc: GPC.11 wake-up function Enabled
+              val: 11
+            '12':
+              desc: GPC.12 wake-up function Enabled
+              val: 12
+            '13':
+              desc: GPC.13 wake-up function Enabled
+              val: 13
+            '14':
+              desc: GPC.14 wake-up function Enabled
+              val: 14
+            '15':
+              desc: GPC.15 wake-up function Enabled
+              val: 15
+        DBEN:
+          desc: "GPC Input Signal De-bounce Enable Bit\nThe DBEN bit is used to enable the de-bounce function for each corresponding IO. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the wake-up. The de-bounce clock source is the 10 kHz internal low speed RC oscillator.\nNote: The de-bounce function is valid only for edgetriggered."
+          bits: 8
+          enum:
+            '0':
+              desc: Standby power-down wake-up pin De-bounce function Disabled
+              val: 0
+            '1':
+              desc: Standby power-down wake-up pin De-bounce function Enabled
+              val: 1
+    PDSWKCTL:
+      desc: GPD Standby Power-down Wake-up Control Register
+      offset: 0xac
+      reset_val: 0x0
+      fields:
+        WKEN:
+          desc: "Standby Power-down Pin Wake-up Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: GPD group pin wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPD group pin wake-up function Enabled
+              val: 1
+        PRWKEN:
+          desc: "Pin Rising Edge Wake-up Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: GPD group pin rising edge wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPD group pin rising edge wake-up function Enabled
+              val: 1
+        PFWKEN:
+          desc: "Pin Falling Edge Wake-up Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: GPD group pin falling edge wake-up function Disabled
+              val: 0
+            '1':
+              desc: GPD group pin falling edge wake-up function Enabled
+              val: 1
+        WKPSEL:
+          desc: "GPD Standby Power-down Wake-up Pin Select"
+          bits: 7-4
+          enum:
+            '0':
+              desc: GPD.0 wake-up function Enabled
+              val: 0
+            '1':
+              desc: GPD.1 wake-up function Enabled
+              val: 1
+            '2':
+              desc: GPD.2 wake-up function Enabled
+              val: 2
+            '3':
+              desc: GPD.3 wake-up function Enabled
+              val: 3
+            '4':
+              desc: GPD.4 wake-up function Enabled
+              val: 4
+            '5':
+              desc: GPD.5 wake-up function Enabled
+              val: 5
+            '6':
+              desc: GPD.6 wake-up function Enabled
+              val: 6
+            '7':
+              desc: GPD.7 wake-up function Enabled
+              val: 7
+            '8':
+              desc: GPD.8 wake-up function Enabled
+              val: 8
+            '9':
+              desc: GPD.9 wake-up function Enabled
+              val: 9
+            '10':
+              desc: GPD.10 wake-up function Enabled
+              val: 10
+            '11':
+              desc: GPD.11 wake-up function Enabled
+              val: 11
+            '12':
+              desc: GPD.12 wake-up function Enabled
+              val: 12
+            '13':
+              desc: GPD.13 wake-up function Enabled
+              val: 13
+            '14':
+              desc: GPD.14 wake-up function Enabled
+              val: 14
+            '15':
+              desc: GPD.15 wake-up function Enabled
+              val: 15
+        DBEN:
+          desc: "GPD Input Signal De-bounce Enable Bit\nThe DBEN bit is used to enable the de-bounce function for each corresponding IO. If the input signal pulse width cannot be sampled by continuous two de-bounce sample cycle, the input signal transition is seen as the signal bounce and will not trigger the wake-up. The de-bounce clock source is the 10 kHz internal low speed RC oscillator.\nNote: The de-bounce function is valid only for edgetriggered."
+          bits: 8
+          enum:
+            '0':
+              desc: Standby power-down wake-up pin De-bounce function Disabled
+              val: 0
+            '1':
+              desc: Standby power-down wake-up pin De-bounce function Enabled
+              val: 1
+    IOPDCTL:
+      desc: GPIO Standby Power-down Control Register
+      offset: 0xb0
+      reset_val: 0x0
+      fields:
+        IOHR:
+          desc: "GPIO Hold Release\nWhen GPIO enters deep power-down mode or standby power-down mode, all I/O status are hold to keep normal operating status. After chip was waked up from deep power-down mode or standby power-down mode, the I/O are still keep hold status until user set this bit to release I/O hold status.\nNote: This bit is auto cleared by hardware."
+          bits: 0

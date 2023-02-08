@@ -1,0 +1,2031 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: BPWM Register Map
+  ver: 1
+  registers:
+    CTL0:
+      desc: BPWM Control Register 0
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        CTRLD0:
+          desc: "Center Re-load\nEach bit n controls the corresponding BPWM channel n.\nIn up-down counter type, PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the center point of a period."
+          bits: 0
+        CTRLD1:
+          desc: "Center Re-load\nEach bit n controls the corresponding BPWM channel n.\nIn up-down counter type, PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the center point of a period."
+          bits: 1
+        CTRLD2:
+          desc: "Center Re-load\nEach bit n controls the corresponding BPWM channel n.\nIn up-down counter type, PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the center point of a period."
+          bits: 2
+        CTRLD3:
+          desc: "Center Re-load\nEach bit n controls the corresponding BPWM channel n.\nIn up-down counter type, PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the center point of a period."
+          bits: 3
+        CTRLD4:
+          desc: "Center Re-load\nEach bit n controls the corresponding BPWM channel n.\nIn up-down counter type, PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the center point of a period."
+          bits: 4
+        CTRLD5:
+          desc: "Center Re-load\nEach bit n controls the corresponding BPWM channel n.\nIn up-down counter type, PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the center point of a period."
+          bits: 5
+        IMMLDEN0:
+          desc: "Immediately Load Enable Bit(S)\nEach bit n controls the corresponding BPWM channel n.\nNote: If IMMLDENn is Enabled, CTRLDn will be invalid."
+          bits: 16
+          enum:
+            '0':
+              desc: "PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the end point or center point of each period by setting CTRLD bit"
+              val: 0
+            '1':
+              desc: "PERIOD/CMPDAT will load to PBUF and CMPBUF immediately when software update PERIOD/CMPDAT"
+              val: 1
+        IMMLDEN1:
+          desc: "Immediately Load Enable Bit(S)\nEach bit n controls the corresponding BPWM channel n.\nNote: If IMMLDENn is Enabled, CTRLDn will be invalid."
+          bits: 17
+          enum:
+            '0':
+              desc: "PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the end point or center point of each period by setting CTRLD bit"
+              val: 0
+            '1':
+              desc: "PERIOD/CMPDAT will load to PBUF and CMPBUF immediately when software update PERIOD/CMPDAT"
+              val: 1
+        IMMLDEN2:
+          desc: "Immediately Load Enable Bit(S)\nEach bit n controls the corresponding BPWM channel n.\nNote: If IMMLDENn is Enabled, CTRLDn will be invalid."
+          bits: 18
+          enum:
+            '0':
+              desc: "PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the end point or center point of each period by setting CTRLD bit"
+              val: 0
+            '1':
+              desc: "PERIOD/CMPDAT will load to PBUF and CMPBUF immediately when software update PERIOD/CMPDAT"
+              val: 1
+        IMMLDEN3:
+          desc: "Immediately Load Enable Bit(S)\nEach bit n controls the corresponding BPWM channel n.\nNote: If IMMLDENn is Enabled, CTRLDn will be invalid."
+          bits: 19
+          enum:
+            '0':
+              desc: "PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the end point or center point of each period by setting CTRLD bit"
+              val: 0
+            '1':
+              desc: "PERIOD/CMPDAT will load to PBUF and CMPBUF immediately when software update PERIOD/CMPDAT"
+              val: 1
+        IMMLDEN4:
+          desc: "Immediately Load Enable Bit(S)\nEach bit n controls the corresponding BPWM channel n.\nNote: If IMMLDENn is Enabled, CTRLDn will be invalid."
+          bits: 20
+          enum:
+            '0':
+              desc: "PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the end point or center point of each period by setting CTRLD bit"
+              val: 0
+            '1':
+              desc: "PERIOD/CMPDAT will load to PBUF and CMPBUF immediately when software update PERIOD/CMPDAT"
+              val: 1
+        IMMLDEN5:
+          desc: "Immediately Load Enable Bit(S)\nEach bit n controls the corresponding BPWM channel n.\nNote: If IMMLDENn is Enabled, CTRLDn will be invalid."
+          bits: 21
+          enum:
+            '0':
+              desc: "PERIOD will load to PBUF at the end point of each period. CMPDAT will load to CMPBUF at the end point or center point of each period by setting CTRLD bit"
+              val: 0
+            '1':
+              desc: "PERIOD/CMPDAT will load to PBUF and CMPBUF immediately when software update PERIOD/CMPDAT"
+              val: 1
+        DBGHALT:
+          desc: "ICE Debug Mode Counter Halt (Write Protect)\nIf counter halt is enabled, BPWM all counters will keep current value until exit ICE debug mode. \nNote: This bit is write protected. Refer to SYS_REGLCTL register."
+          bits: 30
+          enum:
+            '0':
+              desc: "ICE debug mode counter halt Disabled"
+              val: 0
+            '1':
+              desc: "ICE debug mode counter halt Enabled"
+              val: 1
+        DBGTRIOFF:
+          desc: "ICE Debug Mode Acknowledge Disable (Write Protect)\nBPWM pin will keep output no matter ICE debug mode acknowledged or not.\nNote: This bit is write protected. Refer to SYS_REGLCTL register."
+          bits: 31
+          enum:
+            '0':
+              desc: "ICE debug mode acknowledgement effects BPWM output"
+              val: 0
+            '1':
+              desc: "ICE debug mode acknowledgement Disabled"
+              val: 1
+    CTL1:
+      desc: BPWM Control Register 1
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        CNTTYPE0:
+          desc: "BPWM Counter Behavior Type 0\nEach bit n controls corresponding BPWM channel n."
+          bits: 1-0
+          enum:
+            '0':
+              desc: "Up counter type (supports in capture mode)"
+              val: 0
+            '1':
+              desc: "Down count type (supports in capture mode)"
+              val: 1
+            '2':
+              desc: "Up-down counter type"
+              val: 2
+            '3':
+              desc: "Reserved."
+              val: 3
+    CLKSRC:
+      desc: BPWM Clock Source Register
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        ECLKSRC0:
+          desc: "BPWM_CH01 External Clock Source Select"
+          bits: 2-0
+          enum:
+            '0':
+              desc: "BPWMx_CLK, x denotes 0 or 1"
+              val: 0
+            '1':
+              desc: "TIMER0 overflow"
+              val: 1
+            '2':
+              desc: "TIMER1 overflow"
+              val: 2
+            '3':
+              desc: "TIMER2 overflow"
+              val: 3
+            '4':
+              desc: "TIMER3 overflow"
+              val: 4
+    CLKPSC:
+      desc: BPWM Clock Prescale Register
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        CLKPSC:
+          desc: "BPWM Counter Clock Prescale \nThe clock of BPWM counter is decided by clock prescaler. Each BPWM pair share one BPWM counter clock prescaler. The clock of BPWM counter is divided by (CLKPSC+ 1)."
+          bits: 11-0
+    CNTEN:
+      desc: BPWM Counter Enable Register
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        CNTEN0:
+          desc: "BPWM Counter 0 Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: "BPWM Counter and clock prescaler stop running"
+              val: 0
+            '1':
+              desc: "BPWM Counter and clock prescaler start running"
+              val: 1
+    CNTCLR:
+      desc: BPWM Clear Counter Register
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        CNTCLR0:
+          desc: "Clear BPWM Counter Control Bit 0\nIt is automatically cleared by hardware."
+          bits: 0
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Clear 16-bit BPWM counter to 0000H"
+              val: 1
+    PERIOD:
+      desc: BPWM Period Register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        PERIOD:
+          desc: "BPWM Period Register\nUp-Count mode: In this mode, BPWM counter counts from 0 to PERIOD, and restarts from 0.\nDown-Count mode: In this mode, BPWM counter counts from PERIOD to 0, and restarts from PERIOD."
+          bits: 15-0
+    CMPDAT0:
+      desc: BPWM Comparator Register 0
+      offset: 0x50
+      reset_val: 0x0
+      fields:
+        CMPDAT:
+          desc: "BPWM Comparator Register\nCMPDAT use to compare with CNT to generate BPWM waveform, interrupt and trigger EADC0/1.\nIn independent mode, CMPDAT0~5 denote as 6 independent BPWM_CH0~5 compared point."
+          bits: 15-0
+    CMPDAT1:
+      desc: BPWM Comparator Register 1
+      offset: 0x54
+      reset_val: 0x0
+    CMPDAT2:
+      desc: BPWM Comparator Register 2
+      offset: 0x58
+      reset_val: 0x0
+    CMPDAT3:
+      desc: BPWM Comparator Register 3
+      offset: 0x5c
+      reset_val: 0x0
+    CMPDAT4:
+      desc: BPWM Comparator Register 4
+      offset: 0x60
+      reset_val: 0x0
+    CMPDAT5:
+      desc: BPWM Comparator Register 5
+      offset: 0x64
+      reset_val: 0x0
+    CNT:
+      desc: BPWM Counter Register
+      offset: 0x90
+      reset_val: 0x0
+      fields:
+        CNT:
+          desc: "BPWM Data Register (Read Only)\nUser can monitor CNT to know the current value in 16-bit period counter."
+          bits: 15-0
+        DIRF:
+          desc: "BPWM Direction Indicator Flag (Read Only)"
+          bits: 16
+          enum:
+            '0':
+              desc: "Counter is Down count"
+              val: 0
+            '1':
+              desc: "Counter is UP count"
+              val: 1
+    WGCTL0:
+      desc: BPWM Generation Register 0
+      offset: 0xb0
+      reset_val: 0x0
+      fields:
+        ZPCTL0:
+          desc: "BPWM Zero Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to zero."
+          bits: 1-0
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM zero point output Low"
+              val: 1
+            '2':
+              desc: "BPWM zero point output High"
+              val: 2
+            '3':
+              desc: "BPWM zero point output Toggle"
+              val: 3
+        ZPCTL1:
+          desc: "BPWM Zero Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to zero."
+          bits: 3-2
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM zero point output Low"
+              val: 1
+            '2':
+              desc: "BPWM zero point output High"
+              val: 2
+            '3':
+              desc: "BPWM zero point output Toggle"
+              val: 3
+        ZPCTL2:
+          desc: "BPWM Zero Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to zero."
+          bits: 5-4
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM zero point output Low"
+              val: 1
+            '2':
+              desc: "BPWM zero point output High"
+              val: 2
+            '3':
+              desc: "BPWM zero point output Toggle"
+              val: 3
+        ZPCTL3:
+          desc: "BPWM Zero Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to zero."
+          bits: 7-6
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM zero point output Low"
+              val: 1
+            '2':
+              desc: "BPWM zero point output High"
+              val: 2
+            '3':
+              desc: "BPWM zero point output Toggle"
+              val: 3
+        ZPCTL4:
+          desc: "BPWM Zero Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to zero."
+          bits: 9-8
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM zero point output Low"
+              val: 1
+            '2':
+              desc: "BPWM zero point output High"
+              val: 2
+            '3':
+              desc: "BPWM zero point output Toggle"
+              val: 3
+        ZPCTL5:
+          desc: "BPWM Zero Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to zero."
+          bits: 11-10
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM zero point output Low"
+              val: 1
+            '2':
+              desc: "BPWM zero point output High"
+              val: 2
+            '3':
+              desc: "BPWM zero point output Toggle"
+              val: 3
+        PRDPCTL0:
+          desc: "BPWM Period (Center) Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to (PERIOD+1).\nNote: This bit is center point control when BPWM counter operating in up-down counter type."
+          bits: 17-16
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM period (center) point output Low"
+              val: 1
+            '2':
+              desc: "BPWM period (center) point output High"
+              val: 2
+            '3':
+              desc: "BPWM period (center) point output Toggle"
+              val: 3
+        PRDPCTL1:
+          desc: "BPWM Period (Center) Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to (PERIOD+1).\nNote: This bit is center point control when BPWM counter operating in up-down counter type."
+          bits: 19-18
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM period (center) point output Low"
+              val: 1
+            '2':
+              desc: "BPWM period (center) point output High"
+              val: 2
+            '3':
+              desc: "BPWM period (center) point output Toggle"
+              val: 3
+        PRDPCTL2:
+          desc: "BPWM Period (Center) Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to (PERIOD+1).\nNote: This bit is center point control when BPWM counter operating in up-down counter type."
+          bits: 21-20
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM period (center) point output Low"
+              val: 1
+            '2':
+              desc: "BPWM period (center) point output High"
+              val: 2
+            '3':
+              desc: "BPWM period (center) point output Toggle"
+              val: 3
+        PRDPCTL3:
+          desc: "BPWM Period (Center) Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to (PERIOD+1).\nNote: This bit is center point control when BPWM counter operating in up-down counter type."
+          bits: 23-22
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM period (center) point output Low"
+              val: 1
+            '2':
+              desc: "BPWM period (center) point output High"
+              val: 2
+            '3':
+              desc: "BPWM period (center) point output Toggle"
+              val: 3
+        PRDPCTL4:
+          desc: "BPWM Period (Center) Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to (PERIOD+1).\nNote: This bit is center point control when BPWM counter operating in up-down counter type."
+          bits: 25-24
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM period (center) point output Low"
+              val: 1
+            '2':
+              desc: "BPWM period (center) point output High"
+              val: 2
+            '3':
+              desc: "BPWM period (center) point output Toggle"
+              val: 3
+        PRDPCTL5:
+          desc: "BPWM Period (Center) Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter count to (PERIOD+1).\nNote: This bit is center point control when BPWM counter operating in up-down counter type."
+          bits: 27-26
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM period (center) point output Low"
+              val: 1
+            '2':
+              desc: "BPWM period (center) point output High"
+              val: 2
+            '3':
+              desc: "BPWM period (center) point output Toggle"
+              val: 3
+    WGCTL1:
+      desc: BPWM Generation Register 1
+      offset: 0xb4
+      reset_val: 0x0
+      fields:
+        CMPUCTL0:
+          desc: "BPWM Compare Up Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter up count to CMPDAT."
+          bits: 1-0
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare up point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare up point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare up point output Toggle"
+              val: 3
+        CMPUCTL1:
+          desc: "BPWM Compare Up Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter up count to CMPDAT."
+          bits: 3-2
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare up point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare up point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare up point output Toggle"
+              val: 3
+        CMPUCTL2:
+          desc: "BPWM Compare Up Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter up count to CMPDAT."
+          bits: 5-4
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare up point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare up point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare up point output Toggle"
+              val: 3
+        CMPUCTL3:
+          desc: "BPWM Compare Up Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter up count to CMPDAT."
+          bits: 7-6
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare up point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare up point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare up point output Toggle"
+              val: 3
+        CMPUCTL4:
+          desc: "BPWM Compare Up Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter up count to CMPDAT."
+          bits: 9-8
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare up point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare up point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare up point output Toggle"
+              val: 3
+        CMPUCTL5:
+          desc: "BPWM Compare Up Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter up count to CMPDAT."
+          bits: 11-10
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare up point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare up point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare up point output Toggle"
+              val: 3
+        CMPDCTL0:
+          desc: "BPWM Compare Down Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter down count to CMPDAT."
+          bits: 17-16
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare down point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare down point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare down point output Toggle"
+              val: 3
+        CMPDCTL1:
+          desc: "BPWM Compare Down Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter down count to CMPDAT."
+          bits: 19-18
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare down point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare down point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare down point output Toggle"
+              val: 3
+        CMPDCTL2:
+          desc: "BPWM Compare Down Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter down count to CMPDAT."
+          bits: 21-20
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare down point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare down point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare down point output Toggle"
+              val: 3
+        CMPDCTL3:
+          desc: "BPWM Compare Down Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter down count to CMPDAT."
+          bits: 23-22
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare down point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare down point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare down point output Toggle"
+              val: 3
+        CMPDCTL4:
+          desc: "BPWM Compare Down Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter down count to CMPDAT."
+          bits: 25-24
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare down point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare down point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare down point output Toggle"
+              val: 3
+        CMPDCTL5:
+          desc: "BPWM Compare Down Point Control\nEach bit n controls the corresponding BPWM channel n.\nBPWM can control output level when BPWM counter down count to CMPDAT."
+          bits: 27-26
+          enum:
+            '0':
+              desc: "Do nothing"
+              val: 0
+            '1':
+              desc: "BPWM compare down point output Low"
+              val: 1
+            '2':
+              desc: "BPWM compare down point output High"
+              val: 2
+            '3':
+              desc: "BPWM compare down point output Toggle"
+              val: 3
+    MSKEN:
+      desc: BPWM Mask Enable Register
+      offset: 0xb8
+      reset_val: 0x0
+      fields:
+        MSKEN0:
+          desc: "BPWM Mask Enable Bits\nEach bit n controls the corresponding BPWM channel n.\nThe BPWM output signal will be masked when this bit is enabled. The corresponding BPWM channel n will output MSKDATn (BPWM_MSK[5:0]) data. "
+          bits: 0
+          enum:
+            '0':
+              desc: "BPWM output signal is non-masked"
+              val: 0
+            '1':
+              desc: "BPWM output signal is masked and output MSKDATn data"
+              val: 1
+        MSKEN1:
+          desc: "BPWM Mask Enable Bits\nEach bit n controls the corresponding BPWM channel n.\nThe BPWM output signal will be masked when this bit is enabled. The corresponding BPWM channel n will output MSKDATn (BPWM_MSK[5:0]) data. "
+          bits: 1
+          enum:
+            '0':
+              desc: "BPWM output signal is non-masked"
+              val: 0
+            '1':
+              desc: "BPWM output signal is masked and output MSKDATn data"
+              val: 1
+        MSKEN2:
+          desc: "BPWM Mask Enable Bits\nEach bit n controls the corresponding BPWM channel n.\nThe BPWM output signal will be masked when this bit is enabled. The corresponding BPWM channel n will output MSKDATn (BPWM_MSK[5:0]) data. "
+          bits: 2
+          enum:
+            '0':
+              desc: "BPWM output signal is non-masked"
+              val: 0
+            '1':
+              desc: "BPWM output signal is masked and output MSKDATn data"
+              val: 1
+        MSKEN3:
+          desc: "BPWM Mask Enable Bits\nEach bit n controls the corresponding BPWM channel n.\nThe BPWM output signal will be masked when this bit is enabled. The corresponding BPWM channel n will output MSKDATn (BPWM_MSK[5:0]) data. "
+          bits: 3
+          enum:
+            '0':
+              desc: "BPWM output signal is non-masked"
+              val: 0
+            '1':
+              desc: "BPWM output signal is masked and output MSKDATn data"
+              val: 1
+        MSKEN4:
+          desc: "BPWM Mask Enable Bits\nEach bit n controls the corresponding BPWM channel n.\nThe BPWM output signal will be masked when this bit is enabled. The corresponding BPWM channel n will output MSKDATn (BPWM_MSK[5:0]) data. "
+          bits: 4
+          enum:
+            '0':
+              desc: "BPWM output signal is non-masked"
+              val: 0
+            '1':
+              desc: "BPWM output signal is masked and output MSKDATn data"
+              val: 1
+        MSKEN5:
+          desc: "BPWM Mask Enable Bits\nEach bit n controls the corresponding BPWM channel n.\nThe BPWM output signal will be masked when this bit is enabled. The corresponding BPWM channel n will output MSKDATn (BPWM_MSK[5:0]) data. "
+          bits: 5
+          enum:
+            '0':
+              desc: "BPWM output signal is non-masked"
+              val: 0
+            '1':
+              desc: "BPWM output signal is masked and output MSKDATn data"
+              val: 1
+    MSK:
+      desc: BPWM Mask Data Register
+      offset: 0xbc
+      reset_val: 0x0
+      fields:
+        MSKDAT0:
+          desc: "BPWM Mask Data Bit\nThis data bit control the state of BPWMn output pin, if corresponding mask function is enabled. Each bit n controls the corresponding BPWM channel n."
+          bits: 0
+          enum:
+            '0':
+              desc: "Output logic low to BPWMn"
+              val: 0
+            '1':
+              desc: "Output logic high to BPWMn"
+              val: 1
+        MSKDAT1:
+          desc: "BPWM Mask Data Bit\nThis data bit control the state of BPWMn output pin, if corresponding mask function is enabled. Each bit n controls the corresponding BPWM channel n."
+          bits: 1
+          enum:
+            '0':
+              desc: "Output logic low to BPWMn"
+              val: 0
+            '1':
+              desc: "Output logic high to BPWMn"
+              val: 1
+        MSKDAT2:
+          desc: "BPWM Mask Data Bit\nThis data bit control the state of BPWMn output pin, if corresponding mask function is enabled. Each bit n controls the corresponding BPWM channel n."
+          bits: 2
+          enum:
+            '0':
+              desc: "Output logic low to BPWMn"
+              val: 0
+            '1':
+              desc: "Output logic high to BPWMn"
+              val: 1
+        MSKDAT3:
+          desc: "BPWM Mask Data Bit\nThis data bit control the state of BPWMn output pin, if corresponding mask function is enabled. Each bit n controls the corresponding BPWM channel n."
+          bits: 3
+          enum:
+            '0':
+              desc: "Output logic low to BPWMn"
+              val: 0
+            '1':
+              desc: "Output logic high to BPWMn"
+              val: 1
+        MSKDAT4:
+          desc: "BPWM Mask Data Bit\nThis data bit control the state of BPWMn output pin, if corresponding mask function is enabled. Each bit n controls the corresponding BPWM channel n."
+          bits: 4
+          enum:
+            '0':
+              desc: "Output logic low to BPWMn"
+              val: 0
+            '1':
+              desc: "Output logic high to BPWMn"
+              val: 1
+        MSKDAT5:
+          desc: "BPWM Mask Data Bit\nThis data bit control the state of BPWMn output pin, if corresponding mask function is enabled. Each bit n controls the corresponding BPWM channel n."
+          bits: 5
+          enum:
+            '0':
+              desc: "Output logic low to BPWMn"
+              val: 0
+            '1':
+              desc: "Output logic high to BPWMn"
+              val: 1
+    POLCTL:
+      desc: BPWM Pin Polar Inverse Register
+      offset: 0xd4
+      reset_val: 0x0
+      fields:
+        PINV0:
+          desc: "BPWM PIN Polar Inverse Control\nThe register controls polarity state of BPWM output. Each bit n controls the corresponding BPWM channel n."
+          bits: 0
+          enum:
+            '0':
+              desc: "BPWM output polar inverse Disabled"
+              val: 0
+            '1':
+              desc: "BPWM output polar inverse Enabled"
+              val: 1
+        PINV1:
+          desc: "BPWM PIN Polar Inverse Control\nThe register controls polarity state of BPWM output. Each bit n controls the corresponding BPWM channel n."
+          bits: 1
+          enum:
+            '0':
+              desc: "BPWM output polar inverse Disabled"
+              val: 0
+            '1':
+              desc: "BPWM output polar inverse Enabled"
+              val: 1
+        PINV2:
+          desc: "BPWM PIN Polar Inverse Control\nThe register controls polarity state of BPWM output. Each bit n controls the corresponding BPWM channel n."
+          bits: 2
+          enum:
+            '0':
+              desc: "BPWM output polar inverse Disabled"
+              val: 0
+            '1':
+              desc: "BPWM output polar inverse Enabled"
+              val: 1
+        PINV3:
+          desc: "BPWM PIN Polar Inverse Control\nThe register controls polarity state of BPWM output. Each bit n controls the corresponding BPWM channel n."
+          bits: 3
+          enum:
+            '0':
+              desc: "BPWM output polar inverse Disabled"
+              val: 0
+            '1':
+              desc: "BPWM output polar inverse Enabled"
+              val: 1
+        PINV4:
+          desc: "BPWM PIN Polar Inverse Control\nThe register controls polarity state of BPWM output. Each bit n controls the corresponding BPWM channel n."
+          bits: 4
+          enum:
+            '0':
+              desc: "BPWM output polar inverse Disabled"
+              val: 0
+            '1':
+              desc: "BPWM output polar inverse Enabled"
+              val: 1
+        PINV5:
+          desc: "BPWM PIN Polar Inverse Control\nThe register controls polarity state of BPWM output. Each bit n controls the corresponding BPWM channel n."
+          bits: 5
+          enum:
+            '0':
+              desc: "BPWM output polar inverse Disabled"
+              val: 0
+            '1':
+              desc: "BPWM output polar inverse Enabled"
+              val: 1
+    POEN:
+      desc: BPWM Output Enable Register
+      offset: 0xd8
+      reset_val: 0x0
+      fields:
+        POEN0:
+          desc: "BPWM Pin Output Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 0
+          enum:
+            '0':
+              desc: "BPWM pin at tri-state"
+              val: 0
+            '1':
+              desc: "BPWM pin in output mode"
+              val: 1
+        POEN1:
+          desc: "BPWM Pin Output Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 1
+          enum:
+            '0':
+              desc: "BPWM pin at tri-state"
+              val: 0
+            '1':
+              desc: "BPWM pin in output mode"
+              val: 1
+        POEN2:
+          desc: "BPWM Pin Output Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 2
+          enum:
+            '0':
+              desc: "BPWM pin at tri-state"
+              val: 0
+            '1':
+              desc: "BPWM pin in output mode"
+              val: 1
+        POEN3:
+          desc: "BPWM Pin Output Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 3
+          enum:
+            '0':
+              desc: "BPWM pin at tri-state"
+              val: 0
+            '1':
+              desc: "BPWM pin in output mode"
+              val: 1
+        POEN4:
+          desc: "BPWM Pin Output Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 4
+          enum:
+            '0':
+              desc: "BPWM pin at tri-state"
+              val: 0
+            '1':
+              desc: "BPWM pin in output mode"
+              val: 1
+        POEN5:
+          desc: "BPWM Pin Output Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 5
+          enum:
+            '0':
+              desc: "BPWM pin at tri-state"
+              val: 0
+            '1':
+              desc: "BPWM pin in output mode"
+              val: 1
+    INTEN:
+      desc: BPWM Interrupt Enable Register
+      offset: 0xe0
+      reset_val: 0x0
+      fields:
+        ZIEN0:
+          desc: "BPWM Zero Point Interrupt 0 Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: "Zero point interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Zero point interrupt Enabled"
+              val: 1
+        PIEN0:
+          desc: "BPWM Period Point Interrupt 0 Enable Bit\nNote: When up-down counter type period point means center point."
+          bits: 8
+          enum:
+            '0':
+              desc: "Period point interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Period point interrupt Enabled"
+              val: 1
+        CMPUIEN0:
+          desc: "BPWM Compare Up Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 16
+          enum:
+            '0':
+              desc: "Compare up count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare up count interrupt Enabled"
+              val: 1
+        CMPUIEN1:
+          desc: "BPWM Compare Up Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 17
+          enum:
+            '0':
+              desc: "Compare up count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare up count interrupt Enabled"
+              val: 1
+        CMPUIEN2:
+          desc: "BPWM Compare Up Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 18
+          enum:
+            '0':
+              desc: "Compare up count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare up count interrupt Enabled"
+              val: 1
+        CMPUIEN3:
+          desc: "BPWM Compare Up Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 19
+          enum:
+            '0':
+              desc: "Compare up count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare up count interrupt Enabled"
+              val: 1
+        CMPUIEN4:
+          desc: "BPWM Compare Up Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 20
+          enum:
+            '0':
+              desc: "Compare up count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare up count interrupt Enabled"
+              val: 1
+        CMPUIEN5:
+          desc: "BPWM Compare Up Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 21
+          enum:
+            '0':
+              desc: "Compare up count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare up count interrupt Enabled"
+              val: 1
+        CMPDIEN0:
+          desc: "BPWM Compare Down Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 24
+          enum:
+            '0':
+              desc: "Compare down count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare down count interrupt Enabled"
+              val: 1
+        CMPDIEN1:
+          desc: "BPWM Compare Down Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 25
+          enum:
+            '0':
+              desc: "Compare down count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare down count interrupt Enabled"
+              val: 1
+        CMPDIEN2:
+          desc: "BPWM Compare Down Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 26
+          enum:
+            '0':
+              desc: "Compare down count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare down count interrupt Enabled"
+              val: 1
+        CMPDIEN3:
+          desc: "BPWM Compare Down Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 27
+          enum:
+            '0':
+              desc: "Compare down count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare down count interrupt Enabled"
+              val: 1
+        CMPDIEN4:
+          desc: "BPWM Compare Down Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 28
+          enum:
+            '0':
+              desc: "Compare down count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare down count interrupt Enabled"
+              val: 1
+        CMPDIEN5:
+          desc: "BPWM Compare Down Count Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 29
+          enum:
+            '0':
+              desc: "Compare down count interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Compare down count interrupt Enabled"
+              val: 1
+    INTSTS:
+      desc: BPWM Interrupt Flag Register
+      offset: 0xe8
+      reset_val: 0x0
+      fields:
+        ZIF0:
+          desc: "BPWM Zero Point Interrupt Flag 0\nThis bit is set by hardware when BPWM_CH0 counter reaches 0, software can write 1 to clear this bit to 0."
+          bits: 0
+        PIF0:
+          desc: "BPWM Period Point Interrupt Flag 0\nThis bit is set by hardware when BPWM_CH0 counter reaches BPWM_PERIOD0, software can write 1 to clear this bit to 0."
+          bits: 8
+        CMPUIF0:
+          desc: "BPWM Compare Up Count Interrupt Flag\nFlag is set by hardware when BPWM counter up count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it. Each bit n controls the corresponding BPWM channel n.\nNote: If CMPDAT equal to PERIOD, this flag is not working in up counter type selection."
+          bits: 16
+        CMPUIF1:
+          desc: "BPWM Compare Up Count Interrupt Flag\nFlag is set by hardware when BPWM counter up count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it. Each bit n controls the corresponding BPWM channel n.\nNote: If CMPDAT equal to PERIOD, this flag is not working in up counter type selection."
+          bits: 17
+        CMPUIF2:
+          desc: "BPWM Compare Up Count Interrupt Flag\nFlag is set by hardware when BPWM counter up count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it. Each bit n controls the corresponding BPWM channel n.\nNote: If CMPDAT equal to PERIOD, this flag is not working in up counter type selection."
+          bits: 18
+        CMPUIF3:
+          desc: "BPWM Compare Up Count Interrupt Flag\nFlag is set by hardware when BPWM counter up count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it. Each bit n controls the corresponding BPWM channel n.\nNote: If CMPDAT equal to PERIOD, this flag is not working in up counter type selection."
+          bits: 19
+        CMPUIF4:
+          desc: "BPWM Compare Up Count Interrupt Flag\nFlag is set by hardware when BPWM counter up count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it. Each bit n controls the corresponding BPWM channel n.\nNote: If CMPDAT equal to PERIOD, this flag is not working in up counter type selection."
+          bits: 20
+        CMPUIF5:
+          desc: "BPWM Compare Up Count Interrupt Flag\nFlag is set by hardware when BPWM counter up count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it. Each bit n controls the corresponding BPWM channel n.\nNote: If CMPDAT equal to PERIOD, this flag is not working in up counter type selection."
+          bits: 21
+        CMPDIF0:
+          desc: "BPWM Compare Down Count Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nFlag is set by hardware when BPWM counter down count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it.\nNote: If CMPDAT equal to PERIOD, this flag is not working in down counter type selection."
+          bits: 24
+        CMPDIF1:
+          desc: "BPWM Compare Down Count Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nFlag is set by hardware when BPWM counter down count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it.\nNote: If CMPDAT equal to PERIOD, this flag is not working in down counter type selection."
+          bits: 25
+        CMPDIF2:
+          desc: "BPWM Compare Down Count Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nFlag is set by hardware when BPWM counter down count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it.\nNote: If CMPDAT equal to PERIOD, this flag is not working in down counter type selection."
+          bits: 26
+        CMPDIF3:
+          desc: "BPWM Compare Down Count Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nFlag is set by hardware when BPWM counter down count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it.\nNote: If CMPDAT equal to PERIOD, this flag is not working in down counter type selection."
+          bits: 27
+        CMPDIF4:
+          desc: "BPWM Compare Down Count Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nFlag is set by hardware when BPWM counter down count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it.\nNote: If CMPDAT equal to PERIOD, this flag is not working in down counter type selection."
+          bits: 28
+        CMPDIF5:
+          desc: "BPWM Compare Down Count Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nFlag is set by hardware when BPWM counter down count and reaches BPWM_CMPDATn, software can clear this bit by writing 1 to it.\nNote: If CMPDAT equal to PERIOD, this flag is not working in down counter type selection."
+          bits: 29
+    EADCTS0:
+      desc: BPWM Trigger EADC0/1 Source Select Register 0
+      offset: 0xf8
+      reset_val: 0x0
+      fields:
+        TRGSEL0:
+          desc: "BPWM_CH0 Trigger EADC0/1 Source Select\nOthers reserved"
+          bits: 3-0
+          enum:
+            '0':
+              desc: "BPWM_CH0 zero point"
+              val: 0
+            '1':
+              desc: "BPWM_CH0 period point"
+              val: 1
+            '2':
+              desc: "BPWM_CH0 zero or period point"
+              val: 2
+            '3':
+              desc: "BPWM_CH0 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "BPWM_CH0 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved."
+              val: 5
+            '6':
+              desc: "Reserved."
+              val: 6
+            '7':
+              desc: "Reserved."
+              val: 7
+            '8':
+              desc: "BPWM_CH1 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "BPWM_CH1 down-count CMPDAT point"
+              val: 9
+        TRGEN0:
+          desc: "BPWM_CH0 Trigger EADC0/1 Enable Bit"
+          bits: 7
+        TRGSEL1:
+          desc: "BPWM_CH1 Trigger EADC0/1 Source Select\nOthers reserved"
+          bits: 11-8
+          enum:
+            '0':
+              desc: "BPWM_CH0 zero point"
+              val: 0
+            '1':
+              desc: "BPWM_CH0 period point"
+              val: 1
+            '2':
+              desc: "BPWM_CH0 zero or period point"
+              val: 2
+            '3':
+              desc: "BPWM_CH0 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "BPWM_CH0 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved."
+              val: 5
+            '6':
+              desc: "Reserved."
+              val: 6
+            '7':
+              desc: "Reserved."
+              val: 7
+            '8':
+              desc: "BPWM_CH1 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "BPWM_CH1 down-count CMPDAT point"
+              val: 9
+        TRGEN1:
+          desc: "BPWM_CH1 Trigger EADC0/1 Enable Bit"
+          bits: 15
+        TRGSEL2:
+          desc: "BPWM_CH2 Trigger EADC0/1 Source Select\nOthers reserved"
+          bits: 19-16
+          enum:
+            '0':
+              desc: "BPWM_CH2 zero point"
+              val: 0
+            '1':
+              desc: "BPWM_CH2 period point"
+              val: 1
+            '2':
+              desc: "BPWM_CH2 zero or period point"
+              val: 2
+            '3':
+              desc: "BPWM_CH2 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "BPWM_CH2 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved."
+              val: 5
+            '6':
+              desc: "Reserved."
+              val: 6
+            '7':
+              desc: "Reserved."
+              val: 7
+            '8':
+              desc: "BPWM_CH3 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "BPWM_CH3 down-count CMPDAT point"
+              val: 9
+        TRGEN2:
+          desc: "BPWM_CH2 Trigger EADC0/1 Enable Bit"
+          bits: 23
+        TRGSEL3:
+          desc: "BPWM_CH3 Trigger EADC0/1 Source Select\nOthers reserved."
+          bits: 27-24
+          enum:
+            '0':
+              desc: "BPWM_CH2 zero point"
+              val: 0
+            '1':
+              desc: "BPWM_CH2 period point"
+              val: 1
+            '2':
+              desc: "BPWM_CH2 zero or period point"
+              val: 2
+            '3':
+              desc: "BPWM_CH2 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "BPWM_CH2 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved."
+              val: 5
+            '6':
+              desc: "Reserved."
+              val: 6
+            '7':
+              desc: "Reserved."
+              val: 7
+            '8':
+              desc: "BPWM_CH3 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "BPWM_CH3 down-count CMPDAT point"
+              val: 9
+        TRGEN3:
+          desc: "BPWM_CH3 Trigger EADC0/1 Enable Bit"
+          bits: 31
+    EADCTS1:
+      desc: BPWM Trigger EADC0/1 Source Select Register 1
+      offset: 0xfc
+      reset_val: 0x0
+      fields:
+        TRGSEL4:
+          desc: "BPWM_CH4 Trigger EADC0/1 Source Select\nOthers reserved"
+          bits: 3-0
+          enum:
+            '0':
+              desc: "BPWM_CH4 zero point"
+              val: 0
+            '1':
+              desc: "BPWM_CH4 period point"
+              val: 1
+            '2':
+              desc: "BPWM_CH4 zero or period point"
+              val: 2
+            '3':
+              desc: "BPWM_CH4 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "BPWM_CH4 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved."
+              val: 5
+            '6':
+              desc: "Reserved."
+              val: 6
+            '7':
+              desc: "Reserved."
+              val: 7
+            '8':
+              desc: "BPWM_CH5 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "BPWM_CH5 down-count CMPDAT point"
+              val: 9
+        TRGEN4:
+          desc: "BPWM_CH4 Trigger EADC0/1 Enable Bit"
+          bits: 7
+        TRGSEL5:
+          desc: "BPWM_CH5 Trigger EADC0/1 Source Select\nOthers reserved"
+          bits: 11-8
+          enum:
+            '0':
+              desc: "BPWM_CH4 zero point"
+              val: 0
+            '1':
+              desc: "BPWM_CH4 period point"
+              val: 1
+            '2':
+              desc: "BPWM_CH4 zero or period point"
+              val: 2
+            '3':
+              desc: "BPWM_CH4 up-count CMPDAT point"
+              val: 3
+            '4':
+              desc: "BPWM_CH4 down-count CMPDAT point"
+              val: 4
+            '5':
+              desc: "Reserved."
+              val: 5
+            '6':
+              desc: "Reserved."
+              val: 6
+            '7':
+              desc: "Reserved."
+              val: 7
+            '8':
+              desc: "BPWM_CH5 up-count CMPDAT point"
+              val: 8
+            '9':
+              desc: "BPWM_CH5 down-count CMPDAT point"
+              val: 9
+        TRGEN5:
+          desc: "BPWM_CH5 Trigger EADC0/1 Enable Bit"
+          bits: 15
+    SSCTL:
+      desc: BPWM Synchronous Start Control Register
+      offset: 0x110
+      reset_val: 0x0
+      fields:
+        SSEN0:
+          desc: "BPWM Synchronous Start Function 0 Enable Bit\nWhen synchronous start function is enabled, the BPWM_CH0 counter enable bit (CNTEN0) can be enabled by writing BPWM synchronous start trigger bit (CNTSEN). "
+          bits: 0
+          enum:
+            '0':
+              desc: "BPWM synchronous start function Disabled"
+              val: 0
+            '1':
+              desc: "BPWM synchronous start function Enabled"
+              val: 1
+        SSRC:
+          desc: "BPWM Synchronous Start Source Select"
+          bits: 9-8
+          enum:
+            '0':
+              desc: "Synchronous start source come from PWM0"
+              val: 0
+            '1':
+              desc: "Synchronous start source come from PWM1"
+              val: 1
+            '2':
+              desc: "Synchronous start source come from BPWM0"
+              val: 2
+            '3':
+              desc: "Synchronous start source come from BPWM1"
+              val: 3
+    SSTRG:
+      desc: BPWM Synchronous Start Trigger Register
+      offset: 0x114
+      reset_val: 0x0
+      fields:
+        CNTSEN:
+          desc: "BPWM Counter Synchronous Start Enable Bit(Write Only)\nBPMW counter synchronous enable function is used to make PWM or BPWM channels start counting at the same time.\nWriting this bit to 1 will also set the counter enable bit if correlated BPWM channel counter synchronous start function is enabled."
+          bits: 0
+    STATUS:
+      desc: BPWM Status Register
+      offset: 0x120
+      reset_val: 0x0
+      fields:
+        CNTMAXF0:
+          desc: "Time-base Counter 0 Equal to 0xFFFF Latched Flag"
+          bits: 0
+          enum:
+            '0':
+              desc: "The time-base counter never reached its maximum value 0xFFFF"
+              val: 0
+            '1':
+              desc: "The time-base counter reached its maximum value. Software can write 1 to clear this bit"
+              val: 1
+        EADCTRG0:
+          desc: "EADC0 EADC1 Start of Conversion Status\nEach bit n controls the corresponding BPWM channel n."
+          bits: 16
+          enum:
+            '0':
+              desc: "No EADC0/1 start of conversion trigger event has occurred"
+              val: 0
+            '1':
+              desc: "An EADC0/1 start of conversion trigger event has occurred. Software can write 1 to clear this bit"
+              val: 1
+        EADCTRG1:
+          desc: "EADC0 EADC1 Start of Conversion Status\nEach bit n controls the corresponding BPWM channel n."
+          bits: 17
+          enum:
+            '0':
+              desc: "No EADC0/1 start of conversion trigger event has occurred"
+              val: 0
+            '1':
+              desc: "An EADC0/1 start of conversion trigger event has occurred. Software can write 1 to clear this bit"
+              val: 1
+        EADCTRG2:
+          desc: "EADC0 EADC1 Start of Conversion Status\nEach bit n controls the corresponding BPWM channel n."
+          bits: 18
+          enum:
+            '0':
+              desc: "No EADC0/1 start of conversion trigger event has occurred"
+              val: 0
+            '1':
+              desc: "An EADC0/1 start of conversion trigger event has occurred. Software can write 1 to clear this bit"
+              val: 1
+        EADCTRG3:
+          desc: "EADC0 EADC1 Start of Conversion Status\nEach bit n controls the corresponding BPWM channel n."
+          bits: 19
+          enum:
+            '0':
+              desc: "No EADC0/1 start of conversion trigger event has occurred"
+              val: 0
+            '1':
+              desc: "An EADC0/1 start of conversion trigger event has occurred. Software can write 1 to clear this bit"
+              val: 1
+        EADCTRG4:
+          desc: "EADC0 EADC1 Start of Conversion Status\nEach bit n controls the corresponding BPWM channel n."
+          bits: 20
+          enum:
+            '0':
+              desc: "No EADC0/1 start of conversion trigger event has occurred"
+              val: 0
+            '1':
+              desc: "An EADC0/1 start of conversion trigger event has occurred. Software can write 1 to clear this bit"
+              val: 1
+        EADCTRG5:
+          desc: "EADC0 EADC1 Start of Conversion Status\nEach bit n controls the corresponding BPWM channel n."
+          bits: 21
+          enum:
+            '0':
+              desc: "No EADC0/1 start of conversion trigger event has occurred"
+              val: 0
+            '1':
+              desc: "An EADC0/1 start of conversion trigger event has occurred. Software can write 1 to clear this bit"
+              val: 1
+    CAPINEN:
+      desc: BPWM Capture Input Enable Register
+      offset: 0x200
+      reset_val: 0x0
+      fields:
+        CAPINEN0:
+          desc: "Capture Input Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 0
+          enum:
+            '0':
+              desc: "BPWM Channel capture input path Disabled. The input of BPWM channel capture function is always regarded as 0"
+              val: 0
+            '1':
+              desc: "BPWM Channel capture input path Enabled. The input of BPWM channel capture function comes from correlative multifunction pin"
+              val: 1
+        CAPINEN1:
+          desc: "Capture Input Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 1
+          enum:
+            '0':
+              desc: "BPWM Channel capture input path Disabled. The input of BPWM channel capture function is always regarded as 0"
+              val: 0
+            '1':
+              desc: "BPWM Channel capture input path Enabled. The input of BPWM channel capture function comes from correlative multifunction pin"
+              val: 1
+        CAPINEN2:
+          desc: "Capture Input Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 2
+          enum:
+            '0':
+              desc: "BPWM Channel capture input path Disabled. The input of BPWM channel capture function is always regarded as 0"
+              val: 0
+            '1':
+              desc: "BPWM Channel capture input path Enabled. The input of BPWM channel capture function comes from correlative multifunction pin"
+              val: 1
+        CAPINEN3:
+          desc: "Capture Input Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 3
+          enum:
+            '0':
+              desc: "BPWM Channel capture input path Disabled. The input of BPWM channel capture function is always regarded as 0"
+              val: 0
+            '1':
+              desc: "BPWM Channel capture input path Enabled. The input of BPWM channel capture function comes from correlative multifunction pin"
+              val: 1
+        CAPINEN4:
+          desc: "Capture Input Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 4
+          enum:
+            '0':
+              desc: "BPWM Channel capture input path Disabled. The input of BPWM channel capture function is always regarded as 0"
+              val: 0
+            '1':
+              desc: "BPWM Channel capture input path Enabled. The input of BPWM channel capture function comes from correlative multifunction pin"
+              val: 1
+        CAPINEN5:
+          desc: "Capture Input Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 5
+          enum:
+            '0':
+              desc: "BPWM Channel capture input path Disabled. The input of BPWM channel capture function is always regarded as 0"
+              val: 0
+            '1':
+              desc: "BPWM Channel capture input path Enabled. The input of BPWM channel capture function comes from correlative multifunction pin"
+              val: 1
+    CAPCTL:
+      desc: BPWM Capture Control Register
+      offset: 0x204
+      reset_val: 0x0
+      fields:
+        CAPEN0:
+          desc: "Capture Function Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 0
+          enum:
+            '0':
+              desc: "Capture function Disabled. RCAPDAT/FCAPDAT register will not be updated"
+              val: 0
+            '1':
+              desc: "Capture function Enabled. Capture latched the BPWM counter value when detected rising or falling edge of input signal and saved to RCAPDAT (Rising latch) and FCAPDAT (Falling latch)"
+              val: 1
+        CAPEN1:
+          desc: "Capture Function Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 1
+          enum:
+            '0':
+              desc: "Capture function Disabled. RCAPDAT/FCAPDAT register will not be updated"
+              val: 0
+            '1':
+              desc: "Capture function Enabled. Capture latched the BPWM counter value when detected rising or falling edge of input signal and saved to RCAPDAT (Rising latch) and FCAPDAT (Falling latch)"
+              val: 1
+        CAPEN2:
+          desc: "Capture Function Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 2
+          enum:
+            '0':
+              desc: "Capture function Disabled. RCAPDAT/FCAPDAT register will not be updated"
+              val: 0
+            '1':
+              desc: "Capture function Enabled. Capture latched the BPWM counter value when detected rising or falling edge of input signal and saved to RCAPDAT (Rising latch) and FCAPDAT (Falling latch)"
+              val: 1
+        CAPEN3:
+          desc: "Capture Function Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 3
+          enum:
+            '0':
+              desc: "Capture function Disabled. RCAPDAT/FCAPDAT register will not be updated"
+              val: 0
+            '1':
+              desc: "Capture function Enabled. Capture latched the BPWM counter value when detected rising or falling edge of input signal and saved to RCAPDAT (Rising latch) and FCAPDAT (Falling latch)"
+              val: 1
+        CAPEN4:
+          desc: "Capture Function Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 4
+          enum:
+            '0':
+              desc: "Capture function Disabled. RCAPDAT/FCAPDAT register will not be updated"
+              val: 0
+            '1':
+              desc: "Capture function Enabled. Capture latched the BPWM counter value when detected rising or falling edge of input signal and saved to RCAPDAT (Rising latch) and FCAPDAT (Falling latch)"
+              val: 1
+        CAPEN5:
+          desc: "Capture Function Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 5
+          enum:
+            '0':
+              desc: "Capture function Disabled. RCAPDAT/FCAPDAT register will not be updated"
+              val: 0
+            '1':
+              desc: "Capture function Enabled. Capture latched the BPWM counter value when detected rising or falling edge of input signal and saved to RCAPDAT (Rising latch) and FCAPDAT (Falling latch)"
+              val: 1
+        CAPINV0:
+          desc: "Capture Inverter Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 8
+          enum:
+            '0':
+              desc: "Capture source inverter Disabled"
+              val: 0
+            '1':
+              desc: "Capture source inverter Enabled. Reverse the input signal from GPIO"
+              val: 1
+        CAPINV1:
+          desc: "Capture Inverter Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 9
+          enum:
+            '0':
+              desc: "Capture source inverter Disabled"
+              val: 0
+            '1':
+              desc: "Capture source inverter Enabled. Reverse the input signal from GPIO"
+              val: 1
+        CAPINV2:
+          desc: "Capture Inverter Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 10
+          enum:
+            '0':
+              desc: "Capture source inverter Disabled"
+              val: 0
+            '1':
+              desc: "Capture source inverter Enabled. Reverse the input signal from GPIO"
+              val: 1
+        CAPINV3:
+          desc: "Capture Inverter Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 11
+          enum:
+            '0':
+              desc: "Capture source inverter Disabled"
+              val: 0
+            '1':
+              desc: "Capture source inverter Enabled. Reverse the input signal from GPIO"
+              val: 1
+        CAPINV4:
+          desc: "Capture Inverter Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 12
+          enum:
+            '0':
+              desc: "Capture source inverter Disabled"
+              val: 0
+            '1':
+              desc: "Capture source inverter Enabled. Reverse the input signal from GPIO"
+              val: 1
+        CAPINV5:
+          desc: "Capture Inverter Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 13
+          enum:
+            '0':
+              desc: "Capture source inverter Disabled"
+              val: 0
+            '1':
+              desc: "Capture source inverter Enabled. Reverse the input signal from GPIO"
+              val: 1
+        RCRLDEN0:
+          desc: "Rising Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 16
+          enum:
+            '0':
+              desc: "Rising capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Rising capture reload counter Enabled"
+              val: 1
+        RCRLDEN1:
+          desc: "Rising Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 17
+          enum:
+            '0':
+              desc: "Rising capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Rising capture reload counter Enabled"
+              val: 1
+        RCRLDEN2:
+          desc: "Rising Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 18
+          enum:
+            '0':
+              desc: "Rising capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Rising capture reload counter Enabled"
+              val: 1
+        RCRLDEN3:
+          desc: "Rising Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 19
+          enum:
+            '0':
+              desc: "Rising capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Rising capture reload counter Enabled"
+              val: 1
+        RCRLDEN4:
+          desc: "Rising Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 20
+          enum:
+            '0':
+              desc: "Rising capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Rising capture reload counter Enabled"
+              val: 1
+        RCRLDEN5:
+          desc: "Rising Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 21
+          enum:
+            '0':
+              desc: "Rising capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Rising capture reload counter Enabled"
+              val: 1
+        FCRLDEN0:
+          desc: "Falling Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 24
+          enum:
+            '0':
+              desc: "Falling capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Falling capture reload counter Enabled"
+              val: 1
+        FCRLDEN1:
+          desc: "Falling Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 25
+          enum:
+            '0':
+              desc: "Falling capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Falling capture reload counter Enabled"
+              val: 1
+        FCRLDEN2:
+          desc: "Falling Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 26
+          enum:
+            '0':
+              desc: "Falling capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Falling capture reload counter Enabled"
+              val: 1
+        FCRLDEN3:
+          desc: "Falling Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 27
+          enum:
+            '0':
+              desc: "Falling capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Falling capture reload counter Enabled"
+              val: 1
+        FCRLDEN4:
+          desc: "Falling Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 28
+          enum:
+            '0':
+              desc: "Falling capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Falling capture reload counter Enabled"
+              val: 1
+        FCRLDEN5:
+          desc: "Falling Capture Reload Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 29
+          enum:
+            '0':
+              desc: "Falling capture reload counter Disabled"
+              val: 0
+            '1':
+              desc: "Falling capture reload counter Enabled"
+              val: 1
+    CAPSTS:
+      desc: BPWM Capture Status Register
+      offset: 0x208
+      reset_val: 0x0
+      fields:
+        CRIFOV0:
+          desc: "Capture Rising Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if rising latch happened when the corresponding CAPRIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPRIF."
+          bits: 0
+        CRIFOV1:
+          desc: "Capture Rising Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if rising latch happened when the corresponding CAPRIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPRIF."
+          bits: 1
+        CRIFOV2:
+          desc: "Capture Rising Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if rising latch happened when the corresponding CAPRIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPRIF."
+          bits: 2
+        CRIFOV3:
+          desc: "Capture Rising Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if rising latch happened when the corresponding CAPRIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPRIF."
+          bits: 3
+        CRIFOV4:
+          desc: "Capture Rising Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if rising latch happened when the corresponding CAPRIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPRIF."
+          bits: 4
+        CRIFOV5:
+          desc: "Capture Rising Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if rising latch happened when the corresponding CAPRIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPRIF."
+          bits: 5
+        CFIFOV0:
+          desc: "Capture Falling Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if falling latch happened when the corresponding CAPFIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPFIF."
+          bits: 8
+        CFIFOV1:
+          desc: "Capture Falling Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if falling latch happened when the corresponding CAPFIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPFIF."
+          bits: 9
+        CFIFOV2:
+          desc: "Capture Falling Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if falling latch happened when the corresponding CAPFIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPFIF."
+          bits: 10
+        CFIFOV3:
+          desc: "Capture Falling Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if falling latch happened when the corresponding CAPFIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPFIF."
+          bits: 11
+        CFIFOV4:
+          desc: "Capture Falling Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if falling latch happened when the corresponding CAPFIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPFIF."
+          bits: 12
+        CFIFOV5:
+          desc: "Capture Falling Interrupt Flag Overrun Status (Read Only)\nThis flag indicates if falling latch happened when the corresponding CAPFIF is 1. Each bit n controls the corresponding BPWM channel n.\nNote: This bit will be cleared automatically when user clear corresponding CAPFIF."
+          bits: 13
+    RCAPDAT0:
+      desc: BPWM Rising Capture Data Register 0
+      offset: 0x20c
+      reset_val: 0x0
+      fields:
+        RCAPDAT:
+          desc: "BPWM Rising Capture Data (Read Only)\nWhen rising capture condition happened, the BPWM counter value will be saved in this register."
+          bits: 15-0
+    FCAPDAT0:
+      desc: BPWM Falling Capture Data Register 0
+      offset: 0x210
+      reset_val: 0x0
+      fields:
+        FCAPDAT:
+          desc: "BPWM Falling Capture Data (Read Only)\nWhen falling capture condition happened, the BPWM counter value will be saved in this register."
+          bits: 15-0
+    RCAPDAT1:
+      desc: BPWM Rising Capture Data Register 1
+      offset: 0x214
+      reset_val: 0x0
+    FCAPDAT1:
+      desc: BPWM Falling Capture Data Register 1
+      offset: 0x218
+      reset_val: 0x0
+    RCAPDAT2:
+      desc: BPWM Rising Capture Data Register 2
+      offset: 0x21c
+      reset_val: 0x0
+    FCAPDAT2:
+      desc: BPWM Falling Capture Data Register 2
+      offset: 0x220
+      reset_val: 0x0
+    RCAPDAT3:
+      desc: BPWM Rising Capture Data Register 3
+      offset: 0x224
+      reset_val: 0x0
+    FCAPDAT3:
+      desc: BPWM Falling Capture Data Register 3
+      offset: 0x228
+      reset_val: 0x0
+    RCAPDAT4:
+      desc: BPWM Rising Capture Data Register 4
+      offset: 0x22c
+      reset_val: 0x0
+    FCAPDAT4:
+      desc: BPWM Falling Capture Data Register 4
+      offset: 0x230
+      reset_val: 0x0
+    RCAPDAT5:
+      desc: BPWM Rising Capture Data Register 5
+      offset: 0x234
+      reset_val: 0x0
+    FCAPDAT5:
+      desc: BPWM Falling Capture Data Register 5
+      offset: 0x238
+      reset_val: 0x0
+    CAPIEN:
+      desc: BPWM Capture Interrupt Enable Register
+      offset: 0x250
+      reset_val: 0x0
+      fields:
+        CAPRIENn:
+          desc: "BPWM Capture Rising Latch Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 5-0
+          enum:
+            '0':
+              desc: "Capture rising edge latch interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Capture rising edge latch interrupt Enabled"
+              val: 1
+        CAPFIENn:
+          desc: "BPWM Capture Falling Latch Interrupt Enable Bits\nEach bit n controls the corresponding BPWM channel n."
+          bits: 13-8
+          enum:
+            '0':
+              desc: "Capture falling edge latch interrupt Disabled"
+              val: 0
+            '1':
+              desc: "Capture falling edge latch interrupt Enabled"
+              val: 1
+    CAPIF:
+      desc: BPWM Capture Interrupt Flag Register
+      offset: 0x254
+      reset_val: 0x0
+      fields:
+        CAPRIF0:
+          desc: "BPWM Capture Rising Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 0
+          enum:
+            '0':
+              desc: "No capture rising latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture rising latch condition happened, this flag will be set to high"
+              val: 1
+        CAPRIF1:
+          desc: "BPWM Capture Rising Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 1
+          enum:
+            '0':
+              desc: "No capture rising latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture rising latch condition happened, this flag will be set to high"
+              val: 1
+        CAPRIF2:
+          desc: "BPWM Capture Rising Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 2
+          enum:
+            '0':
+              desc: "No capture rising latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture rising latch condition happened, this flag will be set to high"
+              val: 1
+        CAPRIF3:
+          desc: "BPWM Capture Rising Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 3
+          enum:
+            '0':
+              desc: "No capture rising latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture rising latch condition happened, this flag will be set to high"
+              val: 1
+        CAPRIF4:
+          desc: "BPWM Capture Rising Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 4
+          enum:
+            '0':
+              desc: "No capture rising latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture rising latch condition happened, this flag will be set to high"
+              val: 1
+        CAPRIF5:
+          desc: "BPWM Capture Rising Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 5
+          enum:
+            '0':
+              desc: "No capture rising latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture rising latch condition happened, this flag will be set to high"
+              val: 1
+        CAPFIF0:
+          desc: "BPWM Capture Falling Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 8
+          enum:
+            '0':
+              desc: "No capture falling latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture falling latch condition happened, this flag will be set to high"
+              val: 1
+        CAPFIF1:
+          desc: "BPWM Capture Falling Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 9
+          enum:
+            '0':
+              desc: "No capture falling latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture falling latch condition happened, this flag will be set to high"
+              val: 1
+        CAPFIF2:
+          desc: "BPWM Capture Falling Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 10
+          enum:
+            '0':
+              desc: "No capture falling latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture falling latch condition happened, this flag will be set to high"
+              val: 1
+        CAPFIF3:
+          desc: "BPWM Capture Falling Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 11
+          enum:
+            '0':
+              desc: "No capture falling latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture falling latch condition happened, this flag will be set to high"
+              val: 1
+        CAPFIF4:
+          desc: "BPWM Capture Falling Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 12
+          enum:
+            '0':
+              desc: "No capture falling latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture falling latch condition happened, this flag will be set to high"
+              val: 1
+        CAPFIF5:
+          desc: "BPWM Capture Falling Latch Interrupt Flag\nEach bit n controls the corresponding BPWM channel n.\nNote: This bit is cleared by writing 1 to it."
+          bits: 13
+          enum:
+            '0':
+              desc: "No capture falling latch condition happened"
+              val: 0
+            '1':
+              desc: "Capture falling latch condition happened, this flag will be set to high"
+              val: 1
+    PBUF:
+      desc: BPWM PERIOD Buffer
+      offset: 0x304
+      reset_val: 0x0
+      fields:
+        PBUF:
+          desc: "BPWM Period Buffer (Read Only)\nUsed as PERIOD active register."
+          bits: 15-0
+    CMPBUF0:
+      desc: BPWM CMPDAT 0 Buffer
+      offset: 0x31c
+      reset_val: 0x0
+      fields:
+        CMPBUF:
+          desc: "BPWM Comparator Buffer (Read Only)\nUsed as CMP active register."
+          bits: 15-0
+    CMPBUF1:
+      desc: BPWM CMPDAT 1 Buffer
+      offset: 0x320
+      reset_val: 0x0
+    CMPBUF2:
+      desc: BPWM CMPDAT 2 Buffer
+      offset: 0x324
+      reset_val: 0x0
+    CMPBUF3:
+      desc: BPWM CMPDAT 3 Buffer
+      offset: 0x328
+      reset_val: 0x0
+    CMPBUF4:
+      desc: BPWM CMPDAT 4 Buffer
+      offset: 0x32c
+      reset_val: 0x0
+    CMPBUF5:
+      desc: BPWM CMPDAT 5 Buffer
+      offset: 0x330
+      reset_val: 0x0

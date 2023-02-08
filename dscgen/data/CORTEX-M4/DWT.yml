@@ -1,0 +1,169 @@
+ip:
+  header: |
+    #include "../common.h"
+  desc: The DWT unit performs the following debug functionality
+  base: 0xE0001000
+  registers:
+    CTRL:
+      desc: Control Register
+      offset: 0x0
+      fields:
+        CYCCNTENA:
+          desc: Enable the CYCCNT counter.
+          bits: 0
+        POSTPRESET:
+          desc: Reload value for POSTCNT, bits [8:5], post-scalar counter.
+          bits: 4-1
+        POSTCNT:
+          desc: Post-scalar counter for CYCTAP.
+          bits: 8-5
+        CYCTAP:
+          desc: Selects a tap on the DWT_CYCCNT register.
+          bits: 9
+        SYNCTAP:
+          desc: Feeds a synchronization pulse to the ITM SYNCENA control.
+          bits: 11-10
+        PCSAMPLEENA:
+          desc: Enables PC Sampling event.
+          bits: 12
+        EXCTRCENA:
+          desc: Enables Interrupt event tracing
+          bits: 16
+        CPIEVTENA:
+          desc: Enables CPI count event.
+          bits: 17
+        EXCEVTENA:
+          desc: Enables Interrupt overhead event.
+          bits: 18
+        SLEEPEVTENA:
+          desc: Enables Sleep count event.
+          bits: 19
+        LSUEVTENA:
+          desc: Enables LSU count event.
+          bits: 20
+        FOLDEVTENA:
+          desc: Enables Folded instruction count event.
+          bits: 21
+        CYCEVTEN:
+          desc: Enables Cycle count event.
+          bits: 22
+        NUMCOMP:
+          desc: Number of comparators field.
+          bits: 31-28
+    CYCCNT:
+      desc: Current PC Sampler Cycle Count Register
+      offset: 0x4
+    CPICR:
+      desc: CPI Count Register
+      offset: 0x8
+      fields:
+        CPICNT:
+          desc: Current CPI counter value.
+          bits: 7-0
+    EOCR:
+      desc: Exception Overhead Count Register
+      offset: 0xC
+      fields:
+        INTCNT:
+          desc: Current interrupt overhead counter value.
+          bits: 7-0
+    SCR:
+      desc: Sleep Count Register
+      offset: 0x10
+      fields:
+        SLEEPCNT:
+          desc: Sleep counter. Counts the number of cycles during which the processor is sleeping.
+          bits: 7-0
+    LSUCR:
+      desc: LSU Count Register
+      offset: 0x14
+      fields:
+        LSUCNT:
+          desc: |
+            LSU counter. This counts the total number of cycles that the processor is processing an
+            LSU operation.
+          bits: 7-0
+    FCR:
+      desc: Fold Count Register
+      offset: 0x18
+      fields:
+        FOLDCNT:
+          desc: This counts the total number folded instructions.
+          bits: 7-0
+    PCSR:
+      desc: Program Counter Sample Register
+      offset: 0x1C
+    CMPR0: &CMPR0
+      desc: Comparator Register
+      offset: 0x20
+    CMPR1:
+      <<: *CMPR0
+      offset: 0x30
+    CMPR2:
+      <<: *CMPR0
+      offset: 0x40
+    CMPR3:
+      <<: *CMPR0
+      offset: 0x50
+    MSKR0: &MSKR0
+      desc: Mask Register
+      offset: 0x24
+    MSKR1:
+      <<: *MSKR0
+      offset: 0x34
+    MSKR2:
+      <<: *MSKR0
+      offset: 0x44
+    MSKR3:
+      <<: *MSKR0
+      offset: 0x54
+    FR0:
+      desc: Function Register
+      offset: 0x28
+      fields:
+        FUNCTION:
+          desc: FUNCTION settings
+          bits: 3-0
+          enum:
+            DISABLED:
+              desc: disabled
+              val: 0
+            FN1:
+              desc: |
+                EMITRANGE = 0, sample and emit PC through ITM;
+                EMITRANGE = 1, emit address offset through ITM
+              val: 1
+            FN2:
+              desc: |
+                EMITRANGE = 0, emit data through ITM on read and write;
+                EMITRANGE = 1, emit data and address offset through ITM on read or write.
+              val: 2
+            FN3:
+              desc: |
+                EMITRANGE = 0, sample PC and data value through ITM on read or write;
+                EMITRANGE = 1, emit address offset and data value through ITM on read or write.
+              val: 3
+            FN4:
+              desc: Watchpoint on PC match.
+              val: 4
+            FN5:
+              desc: Watchpoint on read.
+              val: 5
+            FN6:
+              desc: Watchpoint on write.
+              val: 6
+            FN7:
+              desc: Watchpoint on read or write.
+              val: 7
+            FN8:
+              desc: ETM trigger on PC match
+              val: 8
+            FN9:
+              desc: ETM trigger on read
+              val: 9
+            FN10:
+              desc: ETM trigger on write
+              val: 10
+            FN11:
+              desc: ETM trigger on read or write
+              val: 11

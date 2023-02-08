@@ -1,0 +1,250 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: SYST_SCR Register Map
+  ver: 1
+  registers:
+    CTRL:
+      desc: SysTick Control and Status Register
+      offset: 0x10
+      reset_val: 0x0
+      fields:
+        ENABLE:
+          desc: "System Tick Counter Enabled"
+          bits: 0
+          enum:
+            '0':
+              desc: "Counter Disabled"
+              val: 0
+            '1':
+              desc: "Counter will operate in a multi-shot manner"
+              val: 1
+        TICKINT:
+          desc: "System Tick Interrupt Enabled"
+          bits: 1
+          enum:
+            '0':
+              desc: "Counting down to 0 does not cause the SysTick exception to be pended. Software can use COUNTFLAG to determine if a count to zero has occurred"
+              val: 0
+            '1':
+              desc: "Counting down to 0 will cause the SysTick exception to be pended. Clearing the SysTick current value register by a register write in software will not cause SysTick to be pended"
+              val: 1
+        CLKSRC:
+          desc: "System Tick Clock Source Selection"
+          bits: 2
+          enum:
+            '0':
+              desc: "Clock source is the (optional) external reference clock"
+              val: 0
+            '1':
+              desc: "Core clock used for SysTick"
+              val: 1
+        COUNTFLAG:
+          desc: "System Tick Counter Flag\nReturns 1 if timer counted to 0 since last time this register was read.\nCOUNTFLAG is set by a count transition from 1 to 0.\nCOUNTFLAG is cleared on read or by a write to the Current Value register."
+          bits: 16
+    LOAD:
+      desc: SysTick Reload Value Register
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        RELOAD:
+          desc: "System Tick Reload Value\nValue to load into the Current Value register when the counter reaches 0."
+          bits: 23-0
+    VAL:
+      desc: SysTick Current Value Register
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        CURRENT:
+          desc: "System Tick Current Value\nCurrent counter value. This is the value of the counter at the time it is sampled. The counter does not provide read-modify-write protection. The register is write-clear. A software write of any value will clear the register to 0."
+          bits: 23-0
+    ICSR:
+      desc: Interrupt Control and State Register
+      offset: 0xd04
+      reset_val: 0x0
+      fields:
+        VECTACTIVE:
+          desc: "Number of the Current Active Exception "
+          bits: 6-0
+          enum:
+            '0':
+              desc: "Thread mode"
+              val: 0
+        RETTOBASE:
+          desc: "Preempted Active Exceptions Indicator\nIndicate whether There are Preempted Active Exceptions"
+          bits: 11
+          enum:
+            '0':
+              desc: "there are preempted active exceptions to execute"
+              val: 0
+            '1':
+              desc: "there are no active exceptions, or the currently-executing exception is the only active exception"
+              val: 1
+        VECTPENDING:
+          desc: "Number of the Highest Pended Exception\nIndicate the Exception Number of the Highest Priority Pending Enabled Exception\nThe value indicated by this field includes the effect of the BASEPRI and FAULTMASK registers, but not any effect of the PRIMASK register."
+          bits: 17-12
+          enum:
+            '0':
+              desc: "No pending exceptions"
+              val: 0
+        ISRPENDING:
+          desc: "Interrupt Pending Flag, Excluding NMI and Faults (Read Only)"
+          bits: 22
+          enum:
+            '0':
+              desc: "Interrupt not pending"
+              val: 0
+            '1':
+              desc: "Interrupt pending"
+              val: 1
+        ISRPREEMPT:
+          desc: "Interrupt Preempt Bit (Read Only)\nIf set, a pending exception will be serviced on exit from the debug halt state."
+          bits: 23
+        PENDSTRTC_CAL:
+          desc: "SysTick Exception Clear-pending Bit\nWrite Operation:\nNote: This is a write only bit. To clear the PENDST bit, you must 'write 0 to PENDSTSET and write 1 to PENDSTRTC_CAL' at the same time."
+          bits: 25
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Remove the pending state from the SysTick exception"
+              val: 1
+        PENDSTSET:
+          desc: "SysTick Exception Set-pending Bit\nWrite Operation:"
+          bits: 26
+          enum:
+            '0':
+              desc: "No effect.\nSysTick exception is not pending"
+              val: 0
+            '1':
+              desc: "Change SysTick exception state to pending.\nSysTick exception is pending"
+              val: 1
+        PENDSVRTC_CAL:
+          desc: "PendSV Clear-pending Bit\nWrite Operation:\nNote: This is a write only bit. To clear the PENDSV bit, you must 'write 0 to PENDSVSET and write 1 to PENDSVRTC_CAL' at the same time."
+          bits: 27
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Remove the pending state from the PendSV exception"
+              val: 1
+        PENDSVSET:
+          desc: "PendSV Set-pending Bit\nWrite Operation:\nNote: Writing 1 to this bit is the only way to set the PendSV exception state to pending."
+          bits: 28
+          enum:
+            '0':
+              desc: "No effect.\nPendSV exception is not pending"
+              val: 0
+            '1':
+              desc: "Change PendSV exception state to pending.\nPendSV exception is pending"
+              val: 1
+        NMIPENDSET:
+          desc: "NMI Set-pending Bit\nWrite Operation:\nNote: Because NMI is the highest-priority exception, normally the processor enters the NMI exception handler as soon as it detects a write of 1 to this bit. Entering the handler then clears this bit to 0. This means a read of this bit by the NMI exception handler returns 1 only if the NMI signal is reasserted while the processor is executing that handler."
+          bits: 31
+          enum:
+            '0':
+              desc: "No effect.\nNMI exception is not pending"
+              val: 0
+            '1':
+              desc: "Change NMI exception state to pending.\nNMI exception is pending"
+              val: 1
+    AIRCR:
+      desc: Application Interrupt and Reset Control Register
+      offset: 0xd0c
+      reset_val: 0x0
+      fields:
+        VECTRESET:
+          desc: "Reserved."
+          bits: 0
+        VECTCLRACTIVE:
+          desc: "Exception Active Status Clear Bit\nSetting This Bit To 1 Will Clears All Active State Information For Fixed And Configurable Exceptions\nThis bit is write only and can only be written when the core is halted.\nNote: It is the debugger's responsibility to re-initialize the stack."
+          bits: 1
+        SYSRESETREQ:
+          desc: "System Reset Request\nWriting This Bit to 1 Will Cause A Reset Signal To Be Asserted To The Chip And Indicate A Reset Is Requested\nThis bit is write only and self-cleared as part of the reset sequence."
+          bits: 2
+        PRIGROUP:
+          desc: "Interrupt Priority Grouping\nThis field determines the Split Of Group priority from subpriority,"
+          bits: 10-8
+        ENDIANNESS:
+          desc: "Data Endianness"
+          bits: 15
+          enum:
+            '0':
+              desc: "Little-endian"
+              val: 0
+            '1':
+              desc: "Big-endian"
+              val: 1
+        VECTORKEY:
+          desc: "Register Access Key\nWhen writing this register, this field should be 0x05FA, otherwise the write action will be unpredictable.\nThe VECTORKEY filed is used to prevent accidental write to this register from resetting the system or clearing of the exception status."
+          bits: 31-16
+    SCR:
+      desc: System Control Register
+      offset: 0xd10
+      reset_val: 0x0
+      fields:
+        SLEEPONEXIT:
+          desc: "Sleep-on-exit Enable Control\nThis bit indicate Sleep-On-Exit when Returning from Handler Mode to Thread Mode.\nSetting this bit to 1 enables an interrupt driven application to avoid returning to an empty main application."
+          bits: 1
+          enum:
+            '0':
+              desc: "Do not sleep when returning to Thread mode"
+              val: 0
+            '1':
+              desc: "Enter sleep, or deep sleep, on return from an ISR to Thread mode"
+              val: 1
+        SLEEPDEEP:
+          desc: "Processor Deep Sleep and Sleep Mode Selection\nControl whether the Processor Uses Sleep Or Deep Sleep as its Low Power Mode."
+          bits: 2
+          enum:
+            '0':
+              desc: "Sleep"
+              val: 0
+            '1':
+              desc: "Deep sleep"
+              val: 1
+        SEVONPEND:
+          desc: "Send Event on Pending\nWhen an event or interrupt enters pending state, the event signal wakes up the processor from WFE. If the processor is not waiting for an event, the event is registered and affects the next WFE.\nThe processor also wakes up on execution of an SEV instruction or an external event."
+          bits: 4
+          enum:
+            '0':
+              desc: "Only enabled interrupts or events can wake up the processor, while disabled interrupts are excluded"
+              val: 0
+            '1':
+              desc: "Enabled events and all interrupts, including disabled interrupts, can wake up the processor"
+              val: 1
+    SHPR1:
+      desc: System Handler Priority Register 1
+      offset: 0xd18
+      reset_val: 0x0
+      fields:
+        PRI_4:
+          desc: "Priority of system handler 4, MemManage"
+          bits: 7-4
+        PRI_5:
+          desc: "Priority of system handler 5, BusFault"
+          bits: 15-12
+        PRI_6:
+          desc: "Priority of system handler 6, UsageFault"
+          bits: 23-20
+    SHPR2:
+      desc: System Handler Priority Register 2
+      offset: 0xd1c
+      reset_val: 0x0
+      fields:
+        PRI_11:
+          desc: "Priority of System Handler 11 - SVCall\n'0' denotes the highest priority and '3' denotes the lowest priority."
+          bits: 31-28
+    SHPR3:
+      desc: System Handler Priority Register 3
+      offset: 0xd20
+      reset_val: 0x0
+      fields:
+        PRI_14:
+          desc: "Priority of System Handler 14 - PendSV\n'0' denotes the highest priority and '3' denotes the lowest priority."
+          bits: 23-20
+        PRI_15:
+          desc: "Priority of System Handler 15 - SysTick\n'0' denotes the highest priority and '3' denotes the lowest priority."
+          bits: 31-28

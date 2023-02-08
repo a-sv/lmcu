@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/TRNG
+  base: 0x400b9000

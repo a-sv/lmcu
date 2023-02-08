@@ -1,0 +1,1872 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: PDMA Register Map
+  ver: 1
+  registers:
+    DSCT_CTL:
+      desc: "Descriptor Table Control Register of PDMA Channel"
+      offset: 0x0
+      count: 16
+      size: 32
+      struct: 16
+      fields:
+        OPMODE:
+          desc: "PDMA Operation Mode Selection\\nNote: Before filling new transfer task in the Descriptor Table, user must check the PDMA_INTSTS[1] to make sure the   curren task is complete."
+          bits: 1-0
+          enum:
+            '0':
+              desc: "Idle state: Channel is stopped or this table is complete, when PDMA finish channel table task, OPMODE will be cleared to idle state automatically"
+              val: 0
+            '1':
+              desc: "Basic mode: The descriptor table only has one task. When this task is finished, the PDMA_INTSTS[1] will be asserted"
+              val: 1
+            '2':
+              desc: "Scatter-Gather mode: When operating in this mode, user must give the next descriptor table address in PDMA_DSCT_NEXT register; PDMA controller will ignore this task, then load the next task to execute"
+              val: 2
+            '3':
+              desc: "Reserved."
+              val: 3
+        TXTYPE:
+          desc: "Transfer Type"
+          bits: 2
+          enum:
+            '0':
+              desc: "Burst transfer type"
+              val: 0
+            '1':
+              desc: "Single transfer type"
+              val: 1
+        BURSIZE:
+          desc: "Burst Size"
+          bits: 6-4
+        TBINTDIS:
+          desc: "Table Interrupt Disable Bit"
+          bits: 7
+          enum:
+            '0':
+              desc: "Table interrupt Enabled"
+              val: 0
+            '1':
+              desc: "Table interrupt Disabled"
+              val: 1
+        SAINC:
+          desc: "Source Address Increment"
+          bits: 9-8
+          enum:
+            '3':
+              desc: "No increment (fixed address)"
+              val: 3   
+        DAINC:
+          desc: "Destination Address Increment"
+          bits: 11-10
+          enum:
+            '3':
+              desc: "No increment (fixed address)"
+              val: 3          
+        TXWIDTH:
+          desc: "Transfer Width Selection"
+          bits: 13-12
+          enum:
+            '0':
+              desc: "One byte (8 bit) is transferred for every operation"
+              val: 0
+            '1':
+              desc: "One half-word (16 bit) is transferred for every operation."
+              val: 1
+            '2':
+              desc: "One word (32-bit) is transferred for every operation."
+              val: 2
+        STRIDEEN:
+          desc: "Stride Mode Enable Bit"
+          bits: 15
+          enum:
+            '0':
+              desc: "Stride transfer mode Disabled"
+              val: 0
+            '1':
+              desc: "Stride transfer mode Enabled."
+              val: 1
+        TXCNT:
+          desc: "Transfer Count"
+          bits: 31-16
+    DSCT_SA:
+      desc: "Source Address Register of PDMA Channel"
+      offset: 0x04
+      count: 16
+      size: 32
+      struct: 16
+    DSCT_DA:
+      desc: "Destination Address Register of PDMA Channel"
+      offset: 0x08
+      count: 16
+      size: 32
+      struct: 16
+    DSCT_NEXT:
+      desc: "Next Scatter-gather Descriptor Table Offset Address of PDMA Channel n"
+      offset: 0x0c
+      count: 16
+      size: 32
+      struct: 16
+    CURSCAT:
+      desc: "Current Scatter-gather Descriptor Table Address of PDMA Channel n"
+      offset: 0x100
+      count: 16
+      size: 32
+      fields:
+        CURADDR:
+          desc: "PDMA Current Description Address (Read Only)\nThis field indicates a 32-bit current external description address of PDMA controller.\nNote: This field is read only and used for Scatter-Gather mode only to indicate the current external description address." 
+          bits: 31-0
+    CHCTL:
+      desc: PDMA Channel Control Register
+      offset: 0x400
+      reset_val: 0x0
+      fields:
+        CHEN0: &CHEN0
+          desc: "PDMA Channel Enable Bits\nSet this bit to 1 to enable PDMAn operation. Channel cannot be active if it is not set as enabled.\nNote: Setting the corresponding bit of PDMA_PAUSE or PDMA_CHRST register will also clear this bit."
+          bits: 0
+          enum:
+            '0':
+              desc: "PDMA channel [n] Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel [n] Enabled"
+              val: 1
+        CHEN1:
+          <<: *CHEN0
+          bits: 1
+        CHEN2:
+          <<: *CHEN0
+          bits: 2
+        CHEN3:
+          <<: *CHEN0
+          bits: 3
+        CHEN4:
+          <<: *CHEN0
+          bits: 4
+        CHEN5:
+          <<: *CHEN0
+          bits: 5
+        CHEN6:
+          <<: *CHEN0
+          bits: 6
+        CHEN7:
+          <<: *CHEN0
+          bits: 7
+        CHEN8:
+          <<: *CHEN0
+          bits: 8
+        CHEN9:
+          <<: *CHEN0
+          bits: 9
+        CHEN10:
+          <<: *CHEN0
+          bits: 10
+        CHEN11:
+          <<: *CHEN0
+          bits: 11
+        CHEN12:
+          <<: *CHEN0
+          bits: 12
+        CHEN13:
+          <<: *CHEN0
+          bits: 13
+        CHEN14:
+          <<: *CHEN0
+          bits: 14
+        CHEN15:
+          <<: *CHEN0
+          bits: 15
+    PAUSE:
+      desc: PDMA Transfer Pause Control Register
+      offset: 0x404
+      reset_val: 0x0
+      fields:
+        PAUSE0: &PAUSE0
+          desc: "PDMA Channel n Transfer Pause Control (Write Only)"
+          bits: 0
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Pause PDMA channel n transfer"
+              val: 1
+        PAUSE1:
+          <<: *PAUSE0
+          bits: 1
+        PAUSE2:
+          <<: *PAUSE0
+          bits: 2
+        PAUSE3:
+          <<: *PAUSE0
+          bits: 3
+        PAUSE4:
+          <<: *PAUSE0
+          bits: 4
+        PAUSE5:
+          <<: *PAUSE0
+          bits: 5
+        PAUSE6:
+          <<: *PAUSE0
+          bits: 6
+        PAUSE7:
+          <<: *PAUSE0
+          bits: 7
+        PAUSE8:
+          <<: *PAUSE0
+          bits: 8
+        PAUSE9:
+          <<: *PAUSE0
+          bits: 9
+        PAUSE10:
+          <<: *PAUSE0
+          bits: 10
+        PAUSE11:
+          <<: *PAUSE0
+          bits: 11
+        PAUSE12:
+          <<: *PAUSE0
+          bits: 12
+        PAUSE13:
+          <<: *PAUSE0
+          bits: 13
+        PAUSE14:
+          <<: *PAUSE0
+          bits: 14
+        PAUSE15:
+          <<: *PAUSE0
+          bits: 15
+    SWREQ:
+      desc: PDMA Software Request Register
+      offset: 0x408
+      reset_val: 0x0
+      fields:
+        SWREQ0: &SWREQ0
+          desc: "PDMA Software Request (Write Only)\nSet this bit to 1 to generate a software request to PDMA [n].\nNote 1: User can read PDMA_TRGSTS register to know which channel is on active. Active flag may be triggered by software request or peripheral request.\nNote 2: If user does not enable corresponding PDMA channel, the software request will be ignored."
+          bits: 0
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Generate a software request"
+              val: 1
+        SWREQ1:
+          <<: *SWREQ0
+          bits: 1
+        SWREQ2:
+          <<: *SWREQ0
+          bits: 2
+        SWREQ3:
+          <<: *SWREQ0
+          bits: 3
+        SWREQ4:
+          <<: *SWREQ0
+          bits: 4
+        SWREQ5:
+          <<: *SWREQ0
+          bits: 5
+        SWREQ6:
+          <<: *SWREQ0
+          bits: 6
+        SWREQ7:
+          <<: *SWREQ0
+          bits: 7
+        SWREQ8:
+          <<: *SWREQ0
+          bits: 8
+        SWREQ9:
+          <<: *SWREQ0
+          bits: 9
+        SWREQ10:
+          <<: *SWREQ0
+          bits: 10
+        SWREQ11:
+          <<: *SWREQ0
+          bits: 11
+        SWREQ12:
+          <<: *SWREQ0
+          bits: 12
+        SWREQ13:
+          <<: *SWREQ0
+          bits: 13
+        SWREQ14:
+          <<: *SWREQ0
+          bits: 14
+        SWREQ15:
+          <<: *SWREQ0
+          bits: 15
+    TRGSTS:
+      desc: PDMA Channel Request Status Register
+      offset: 0x40c
+      reset_val: 0x0
+      fields:
+        REQSTS0: &REQSTS0
+          desc: "PDMA Channel Request Status (Read Only)\nThis flag indicates whether channel[n] have a request or not, no matter request from software or peripheral. When PDMA controller finishes channel transfer, this bit will be cleared automatically. \nNote: If user pauses or resets each PDMA transfer by setting PDMA_PAUSE or PDMA_CHRST register respectively, this bit will be cleared automatically after finishing the current transfer."
+          bits: 0
+          enum:
+            '0':
+              desc: "PDMA Channel n has no request"
+              val: 0
+            '1':
+              desc: "PDMA Channel n has a request"
+              val: 1
+        REQSTS1:
+          <<: *REQSTS0
+          bits: 1
+        REQSTS2:
+          <<: *REQSTS0
+          bits: 2
+        REQSTS3:
+          <<: *REQSTS0
+          bits: 3
+        REQSTS4:
+          <<: *REQSTS0
+          bits: 4
+        REQSTS5:
+          <<: *REQSTS0
+          bits: 5
+        REQSTS6:
+          <<: *REQSTS0
+          bits: 6
+        REQSTS7:
+          <<: *REQSTS0
+          bits: 7
+        REQSTS8:
+          <<: *REQSTS0
+          bits: 8
+        REQSTS9:
+          <<: *REQSTS0
+          bits: 9
+        REQSTS10:
+          <<: *REQSTS0
+          bits: 10
+        REQSTS11:
+          <<: *REQSTS0
+          bits: 11
+        REQSTS12:
+          <<: *REQSTS0
+          bits: 12
+        REQSTS13:
+          <<: *REQSTS0
+          bits: 13
+        REQSTS14:
+          <<: *REQSTS0
+          bits: 14
+        REQSTS15:
+          <<: *REQSTS0
+          bits: 15
+    PRISET:
+      desc: PDMA Fixed Priority Setting Register
+      offset: 0x410
+      reset_val: 0x0
+      fields:
+        FPRISET0: &FPRISET0
+          desc: "PDMA Fixed Priority Setting\nSet this bit to 1 to enable fixed priority level.\nWrite Operation:\nNote: This field only set to fixed priority, clear fixed priority use PDMA_PRICLR register."
+          bits: 0
+          enum:
+            '0':
+              desc: "No effect.\nCorresponding PDMA channel is round-robin priority"
+              val: 0
+            '1':
+              desc: "Set PDMA channel [n] to fixed priority channel.\nCorresponding PDMA channel is fixed priority"
+              val: 1
+        FPRISET1:
+          <<: *FPRISET0
+          bits: 1
+        FPRISET2:
+          <<: *FPRISET0
+          bits: 2
+        FPRISET3:
+          <<: *FPRISET0
+          bits: 3
+        FPRISET4:
+          <<: *FPRISET0
+          bits: 4
+        FPRISET5:
+          <<: *FPRISET0
+          bits: 5
+        FPRISET6:
+          <<: *FPRISET0
+          bits: 6
+        FPRISET7:
+          <<: *FPRISET0
+          bits: 7
+        FPRISET8:
+          <<: *FPRISET0
+          bits: 8
+        FPRISET9:
+          <<: *FPRISET0
+          bits: 9
+        FPRISET10:
+          <<: *FPRISET0
+          bits: 10
+        FPRISET11:
+          <<: *FPRISET0
+          bits: 11
+        FPRISET12:
+          <<: *FPRISET0
+          bits: 12
+        FPRISET13:
+          <<: *FPRISET0
+          bits: 13
+        FPRISET14:
+          <<: *FPRISET0
+          bits: 14
+        FPRISET15:
+          <<: *FPRISET0
+          bits: 15
+    PRICLR:
+      desc: PDMA Fixed Priority Clear Register
+      offset: 0x414
+      reset_val: 0x0
+      fields:
+        FPRICLR0: &FPRICLR0
+          desc: "PDMA Fixed Priority Clear Bits (Write Only)\nSet this bit to 1 to clear fixed priority level.\nNote: User can read PDMA_PRISET register to know the channel priority."
+          bits: 0
+          enum:
+            '0':
+              desc: "No effect"
+              val: 0
+            '1':
+              desc: "Clear PDMA channel [n] fixed priority setting"
+              val: 1
+        FPRICLR1:
+          <<: *FPRICLR0
+          bits: 1
+        FPRICLR2:
+          <<: *FPRICLR0
+          bits: 2
+        FPRICLR3:
+          <<: *FPRICLR0
+          bits: 3
+        FPRICLR4:
+          <<: *FPRICLR0
+          bits: 4
+        FPRICLR5:
+          <<: *FPRICLR0
+          bits: 5
+        FPRICLR6:
+          <<: *FPRICLR0
+          bits: 6
+        FPRICLR7:
+          <<: *FPRICLR0
+          bits: 7
+        FPRICLR8:
+          <<: *FPRICLR0
+          bits: 8
+        FPRICLR9:
+          <<: *FPRICLR0
+          bits: 9
+        FPRICLR10:
+          <<: *FPRICLR0
+          bits: 10
+        FPRICLR11:
+          <<: *FPRICLR0
+          bits: 11
+        FPRICLR12:
+          <<: *FPRICLR0
+          bits: 12
+        FPRICLR13:
+          <<: *FPRICLR0
+          bits: 13
+        FPRICLR14:
+          <<: *FPRICLR0
+          bits: 14
+        FPRICLR15:
+          <<: *FPRICLR0
+          bits: 15
+    INTEN:
+      desc: PDMA Interrupt Enable Register
+      offset: 0x418
+      reset_val: 0x0
+      fields:
+        INTEN0:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 0
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN1:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 1
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN2:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 2
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN3:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 3
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN4:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 4
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN5:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 5
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN6:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 6
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN7:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 7
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN8:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 8
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN9:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 9
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN10:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 10
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN11:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 11
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN12:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 12
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN13:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 13
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN14:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 14
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+        INTEN15:
+          desc: "PDMA Interrupt Enable Bits\nThis field is used to enable PDMA channel[n] interrupt."
+          bits: 15
+          enum:
+            '0':
+              desc: "PDMA channel n interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA channel n interrupt Enabled.Note: The interrupt flag is time-out, abort, transfer done and align"
+              val: 1
+    INTSTS:
+      desc: PDMA Interrupt Status Register
+      offset: 0x41c
+      reset_val: 0x0
+      fields:
+        ABTIF:
+          desc: "PDMA Read/Write Target Abort Interrupt Flag (Read Only)\nThis bit indicates that PDMA has target abort error; Software can read PDMA_ABTSTS register to find which channel has target abort error."
+          bits: 0
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received"
+              val: 1
+        TDIF:
+          desc: "Transfer Done Interrupt Flag (Read Only)\nThis bit indicates that PDMA controller has finished transmission; User can read PDMA_TDSTS register to indicate which channel finished transfer."
+          bits: 1
+          enum:
+            '0':
+              desc: "Not finished yet"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        ALIGNF:
+          desc: "Transfer Alignment Interrupt Flag (Read Only)"
+          bits: 2
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        REQTOF0:
+          desc: "Request Time-out Flag for Channel 0\nThis flag indicates that PDMA controller has waited peripheral request for a period defined by PDMA_TOC0, user can write 1 to clear these bits.\nNote: Please disable time-out function before clear this bit."
+          bits: 8
+          enum:
+            '0':
+              desc: "No request time-out"
+              val: 0
+            '1':
+              desc: "Peripheral request time-out"
+              val: 1
+        REQTOF1:
+          desc: "Request Time-out Flag for Channel 1\nThis flag indicates that PDMA controller has waited peripheral request for a period defined by PDMA_TOC1, user can write 1 to clear these bits.\nNote: Please disable time-out function before clear this bit."
+          bits: 9
+          enum:
+            '0':
+              desc: "No request time-out"
+              val: 0
+            '1':
+              desc: "Peripheral request time-out"
+              val: 1
+    ABTSTS:
+      desc: PDMA Channel Read/Write Target Abort Flag Register
+      offset: 0x420
+      reset_val: 0x0
+      fields:
+        ABTIF0:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 0
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF1:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 1
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF2:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 2
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF3:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 3
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF4:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 4
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF5:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 5
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF6:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 6
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF7:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 7
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF8:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 8
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF9:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 9
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF10:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 10
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF11:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 11
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF12:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 12
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF13:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 13
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF14:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 14
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+        ABTIF15:
+          desc: "PDMA Read/Write Target Abort Interrupt Status Flag\nThis bit indicates which PDMA controller has target abort error; User can write 1 to clear these bits. \nNote: If channel n target abort, REQSRCn should set0 to disable peripheral request."
+          bits: 15
+          enum:
+            '0':
+              desc: "No AHB bus ERROR response received when channel n transfer"
+              val: 0
+            '1':
+              desc: "AHB bus ERROR response received when channel n transfer"
+              val: 1
+    TDSTS:
+      desc: PDMA Channel Transfer Done Flag Register
+      offset: 0x424
+      reset_val: 0x0
+      fields:
+        TDIF0:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 0
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF1:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 1
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF2:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 2
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF3:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 3
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF4:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 4
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF5:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 5
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF6:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 6
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF7:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 7
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF8:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 8
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF9:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 9
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF10:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 10
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF11:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 11
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF12:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 12
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF13:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 13
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF14:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 14
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+        TDIF15:
+          desc: "Transfer Done Flag\nThis bit indicates whether PDMA controller channel transfer has been finished or not, user can write 1 to clear these bits."
+          bits: 15
+          enum:
+            '0':
+              desc: "PDMA channel transfer has not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel has finished transmission"
+              val: 1
+    ALIGN:
+      desc: PDMA Transfer Alignment Status Register
+      offset: 0x428
+      reset_val: 0x0
+      fields:
+        ALIGN0:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 0
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN1:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 1
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN2:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 2
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN3:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 3
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN4:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 4
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN5:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 5
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN6:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 6
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN7:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 7
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN8:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 8
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN9:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 9
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN10:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 10
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN11:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 11
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN12:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 12
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN13:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 13
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN14:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 14
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+        ALIGN15:
+          desc: "Transfer Alignment Flag\nNote: Source address and destination address should be alignment."
+          bits: 15
+          enum:
+            '0':
+              desc: "PDMA channel source address and destination address both follow transfer width setting"
+              val: 0
+            '1':
+              desc: "PDMA channel source address or destination address is not follow transfer width setting"
+              val: 1
+    TACTSTS:
+      desc: PDMA Transfer Active Flag Register
+      offset: 0x42c
+      reset_val: 0x0
+      fields:
+        TXACTF0:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 0
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF1:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 1
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF2:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 2
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF3:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 3
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF4:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 4
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF5:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 5
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF6:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 6
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF7:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 7
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF8:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 8
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF9:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 9
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF10:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 10
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF11:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 11
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF12:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 12
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF13:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 13
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF14:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 14
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+        TXACTF15:
+          desc: "Transfer on Active Flag (Read Only)\nThis bit indicates which PDMA channel is in active."
+          bits: 15
+          enum:
+            '0':
+              desc: "PDMA channel is not finished"
+              val: 0
+            '1':
+              desc: "PDMA channel is active"
+              val: 1
+    TOUTPSC:
+      desc: PDMA Time-out Prescaler Register
+      offset: 0x430
+      reset_val: 0x0
+      fields:
+        TOUTPSC0:
+          desc: "PDMA Channel 0 Time-out Clock Source Prescaler Bits"
+          bits: 2-0
+          enum:
+            '0':
+              desc: "PDMA channel 0 time-out clock source is HCLK/28"
+              val: 0
+            '1':
+              desc: "PDMA channel 0 time-out clock source is HCLK/29"
+              val: 1
+            '2':
+              desc: "PDMA channel 0 time-out clock source is HCLK/210"
+              val: 2
+            '3':
+              desc: "PDMA channel 0 time-out clock source is HCLK/211"
+              val: 3
+            '4':
+              desc: "PDMA channel 0 time-out clock source is HCLK/212"
+              val: 4
+            '5':
+              desc: "PDMA channel 0 time-out clock source is HCLK/213"
+              val: 5
+            '6':
+              desc: "PDMA channel 0 time-out clock source is HCLK/214"
+              val: 6
+            '7':
+              desc: "PDMA channel 0 time-out clock source is HCLK/215"
+              val: 7
+        TOUTPSC1:
+          desc: "PDMA Channel 1 Time-out Clock Source Prescaler Bits"
+          bits: 6-4
+          enum:
+            '0':
+              desc: "PDMA channel 1 time-out clock source is HCLK/28"
+              val: 0
+            '1':
+              desc: "PDMA channel 1 time-out clock source is HCLK/29"
+              val: 1
+            '2':
+              desc: "PDMA channel 1 time-out clock source is HCLK/210"
+              val: 2
+            '3':
+              desc: "PDMA channel 1 time-out clock source is HCLK/211"
+              val: 3
+            '4':
+              desc: "PDMA channel 1 time-out clock source is HCLK/212"
+              val: 4
+            '5':
+              desc: "PDMA channel 1 time-out clock source is HCLK/213"
+              val: 5
+            '6':
+              desc: "PDMA channel 1 time-out clock source is HCLK/214"
+              val: 6
+            '7':
+              desc: "PDMA channel 1 time-out clock source is HCLK/215"
+              val: 7
+    TOUTEN:
+      desc: PDMA Time-out Enable Register
+      offset: 0x434
+      reset_val: 0x0
+      fields:
+        TOUTEN0:
+          desc: "PDMA Time-out Enable Bits"
+          bits: 0
+          enum:
+            '0':
+              desc: "PDMA Channel n time-out function Disabled"
+              val: 0
+            '1':
+              desc: "PDMA Channel n time-out function Enabled"
+              val: 1
+        TOUTEN1:
+          desc: "PDMA Time-out Enable Bits"
+          bits: 1
+          enum:
+            '0':
+              desc: "PDMA Channel n time-out function Disabled"
+              val: 0
+            '1':
+              desc: "PDMA Channel n time-out function Enabled"
+              val: 1
+    TOUTIEN:
+      desc: PDMA Time-out Interrupt Enable Register
+      offset: 0x438
+      reset_val: 0x0
+      fields:
+        TOUTIEN0:
+          desc: "PDMA Time-out Interrupt Enable Bits"
+          bits: 0
+          enum:
+            '0':
+              desc: "PDMA Channel n time-out interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA Channel n time-out interrupt Enabled"
+              val: 1
+        TOUTIEN1:
+          desc: "PDMA Time-out Interrupt Enable Bits"
+          bits: 1
+          enum:
+            '0':
+              desc: "PDMA Channel n time-out interrupt Disabled"
+              val: 0
+            '1':
+              desc: "PDMA Channel n time-out interrupt Enabled"
+              val: 1
+    SCATBA:
+      desc: PDMA Scatter-gather Descriptor Table Base Address Register
+      offset: 0x43c
+      reset_val: 0x20000000
+      fields:
+        SCATBA:
+          desc: "PDMA Scatter-gather Descriptor Table Address\nIn Scatter-Gather mode, this is the base address for calculating the next link - list address. The next link address equation is \nNote: Only useful in Scatter-Gather mode."
+          bits: 31-16
+    TOC0_1:
+      desc: PDMA Time-out Counter Ch1 and Ch0 Register
+      offset: 0x440
+      reset_val: 0x0
+      fields:
+        TOC0:
+          desc: "Time-out Counter for Channel 0\nThis controls the period of time-out function for channel 0. The calculation unit is based on TOUTPSC0 (PDMA_TOUTPSC[2:0]) clock."
+          bits: 15-0
+        TOC1:
+          desc: "Time-out Counter for Channel 1\nThis controls the period of time-out function for channel 1. The calculation unit is based on 10 kHz clock. The example of time-out period can refer TOC0 bit description."
+          bits: 31-16
+    CHRST:
+      desc: PDMA Channel Reset Register
+      offset: 0x460
+      reset_val: 0x0
+      fields:
+        CHnRST:
+          desc: "Channel n Reset\nNote: This function don't support stride mode."
+          bits: 15-0
+          enum:
+            '0':
+              desc: "corresponding channel n is not reset"
+              val: 0
+            '1':
+              desc: "corresponding channel n is reset"
+              val: 1
+    REQSEL0_3:
+      desc: PDMA Request Source Select Register 0
+      offset: 0x480
+      reset_val: 0x0
+      fields:
+        REQSRC0:
+          desc: "Channel 0 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 0. User can configure the peripheral by setting REQSRC0.\nNote 1: A peripheral cannot be assigned to two channels at the same time.\nNote 2: This field is useless when transfer between memory and memory."
+          bits: 6-0
+          enum:
+            '0':
+              desc: "Disable PDMA peripheral request"
+              val: 0
+            '1':
+              desc: "Reserved."
+              val: 1
+            '2':
+              desc: "Channel connects to USB_TX"
+              val: 2
+            '3':
+              desc: "Channel connects to USB_RX"
+              val: 3
+            '4':
+              desc: "Channel connects to UART0_TX"
+              val: 4
+            '5':
+              desc: "Channel connects to UART0_RX"
+              val: 5
+            '6':
+              desc: "Channel connects to UART1_TX"
+              val: 6
+            '7':
+              desc: "Channel connects to UART1_RX"
+              val: 7
+            '8':
+              desc: "Channel connects to UART2_TX"
+              val: 8
+            '9':
+              desc: "Channel connects to UART2_RX"
+              val: 9
+            '10':
+              desc: "Channel connects to UART3_TX"
+              val: 10
+            '11':
+              desc: "Channel connects to UART3_RX"
+              val: 11
+            '12':
+              desc: "Channel connects to UART4_TX"
+              val: 12
+            '13':
+              desc: "Channel connects to UART4_RX"
+              val: 13
+            '14':
+              desc: "Channel connects to UART5_TX"
+              val: 14
+            '15':
+              desc: "Channel connects to UART5_RX"
+              val: 15
+            '16':
+              desc: "Channel connects to USCI0_TX"
+              val: 16
+            '17':
+              desc: "Channel connects to USCI0_RX"
+              val: 17
+            '18':
+              desc: "Channel connects to USCI1_TX"
+              val: 18
+            '19':
+              desc: "Channel connects to USCI1_RX"
+              val: 19
+            '20':
+              desc: "Channel connects to QSPI0_TX"
+              val: 20
+            '21':
+              desc: "Channel connects to QSPI0_RX"
+              val: 21
+            '22':
+              desc: "Channel connects to SPI0_TX"
+              val: 22
+            '23':
+              desc: "Channel connects to SPI0_RX"
+              val: 23
+            '24':
+              desc: "Channel connects to SPI1_TX"
+              val: 24
+            '25':
+              desc: "Channel connects to SPI1_RX"
+              val: 25
+            '26':
+              desc: "Channel connects to SPI2_TX"
+              val: 26
+            '27':
+              desc: "Channel connects to SPI2_RX"
+              val: 27
+            '28':
+              desc: "Channel connects to SPI3_TX"
+              val: 28
+            '29':
+              desc: "Channel connects to SPI3_RX"
+              val: 29
+            '30':
+              desc: "Channel connects to QSPI1_TX"
+              val: 30
+            '31':
+              desc: "Channel connects to QSPI1_RX"
+              val: 31
+            '32':
+              desc: "Channel connects to EPWM0_P1_RX"
+              val: 32
+            '33':
+              desc: "Channel connects to EPWM0_P2_RX"
+              val: 33
+            '34':
+              desc: "Channel connects to EPWM0_P3_RX"
+              val: 34
+            '35':
+              desc: "Channel connects to EPWM1_P1_RX"
+              val: 35
+            '36':
+              desc: "Channel connects to EPWM1_P2_RX"
+              val: 36
+            '37':
+              desc: "Channel connects to EPWM1_P3_RX"
+              val: 37
+            '38':
+              desc: "Channel connects to I2C0_TX"
+              val: 38
+            '39':
+              desc: "Channel connects to I2C0_RX"
+              val: 39
+            '40':
+              desc: "Channel connects to I2C1_TX"
+              val: 40
+            '41':
+              desc: "Channel connects to I2C1_RX"
+              val: 41
+            '42':
+              desc: "Channel connects to I2C2_TX"
+              val: 42
+            '43':
+              desc: "Channel connects to I2C2_RX"
+              val: 43
+            '44':
+              desc: "Channel connects to I2S0_TX"
+              val: 44
+            '45':
+              desc: "Channel connects to I2S0_RX"
+              val: 45
+            '46':
+              desc: "Channel connects to TMR0"
+              val: 46
+            '47':
+              desc: "Channel connects to TMR1"
+              val: 47
+            '48':
+              desc: "Channel connects to TMR2"
+              val: 48
+            '49':
+              desc: "Channel connects to TMR3"
+              val: 49
+            '50':
+              desc: "Channel connects to EADC0_RX"
+              val: 50
+            '51':
+              desc: "Channel connects to DAC0_TX"
+              val: 51
+            '52':
+              desc: "Channel connects to DAC1_TX"
+              val: 52
+            '53':
+              desc: "Channel connects to EPWM0_CH0_TX"
+              val: 53
+            '54':
+              desc: "Channel connects to EPWM0_CH1_TX"
+              val: 54
+            '55':
+              desc: "Channel connects to EPWM0_CH2_TX"
+              val: 55
+            '56':
+              desc: "Channel connects to EPWM0_CH3_TX"
+              val: 56
+            '57':
+              desc: "Channel connects to EPWM0_CH4_TX"
+              val: 57
+            '58':
+              desc: "Channel connects to EPWM0_CH5_TX"
+              val: 58
+            '59':
+              desc: "Channel connects to EPWM1_CH0_TX"
+              val: 59
+            '60':
+              desc: "Channel connects to EPWM1_CH1_TX"
+              val: 60
+            '61':
+              desc: "Channel connects to EPWM1_CH2_TX"
+              val: 61
+            '62':
+              desc: "Channel connects to EPWM1_CH3_TX"
+              val: 62
+            '63':
+              desc: "Channel connects to EPWM1_CH4_TX"
+              val: 63
+            '64':
+              desc: "Channel connects to EPWM1_CH5_TX"
+              val: 64
+            '65':
+              desc: "Reserved."
+              val: 65
+            '66':
+              desc: "Channel connects to UART6_TX"
+              val: 66
+            '67':
+              desc: "Channel connects to UART6_RX"
+              val: 67
+            '68':
+              desc: "Channel connects to UART7_TX"
+              val: 68
+            '69':
+              desc: "Channel connects to UART7_RX"
+              val: 69
+            '70':
+              desc: "Channel connects to EADC1_RX"
+              val: 70
+        REQSRC1:
+          desc: "Channel 1 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 1. User can configure the peripheral setting by REQSRC1. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 14-8
+        REQSRC2:
+          desc: "Channel 2 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 2. User can configure the peripheral setting by REQSRC2. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 22-16
+        REQSRC3:
+          desc: "Channel 3 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 3. User can configure the peripheral setting by REQSRC3. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 30-24
+    REQSEL4_7:
+      desc: PDMA Request Source Select Register 1
+      offset: 0x484
+      reset_val: 0x0
+      fields:
+        REQSRC4:
+          desc: "Channel 4 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 4. User can configure the peripheral setting by REQSRC4. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 6-0
+        REQSRC5:
+          desc: "Channel 5 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 5. User can configure the peripheral setting by REQSRC5. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 14-8
+        REQSRC6:
+          desc: "Channel 6 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 6. User can configure the peripheral setting by REQSRC6. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 22-16
+        REQSRC7:
+          desc: "Channel 7 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 7. User can configure the peripheral setting by REQSRC7. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 30-24
+    REQSEL8_11:
+      desc: PDMA Request Source Select Register 2
+      offset: 0x488
+      reset_val: 0x0
+      fields:
+        REQSRC8:
+          desc: "Channel 8 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 8. User can configure the peripheral setting by REQSRC8. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 6-0
+        REQSRC9:
+          desc: "Channel 9 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 9. User can configure the peripheral setting by REQSRC9. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 14-8
+        REQSRC10:
+          desc: "Channel 10 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 10. User can configure the peripheral setting by REQSRC10. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 22-16
+        REQSRC11:
+          desc: "Channel 11 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 11. User can configure the peripheral setting by REQSRC11. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 30-24
+    REQSEL12_15:
+      desc: PDMA Request Source Select Register 3
+      offset: 0x48c
+      reset_val: 0x0
+      fields:
+        REQSRC12:
+          desc: "Channel 12 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 12. User can configure the peripheral setting by REQSRC12. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 6-0
+        REQSRC13:
+          desc: "Channel 13 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 13. User can configure the peripheral setting by REQSRC13. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 14-8
+        REQSRC14:
+          desc: "Channel 14 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 14. User can configure the peripheral setting by REQSRC14. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 22-16
+        REQSRC15:
+          desc: "Channel 15 Request Source Selection\nThis filed defines which peripheral is connected to PDMA channel 15. User can configure the peripheral setting by REQSRC15. \nNote: The channel configuration is the same as REQSRC0 field. Please refer to the explanation of REQSRC0."
+          bits: 30-24
+    STC0:
+      desc: Stride Transfer Count Register of PDMA Channel 0
+      offset: 0x500
+      reset_val: 0x0
+      fields:
+        STC:
+          desc: "PDMA Stride Transfer Count\nThe 16-bit register defines the stride transfer count of each row, the real transfer count is (STC + 1)."
+          bits: 15-0
+    ASOCTL0:
+      desc: Address Stride Offset Control Register of PDMA Channel 0
+      offset: 0x504
+      reset_val: 0x0
+      fields:
+        SASOL:
+          desc: "PDMA Source Address Stride Offset Length\nThe 16-bit register defines the source address stride transfer offset count of each row."
+          bits: 15-0
+        DASOL:
+          desc: "PDMA Destination Address Stride Offset Length\nThe 16-bit register defines the destination address stride transfer offset count of each row."
+          bits: 31-16
+    STC1:
+      desc: Stride Transfer Count Register of PDMA Channel 1
+      offset: 0x508
+      reset_val: 0x0
+    ASOCTL1:
+      desc: Address Stride Offset Control Register of PDMA Channel 1
+      offset: 0x50c
+      reset_val: 0x0
+    STC2:
+      desc: Stride Transfer Count Register of PDMA Channel 2
+      offset: 0x510
+      reset_val: 0x0
+    ASOCTL2:
+      desc: Address Stride Offset Control Register of PDMA Channel 2
+      offset: 0x514
+      reset_val: 0x0
+    STC3:
+      desc: Stride Transfer Count Register of PDMA Channel 3
+      offset: 0x518
+      reset_val: 0x0
+    ASOCTL3:
+      desc: Address Stride Offset Control Register of PDMA Channel 3
+      offset: 0x51c
+      reset_val: 0x0
+    STC4:
+      desc: Stride Transfer Count Register of PDMA Channel 4
+      offset: 0x520
+      reset_val: 0x0
+    ASOCTL4:
+      desc: Address Stride Offset Control Register of PDMA Channel 4
+      offset: 0x524
+      reset_val: 0x0
+    STC5:
+      desc: Stride Transfer Count Register of PDMA Channel 5
+      offset: 0x528
+      reset_val: 0x0
+    ASOCTL5:
+      desc: Address Stride Offset Control Register of PDMA Channel 5
+      offset: 0x52c
+      reset_val: 0x0
+    AICTL0:
+      desc: Address Interval Control Register of PDMA Channel 0
+      offset: 0x600
+      reset_val: 0x0
+      fields:
+        SAICNT:
+          desc: "PDMA Source Address Interval Count\nThe 16-bit register defines the source address interval count of each row.\nNote: This register should be set to 0 when repeat count(PDMA_RCNTn) set to 0."
+          bits: 15-0
+        DAICNT:
+          desc: "PDMA Destination Address Interval Count\nThe 16-bit register defines the destination address interval count of each row.\nNote: This register should be set to 0 when repeat count(PDMA_RCNTn) set to 0."
+          bits: 31-16
+    RCNT0:
+      desc: Repeat Count Register of PDMA Channel 0
+      offset: 0x604
+      reset_val: 0x0
+      fields:
+        RCNT:
+          desc: "PDMA Repeat Count\nThe 16-bit register defines the repeat times of block transfer.\nNote: This register should be set to 0 when stride function disabled."
+          bits: 15-0
+    AICTL1:
+      desc: Address Interval Control Register of PDMA Channel 1
+      offset: 0x608
+      reset_val: 0x0
+    RCNT1:
+      desc: Repeat Count Register of PDMA Channel 1
+      offset: 0x60c
+      reset_val: 0x0

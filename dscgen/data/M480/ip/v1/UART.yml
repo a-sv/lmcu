@@ -1,0 +1,1216 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: UART Register Map
+  ver: 1
+  registers:
+    DAT:
+      desc: UART Receive/Transmit Buffer Register
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        DAT:
+          desc: "Data Receive/Transmit Buffer\nWrite Operation:\nBy writing one byte to this register, the data byte will be stored in transmitter FIFO. The UART controller will send out the data stored in transmitter FIFO top location through the UART_TXD.\nRead Operation:\nBy reading this register, the UART controller will return an 8-bit data received from receiver FIFO."
+          bits: 7-0
+        PARITY:
+          desc: "PARITY Bit Receive/Transmit Buffer\nWrite Operation:\nBy writing to this bit, the PARITY bit will be stored in transmitter FIFO. If PBE (UART_LINE[3]) and PSS (UART_LINE[7]) are set, the UART controller will send out this bit follow the DAT (UART_DAT[7:0]) through the UART_TXD.\nRead Operation:\nIf PBE (UART_LINE[3]) and PSS (UART_LINE[7]) are enabled, the PARITY bit can be read by this bit.\nNote: This bit has effect only when PBE (UART_LINE[3]) and PSS (UART_LINE[7]) are set."
+          bits: 8
+    INTEN:
+      desc: UART Interrupt Enable Register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        RDAIEN:
+          desc: "Receive Data Available Interrupt Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: Receive data available interrupt Disabled
+              val: 0
+            '1':
+              desc: Receive data available interrupt Enabled
+              val: 1
+        THREIEN:
+          desc: "Transmit Holding Register Empty Interrupt Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: Transmit holding register empty interrupt Disabled
+              val: 0
+            '1':
+              desc: Transmit holding register empty interrupt Enabled
+              val: 1
+        RLSIEN:
+          desc: "Receive Line Status Interrupt Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: Receive Line Status interrupt Disabled
+              val: 0
+            '1':
+              desc: Receive Line Status interrupt Enabled
+              val: 1
+        MODEMIEN:
+          desc: "Modem Status Interrupt Enable Bit"
+          bits: 3
+          enum:
+            '0':
+              desc: Modem status interrupt Disabled
+              val: 0
+            '1':
+              desc: Modem status interrupt Enabled
+              val: 1
+        RXTOIEN:
+          desc: "RX Time-out Interrupt Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: RX time-out interrupt Disabled
+              val: 0
+            '1':
+              desc: RX time-out interrupt Enabled
+              val: 1
+        BUFERRIEN:
+          desc: "Buffer Error Interrupt Enable Bit"
+          bits: 5
+          enum:
+            '0':
+              desc: Buffer error interrupt Disabled
+              val: 0
+            '1':
+              desc: Buffer error interrupt Enabled
+              val: 1
+        WKIEN:
+          desc: "Wake-up Interrupt Enable Bit"
+          bits: 6
+          enum:
+            '0':
+              desc: Wake-up Interrupt Disabled
+              val: 0
+            '1':
+              desc: Wake-up Interrupt Enabled
+              val: 1
+        LINIEN:
+          desc: "LIN Bus Interrupt Enable Bit\nNote: This bit is used for LIN function mode."
+          bits: 8
+          enum:
+            '0':
+              desc: LIN bus interrupt Disabled
+              val: 0
+            '1':
+              desc: LIN bus interrupt Enabled
+              val: 1
+        TOCNTEN:
+          desc: "Receive Buffer Time-out Counter Enable Bit"
+          bits: 11
+          enum:
+            '0':
+              desc: Receive Buffer Time-out counter Disabled
+              val: 0
+            '1':
+              desc: Receive Buffer Time-out counter Enabled
+              val: 1
+        ATORTSEN:
+          desc: "nRTS Auto-flow Control Enable Bit\nNote: When nRTS auto-flow is enabled, if the number of bytes in the RX FIFO equals the RTSTRGLV (UART_FIFO[19:16]), the UART will de-assert nRTS signal."
+          bits: 12
+          enum:
+            '0':
+              desc: nRTS auto-flow control Disabled
+              val: 0
+            '1':
+              desc: nRTS auto-flow control Enabled
+              val: 1
+        ATOCTSEN:
+          desc: "nCTS Auto-flow Control Enable Bit\nNote: When nCTS auto-flow is enabled, the UART will send data to external device if nCTS input assert (UART will not send data to device until nCTS is asserted)."
+          bits: 13
+          enum:
+            '0':
+              desc: nCTS auto-flow control Disabled
+              val: 0
+            '1':
+              desc: nCTS auto-flow control Enabled
+              val: 1
+        TXPDMAEN:
+          desc: "TX PDMA Enable Bit\nNote: If RLSIEN (UART_INTEN[2]) is enabled and HWRLSINT (UART_INTSTS[26]) is set to 1, the RLS (Receive Line Status) Interrupt is caused. If RLS interrupt is caused by Break Error Flag BIF(UART_FIFOSTS[6]), Frame Error Flag FEF(UART_FIFO[5]) or Parity Error Flag PEF(UART_FIFOSTS[4]), UART PDMA transmit request operation is stopped. Clear Break Error Flag BIF or Frame Error Flag FEF or Parity Error Flag PEF by writing '1' to corresponding BIF, FEF and PEF to make UART PDMA transmit request operation continue."
+          bits: 14
+          enum:
+            '0':
+              desc: TX PDMA Disabled
+              val: 0
+            '1':
+              desc: TX PDMA Enabled
+              val: 1
+        RXPDMAEN:
+          desc: "RX PDMA Enable Bit\nThis bit can enable or disable RX PDMA service.\nNote: If RLSIEN (UART_INTEN[2]) is enabled and HWRLSINT (UART_INTSTS[26]) is set to 1, the RLS (Receive Line Status) Interrupt is caused. If RLS interrupt is caused by Break Error Flag BIF(UART_FIFOSTS[6]), Frame Error Flag FEF(UART_FIFO[5]) or Parity Error Flag PEF(UART_FIFOSTS[4]), UART PDMA receive request operation is stopped. Clear Break Error Flag BIF or Frame Error Flag FEF or Parity Error Flag PEF by writing '1' to corresponding BIF, FEF and PEF to make UART PDMA receive request operation continue."
+          bits: 15
+          enum:
+            '0':
+              desc: RX PDMA Disabled
+              val: 0
+            '1':
+              desc: RX PDMA Enabled
+              val: 1
+        SWBEIEN:
+          desc: "Single-wire Bit Error Detection Interrupt Enable Bit\nSet this bit, the Single-wire Half Duplex Bit Error Detection Interrupt SWBEINT(UART_INTSTS[24]) is generated when Single-wire Bit Error Detection SWBEIF(UART_INTSTS[16]) is set.\nNote: This bit is valid when FUNCSEL (UART_FUNCSEL[2:0]) is select UART Single-wire mode."
+          bits: 16
+          enum:
+            '0':
+              desc: Single-wire Bit Error Detect Inerrupt Disabled
+              val: 0
+            '1':
+              desc: Single-wire Bit Error Detect Inerrupt Enabled
+              val: 1
+        ABRIEN:
+          desc: "Auto-baud Rate Interrupt Enable Bit"
+          bits: 18
+          enum:
+            '0':
+              desc: Auto-baud rate interrupt Disabled
+              val: 0
+            '1':
+              desc: Auto-baud rate interrupt Enabled
+              val: 1
+        TXENDIEN:
+          desc: "Transmitter Empty Interrupt Enable Bit\nIf TXENDIEN (UART_INTEN[22]) is enabled, the Transmitter Empty interrupt TXENDINT (UART_INTSTS[30]) will be generated when TXENDIF (UART_INTSTS[22]) is set (TX FIFO (UART_DAT) is empty and the STOP bit of the last byte has been transmitted)."
+          bits: 22
+          enum:
+            '0':
+              desc: Transmitter empty interrupt Disabled
+              val: 0
+            '1':
+              desc: Transmitter empty interrupt Enabled
+              val: 1
+    FIFO:
+      desc: UART FIFO Control Register
+      offset: 0x8
+      reset_val: 0x101
+      fields:
+        RXRST:
+          desc: "RX Field Software Reset\nWhen RXRST (UART_FIFO[1]) is set, all the byte in the receiver FIFO and RX internal state machine are cleared.\nNote 1: This bit will automatically clear at least 3 UART peripheral clock cycles.\nNote 2: Before setting this bit, it should wait for the RXIDLE (UART_FIFOSTS[29]) be set."
+          bits: 1
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: Reset the RX internal state machine and pointers
+              val: 1
+        TXRST:
+          desc: "TX Field Software Reset\nWhen TXRST (UART_FIFO[2]) is set, all the byte in the transmit FIFO and TX internal state machine are cleared.\nNote 1: This bit will automatically clear at least 3 UART peripheral clock cycles.\nNote 2: Before setting this bit, it should wait for the TXEMPTYF (UART_FIFOSTS[28]) be set."
+          bits: 2
+          enum:
+            '0':
+              desc: No effect
+              val: 0
+            '1':
+              desc: Reset the TX internal state machine and pointers
+              val: 1
+        RFITL:
+          desc: "RX FIFO Interrupt Trigger Level\nWhen the number of bytes in the receive FIFO equals the RFITL, the RDAIF (UART_INTSTS[0]) will be set (if RDAIEN (UART_INTEN [0]) enabled, and an interrupt will be generated)."
+          bits: 7-4
+          enum:
+            '0':
+              desc: RX FIFO Interrupt Trigger Level is 1 byte
+              val: 0
+            '1':
+              desc: RX FIFO Interrupt Trigger Level is 4 bytes
+              val: 1
+            '2':
+              desc: RX FIFO Interrupt Trigger Level is 8 bytes
+              val: 2
+            '3':
+              desc: RX FIFO Interrupt Trigger Level is 14 bytes
+              val: 3
+        RXOFF:
+          desc: "Receiver Disable Bit\nThe receiver is disabled or not (set 1 to disable receiver).\nNote: This bit is used for RS-485 Normal Multi-drop mode. It should be programmed before RS485NMM (UART_ALTCTL [8]) is programmed."
+          bits: 8
+          enum:
+            '0':
+              desc: Receiver Enabled
+              val: 0
+            '1':
+              desc: Receiver Disabled
+              val: 1
+        RTSTRGLV:
+          desc: "nRTS Trigger Level for Auto-flow Control\nNote: This field is used for auto nRTS flow control."
+          bits: 19-16
+          enum:
+            '0':
+              desc: nRTS Trigger Level is 1 byte
+              val: 0
+            '1':
+              desc: nRTS Trigger Level is 4 bytes
+              val: 1
+            '2':
+              desc: nRTS Trigger Level is 8 bytes
+              val: 2
+            '3':
+              desc: nRTS Trigger Level is 14 bytes
+              val: 3
+    LINE:
+      desc: UART Line Control Register
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        WLS:
+          desc: "Word Length Selection\nThis field sets UART word length."
+          bits: 1-0
+          enum:
+            '0':
+              desc: 5 bits
+              val: 0
+            '1':
+              desc: 6 bits
+              val: 1
+            '2':
+              desc: 7 bits
+              val: 2
+            '3':
+              desc: 8 bits
+              val: 3
+        NSB:
+          desc: "Number of 'STOP Bit'"
+          bits: 2
+          enum:
+            '0':
+              desc: One 'STOP bit' is generated in the transmitted data
+              val: 0
+            '1':
+              desc: When select 5-bit word length, 1.5 'STOP bit' is generated in the transmitted data. When select 6-, 7- and 8-bit word length, 2 'STOP bit' is generated in the transmitted data
+              val: 1
+        PBE:
+          desc: "PARITY Bit Enable Bit\nNote: PARITY bit is generated on each outgoing character and is checked on each incoming data."
+          bits: 3
+          enum:
+            '0':
+              desc: PARITY bit generated Disabled
+              val: 0
+            '1':
+              desc: PARITY bit generated Enabled
+              val: 1
+        EPE:
+          desc: "Even Parity Enable Bit\nNote: This bit has effect only when PBE (UART_LINE[3]) is set."
+          bits: 4
+          enum:
+            '0':
+              desc: Odd number of logic 1's is transmitted and checked in each word
+              val: 0
+            '1':
+              desc: Even number of logic 1's is transmitted and checked in each word
+              val: 1
+        SPE:
+          desc: "Stick Parity Enable Bit\nNote: If PBE (UART_LINE[3]) and EPE (UART_LINE[4]) are logic 1, the PARITY bit is transmitted and checked as logic 0. If PBE (UART_LINE[3]) is 1 and EPE (UART_LINE[4]) is 0 then the PARITY bit is transmitted and checked as 1."
+          bits: 5
+          enum:
+            '0':
+              desc: Stick parity Disabled
+              val: 0
+            '1':
+              desc: Stick parity Enabled
+              val: 1
+        BCB:
+          desc: "Break Control Bit\nNote: When this bit is set to logic 1, the transmitted serial data output (TX) is forced to the Spacing State (logic 0). This bit acts only on TX line and has no effect on the transmitter logic."
+          bits: 6
+          enum:
+            '0':
+              desc: Break Control Disabled
+              val: 0
+            '1':
+              desc: Break Control Enabled
+              val: 1
+        PSS:
+          desc: "PARITY Bit Source Selection\nThe PARITY bit can be selected to be generated and checked automatically or by software.\nNote 1: This bit has effect only when PBE (UART_LINE[3]) is set.\nNote 2: If PSS is 0, the PARITY bit is transmitted and checked automatically. If PSS is 1, the transmitted PARITY bit value can be determined by writing PARITY (UART_DAT[8]) and the PARITY bit can be read by reading PARITY (UART_DAT[8])."
+          bits: 7
+          enum:
+            '0':
+              desc: PARITY bit is generated by EPE (UART_LINE[4]) and SPE (UART_LINE[5]) setting and checked automatically
+              val: 0
+            '1':
+              desc: PARITY bit generated and checked by software
+              val: 1
+        TXDINV:
+          desc: "TX Data Inverted\nNote 1: Before setting this bit, TXRXDIS (UART_FUNCSEL[3]) should be set then waited for TXRXACT (UART_FIFOSTS[31]) is cleared. When the configuration is done, cleared TXRXDIS (UART_FUNCSEL[3]) to activate UART controller.\nNote 2: This bit is valid when FUNCSEL (UART_FUNCSEL[1:0]) is select UART, LIN or RS485 function."
+          bits: 8
+          enum:
+            '0':
+              desc: Transmitted data signal inverted Disabled
+              val: 0
+            '1':
+              desc: Transmitted data signal inverted Enabled
+              val: 1
+        RXDINV:
+          desc: "RX Data Inverted\nNote 1: Before setting this bit, TXRXDIS (UART_FUNCSEL[3]) should be set then waited for TXRXACT (UART_FIFOSTS[31]) is cleared. When the configuration is done, cleared TXRXDIS (UART_FUNCSEL[3]) to activate UART controller.\nNote 2: This bit is valid when FUNCSEL (UART_FUNCSEL[1:0]) is select UART, LIN or RS485 function."
+          bits: 9
+          enum:
+            '0':
+              desc: Received data signal inverted Disabled
+              val: 0
+            '1':
+              desc: Received data signal inverted Enabled
+              val: 1
+    MODEM:
+      desc: UART Modem Control Register
+      offset: 0x10
+      reset_val: 0x200
+      fields:
+        RTS:
+          desc: "nRTS (Request-to-send) Signal Control\nThis bit is direct control internal nRTS signal active or not, and then drive the nRTS pin output with RTSACTLV bit configuration.\nNote 1: The nRTS signal control bit is not effective when nRTS auto-flow control is enabled in UART function mode.\nNote 2: The nRTS signal control bit is not effective when RS-485 auto direction mode (AUD) is enabled in RS-485 function mode.\nNote 3: Single-wire mode is support this feature."
+          bits: 1
+          enum:
+            '0':
+              desc: nRTS signal is active
+              val: 0
+            '1':
+              desc: nRTS signal is inactive
+              val: 1
+        RTSACTLV:
+          desc: "nRTS Pin Active Level\nThis bit defines the active level state of nRTS pin output.\nNote 1: Refer to Figure 6.1613 and Figure 6.1614 for UART function mode.\nNote 2: Refer to Figure 6.1624 and Figure 6.1625 for RS-485 function mode.\nNote 3: Before setting this bit, TXRXDIS (UART_FUNCSEL[3]) should be set then waited for TXRXACT (UART_FIFOSTS[31]) is cleared. When the configuration is done, cleared TXRXDIS (UART_FUNCSEL[3]) to activate UART controller."
+          bits: 9
+          enum:
+            '0':
+              desc: nRTS pin output is high level active
+              val: 0
+            '1':
+              desc: nRTS pin output is low level active. (Default)
+              val: 1
+        RTSSTS:
+          desc: "nRTS Pin Status (Read Only)\nThis bit mirror from nRTS pin output of voltage logic status."
+          bits: 13
+          enum:
+            '0':
+              desc: nRTS pin output is low level voltage logic state
+              val: 0
+            '1':
+              desc: nRTS pin output is high level voltage logic state
+              val: 1
+    MODEMSTS:
+      desc: UART Modem Status Register
+      offset: 0x14
+      reset_val: 0x110
+      fields:
+        CTSDETF:
+          desc: "Detect nCTS State Change Flag\nThis bit is set whenever nCTS input has change state, and it will generate Modem interrupt to CPU when MODEMIEN (UART_INTEN [3]) is set to 1.\nNote: This bit can be cleared by writing '1' to it."
+          bits: 0
+          enum:
+            '0':
+              desc: nCTS input has not change state
+              val: 0
+            '1':
+              desc: nCTS input has change state
+              val: 1
+        CTSSTS:
+          desc: "nCTS Pin Status (Read Only)\nThis bit mirror from nCTS pin input of voltage logic status.\nNote: This bit echoes when UART controller peripheral clock is enabled, and nCTS multi-function port is selected."
+          bits: 4
+          enum:
+            '0':
+              desc: nCTS pin input is low level voltage logic state
+              val: 0
+            '1':
+              desc: nCTS pin input is high level voltage logic state
+              val: 1
+        CTSACTLV:
+          desc: "nCTS Pin Active Level\nThis bit defines the active level state of nCTS pin input.\nNote: Before setting this bit, TXRXDIS (UART_FUNCSEL[3]) should be set then waited for TXRXACT (UART_FIFOSTS[31]) is cleared. When the configuration is done, cleared TXRXDIS (UART_FUNCSEL[3]) to activate UART controller."
+          bits: 8
+          enum:
+            '0':
+              desc: nCTS pin input is high level active
+              val: 0
+            '1':
+              desc: nCTS pin input is low level active. (Default)
+              val: 1
+    FIFOSTS:
+      desc: UART FIFO Status Register
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        RXOVIF:
+          desc: "RX Overflow Error Interrupt Flag\nThis bit is set when RX FIFO overflow.\nIf the number of bytes of received data is greater than RX_FIFO (UART_DAT) size 16 bytes, this bit will be set.\nNote: This bit can be cleared by writing '1' to it."
+          bits: 0
+          enum:
+            '0':
+              desc: RX FIFO is not overflow
+              val: 0
+            '1':
+              desc: RX FIFO is overflow
+              val: 1
+        ABRDIF:
+          desc: "Auto-baud Rate Detect Interrupt Flag\nThis bit is set to logic '1' when auto-baud rate detect function is finished.\nNote: This bit can be cleared by writing '1' to it."
+          bits: 1
+          enum:
+            '0':
+              desc: Auto-baud rate detect function is not finished
+              val: 0
+            '1':
+              desc: Auto-baud rate detect function is finished
+              val: 1
+        ABRDTOIF:
+          desc: "Auto-baud Rate Detect Time-out Interrupt Flag\nThis bit is set to logic '1' in Auto-baud Rate Detect mode when the baud rate counter is overflow.\nNote: This bit can be cleared by writing '1' to it."
+          bits: 2
+          enum:
+            '0':
+              desc: Auto-baud rate counter is underflow
+              val: 0
+            '1':
+              desc: Auto-baud rate counter is overflow
+              val: 1
+        ADDRDETF:
+          desc: "RS-485 Address Byte Detect Flag\nNote 1: This field is used for RS-485 function mode and ADDRDEN (UART_ALTCTL[15]) is set to 1 to enable Address detection mode.\nNote 2: This bit can be cleared by writing '1' to it."
+          bits: 3
+          enum:
+            '0':
+              desc: Receiver detects a data that is not an address bit (bit 9 ='0')
+              val: 0
+            '1':
+              desc: Receiver detects a data that is an address bit (bit 9 ='1')
+              val: 1
+        PEF:
+          desc: "Parity Error Flag\nThis bit is set to logic 1 whenever the received character does not have a valid 'PARITY bit'.\nNote: This bit can be cleared by writing '1' to it."
+          bits: 4
+          enum:
+            '0':
+              desc: No parity error is generated
+              val: 0
+            '1':
+              desc: Parity error is generated
+              val: 1
+        FEF:
+          desc: "Framing Error Flag\nThis bit is set to logic 1 whenever the received character does not have a valid 'STOP bit' (that is, the STOP bit following the last data bit or PARITY bit is detected as logic 0).\nNote: This bit can be cleared by writing '1' to it."
+          bits: 5
+          enum:
+            '0':
+              desc: No framing error is generated
+              val: 0
+            '1':
+              desc: Framing error is generated
+              val: 1
+        BIF:
+          desc: "Break Interrupt Flag\nThis bit is set to logic 1 whenever the received data input (RX) is held in the 'spacing state' (logic 0) for longer than a full word transmission time (that is, the total time of 'START bit' + data bits + parity + STOP bits).\nNote: This bit can be cleared by writing '1' to it."
+          bits: 6
+          enum:
+            '0':
+              desc: No Break interrupt is generated
+              val: 0
+            '1':
+              desc: Break interrupt is generated
+              val: 1
+        RXPTR:
+          desc: "RX FIFO Pointer (Read Only)\nThis field indicates the RX FIFO Buffer Pointer. When UART receives one byte from external device, RXPTR increases one. When one byte of RX FIFO is read by CPU, RXPTR decreases one.\nThe Maximum value shown in RXPTR is 15. When the using level of RX FIFO Buffer equal to 16, the RXFULL bit is set to 1 and RXPTR will show 0. As one byte of RX FIFO is read by CPU, the RXFULL bit is cleared to 0 and RXPTR will show 15."
+          bits: 13-8
+        RXEMPTY:
+          desc: "Receiver FIFO Empty (Read Only)\nThis bit initiate RX FIFO empty or not.\nNote: When the last byte of RX FIFO has been read by CPU, hardware sets this bit high. It will be cleared when UART receives any new data."
+          bits: 14
+          enum:
+            '0':
+              desc: RX FIFO is not empty
+              val: 0
+            '1':
+              desc: RX FIFO is empty
+              val: 1
+        RXFULL:
+          desc: "Receiver FIFO Full (Read Only)\nThis bit initiates RX FIFO full or not.\nNote: This bit is set when the number of usage in RX FIFO Buffer is equal to 16, otherwise it is cleared by hardware."
+          bits: 15
+          enum:
+            '0':
+              desc: RX FIFO is not full
+              val: 0
+            '1':
+              desc: RX FIFO is full
+              val: 1
+        TXPTR:
+          desc: "TX FIFO Pointer (Read Only)\nThis field indicates the TX FIFO Buffer Pointer. When CPU writes one byte into UART_DAT, TXPTR increases one. When one byte of TX FIFO is transferred to Transmitter Shift Register, TXPTR decreases one.\nThe Maximum value shown in TXPTR is 15. When the using level of TX FIFO Buffer equal to 16, the TXFULL bit is set to 1 and TXPTR will show 0. As one byte of TX FIFO is transferred to Transmitter Shift Register, the TXFULL bit is cleared to 0 and TXPTR will show 15."
+          bits: 21-16
+        TXEMPTY:
+          desc: "Transmitter FIFO Empty (Read Only)\nThis bit indicates TX FIFO empty or not.\nNote: When the last byte of TX FIFO has been transferred to Transmitter Shift Register, hardware sets this bit high. It will be cleared when writing data into UART_DAT (TX FIFO not empty)."
+          bits: 22
+          enum:
+            '0':
+              desc: TX FIFO is not empty
+              val: 0
+            '1':
+              desc: TX FIFO is empty
+              val: 1
+        TXFULL:
+          desc: "Transmitter FIFO Full (Read Only)\nThis bit indicates TX FIFO full or not.\nNote: This bit is set when the number of usage in TX FIFO Buffer is equal to 16, otherwise it is cleared by hardware."
+          bits: 23
+          enum:
+            '0':
+              desc: TX FIFO is not full
+              val: 0
+            '1':
+              desc: TX FIFO is full
+              val: 1
+        TXOVIF:
+          desc: "TX Overflow Error Interrupt Flag\nIf TX FIFO (UART_DAT) is full, an additional write to UART_DAT will cause this bit to logic 1.\nNote: This bit can be cleared by writing '1' to it."
+          bits: 24
+          enum:
+            '0':
+              desc: TX FIFO is not overflow
+              val: 0
+            '1':
+              desc: TX FIFO is overflow
+              val: 1
+        TXEMPTYF:
+          desc: "Transmitter Empty Flag (Read Only)\nThis bit is set by hardware when TX FIFO (UART_DAT) is empty and the STOP bit of the last byte has been transmitted.\nNote: This bit is cleared automatically when TX FIFO is not empty or the last byte transmission has not completed."
+          bits: 28
+          enum:
+            '0':
+              desc: TX FIFO is not empty or the STOP bit of the last byte has been not transmitted
+              val: 0
+            '1':
+              desc: TX FIFO is empty and the STOP bit of the last byte has been transmitted
+              val: 1
+        RXIDLE:
+          desc: "RX Idle Status (Read Only)\nThis bit is set by hardware when RX is idle."
+          bits: 29
+          enum:
+            '0':
+              desc: RX is busy
+              val: 0
+            '1':
+              desc: RX is idle. (Default)
+              val: 1
+        TXRXACT:
+          desc: "TX and RX Active Status (Read Only)\nThis bit indicates TX and RX are active or inactive.\nNote: When TXRXDIS (UART_FUNCSEL[3]) is set and both TX and RX are in idle state, this bit is cleared. The UART controller can not transmit or receive data at this moment. Otherwise this bit is set."
+          bits: 31
+          enum:
+            '0':
+              desc: TX and RX are inactive
+              val: 0
+            '1':
+              desc: TX and RX are active. (Default)
+              val: 1
+    INTSTS:
+      desc: UART Interrupt Status Register
+      offset: 0x1c
+      reset_val: 0x400002
+      fields:
+        RDAIF:
+          desc: "Receive Data Available Interrupt Flag (Read Only)\nWhen the number of bytes in the RX FIFO equals the RFITL then the RDAIF(UART_INTSTS[0]) will be set. If RDAIEN (UART_INTEN [0]) is enabled, the RDA interrupt will be generated.\nNote: This bit is read only and will be cleared when the number of unread bytes of RX FIFO drops below the threshold level (RFITL(UART_FIFO[7:4])."
+          bits: 0
+          enum:
+            '0':
+              desc: No RDA interrupt flag is generated
+              val: 0
+            '1':
+              desc: RDA interrupt flag is generated
+              val: 1
+        THREIF:
+          desc: "Transmit Holding Register Empty Interrupt Flag (Read Only)\nThis bit is set when the last data of TX FIFO is transferred to Transmitter Shift Register. If THREIEN (UART_INTEN[1]) is enabled, the THRE interrupt will be generated.\nNote: This bit is read only and will be cleared when writing data into UART_DAT (TX FIFO is not empty)."
+          bits: 1
+          enum:
+            '0':
+              desc: No THRE interrupt flag is generated
+              val: 0
+            '1':
+              desc: THRE interrupt flag is generated
+              val: 1
+        RLSIF:
+          desc: "Receive Line Interrupt Flag (Read Only)\nThis bit is set when the RX receive data have parity error, frame error or break error (at least one of 3 bits, BIF(UART_FIFOSTS[6]), FEF(UART_FIFOSTS[5]) and PEF(UART_FIFOSTS[4]), is set). If RLSIEN (UART_INTEN [2]) is enabled, the RLS interrupt will be generated.\nNote 2: This bit is read only and reset to 0 when all bits of BIF (UART_FIFOSTS[6]), FEF(UART_FIFOSTS[5]) and PEF(UART_FIFOSTS[4]) are cleared.\nNote 3: In RS-485 function mode, this bit is read only and reset to 0 when all bits of BIF (UART_FIFOSTS[6]), FEF(UART_FIFOSTS[5]), PEF(UART_FIFOSTS[4]) and ADDRDETF (UART_FIFOSTS[3]) are cleared."
+          bits: 2
+          enum:
+            '0':
+              desc: No RLS interrupt flag is generated
+              val: 0
+            '1':
+              desc: RLS interrupt flag is generated
+              val: 1
+        MODEMIF:
+          desc: "MODEM Interrupt Flag (Read Only)\nNote: This bit is read only and reset to 0 when bit CTSDETF is cleared by a write 1 on CTSDETF(UART_MODEMSTS[0])."
+          bits: 3
+          enum:
+            '0':
+              desc: No Modem interrupt flag is generated
+              val: 0
+            '1':
+              desc: Modem interrupt flag is generated
+              val: 1
+        RXTOIF:
+          desc: "RX Time-out Interrupt Flag (Read Only)\nThis bit is set when the RX FIFO is not empty and no activities occurred in the RX FIFO and the time-out counter equal to TOIC (UART_TOUT[7:0]). If RXTOIEN (UART_INTEN [4]) is enabled, the RX time-out interrupt will be generated.\nNote: This bit is read only and user can read UART_DAT (RX is in active) to clear it."
+          bits: 4
+          enum:
+            '0':
+              desc: No RX time-out interrupt flag is generated
+              val: 0
+            '1':
+              desc: RX time-out interrupt flag is generated
+              val: 1
+        BUFERRIF:
+          desc: "Buffer Error Interrupt Flag (Read Only)\nThis bit is set when the TX FIFO or RX FIFO overflows (TXOVIF (UART_FIFOSTS[24]) or RXOVIF (UART_FIFOSTS[0]) is set). When BUFERRIF (UART_INTSTS[5]) is set, the transfer is not correct. If BUFERRIEN (UART_INTEN [5]) is enabled, the buffer error interrupt will be generated.\nNote: This bit is cleared if both of RXOVIF(UART_FIFOSTS[0]) and TXOVIF(UART_FIFOSTS[24]) are cleared to 0 by writing 1 to RXOVIF(UART_FIFOSTS[0]) and TXOVIF(UART_FIFOSTS[24])."
+          bits: 5
+          enum:
+            '0':
+              desc: No buffer error interrupt flag is generated
+              val: 0
+            '1':
+              desc: Buffer error interrupt flag is generated
+              val: 1
+        WKIF:
+          desc: "UART Wake-up Interrupt Flag (Read Only)\nThis bit is set when TOUTWKF (UART_WKSTS[4]), RS485WKF (UART_WKSTS[3]), RFRTWKF (UART_WKSTS[2]), DATWKF (UART_WKSTS[1]) or CTSWKF(UART_WKSTS[0]) is set to 1.\nNote: This bit is cleared if all of TOUTWKF, RS485WKF, RFRTWKF, DATWKF and CTSWKF are cleared to 0 by writing 1 to the corresponding interrupt flag."
+          bits: 6
+          enum:
+            '0':
+              desc: No UART wake-up interrupt flag is generated
+              val: 0
+            '1':
+              desc: UART wake-up interrupt flag is generated
+              val: 1
+        LINIF:
+          desc: "LIN Bus Interrupt Flag\nNote: This bit is cleared when SLVHDETF(UART_LINSTS[0]), BRKDETF(UART_LINSTS[8]), BITEF(UART_LINSTS[9]), SLVIDPEF (UART_LINSTS[2]) and SLVHEF(UART_LINSTS[1]) all are cleared and software writing '1' to LINIF(UART_INTSTS[7])."
+          bits: 7
+          enum:
+            '0':
+              desc: None of SLVHDETF, BRKDETF, BITEF, SLVIDPEF and SLVHEF is generated
+              val: 0
+            '1':
+              desc: At least one of SLVHDETF, BRKDETF, BITEF, SLVIDPEF and SLVHEF is generated
+              val: 1
+        RDAINT:
+          desc: "Receive Data Available Interrupt Indicator (Read Only)\nThis bit is set if RDAIEN (UART_INTEN[0]) and RDAIF (UART_INTSTS[0]) are both set to 1."
+          bits: 8
+          enum:
+            '0':
+              desc: No RDA interrupt is generated
+              val: 0
+            '1':
+              desc: RDA interrupt is generated
+              val: 1
+        THREINT:
+          desc: "Transmit Holding Register Empty Interrupt Indicator (Read Only)\nThis bit is set if THREIEN (UART_INTEN[1]) and THREIF(UART_INTSTS[1]) are both set to 1."
+          bits: 9
+          enum:
+            '0':
+              desc: No THRE interrupt is generated
+              val: 0
+            '1':
+              desc: THRE interrupt is generated
+              val: 1
+        RLSINT:
+          desc: "Receive Line Status Interrupt Indicator (Read Only) \nThis bit is set if RLSIEN (UART_INTEN[2]) and RLSIF(UART_INTSTS[2]) are both set to 1."
+          bits: 10
+          enum:
+            '0':
+              desc: No RLS interrupt is generated
+              val: 0
+            '1':
+              desc: RLS interrupt is generated
+              val: 1
+        MODEMINT:
+          desc: "MODEM Status Interrupt Indicator (Read Only)\nThis bit is set if MODEMIEN(UART_INTEN[3]) and MODEMIF(UART_INTSTS[3]) are both set to 1"
+          bits: 11
+          enum:
+            '0':
+              desc: No Modem interrupt is generated
+              val: 0
+            '1':
+              desc: Modem interrupt is generated
+              val: 1
+        RXTOINT:
+          desc: "RX Time-out Interrupt Indicator (Read Only)\nThis bit is set if RXTOIEN (UART_INTEN[4]) and RXTOIF(UART_INTSTS[4]) are both set to 1."
+          bits: 12
+          enum:
+            '0':
+              desc: No RX time-out interrupt is generated
+              val: 0
+            '1':
+              desc: RX time-out interrupt is generated
+              val: 1
+        BUFERRINT:
+          desc: "Buffer Error Interrupt Indicator (Read Only)\nThis bit is set if BUFERRIEN(UART_INTEN[5]) and BUFERRIF(UART_ INTSTS[5]) are both set to 1."
+          bits: 13
+          enum:
+            '0':
+              desc: No buffer error interrupt is generated
+              val: 0
+            '1':
+              desc: Buffer error interrupt is generated
+              val: 1
+        WKINT:
+          desc: "UART Wake-up Interrupt Indicator (Read Only)\nThis bit is set if WKIEN (UART_INTEN[6]) and WKIF (UART_INTSTS[6]) are both set to 1."
+          bits: 14
+          enum:
+            '0':
+              desc: No UART wake-up interrupt is generated
+              val: 0
+            '1':
+              desc: UART wake-up interrupt is generated
+              val: 1
+        LININT:
+          desc: "LIN Bus Interrupt Indicator (Read Only)\nThis bit is set if LINIEN (UART_INTEN[8]) and LINIF(UART_INTSTS[7]) are both set to 1."
+          bits: 15
+          enum:
+            '0':
+              desc: No LIN Bus interrupt is generated
+              val: 0
+            '1':
+              desc: The LIN Bus interrupt is generated
+              val: 1
+        SBEIF:
+          desc: "Single-wire Bit Error Detection Interrupt Flag\nThis bit is set when the single wire bus state not equals to UART controller TX state in Single-wire mode.\nNote 1: This bit is active when FUNCSEL (UART_FUNCSEL[2:0]) is select UART Single-wire mode.\nNote 2: This bit can be cleared by writing '1' to it."
+          bits: 16
+          enum:
+            '0':
+              desc: No single-wire bit error detection interrupt flag is generated
+              val: 0
+            '1':
+              desc: Single-wire bit error detection interrupt flag is generated
+              val: 1
+        HWRLSIF:
+          desc: "PDMA Mode Receive Line Status Flag (Read Only)\nThis bit is set when the RX receive data have parity error, frame error or break error (at least one of 3 bits, BIF (UART_FIFOSTS[6]), FEF (UART_FIFOSTS[5]) and PEF (UART_FIFOSTS[4]) is set). If RLSIEN (UART_INTEN [2]) is enabled, the RLS interrupt will be generated.\nNote 2: In UART function mode, this bit is read only and reset to 0 when all bits of BIF(UART_FIFOSTS[6]), FEF(UART_FIFOSTS[5]) and PEF(UART_FIFOSTS[4]) are cleared. \nNote 3: In RS-485 function mode, this bit is read only and reset to 0 when all bits of BIF(UART_FIFOSTS[6]), FEF(UART_FIFOSTS[5]), PEF(UART_FIFOSTS[4]) and ADDRDETF (UART_FIFOSTS[3]) are cleared."
+          bits: 18
+          enum:
+            '0':
+              desc: No RLS interrupt flag is generated in PDMA mode
+              val: 0
+            '1':
+              desc: RLS interrupt flag is generated in PDMA mode
+              val: 1
+        HWMODIF:
+          desc: "PDMA Mode MODEM Interrupt Flag (Read Only)\nNote: This bit is read only and reset to 0 when the bit CTSDETF (UART_MODEMSTS[0]) is cleared by writing 1 on CTSDETF (UART_MODEMSTS [0])."
+          bits: 19
+          enum:
+            '0':
+              desc: No Modem interrupt flag is generated in PDMA mode
+              val: 0
+            '1':
+              desc: Modem interrupt flag is generated in PDMA mode
+              val: 1
+        HWTOIF:
+          desc: "PDMA Mode RX Time-out Interrupt Flag (Read Only)\nThis bit is set when the RX FIFO is not empty and no activities occurred in the RX FIFO and the time-out counter equal to TOIC (UART_TOUT[7:0]). If RXTOIEN (UART_INTEN [4]) is enabled, the RX time-out interrupt will be generated. \nNote: This bit is read only and user can read UART_DAT (RX is in active) to clear it."
+          bits: 20
+          enum:
+            '0':
+              desc: No RX time-out interrupt flag is generated in PDMA mode
+              val: 0
+            '1':
+              desc: RX time-out interrupt flag is generated in PDMA mode
+              val: 1
+        HWBUFEIF:
+          desc: "PDMA Mode Buffer Error Interrupt Flag (Read Only)\nThis bit is set when the TX or RX FIFO overflows (TXOVIF (UART_FIFOSTS [24]) or RXOVIF (UART_FIFOSTS[0]) is set). When BUFERRIF (UART_INTSTS[5]) is set, the transfer maybe is not correct. If BUFERRIEN (UART_INTEN [5]) is enabled, the buffer error interrupt will be generated.\nNote: This bit is cleared when both TXOVIF (UART_FIFOSTS[24]]) and RXOVIF  (UART_FIFOSTS[0]) are cleared."
+          bits: 21
+          enum:
+            '0':
+              desc: No buffer error interrupt flag is generated in PDMA mode
+              val: 0
+            '1':
+              desc: Buffer error interrupt flag is generated in PDMA mode
+              val: 1
+        TXENDIF:
+          desc: "Transmitter Empty Interrupt Flag\nThis bit is set when TX FIFO (UART_DAT) is empty and the STOP bit of the last byte has been transmitted (TXEMPTYF (UART_FIFOSTS[28]) is set). If TXENDIEN (UART_INTEN[22]) is enabled, the Transmitter Empty interrupt will be generated.\nNote: This bit is cleared automatically when TX FIFO is not empty or the last byte transmission has not completed."
+          bits: 22
+          enum:
+            '0':
+              desc: No transmitter empty interrupt flag is generated
+              val: 0
+            '1':
+              desc: Transmitter empty interrupt flag is generated
+              val: 1
+        SWBEINT:
+          desc: "Single-wire Bit Error Detect Interrupt Indicator (Read Only)\nThis bit is set if SWBEIEN (UART_INTEN[16]) and SWBEIF (UART_INTSTS[16]) are both set to 1."
+          bits: 24
+          enum:
+            '0':
+              desc: No Single-wire Bit Error Detection Interrupt generated
+              val: 0
+            '1':
+              desc: Single-wire Bit Error Detection Interrupt generated
+              val: 1
+        HWRLSINT:
+          desc: "PDMA Mode Receive Line Status Interrupt Indicator (Read Only)\nThis bit is set if RLSIEN (UART_INTEN[2]) and HWRLSIF(UART_INTSTS[18]) are both set to 1."
+          bits: 26
+          enum:
+            '0':
+              desc: No RLS interrupt is generated in PDMA mode
+              val: 0
+            '1':
+              desc: RLS interrupt is generated in PDMA mode
+              val: 1
+        HWMODINT:
+          desc: "PDMA Mode MODEM Status Interrupt Indicator (Read Only)\nThis bit is set if MODEMIEN (UART_INTEN[3]) and HWMODIF(UART_INTSTS[19]) are both set to 1."
+          bits: 27
+          enum:
+            '0':
+              desc: No Modem interrupt is generated in PDMA mode
+              val: 0
+            '1':
+              desc: Modem interrupt is generated in PDMA mode
+              val: 1
+        HWTOINT:
+          desc: "PDMA Mode RX Time-out Interrupt Indicator (Read Only)\nThis bit is set if RXTOIEN (UART_INTEN[4]) and HWTOIF(UART_INTSTS[20]) are both set to 1."
+          bits: 28
+          enum:
+            '0':
+              desc: No RX time-out interrupt is generated in PDMA mode
+              val: 0
+            '1':
+              desc: RX time-out interrupt is generated in PDMA mode
+              val: 1
+        HWBUFEINT:
+          desc: "PDMA Mode Buffer Error Interrupt Indicator (Read Only)\nThis bit is set if BUFERRIEN (UART_INTEN[5]) and HWBUFEIF (UART_INTSTS[21]) are both set to 1."
+          bits: 29
+          enum:
+            '0':
+              desc: No buffer error interrupt is generated in PDMA mode
+              val: 0
+            '1':
+              desc: Buffer error interrupt is generated in PDMA mode
+              val: 1
+        TXENDINT:
+          desc: "Transmitter Empty Interrupt Indicator (Read Only) \nThis bit is set if TXENDIEN (UART_INTEN[22]) and TXENDIF(UART_INTSTS[22]) are both set to 1."
+          bits: 30
+          enum:
+            '0':
+              desc: No Transmitter Empty interrupt is generated
+              val: 0
+            '1':
+              desc: Transmitter Empty interrupt is generated
+              val: 1
+        ABRINT:
+          desc: "Auto-baud Rate Interrupt Indicator (Read Only)\nThis bit is set if ABRIEN (UART_INTEN[18]) and ABRIF (UART_ALTCTL[17]) are both set to 1."
+          bits: 31
+          enum:
+            '0':
+              desc: No Auto-baud Rate interrupt is generated
+              val: 0
+            '1':
+              desc: The Auto-baud Rate interrupt is generated
+              val: 1
+    TOUT:
+      desc: UART Time-out Register
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        TOIC:
+          desc: "Time-out Interrupt Comparator"
+          bits: 7-0
+        DLY:
+          desc: "TX Delay Time Value \nThis field is used to program the transfer delay time between the last STOP bit and next START bit. The unit is bit time."
+          bits: 15-8
+    BAUD:
+      desc: UART Baud Rate Divider Register
+      offset: 0x24
+      reset_val: 0xf000000
+      fields:
+        BRD:
+          desc: "Baud Rate Divider\nThe field indicates the baud rate divider. This filed is used in baud rate calculation. The detail description is shown in Table 6.164."
+          bits: 15-0
+        EDIVM1:
+          desc: "Extra Divider for BAUD Rate Mode 1\nThis field is used for baud rate calculation in mode 1 and has no effect for baud rate calculation in mode 0 and mode 2. The detail description is shown in Table 6.164."
+          bits: 27-24
+        BAUDM0:
+          desc: "BAUD Rate Mode Selection Bit 0\nThis bit is baud rate mode selection bit 0. UART provides three baud rate calculation modes. This bit combines with BAUDM1 (UART_BAUD[29]) to select baud rate calculation mode. The detail description is shown in Table 6.164."
+          bits: 28
+        BAUDM1:
+          desc: "BAUD Rate Mode Selection Bit 1\nThis bit is baud rate mode selection bit 1. UART provides three baud rate calculation modes. This bit combines with BAUDM0 (UART_BAUD[28]) to select baud rate calculation mode. The detail description is shown in Table 6.164.\nNote: In IrDA mode must be operated in mode 0."
+          bits: 29
+    IRDA:
+      desc: UART IrDA Control Register
+      offset: 0x28
+      reset_val: 0x40
+      fields:
+        TXEN:
+          desc: "IrDA Receiver/Transmitter Selection Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: IrDA Transmitter Disabled and Receiver Enabled. (Default)
+              val: 0
+            '1':
+              desc: IrDA Transmitter Enabled and Receiver Disabled
+              val: 1
+        TXINV:
+          desc: "IrDA Inverse Transmitting Output Signal \nNote 1: Before setting this bit, TXRXDIS (UART_FUNCSEL[3]) should be set then waited for TXRXACT (UART_FIFOSTS[31]) is cleared. When the configuration is done, cleared TXRXDIS (UART_FUNCSEL[3]) to activate UART controller.\nNote 2: This bit is valid when FUNCSEL (UART_FUNCSEL[1:0]) is select IrDA function."
+          bits: 5
+          enum:
+            '0':
+              desc: None inverse transmitting signal. (Default)
+              val: 0
+            '1':
+              desc: Inverse transmitting output signal
+              val: 1
+        RXINV:
+          desc: "IrDA Inverse Receive Input Signal \nNote 1: Before setting this bit, TXRXDIS (UART_FUNCSEL[3]) should be set then waited for TXRXACT (UART_FIFOSTS[31]) is cleared. When the configuration is done, cleared TXRXDIS (UART_FUNCSEL[3]) to activate UART controller.\nNote 2: This bit is valid when FUNCSEL (UART_FUNCSEL[1:0]) is select IrDA function."
+          bits: 6
+          enum:
+            '0':
+              desc: None inverse receiving input signal
+              val: 0
+            '1':
+              desc: Inverse receiving input signal. (Default)
+              val: 1
+    ALTCTL:
+      desc: UART Alternate Control/Status Register
+      offset: 0x2c
+      reset_val: 0xc
+      fields:
+        BRKFL:
+          desc: "UART LIN Break Field Length\nThis field indicates a 4-bit LIN TX break field count.\nNote 1: This break field length is BRKFL + 1."
+          bits: 3-0
+        LINRXEN:
+          desc: "LIN RX Enable Bit"
+          bits: 6
+          enum:
+            '0':
+              desc: LIN RX mode Disabled
+              val: 0
+            '1':
+              desc: LIN RX mode Enabled
+              val: 1
+        LINTXEN:
+          desc: "LIN TX Break Mode Enable Bit\nNote: When TX break field transfer operation finished, this bit will be cleared automatically."
+          bits: 7
+          enum:
+            '0':
+              desc: LIN TX Break mode Disabled
+              val: 0
+            '1':
+              desc: LIN TX Break mode Enabled
+              val: 1
+        RS485NMM:
+          desc: "RS-485 Normal Multi-drop Operation Mode (NMM) \nNote: It cannot be active with RS-485_AAD operation mode."
+          bits: 8
+          enum:
+            '0':
+              desc: RS-485 Normal Multi-drop Operation mode (NMM) Disabled
+              val: 0
+            '1':
+              desc: RS-485 Normal Multi-drop Operation mode (NMM) Enabled
+              val: 1
+        RS485AAD:
+          desc: "RS-485 Auto Address Detection Operation Mode (AAD)\nNote: It cannot be active with RS-485_NMM operation mode."
+          bits: 9
+          enum:
+            '0':
+              desc: RS-485 Auto Address Detection Operation mode (AAD) Disabled
+              val: 0
+            '1':
+              desc: RS-485 Auto Address Detection Operation mode (AAD) Enabled
+              val: 1
+        RS485AUD:
+          desc: "RS-485 Auto Direction Function (AUD) \nNote: It can be active with RS-485_AAD or RS-485_NMM operation mode."
+          bits: 10
+          enum:
+            '0':
+              desc: RS-485 Auto Direction Operation function (AUD) Disabled
+              val: 0
+            '1':
+              desc: RS-485 Auto Direction Operation function (AUD) Enabled
+              val: 1
+        ADDRDEN:
+          desc: "RS-485 Address Detection Enable Bit\nThis bit is used to enable RS-485 Address Detection mode. \nNote: This bit is used for RS-485 any operation mode."
+          bits: 15
+          enum:
+            '0':
+              desc: Address detection mode Disabled
+              val: 0
+            '1':
+              desc: Address detection mode Enabled
+              val: 1
+        ABRIF:
+          desc: "Auto-baud Rate Interrupt Flag (Read Only) \nThis bit is set when auto-baud rate detection function finished or the auto-baud rate counter was overflow and if ABRIEN(UART_INTEN [18]) is set then the auto-baud rate interrupt will be generated. \nNote: This bit is read only, but it can be cleared by writing '1' to ABRDTOIF (UART_FIFOSTS[2]) and ABRDIF(UART_FIFOSTS[1])."
+          bits: 17
+          enum:
+            '0':
+              desc: No auto-baud rate interrupt flag is generated
+              val: 0
+            '1':
+              desc: Auto-baud rate interrupt flag is generated
+              val: 1
+        ABRDEN:
+          desc: "Auto-baud Rate Detect Enable Bit\nNote : This bit is cleared automatically after auto-baud detection is finished."
+          bits: 18
+          enum:
+            '0':
+              desc: Auto-baud rate detect function Disabled
+              val: 0
+            '1':
+              desc: Auto-baud rate detect function Enabled
+              val: 1
+        ABRDBITS:
+          desc: "Auto-baud Rate Detect Bit Length \nNote : The calculation of bit number includes the START bit."
+          bits: 20-19
+          enum:
+            '0':
+              desc: 1-bit time from START bit to the 1st rising edge. The input pattern shall be 0x01
+              val: 0
+            '1':
+              desc: 2-bit time from START bit to the 1st rising edge. The input pattern shall be 0x02
+              val: 1
+            '2':
+              desc: 4-bit time from START bit to the 1st rising edge. The input pattern shall be 0x08
+              val: 2
+            '3':
+              desc: 8-bit time from START bit to the 1st rising edge. The input pattern shall be 0x80
+              val: 3
+        ADDRMV:
+          desc: "Address Match Value \nThis field contains the RS-485 address match values.\nNote: This field is used for RS-485 auto address detection mode."
+          bits: 31-24
+    FUNCSEL:
+      desc: UART Function Select Register
+      offset: 0x30
+      reset_val: 0x0
+      fields:
+        FUNCSEL:
+          desc: "Function Select"
+          bits: 2-0
+          enum:
+            '0':
+              desc: UART function
+              val: 0
+            '1':
+              desc: LIN function
+              val: 1
+            '2':
+              desc: IrDA function
+              val: 2
+            '3':
+              desc: RS-485 function
+              val: 3
+            '4':
+              desc: UART Single-wire function
+              val: 4
+        TXRXDIS:
+          desc: "TX and RX Disable Bit\nSetting this bit can disable TX and RX.\nNote: The TX and RX will not disable immediately when this bit is set. The TX and RX compelet current task before disable TX and RX. When TX and RX disable, the TXRXACT (UART_FIFOSTS[31]) is cleared."
+          bits: 3
+          enum:
+            '0':
+              desc: TX and RX Enabled
+              val: 0
+            '1':
+              desc: TX and RX Disabled
+              val: 1
+    BRCOMP:
+      desc: UART Baud Rate Compensation Register
+      offset: 0x3c
+      reset_val: 0x0
+      fields:
+        BRCOMP:
+          desc: "Baud Rate Compensation Patten\nThese 9-bits are used to define the relative bit is compensated or not. \nBRCOMP[7:0] is used to define the compensation of UART_DAT[7:0] and BRCOM[8] is used to define the PARITY bit."
+          bits: 8-0
+        BRCOMPDEC:
+          desc: "Baud Rate Compensation Decrease"
+          bits: 31
+          enum:
+            '0':
+              desc: Positive (increase one module clock) compensation for each compensated bit
+              val: 0
+            '1':
+              desc: Negative (decrease one module clock) compensation for each compensated bit
+              val: 1
+    WKCTL:
+      desc: UART Wake-up Control Register
+      offset: 0x40
+      reset_val: 0x0
+      fields:
+        WKCTSEN:
+          desc: "nCTS Wake-up Enable Bit\nNote:When the system is in Power-down mode, an external.nCTS change will wake up system from Power-down mode."
+          bits: 0
+          enum:
+            '0':
+              desc: nCTS Wake-up system function Disabled
+              val: 0
+            '1':
+              desc: nCTS Wake-up system function Enabled
+              val: 1
+        WKDATEN:
+          desc: "Incoming Data Wake-up Enable Bit\nNote:When the system is in Power-down mode, incoming data will wake-up system from Power-down mode."
+          bits: 1
+          enum:
+            '0':
+              desc: Incoming data wake-up system function Disabled
+              val: 0
+            '1':
+              desc: Incoming data wake-up system function Enabled
+              val: 1
+        WKRFRTEN:
+          desc: "Received Data FIFO Reached Threshold Wake-up Enable Bit\nNote: When the system is in Power-down mode, Received Data FIFO reached threshold will wake-up system from Power-down mode."
+          bits: 2
+          enum:
+            '0':
+              desc: Received Data FIFO reached threshold wake-up system function Disabled
+              val: 0
+            '1':
+              desc: Received Data FIFO reached threshold wake-up system function Enabled
+              val: 1
+        WKRS485EN:
+          desc: "RS-485 Address Match (AAD Mode) Wake-up Enable Bit\nNote 1: When the system is in.Power-down mode, RS-485 Address Match will wake-up system from Power-down mode.\nNote 2: This bit is used for RS-485 Auto Address Detection (AAD) mode in RS-485 function mode and ADDRDEN (UART_ALTCTL[15]) is set to 1."
+          bits: 3
+          enum:
+            '0':
+              desc: RS-485 Address Match (AAD mode) wake-up system function Disabled
+              val: 0
+            '1':
+              desc: RS-485 Address Match (AAD mode) wake-up system function Enabled
+              val: 1
+        WKTOUTEN:
+          desc: "Received Data FIFO Reached Threshold Time-out Wake-up Enable Bit\nNote 1: When the system is in Power-down mode, Received Data FIFO reached threshold time-out will wake up system from Power-down mode.\nNote 2: It is suggested the function is enabled when the WKRFRTEN (UART_WKCTL[2]) is set to 1."
+          bits: 4
+          enum:
+            '0':
+              desc: Received Data FIFO reached threshold time-out wake-up system function Disabled
+              val: 0
+            '1':
+              desc: Received Data FIFO reached threshold time-out wake-up system function Enabled
+              val: 1
+    WKSTS:
+      desc: UART Wake-up Status Register
+      offset: 0x44
+      reset_val: 0x0
+      fields:
+        CTSWKF:
+          desc: "nCTS Wake-up Flag\nThis bit is set if chip wake-up from power-down state by nCTS wake-up.\nNote 1: If WKCTSEN (UART_WKCTL[0]) is enabled, the nCTS wake-up cause this bit is set to '1'.\nNote 2: This bit can be cleared by writing '1' to it."
+          bits: 0
+          enum:
+            '0':
+              desc: Chip stays in power-down state
+              val: 0
+            '1':
+              desc: Chip wake-up from power-down state by nCTS wake-up
+              val: 1
+        DATWKF:
+          desc: "Incoming Data Wake-up Flag\nThis bit is set if chip wake-up from power-down state by data wake-up.\nNote 1: If WKDATEN (UART_WKCTL[1]) is enabled, the Incoming Data wake-up cause this bit is set to '1'.\nNote 2: This bit can be cleared by writing '1' to it."
+          bits: 1
+          enum:
+            '0':
+              desc: Chip stays in power-down state
+              val: 0
+            '1':
+              desc: Chip wake-up from power-down state by Incoming Data wake-up
+              val: 1
+        RFRTWKF:
+          desc: "Received Data FIFO Reached Threshold Wake-up Flag\nThis bit is set if chip wake-up from power-down state by Received Data FIFO reached threshold wake-up.\nNote 1: If WKRFRTEN (UART_WKCTL[2]) is enabled, the Received Data FIFO Reached Threshold wake-up cause this bit is set to '1'.\nNote 2: This bit can be cleared by writing '1' to it."
+          bits: 2
+          enum:
+            '0':
+              desc: Chip stays in power-down state
+              val: 0
+            '1':
+              desc: Chip wake-up from power-down state by Received Data FIFO Reached Threshold wake-up
+              val: 1
+        RS485WKF:
+          desc: "RS-485 Address Match (AAD Mode) Wake-up Flag\nThis bit is set if chip wake-up from power-down state by RS-485 Address Match (AAD mode).\nNote 1: If WKRS485EN (UART_WKCTL[3]) is enabled, the RS-485 Address Match (AAD mode) wake-up cause this bit is set to '1'.\nNote 2: This bit can be cleared by writing '1' to it."
+          bits: 3
+          enum:
+            '0':
+              desc: Chip stays in power-down state
+              val: 0
+            '1':
+              desc: Chip wake-up from power-down state by RS-485 Address Match (AAD mode) wake-up
+              val: 1
+        TOUTWKF:
+          desc: "Received Data FIFO Threshold Time-out Wake-up Flag\nThis bit is set if chip wake-up from power-down state by Received Data FIFO Threshold Time-out\nwake-up.\nNote 1: If WKTOUTEN (UART_WKCTL[4]) is enabled, the Received Data FIFO reached threshold time-out wake-up cause this bit is set to '1'.\nNote 2: This bit can be cleared by writing '1' to it."
+          bits: 4
+          enum:
+            '0':
+              desc: Chip stays in power-down state
+              val: 0
+            '1':
+              desc: Chip wake-up from power-down state by Received Data FIFO reached threshold time-out
+              val: 1
+    DWKCOMP:
+      desc: UART Incoming Data Wake-up Compensation Register
+      offset: 0x48
+      reset_val: 0x0
+      fields:
+        STCOMP:
+          desc: "START Bit Compensation Value\nThese bits field indicate how many clock cycle selected by UART_CLK do the UART controller can get the 1st bit (START bit) when the device is wake-up from Power-down mode.\nNote: It is valid only when WKDATEN (UART_WKCTL[1]) is set."
+          bits: 15-0

@@ -1,0 +1,21 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: AHB Register Map
+  ver: 1
+  registers:
+    AHBMCTL:
+      desc: AHB Bus Matrix Priority Control Register
+      offset: 0x0
+      reset_val: 0x1
+      fields:
+        INTACTEN:
+          desc: "Highest AHB Bus Priority of Cortex®-M4 Core Enable Bit (Write Protect)\nEnable Cortex®-M4 Core With Highest AHB Bus Priority In AHB Bus Matrix\nNote: This bit is write protected. Refer to the SYS_REGLCTL register."
+          bits: 0
+          enum:
+            '0':
+              desc: Run robin mode
+              val: 0
+            '1':
+              desc: Cortex®-M4 CPU with highest bus priority when interrupt occusr
+              val: 1
