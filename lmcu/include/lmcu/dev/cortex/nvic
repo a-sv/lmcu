@@ -2,4 +2,6 @@
 
 #if defined(LMCU_STM32F1)
   #include "../../../../lib/regs/CORTEX-M3/NVIC.h"
+  #elif defined(LMCU_MG32F0)
+  #include "../../../../lib/regs/CORTEX-M0/NVIC.h"
 #endif
