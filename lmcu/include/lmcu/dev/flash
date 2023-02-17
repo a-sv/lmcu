@@ -6,4 +6,6 @@
   #include "../../../lib/regs/STM32/F1/FLASH.h"
 #elif defined(LMCU_NUC131)
   #include "../../../lib/regs/NUC131/periph/FMC.h"
+#elif defined(LMCU_MG32F0)
+  #include "../../../lib/regs/MG32/F0/MEM.h"
 #endif

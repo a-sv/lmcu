@@ -202,6 +202,8 @@
   #include "../../../lib/regs/NUC131/NUC131SC2AE.h"
 #elif defined(LMCU_NUC131SD2AE)
   #include "../../../lib/regs/NUC131/NUC131SD2AE.h"
+#elif defined(LMCU_MG32F02A032AD48)
+  #include "../../../lib/regs/MG32/MG32F02A032AD48.h"
 #endif
 
 // Low-density value line devices are STM32F100xx microcontrollers where the Flash memory density
@@ -271,6 +273,16 @@
 // Connectivity line devices are STM32F105xx and STM32F107xx microcontrollers.
 #if defined(LMCU_STM32F105) || defined(LMCU_STM32F107)
   #define LMCU_STM32F1_CONNECTIVITY
+#endif
+
+#if defined(LMCU_MG32F02A132) || defined(LMCU_MG32F02A072)
+  #define LMCU_MG32F0_1ST
+#elif defined(LMCU_MG32F02A032)
+  #define LMCU_MG32F0_2ND
+#elif defined(LMCU_MG32F02A128) || defined(LMCU_MG32F02U128) || defined(LMCU_MG32F02A064) || defined(LMCU_MG32F02U064)
+  #define LMCU_MG32F0_3RD
+#elif defined(LMCU_MG32F02V032)
+  #define LMCU_MG32F0_4TH
 #endif
 
 // ------------------------------------------------------------------------------------------------

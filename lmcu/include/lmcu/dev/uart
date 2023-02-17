@@ -7,4 +7,7 @@
   #include "../../../lib/regs/NUC131/periph/UART3.h"
   #include "../../../lib/regs/NUC131/periph/UART4.h"
   #include "../../../lib/regs/NUC131/periph/UART5.h"
+#elif defined(LMCU_MG32F0)
+  #include "../../../lib/regs/MG32/F0/URT0.h"
+  #include "../../../lib/regs/MG32/F0/URT1.h"
 #endif

@@ -15,4 +15,13 @@
   #include "../../../lib/regs/NUC131/periph/GPIOD.h"
   #include "../../../lib/regs/NUC131/periph/GPIOE.h"
   #include "../../../lib/regs/NUC131/periph/GPIOF.h"
+#elif defined(LMCU_MG32F0)
+  #include "../../../lib/regs/MG32/F0/PA.h"
+  #include "../../../lib/regs/MG32/F0/PB.h"
+  #include "../../../lib/regs/MG32/F0/PC.h"
+  #include "../../../lib/regs/MG32/F0/PD.h"
+  #include "../../../lib/regs/MG32/F0/IOPA.h"
+  #include "../../../lib/regs/MG32/F0/IOPB.h"
+  #include "../../../lib/regs/MG32/F0/IOPC.h"
+  #include "../../../lib/regs/MG32/F0/IOPD.h"
 #endif

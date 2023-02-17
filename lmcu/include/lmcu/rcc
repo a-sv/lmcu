@@ -7,6 +7,8 @@
   #include "../../lib/STM32/F1/rcc.h"
 #elif defined(LMCU_NUC131)
   #include "../../lib/Nuvoton/NUC131/rcc.h"
+#elif defined(LMCU_MG32F0)
+  #include "../../lib/Megawin/MG32F0/rcc.h"
 #else
   #error "device not supported"
 #endif

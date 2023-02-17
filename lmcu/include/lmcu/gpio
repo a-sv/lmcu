@@ -14,6 +14,8 @@
   #include "../../lib/STM32/F1/gpio_z.h"
 #elif defined(LMCU_NUC131)
   #include "../../lib/Nuvoton/NUC131/gpio.h"
+#elif defined(LMCU_MG32F0)
+  #include "../../lib/Megawin/MG32F0/dev/gpio.h"
 #else
   #error "device not supported"
 #endif

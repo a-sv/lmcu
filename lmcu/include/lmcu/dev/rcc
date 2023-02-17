@@ -8,4 +8,7 @@
 #elif defined(LMCU_NUC131)
   #include "../../../lib/regs/NUC131/periph/GCR.h"
   #include "../../../lib/regs/NUC131/periph/CLK.h"
+#elif defined(LMCU_MG32F0)
+  #include "../../../lib/regs/MG32/F0/CSC.h"
+  #include "../../../lib/regs/MG32/F0/PC.h"
 #endif
