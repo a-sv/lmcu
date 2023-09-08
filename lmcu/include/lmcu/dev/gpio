@@ -8,6 +8,15 @@
   #include "../../../lib/regs/STM32/F1/GPIOE.h"
   #include "../../../lib/regs/STM32/F1/GPIOF.h"
   #include "../../../lib/regs/STM32/F1/GPIOG.h"
+#elif defined(LMCU_M480)
+  #include "../../../lib/regs/M480/periph/GPIOA.h"
+  #include "../../../lib/regs/M480/periph/GPIOB.h"
+  #include "../../../lib/regs/M480/periph/GPIOC.h"
+  #include "../../../lib/regs/M480/periph/GPIOD.h"
+  #include "../../../lib/regs/M480/periph/GPIOE.h"
+  #include "../../../lib/regs/M480/periph/GPIOF.h"
+  #include "../../../lib/regs/M480/periph/GPIOG.h"
+  #include "../../../lib/regs/M480/periph/GPIOH.h"
 #elif defined(LMCU_NUC131)
   #include "../../../lib/regs/NUC131/periph/GPIOA.h"
   #include "../../../lib/regs/NUC131/periph/GPIOB.h"

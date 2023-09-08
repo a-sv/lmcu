@@ -1,6 +1,8 @@
 #pragma once
 
-#if defined(LMCU_NUC131)
+#if defined(LMCU_M480)
+  #include "../../lib/Nuvoton/M480/uart.h"
+#elif defined(LMCU_NUC131)
   #include "../../lib/Nuvoton/NUC131/uart.h"
 #elif defined(LMCU_MG32F0)
   #include "../../lib/Megawin/MG32F0/uart.h"

@@ -1,6 +1,8 @@
 #pragma once
 
-#if defined(LMCU_NUC131)
+#if defined(LMCU_M480)
+  #include "../../lib/Nuvoton/M480/spi.h"
+#elif defined(LMCU_NUC131)
   #include "../../lib/Nuvoton/NUC131/spi.h"
 #else
   #error "device not supported"

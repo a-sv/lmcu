@@ -2,6 +2,8 @@
 
 #if defined(LMCU_STM32)
   #include "../../lib/STM32/ip/v1/pwr.h"
+#elif defined(LMCU_M480)
+  //#include "../../lib/Nuvoton/M480/ip/v1/pwr.h"
 #elif defined(LMCU_NUC131)
 #elif defined(LMCU_MG32F0)
 #else

@@ -5,6 +5,10 @@
   #include "../../../lib/regs/STM32/F1/RCC_CONNECTIVITY.h"
 #elif defined(LMCU_STM32F1)
   #include "../../../lib/regs/STM32/F1/RCC.h"
+#elif defined(LMCU_M480)
+  #include "../../../lib/regs/M480/periph/SYS.h"
+  #include "../../../lib/regs/M480/periph/CLK.h"
+  #include "../../../lib/regs/M480/periph/SCS.h"
 #elif defined(LMCU_NUC131)
   #include "../../../lib/regs/NUC131/periph/GCR.h"
   #include "../../../lib/regs/NUC131/periph/CLK.h"

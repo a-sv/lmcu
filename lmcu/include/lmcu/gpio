@@ -12,6 +12,8 @@
 #elif defined(LMCU_STM32F100Z) || defined(LMCU_STM32F101Z) || defined(LMCU_STM32F102Z) || \
       defined(LMCU_STM32F103Z)
   #include "../../lib/STM32/F1/gpio_z.h"
+#elif defined(LMCU_M480)
+  #include "../../lib/Nuvoton/M480/gpio.h"
 #elif defined(LMCU_NUC131)
   #include "../../lib/Nuvoton/NUC131/gpio.h"
 #elif defined(LMCU_MG32F0)

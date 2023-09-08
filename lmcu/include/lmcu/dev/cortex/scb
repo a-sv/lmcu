@@ -1,0 +1,5 @@
+#pragma once
+
+#if defined(LMCU_CORTEX_M4)
+  #include "../../../../lib/regs/CORTEX-M4/SCB.h"
+#endif

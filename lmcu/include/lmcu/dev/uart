@@ -1,6 +1,15 @@
 #pragma once
 
-#if defined(LMCU_NUC131)
+#if defined(LMCU_M480)
+  #include "../../../lib/regs/M480/periph/UART0.h"
+  #include "../../../lib/regs/M480/periph/UART1.h"
+  #include "../../../lib/regs/M480/periph/UART2.h"
+  #include "../../../lib/regs/M480/periph/UART3.h"
+  #include "../../../lib/regs/M480/periph/UART4.h"
+  #include "../../../lib/regs/M480/periph/UART5.h"
+  #include "../../../lib/regs/M480/periph/UART6.h"
+  #include "../../../lib/regs/M480/periph/UART7.h"
+#elif defined(LMCU_NUC131)
   #include "../../../lib/regs/NUC131/periph/UART0.h"
   #include "../../../lib/regs/NUC131/periph/UART1.h"
   #include "../../../lib/regs/NUC131/periph/UART2.h"

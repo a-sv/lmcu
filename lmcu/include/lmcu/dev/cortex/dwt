@@ -2,4 +2,6 @@
 
 #if defined(LMCU_CORTEX_M3)
   #include "../../../../lib/regs/CORTEX-M3/DWT.h"
+#elif defined(LMCU_CORTEX_M4)
+  #include "../../../../lib/regs/CORTEX-M4/DWT.h"
 #endif

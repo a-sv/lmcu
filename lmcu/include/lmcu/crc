@@ -1,0 +1,7 @@
+#pragma once
+
+#if defined(LMCU_M480)
+  #include "../../lib/Nuvoton/M480/crc.h"
+#else
+  #error "device not supported"
+#endif

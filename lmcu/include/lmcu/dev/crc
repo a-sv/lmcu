@@ -1,0 +1,5 @@
+#pragma once
+
+#if defined(LMCU_M480)
+  #include "../../../lib/regs/M480/periph/CRC.h"
+#endif
