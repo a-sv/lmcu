@@ -7,21 +7,122 @@ ip:
     CPUID:
       desc: CPUID Base Register (R/ )
       offset: 0x000
+      fields:
+        IMPLEMENTER:
+          desc: Implementor
+          bits: 31-24
+        VARIANT:
+          desc: Processor revision
+          bits: 23-20
+        CONSTANT:
+          desc: Reads as 0xF
+          bits: 19-16
+        PARTNO:
+          desc: Part number
+          bits: 15-4
+        REVISION:
+          desc: Patch release
+          bits: 3-0
     ICSR:
       desc: Interrupt Control and State Register (R/W)
       offset: 0x004
+      reset_val: 0x00000000
+      fields:
+        VECTACTIVE:
+          desc: Active vector
+          bits: 9
+        RETTOBASE:
+          desc: Return to base level
+          bits: 11
+        VECTPENDING:
+          desc: Pending vector
+          bits: 18-12
+        ISRPENDING:
+          desc: Interrupt pending flag
+          bits: 22
+        PENDSTCLR:
+          desc: SysTick exception clear-pending bit
+          bits: 25
+        PENDSTSET:
+          desc: SysTick exception set-pending bit
+          bits: 26
+        PENDSVCLR:
+          desc: PendSV clear-pending bit
+          bits: 27
+        PENDSVSET:
+          desc: PendSV set-pending bit
+          bits: 28
+        NMIPENDSET:
+          desc: NMI set-pending bit
+          bits: 31
     VTOR:
       desc: Vector Table Offset Register (R/W)
       offset: 0x008
+      reset_val: 0x00000000
+      fields:
+        TBLOFF:
+          desc: Vector table base offset field
+          bits: 29-9
     AIRCR:
       desc: Application Interrupt and Reset Control Register (R/W)
       offset: 0x00C
+      reset_val: 0x00000000
+      fields:
+        VECTRESET:
+          desc: VECTRESET
+          bits: 0
+        VECTCLRACTIVE:
+          desc: VECTCLRACTIVE
+          bits: 1
+        SYSRESETREQ:
+          desc: SYSRESETREQ
+          bits: 2
+        PRIGROUP:
+          desc: PRIGROUP
+          bits: 10-8
+        ENDIANESS:
+          desc: ENDIANESS
+          bits: 15
+        VECTKEYSTAT:
+          desc: Register key
+          bits: 31-16
     SCR:
       desc: System Control Register (R/W)
       offset: 0x010
+      reset_val: 0x00000000
+      fields:
+        SLEEPONEXIT:
+          desc: SLEEPONEXIT
+          bits: 1
+        SLEEPDEEP:
+          desc: SLEEPDEEP
+          bits: 2
+        SEVEONPEND:
+          desc: Send Event on Pending bit
+          bits: 4
     CCR:
       desc: Configuration Control Register (R/W)
       offset: 0x014
+      reset_val: 0x00000000
+      fields:
+        NONBASETHRDENA:
+          desc: Configures how the processor enters Thread mode
+          bits: 0
+        USERSETMPEND:
+          desc: USERSETMPEND
+          bits: 1
+        UNALIGN__TRP:
+          desc: UNALIGN_TRP
+          bits: 3
+        DIV_0_TRP:
+          desc: DIV_0_TRP
+          bits: 4
+        BFHFNMIGN:
+          desc: BFHFNMIGN
+          bits: 8
+        STKALIGN:
+          desc: STKALIGN
+          bits: 9
     SHPR:
       desc: System Handlers Priority Registers (4-7, 8-11, 12-15) (R/W)
       offset: 0x018
@@ -30,111 +131,159 @@ ip:
     SHCSR:
       desc: System Handler Control and State Register (R/W)
       offset: 0x024
+      reset_val: 0x00000000
+      fields:
+        MEMFAULTACT:
+          desc: Memory management fault exception active bit
+          bits: 0
+        BUSFAULTACT:
+          desc: Bus fault exception active bit
+          bits: 1
+        USGFAULTACT:
+          desc: Usage fault exception active bit
+          bits: 3
+        SVCALLACT:
+          desc: SVC call active bit
+          bits: 7
+        MONITORACT:
+          desc: Debug monitor active bit
+          bits: 8
+        PENDSVACT:
+          desc: PendSV exception active bit
+          bits: 10
+        SYSTICKACT:
+          desc: SysTick exception active bit
+          bits: 11
+        USGFAULTPENDED:
+          desc: Usage fault exception pending bit
+          bits: 12
+        MEMFAULTPENDED:
+          desc: Memory management fault exception pending bit
+          bits: 13
+        BUSFAULTPENDED:
+          desc: Bus fault exception pending bit
+          bits: 14
+        SVCALLPENDED:
+          desc: SVC call pending bit
+          bits: 15
+        MEMFAULTENA:
+          desc: Memory management fault enable bit
+          bits: 16
+        BUSFAULTENA:
+          desc: Bus fault enable bit
+          bits: 17
+        USGFAULTENA:
+          desc: Usage fault enable bit
+          bits: 18
     CFSR:
       desc: Configurable Fault Status Register (R/W)
       offset: 0x028
+      reset_val: 0x00000000
+      fields:
+        IACCVIOL:
+          desc: Instruction access violation flag
+          bits: 0
+        DACCVIOL:
+          desc: Data access violation flag
+          bits: 1
+        MUNSTKERR:
+          desc: Memory manager fault on unstacking for a return from exception
+          bits: 3
+        MSTKERR:
+          desc: Memory manager fault on stacking for exception entry
+          bits: 4
+        MLSPERR:
+          desc: MLSPERR</description>
+          bits: 5
+        MMARVALID:
+          desc: Memory Management Fault Address Register (MMAR) valid flag
+          bits: 7
+        IBUSERR:
+          desc: Instruction bus error
+          bits: 8
+        PRECISERR:
+          desc: Precise data bus error
+          bits: 9
+        IMPRECISERR:
+          desc: Imprecise data bus error
+          bits: 10
+        UNSTKERR:
+          desc: Bus fault on unstacking for a return from exception
+          bits: 11
+        STKERR:
+          desc: Bus fault on stacking for exception entry
+          bits: 12
+        LSPERR:
+          desc: Bus fault on floating-point lazy state preservation
+          bits: 13
+        BFARVALID:
+          desc: Bus Fault Address Register (BFAR) valid flag
+          bits: 15
+        UNDEFINSTR:
+          desc: Undefined instruction usage fault
+          bits: 16
+        INVSTATE:
+          desc: Invalid state usage fault
+          bits: 17
+        INVPC:
+          desc: Invalid PC load usage fault
+          bits: 18
+        NOCP:
+          desc: No coprocessor usage fault.
+          bits: 19
+        UNALIGNED:
+          desc: Unaligned access usage fault
+          bits: 24
+        DIVBYZERO:
+          desc: Divide by zero usage fault
+          bits: 25
     HFSR:
       desc: HardFault Status Register (R/W)
       offset: 0x02C
+      reset_val: 0x00000000
+      fields:
+        VECTTBL:
+          desc: Vector table hard fault
+          bits: 1
+        FORCED:
+          desc: Forced hard fault
+          bits: 30
+        DEBUG_VT:
+          desc: Reserved for Debug use
+          bits: 31
     DFSR:
       desc: Debug Fault Status Register (R/W)
       offset: 0x030
     MMFAR:
       desc: MemManage Fault Address Register (R/W)
       offset: 0x034
+      reset_val: 0x00000000
     BFAR:
       desc: BusFault Address Register (R/W)
       offset: 0x038
+      reset_val: 0x00000000
     AFSR:
       desc: Auxiliary Fault Status Register (R/W)
       offset: 0x03C
-    ID_PFR:
+      reset_val: 0x00000000
+    PFR:
       desc: Processor Feature Register (R/ )
       offset: 0x040
       count: 2
-    ID_DFR:
+    DFR:
       desc: Debug Feature Register (R/ )
       offset: 0x048
-    ID_AFR:
+    ADR:
       desc: Auxiliary Feature Register (R/ )
       offset: 0x04C
-    ID_MFR:
+    MMFR:
       desc: Memory Model Feature Register (R/ )
       offset: 0x050
       count: 4
-    ID_ISAR:
+    ISAR:
       desc: Instruction Set Attributes Register (R/ )
       offset: 0x060
       count: 5
-    CLIDR:
-      desc: Cache Level ID register (R/ )
-      offset: 0x078
-    CTR:
-      desc: Cache Type register (R/ )
-      offset: 0x07C
-    CCSIDR:
-      desc: Cache Size ID Register (R/ )
-      offset: 0x080
-    CSSELR:
-      desc: Cache Size Selection Register (R/W)
-      offset: 0x084
     CPACR:
       desc: Coprocessor Access Control Register (R/W)
       offset: 0x088
-    STIR:
-      desc: Software Triggered Interrupt Register ( /W)
-      offset: 0x200
-    MVFR0:
-      desc: Media and VFP Feature Register 0 (R/ )
-      offset: 0x240
-    MVFR1:
-      desc: Media and VFP Feature Register 1 (R/ )
-      offset: 0x244
-    MVFR2:
-      desc: Media and VFP Feature Register 1 (R/ )
-      offset: 0x248
-    ICIALLU:
-      desc: I-Cache Invalidate All to PoU ( /W)
-      offset: 0x250
-    ICIMVAU:
-      desc: I-Cache Invalidate by MVA to PoU ( /W)
-      offset: 0x258
-    DCIMVAC:
-      desc: D-Cache Invalidate by MVA to PoC ( /W)
-      offset: 0x25C
-    DCISW:
-      desc: D-Cache Invalidate by Set-way ( /W)
-      offset: 0x260
-    DCCMVAU:
-      desc: D-Cache Clean by MVA to PoU ( /W)
-      offset: 0x264
-    DCCMVAC:
-      desc: D-Cache Clean by MVA to PoC ( /W)
-      offset: 0x268
-    DCCSW:
-      desc: D-Cache Clean by Set-way ( /W)
-      offset: 0x26C
-    DCCIMVAC:
-      desc: D-Cache Clean and Invalidate by MVA to PoC ( /W)
-      offset: 0x270
-    DCCISW:
-      desc: D-Cache Clean and Invalidate by Set-way ( /W)
-      offset: 0x274
-    ITCMCR:
-      desc: Instruction Tightly-Coupled Memory Control Register (R/W)
-      offset: 0x290
-    DTCMCR:
-      desc: Data Tightly-Coupled Memory Control Registers (R/W)
-      offset: 0x294
-    AHBPCR:
-      desc: AHBP Control Register (R/W)
-      offset: 0x298
-    CACR:
-      desc: L1 Cache Control Register (R/W)
-      offset: 0x29C
-    AHBSCR:
-      desc: AHB Slave Control Register (R/W)
-      offset: 0x2A0
-    ABFSR:
-      desc: Auxiliary Bus Fault Status Register (R/W)
-      offset: 0x2A8

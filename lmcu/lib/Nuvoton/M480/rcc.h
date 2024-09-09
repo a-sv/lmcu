@@ -20,7 +20,8 @@ extern uint32_t
   lxt_clock,
   hxt_clock,
   pll_clock,
-  rtc_clock
+  rtc_clock,
+  usb_clock
 ;
 
 enum class hxt_freq : uint32_t { };
@@ -78,6 +79,27 @@ enum class spiclk2_mux { hirc, pclk1, pll, hxt };
 
 enum class uartclk_mux { hirc, lxt, pll, hxt };
 
+enum class usb_mux { hirc, pll };
+
+enum class usb_div
+{
+  _1   = 1,
+  _2   = 2,
+  _3   = 3,
+  _4   = 4,
+  _5   = 5,
+  _6   = 6,
+  _7   = 7,
+  _8   = 8,
+  _9   = 9,
+  _10  = 10,
+  _11  = 11,
+  _12  = 12,
+  _13  = 13,
+  _14  = 14,
+  _15  = 15,
+  _16  = 16,
+};
 
 template<typename _cfg>
 lmcu_inline uint32_t enable_pll()
@@ -93,10 +115,10 @@ lmcu_inline uint32_t enable_pll()
 
   if(_cfg::pll_mux == pll_mux::hxt) {
     // enable HXT clock
-    CLK::PWRCTL::set_b(CLK::PWRCTL::HXTEN_1);
+    //CLK::PWRCTL::set_b(CLK::PWRCTL::HXTEN_1);
 
     // wait for HXT clock ready
-    while(!CLK::STATUS::is_set(CLK::STATUS::HXTSTB_1));
+    //while(!CLK::STATUS::is_set(CLK::STATUS::HXTSTB_1));
 
     // select PLL source clock from HXT
     clk_src = CLK::PLLCTL::PLLSRC_0;
@@ -107,10 +129,10 @@ lmcu_inline uint32_t enable_pll()
   }
   else if(_cfg::pll_mux == pll_mux::hirc) {
     // enable HIRC clock
-    CLK::PWRCTL::set_b(CLK::PWRCTL::HIRCEN_1);
+    //CLK::PWRCTL::set_b(CLK::PWRCTL::HIRCEN_1);
 
     // wait for HIRC clock ready
-    while(!CLK::STATUS::is_set(CLK::STATUS::HXTSTB_1));
+    //while(!CLK::STATUS::is_set(CLK::STATUS::HXTSTB_1));
 
     // Select PLL source clock from HIRC
     clk_src = CLK::PLLCTL::PLLSRC_1;
@@ -176,6 +198,7 @@ lmcu_inline uint32_t enable_pll()
 
     // Enable and apply new PLL setting
     CLK::PLLCTL::set(clk_src | ((min_no - 1uL) << 14) | ((min_nr - 1uL) << 9) | (min_nf - 2uL));
+    CLK::PLLCTL::clr_b(CLK::PLLCTL::PD_1);
 
     // wait for PLL clock stable
     while(!CLK::STATUS::is_set(CLK::STATUS::PLLSTB_1));
@@ -230,9 +253,21 @@ struct config
 
   static constexpr auto sysclk_mux = option::get<rcc::sysclk_mux, _args...>(rcc::sysclk_mux::hxt);
 
+  static constexpr auto usb_mux = option::get<rcc::usb_mux, _args...>(rcc::usb_mux::hirc);
+
+  static constexpr auto usb_div = option::get<rcc::usb_div, _args...>(rcc::usb_div(1)); // 1-16
 
   static_assert(option::check<
-      std::tuple<rcc::hxt_freq, rcc::lxt_freq, rcc::osc_type, rcc::pll_mux, rcc::hclk_mux, rcc::sysclk_mux>,
+    std::tuple<
+      rcc::hxt_freq,
+      rcc::lxt_freq,
+      rcc::osc_type,
+      rcc::pll_mux,
+      rcc::hclk_mux,
+      rcc::sysclk_mux,
+      rcc::usb_mux,
+      rcc::usb_div
+    >,
   _args...
   >());
 };
@@ -248,18 +283,30 @@ void configure()
 
   sys::unlock();
 
+  // read HIRC clock source stable flag
+  if(!(CLK::STATUS::get() & CLK::STATUS::HIRCSTB_1)) {
+    // switch HCLK clock source to HIRC clock for safe
+    CLK::PWRCTL::set_b(CLK::PWRCTL::HIRCEN_1);
+    while(!CLK::STATUS::is_set(CLK::STATUS::HIRCSTB_1));
+  }
+
+  CLK::CLKSEL0::set_b(CLK::CLKSEL0::HCLKSEL_7);
+  CLK::CLKDIV0::clr_b(CLK::CLKDIV0::HCLKDIV_MASK);
+
   // enable HXT clock
-  /*{
-    switch (cfg::hxt) {
-    case hxt::enable:
-      CLK::PWRCTL::set_b(CLK::PWRCTL::HXTEN_1);
-      while(CLK::STATUS::get() & CLK::STATUS::HXTSTB_1);
+  {
+    switch (cfg::osc_type) {
+    case osc_type::hxt:
+      if(!(CLK::STATUS::is_set(CLK::STATUS::HXTSTB_1))) {
+        CLK::PWRCTL::set_b(CLK::PWRCTL::HXTEN_1);
+        while(!CLK::STATUS::is_set(CLK::STATUS::HXTSTB_1));
+      }
       break;
     default: break;
     }
-  }*/
+  }
 
-  //static_assert(!(cfg::pll_mux == pll_mux::hxt && cfg::hxt != hxt::enable), "PLL clock source is HXT, but HXT not enabled");
+  static_assert(!(cfg::pll_mux == pll_mux::hxt && cfg::osc_type != osc_type::hxt), "PLL clock source is HXT, but HXT not enabled");
 
   // configure PLL clock
   {
@@ -272,15 +319,6 @@ void configure()
 
   // congigure HCLK
   {
-    // read HIRC clock source stable flag
-    //uint32_t hirc_state = CLK::STATUS::get() & CLK::STATUS::HIRCSTB_1;
-
-    // switch HCLK clock source to HIRC clock for safe
-    CLK::PWRCTL::set_b(CLK::PWRCTL::HIRCEN_1);
-    while(!CLK::STATUS::is_set(CLK::STATUS::HIRCSTB_1));
-    CLK::CLKSEL0::set_b(CLK::CLKSEL0::HCLKSEL_7);
-    CLK::CLKDIV0::clr_b(CLK::CLKDIV0::HCLKDIV_MASK);
-
     static_assert(!(cfg::pll_freq > 192_MHz), "PLL frequency must be less or equal 192 MHz");
 
     // set access cycle for CPU @ 192MHz
@@ -338,6 +376,9 @@ void configure()
     CLK::AHBCLK::set_b(CLK::AHBCLK::ISPCKEN_MASK);
     FMC::ISPCTL::set_b(FMC::ISPCTL::ISPEN_MASK | FMC::ISPCTL::LDUEN_1);
 
+    CLK::CLKDIV0::clr_b(CLK::CLKDIV0::USBDIV_MASK);
+    CLK::CLKDIV0::set_b((uint32_t(cfg::usb_div)-1)<<CLK::CLKDIV0::USBDIV_POS);
+    if(cfg::usb_mux == usb_mux::pll) { CLK::CLKSEL0::set_b(CLK::CLKSEL0::USBSEL_1); }
 
     //auto r = CLK::CLKSEL0::get();
 
@@ -378,6 +419,8 @@ lmcu_inline uint32_t lxt() { return lxt_clock; }
 lmcu_inline uint32_t pll() { return pll_clock; }
 
 lmcu_inline uint32_t rtc() { return rtc_clock; }
+
+lmcu_inline uint32_t usb() { return usb_clock; }
 
 // ------------------------------------------------------------------------------------------------
 } // namespace clock

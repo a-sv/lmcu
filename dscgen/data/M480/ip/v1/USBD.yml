@@ -1,0 +1,728 @@
+ip:
+  header: |
+    #include "../../../common.h"
+  desc: USBD Register Map
+  ver: 1
+  registers:
+    INTEN:
+      desc: USB Device Interrupt Enable Register
+      offset: 0x0
+      reset_val: 0x0
+      fields:
+        BUSIEN:
+          desc: "Bus Event Interrupt Enable Bit"
+          bits: 0
+          enum:
+            '0':
+              desc: "BUS event interrupt Disabled"
+              val: 0
+            '1':
+              desc: "BUS event interrupt Enabled"
+              val: 1
+        USBIEN:
+          desc: "USB Event Interrupt Enable Bit"
+          bits: 1
+          enum:
+            '0':
+              desc: "USB event interrupt Disabled"
+              val: 0
+            '1':
+              desc: "USB event interrupt Enabled"
+              val: 1
+        VBDETIEN:
+          desc: "VBUS Detection Interrupt Enable Bit"
+          bits: 2
+          enum:
+            '0':
+              desc: "VBUS detection Interrupt Disabled"
+              val: 0
+            '1':
+              desc: "VBUS detection Interrupt Enabled"
+              val: 1
+        NEVWKIEN:
+          desc: "USB No-event-wake-up Interrupt Enable Bit"
+          bits: 3
+          enum:
+            '0':
+              desc: "No-event-wake-up Interrupt Disabled"
+              val: 0
+            '1':
+              desc: "No-event-wake-up Interrupt Enabled"
+              val: 1
+        SOFIEN:
+          desc: "Start of Frame Interrupt Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: "SOF Interrupt Disabled"
+              val: 0
+            '1':
+              desc: "SOF Interrupt Enabled"
+              val: 1
+        WKEN:
+          desc: "Wake-up Function Enable Bit"
+          bits: 8
+          enum:
+            '0':
+              desc: "USB wake-up function Disabled"
+              val: 0
+            '1':
+              desc: "USB wake-up function Enabled"
+              val: 1
+        INNAKEN:
+          desc: "Active NAK Function and Its Status in IN Token"
+          bits: 15
+          enum:
+            '0':
+              desc: "When device responds NAK after receiving IN token, IN NAK status will not be updated to USBD_EPSTS0 and USBD_EPSTS1register, so that the USB interrupt event will not be asserted"
+              val: 0
+            '1':
+              desc: "IN NAK status will be updated to USBD_EPSTS0 and USBD_EPSTS1 register and the USB interrupt event will be asserted, when the device responds NAK after receiving IN token"
+              val: 1
+    INTSTS:
+      desc: USB Device Interrupt Event Status Register
+      offset: 0x4
+      reset_val: 0x0
+      fields:
+        BUSIF:
+          desc: "BUS Interrupt Status\nThe BUS event means that there is one of the suspense or the resume function in the bus."
+          bits: 0
+          enum:
+            '0':
+              desc: "No BUS event occurred"
+              val: 0
+            '1':
+              desc: "Bus event occurred; check USBD_ATTR[3:0] to know which kind of bus event was occurred, cleared by write 1 to USBD_INTSTS[0]"
+              val: 1
+        USBIF:
+          desc: "USB Event Interrupt Status\nThe USB event includes the SETUP Token, IN Token, OUT ACK, ISO IN, or ISO OUT events in the bus."
+          bits: 1
+          enum:
+            '0':
+              desc: "No USB event occurred"
+              val: 0
+            '1':
+              desc: "USB event occurred, check EPSTS0~5[2:0] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[1] or EPSTS0~11 and SETUP (USBD_INTSTS[31])"
+              val: 1
+        VBDETIF:
+          desc: "VBUS Detection Interrupt Status"
+          bits: 2
+          enum:
+            '0':
+              desc: "There is not attached/detached event in the USB"
+              val: 0
+            '1':
+              desc: "There is attached/detached event in the USB bus and it is cleared by write 1 to USBD_INTSTS[2]"
+              val: 1
+        NEVWKIF:
+          desc: "No-event-wake-up Interrupt Status"
+          bits: 3
+          enum:
+            '0':
+              desc: "NEVWK event does not occur"
+              val: 0
+            '1':
+              desc: "No-event-wake-up event occurred, cleared by write 1 to USBD_INTSTS[3]"
+              val: 1
+        SOFIF:
+          desc: "Start of Frame Interrupt Status"
+          bits: 4
+          enum:
+            '0':
+              desc: "SOF event does not occur"
+              val: 0
+            '1':
+              desc: "SOF event occurred, cleared by write 1 to USBD_INTSTS[4]"
+              val: 1
+        EPEVT0:
+          desc: "Endpoint 0's USB Event Status"
+          bits: 16
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 0"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 0, check USBD_EPSTS0[3:0] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[16] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT1:
+          desc: "Endpoint 1's USB Event Status"
+          bits: 17
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 1"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 1, check USBD_EPSTS0[7:4] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[17] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT2:
+          desc: "Endpoint 2's USB Event Status"
+          bits: 18
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 2"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 2, check USBD_EPSTS0[11:8] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[18] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT3:
+          desc: "Endpoint 3's USB Event Status"
+          bits: 19
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 3"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 3, check USBD_EPSTS0[15:12] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[19] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT4:
+          desc: "Endpoint 4's USB Event Status"
+          bits: 20
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 4"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 4, check USBD_EPSTS0[19:16] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[20] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT5:
+          desc: "Endpoint 5's USB Event Status"
+          bits: 21
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 5"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 5, check USBD_EPSTS0[23:20] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[21] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT6:
+          desc: "Endpoint 6's USB Event Status"
+          bits: 22
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 6"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 6, check USBD_EPSTS0[27:24] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[22] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT7:
+          desc: "Endpoint 7's USB Event Status"
+          bits: 23
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 7"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 7, check USBD_EPSTS0[31:28] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[23] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT8:
+          desc: "Endpoint 8's USB Event Status"
+          bits: 24
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 8"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 8, check USBD_EPSTS1[3 :0] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[24] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT9:
+          desc: "Endpoint 9's USB Event Status"
+          bits: 25
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 9"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 9, check USBD_EPSTS1[7 :4] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[25] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT10:
+          desc: "Endpoint 10's USB Event Status"
+          bits: 26
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 10"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 10, check USBD_EPSTS1[11 :8] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[26] or USBD_INTSTS[1]"
+              val: 1
+        EPEVT11:
+          desc: "Endpoint 11's USB Event Status"
+          bits: 27
+          enum:
+            '0':
+              desc: "No event occurred in endpoint 11"
+              val: 0
+            '1':
+              desc: "USB event occurred on Endpoint 11, check USBD_EPSTS1[ 15:12] to know which kind of USB event was occurred, cleared by write 1 to USBD_INTSTS[27] or USBD_INTSTS[1]"
+              val: 1
+        SETUP:
+          desc: "Setup Event Status"
+          bits: 31
+          enum:
+            '0':
+              desc: "No Setup event"
+              val: 0
+            '1':
+              desc: "Setup event occurred, cleared by write 1 to USBD_INTSTS[31]"
+              val: 1
+    FADDR:
+      desc: USB Device Function Address Register
+      offset: 0x8
+      reset_val: 0x0
+      fields:
+        FADDR:
+          desc: "USB Device Function Address"
+          bits: 6-0
+    EPSTS:
+      desc: USB Device Endpoint Status Register
+      offset: 0xc
+      reset_val: 0x0
+      fields:
+        OV:
+          desc: "Overrun\nIt indicates that the received data is over the maximum payload number or not."
+          bits: 7
+          enum:
+            '0':
+              desc: "No overrun"
+              val: 0
+            '1':
+              desc: "Out Data is more than the Max Payload in MXPLD register or the Setup Data is more than 8 Bytes"
+              val: 1
+    ATTR:
+      desc: USB Device Bus Status and Attribution Register
+      offset: 0x10
+      reset_val: 0x40
+      fields:
+        USBRST:
+          desc: "USB Reset Status (Read Only)"
+          bits: 0
+          enum:
+            '0':
+              desc: "Bus no reset"
+              val: 0
+            '1':
+              desc: "Bus reset when SE0 (single-ended 0) more than 2.5us"
+              val: 1
+        SUSPEND:
+          desc: "Suspend Status (Read Only)"
+          bits: 1
+          enum:
+            '0':
+              desc: "Bus no suspend"
+              val: 0
+            '1':
+              desc: "Bus idle more than 3ms, either cable is plugged off or host is sleeping"
+              val: 1
+        RESUME:
+          desc: "Resume Status (Read Only)"
+          bits: 2
+          enum:
+            '0':
+              desc: "No bus resume"
+              val: 0
+            '1':
+              desc: "Resume from suspend"
+              val: 1
+        TOUT:
+          desc: "Time-out Status (Read Only)"
+          bits: 3
+          enum:
+            '0':
+              desc: "No time-out"
+              val: 0
+            '1':
+              desc: "No Bus response more than 18 bits time"
+              val: 1
+        PHYEN:
+          desc: "PHY Transceiver Function Enable Bit"
+          bits: 4
+          enum:
+            '0':
+              desc: "PHY transceiver function Disabled"
+              val: 0
+            '1':
+              desc: "PHY transceiver function Enabled"
+              val: 1
+        RWAKEUP:
+          desc: "Remote Wake-up"
+          bits: 5
+          enum:
+            '0':
+              desc: "Release the USB bus from K state"
+              val: 0
+            '1':
+              desc: "Force USB bus to K (USB_D+ low, USB_D-: high) state, used for remote wake-up"
+              val: 1
+        USBEN:
+          desc: "USB Controller Enable Bit"
+          bits: 7
+          enum:
+            '0':
+              desc: "USB Controller Disabled"
+              val: 0
+            '1':
+              desc: "USB Controller Enabled"
+              val: 1
+        DPPUEN:
+          desc: "Pull-up Resistor on USB_DP Enable Bit"
+          bits: 8
+          enum:
+            '0':
+              desc: "Pull-up resistor in USB_D+ bus Disabled"
+              val: 0
+            '1':
+              desc: "Pull-up resistor in USB_D+ bus Active"
+              val: 1
+        PWRDN:
+          desc: "Power-down PHY Transceiver, Low Active"
+          bits: 9
+          enum:
+            '0':
+              desc: "Power-down related circuit of PHY transceiver"
+              val: 0
+            '1':
+              desc: "Turn-on related circuit of PHY transceiver"
+              val: 1
+        BYTEM:
+          desc: "CPU Access USB SRAM Size Mode Selection"
+          bits: 10
+          enum:
+            '0':
+              desc: "Word mode: The size of the transfer from CPU to USB SRAM can be Word only"
+              val: 0
+            '1':
+              desc: "Byte mode: The size of the transfer from CPU to USB SRAM can be Byte only"
+              val: 1
+        LPMACK:
+          desc: "LPM Token Acknowledge Enable Bit"
+          bits: 11
+          enum:
+            '0':
+              desc: "the valid LPM Token will be NYET"
+              val: 0
+            '1':
+              desc: "the valid LPM Token will be ACK"
+              val: 1
+        L1SUSPEND:
+          desc: "LPM L1 Suspend (Read Only)"
+          bits: 12
+          enum:
+            '0':
+              desc: "Bus no L1 state suspend"
+              val: 0
+            '1':
+              desc: "This bit is set by the hardware when LPM command to enter the L1 state is successfully received and acknowledged"
+              val: 1
+        L1RESUME:
+          desc: "LPM L1 Resume (Read Only)"
+          bits: 13
+          enum:
+            '0':
+              desc: "Bus no LPM L1 state resume"
+              val: 0
+            '1':
+              desc: "LPM L1 state Resume from LPM L1 state suspend"
+              val: 1
+    VBUSDET:
+      desc: USB Device VBUS Detection Register
+      offset: 0x14
+      reset_val: 0x0
+      fields:
+        VBUSDET:
+          desc: "Device VBUS Detection"
+          bits: 0
+          enum:
+            '0':
+              desc: "Controller is not attached to the USB host"
+              val: 0
+            '1':
+              desc: "Controller is attached to the USB host"
+              val: 1
+    STBUFSEG:
+      desc: SETUP Token Buffer Segmentation Register
+      offset: 0x18
+      reset_val: 0x0
+      fields:
+        STBUFSEG:
+          desc: "SETUP Token Buffer Segmentation\nIt is used to indicate the offset address for the SETUP token with the USB Device SRAM starting address The effective starting address is\nUSBD_SRAM address + {STBUFSEG, 3'b000} \nNote: It is used for SETUP token only."
+          bits: 8-3
+    EPSTS0:
+      desc: USB Device Endpoint Status Register 0
+      offset: 0x20
+      reset_val: 0x0
+      fields:
+        EPSTS5:
+          desc: "Endpoint 5 Status\nThese bits are used to indicate the current status of this endpoint"
+          bits: 23-20
+          enum:
+            '0':
+              desc: "In ACK"
+              val: 0
+            '1':
+              desc: "In NAK"
+              val: 1
+            '2':
+              desc: "Out Packet Data0 ACK"
+              val: 2
+            '6':
+              desc: "Out Packet Data1 ACK"
+              val: 6
+            '7':
+              desc: "Isochronous transfer end"
+              val: 7
+        EPSTS6:
+          desc: "Endpoint 6 Status\nThese bits are used to indicate the current status of this endpoint"
+          bits: 27-24
+          enum:
+            '0':
+              desc: "In ACK"
+              val: 0
+            '1':
+              desc: "In NAK"
+              val: 1
+            '2':
+              desc: "Out Packet Data0 ACK"
+              val: 2
+            '6':
+              desc: "Out Packet Data1 ACK"
+              val: 6
+            '7':
+              desc: "Isochronous transfer end"
+              val: 7
+        EPSTS7:
+          desc: "Endpoint 7 Status\nThese bits are used to indicate the current status of this endpoint"
+          bits: 31-28
+          enum:
+            '0':
+              desc: "In ACK"
+              val: 0
+            '1':
+              desc: "In NAK"
+              val: 1
+            '2':
+              desc: "Out Packet Data0 ACK"
+              val: 2
+            '6':
+              desc: "Out Packet Data1 ACK"
+              val: 6
+            '7':
+              desc: "Isochronous transfer end"
+              val: 7
+    EPSTS1:
+      desc: USB Device Endpoint Status Register 1
+      offset: 0x24
+      reset_val: 0x0
+      fields:
+        EPSTS8:
+          desc: "Endpoint 8 Status\nThese bits are used to indicate the current status of this endpoint"
+          bits: 3-0
+          enum:
+            '0':
+              desc: "In ACK"
+              val: 0
+            '1':
+              desc: "In NAK"
+              val: 1
+            '2':
+              desc: "Out Packet Data0 ACK"
+              val: 2
+            '6':
+              desc: "Out Packet Data1 ACK"
+              val: 6
+            '7':
+              desc: "Isochronous transfer end"
+              val: 7
+        EPSTS9:
+          desc: "Endpoint 9 Status\nThese bits are used to indicate the current status of this endpoint"
+          bits: 7-4
+          enum:
+            '0':
+              desc: "In ACK"
+              val: 0
+            '1':
+              desc: "In NAK"
+              val: 1
+            '2':
+              desc: "Out Packet Data0 ACK"
+              val: 2
+            '6':
+              desc: "Out Packet Data1 ACK"
+              val: 6
+            '7':
+              desc: "Isochronous transfer end"
+              val: 7
+        EPSTS10:
+          desc: "Endpoint 10 Status\nThese bits are used to indicate the current status of this endpoint"
+          bits: 11-8
+          enum:
+            '0':
+              desc: "In ACK"
+              val: 0
+            '1':
+              desc: "In NAK"
+              val: 1
+            '2':
+              desc: "Out Packet Data0 ACK"
+              val: 2
+            '6':
+              desc: "Out Packet Data1 ACK"
+              val: 6
+            '7':
+              desc: "Isochronous transfer end"
+              val: 7
+        EPSTS11:
+          desc: "Endpoint 11 Status\nThese bits are used to indicate the current status of this endpoint"
+          bits: 15-12
+          enum:
+            '0':
+              desc: "In ACK"
+              val: 0
+            '1':
+              desc: "In NAK"
+              val: 1
+            '2':
+              desc: "Out Packet Data0 ACK"
+              val: 2
+            '6':
+              desc: "Out Packet Data1 ACK"
+              val: 6
+            '7':
+              desc: "Isochronous transfer end"
+              val: 7
+    LPMATTR:
+      desc: USB LPM Attribution Register
+      offset: 0x88
+      reset_val: 0x0
+      fields:
+        LPMLINKSTS:
+          desc: "LPM Link State\nThese bits contain the bLinkState received with last ACK LPM Token"
+          bits: 3-0
+        LPMBESL:
+          desc: "LPM Best Effort Service Latency\nThese bits contain the BESL value received with last ACK LPM Token"
+          bits: 7-4
+        LPMRWAKUP:
+          desc: "LPM Remote Wakeup\nThis bit contains the bRemoteWake value received with last ACK LPM Token"
+          bits: 8
+    FN:
+      desc: USB Frame Number Register
+      offset: 0x8c
+      reset_val: 0x0
+      fields:
+        FN:
+          desc: "Frame Number\nThese bits contain the 11-bits frame number in the last received SOF packet."
+          bits: 10-0
+    SE0:
+      desc: USB Device Drive SE0 Control Register
+      offset: 0x90
+      reset_val: 0x1
+      fields:
+        SE0:
+          desc: "Drive Single Ended Zero in USB Bus\nThe Single Ended Zero (SE0) is when both lines (USB_D+ and USB_D-) are being pulled low."
+          bits: 0
+          enum:
+            '0':
+              desc: "Normal operation"
+              val: 0
+            '1':
+              desc: "Force USB PHY transceiver to drive SE0"
+              val: 1
+    BUFSEG:
+      desc: Endpoint 0 Buffer Segmentation Register
+      offset: 0x500
+      count: 12
+      size: 32
+      struct: 16
+      reset_val: 0x0
+      fields:
+        BUFSEG:
+          desc: "Endpoint Buffer Segmentation\nIt is used to indicate the offset address for each endpoint with the USB SRAM starting address The effective starting address of the endpoint is\nUSBD_SRAM address + { BUFSEG, 3'b000}\nRefer to the section 6.31.6.7 for the endpoint SRAM structure and its description."
+          bits: 8-3
+    MXPLD:
+      desc: Endpoint 0 Maximal Payload Register
+      offset: 0x504
+      count: 12
+      size: 32
+      struct: 16
+      reset_val: 0x0
+      fields:
+        MXPLD:
+          desc: "Maximal Payload\nDefine the data length which is transmitted to host (IN token) or the actual data length which is received from the host (OUT token). It also used to indicate that the endpoint is ready to be transmitted in IN token or received in OUT token.\n(1) When the register is written by CPU, \nFor IN token, the value of MXPLD is used to define the data length to be transmitted and indicate the data buffer is ready.\nFor OUT token, it means that the controller is ready to receive data from the host and the value of MXPLD is the maximal data length comes from host.\n(2) When the register is read by CPU,\nFor IN token, the value of MXPLD is indicated by the data length be transmitted to host\nFor OUT token, the value of MXPLD is indicated the actual data length receiving from host.\nNote: Once MXPLD is written, the data packets will be transmitted/received immediately after IN/OUT token arrived."
+          bits: 8-0
+    CFG:
+      desc: Endpoint 0 Configuration Register
+      offset: 0x508
+      count: 12
+      size: 32
+      struct: 16
+      reset_val: 0x0
+      fields:
+        EPNUM:
+          desc: "Endpoint Number\nThese bits are used to define the endpoint number of the current endpoint"
+          bits: 3-0
+        ISOCH:
+          desc: "Isochronous Endpoint\nThis bit is used to set the endpoint as Isochronous endpoint, no handshake."
+          bits: 4
+          enum:
+            '0':
+              desc: "No Isochronous endpoint"
+              val: 0
+            '1':
+              desc: "Isochronous endpoint"
+              val: 1
+        STATE:
+          desc: "Endpoint STATE"
+          bits: 6-5
+          enum:
+            '0':
+              desc: "Endpoint is Disabled"
+              val: 0
+            '1':
+              desc: "Out endpoint"
+              val: 1
+            '2':
+              desc: "IN endpoint"
+              val: 2
+            '3':
+              desc: "Undefined"
+              val: 3
+        DSQSYNC:
+          desc: "Data Sequence Synchronization\nNote: It is used to specify the DATA0 or DATA1 PID in the following IN token transaction. hardware will toggle automatically in IN token base on the bit."
+          bits: 7
+          enum:
+            '0':
+              desc: "DATA0 PID"
+              val: 0
+            '1':
+              desc: "DATA1 PID"
+              val: 1
+        CSTALL:
+          desc: "Clear STALL Response"
+          bits: 9
+          enum:
+            '0':
+              desc: "Disable the device to clear the STALL handshake in setup stage"
+              val: 0
+            '1':
+              desc: "Clear the device to response STALL handshake in setup stage"
+              val: 1
+    CFGP:
+      desc: Endpoint 0 Set Stall and Clear In/Out Ready Control Register
+      offset: 0x50c
+      count: 12
+      size: 32
+      struct: 16
+      reset_val: 0x0
+      fields:
+        CLRRDY:
+          desc: "Clear Ready\nWhen the USBD_MXPLDx register is set by user, it means that the endpoint is ready to transmit or receive data. If the user wants to disable this transaction before the transaction start, users can set this bit to 1 to disable it and it is auto clear to 0.\nFor IN token, write '1' to clear the IN token had ready to transmit the data to USB.\nFor OUT token, write '1' to clear the OUT token had ready to receive the data from USB.\nThis bit is write 1 only and is always 0 when it is read back."
+          bits: 0
+        SSTALL:
+          desc: "Set STALL"
+          bits: 1
+          enum:
+            '0':
+              desc: "Disable the device to response STALL"
+              val: 0
+            '1':
+              desc: "Set the device to respond STALL automatically"
+              val: 1
+

@@ -18,6 +18,7 @@ enum class dev_class
   spi,
   dma,
   crc,
+  usb,
   one_wire,
   temp_sensor,
   key

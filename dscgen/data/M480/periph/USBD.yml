@@ -1,0 +1,3 @@
+peripheral:
+  ip: v1/USBD
+  base: 0x400c0000
